@@ -1,0 +1,10 @@
+<div class="flex justify-around">
+    <div *ngIf="!loading; else notLoading">
+        <span>{{ text }}</span>
+    </div>
+
+  <ng-template #notLoading>
+    <span></span> <!-- TODO: Set inline spinner here -->
+    <span>{{ loadingText }}</span>
+  </ng-template>
+</div>

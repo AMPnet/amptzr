@@ -7,5 +7,13 @@
     <p>...offers here...</p>
 
     <span *ngIf="(address$ | async) as address">address: {{ address }}</span>
+
+
+    <button app-action-button
+            class="bg-blue-500 disabled:bg-gray-400 text-white p-2 rounded-md"
+            text="Sign Message"
+            loadingText="Signing message..."
+            [onClick]="signMessage.bind(this)">
+    </button>
   </div>
 </div>

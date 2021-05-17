@@ -11,11 +11,16 @@ import {AkitaNgRouterStoreModule} from '@datorama/akita-ng-router-store';
 import {environment} from '../environments/environment';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {OffersComponent} from './offers/offers.component';
-import {WalletComponent} from './shared/components/wallet/wallet.component';
-import {WalletConnectComponent} from './shared/components/wallet/wallet-connect/wallet-connect.component';
 import {MatDialogModule} from '@angular/material/dialog';
 import {PortfolioComponent} from './portfolio/portfolio.component';
-import {SignerService} from './shared/services/signers/signer.service';
+import {SignerService} from './shared/services/signer.service';
+import {WalletStatusComponent} from './shared/components/wallet-status/wallet-status.component';
+import {WalletComponent} from './wallet/wallet.component';
+import {WalletConnectComponent} from './wallet/wallet-connect/wallet-connect.component';
+import {ActionButtonComponent} from './shared/components/action-button/action-button.component';
+import {AddrShortPipe} from './shared/pipes/addr-short.pipe';
+import { InfoDialogComponent } from './shared/components/info-dialog/info-dialog.component';
+import { DevPlaygroundComponent } from './shared/components/dev-playground/dev-playground.component';
 
 @NgModule({
   declarations: [
@@ -23,9 +28,14 @@ import {SignerService} from './shared/services/signers/signer.service';
     NavbarComponent,
     SidebarComponent,
     OffersComponent,
+    PortfolioComponent,
     WalletComponent,
+    WalletStatusComponent,
     WalletConnectComponent,
-    PortfolioComponent
+    ActionButtonComponent,
+    AddrShortPipe,
+    InfoDialogComponent,
+    DevPlaygroundComponent
   ],
   imports: [
     BrowserModule,
