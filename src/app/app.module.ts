@@ -13,14 +13,14 @@ import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {OffersComponent} from './offers/offers.component';
 import {MatDialogModule} from '@angular/material/dialog';
 import {PortfolioComponent} from './portfolio/portfolio.component';
-import {SignerService} from './shared/services/signer.service';
 import {WalletStatusComponent} from './shared/components/wallet-status/wallet-status.component';
 import {WalletComponent} from './wallet/wallet.component';
 import {WalletConnectComponent} from './wallet/wallet-connect/wallet-connect.component';
 import {ActionButtonComponent} from './shared/components/action-button/action-button.component';
 import {AddrShortPipe} from './shared/pipes/addr-short.pipe';
-import { InfoDialogComponent } from './shared/components/info-dialog/info-dialog.component';
-import { DevPlaygroundComponent } from './shared/components/dev-playground/dev-playground.component';
+import {InfoDialogComponent} from './shared/components/info-dialog/info-dialog.component';
+import {DevPlaygroundComponent} from './shared/components/dev-playground/dev-playground.component';
+import {PreferenceService} from './preference/state/preference.service';
 
 @NgModule({
   declarations: [
@@ -46,13 +46,13 @@ import { DevPlaygroundComponent } from './shared/components/dev-playground/dev-p
     MatDialogModule,
   ],
   providers: [
-    SignerService,
+    PreferenceService,
     {
       provide: APP_INITIALIZER,
-      useFactory: (web3: SignerService) =>
-        () => web3.initSigner().toPromise(),
+      useFactory: (pref: PreferenceService) =>
+        () => pref.initSigner().toPromise(),
       multi: true,
-      deps: [SignerService]
+      deps: [PreferenceService]
     },
     {
       provide: NG_ENTITY_SERVICE_CONFIG,

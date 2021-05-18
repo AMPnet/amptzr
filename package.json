@@ -3,8 +3,8 @@
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
-    "start": "ng serve",
-    "hmr": "ng serve --hmr",
+    "start": "NODE_ENV=dev ng serve",
+    "hmr": "NODE_ENV=dev ng serve --hmr",
     "build": "ng build",
     "test": "ng test",
     "lint": "ng lint",

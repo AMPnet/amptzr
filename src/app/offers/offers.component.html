@@ -3,14 +3,11 @@
     — OFFERS
   </h1>
 
-  <div>
-    <p>...offers here...</p>
-
+  <div class="flex flex-col mt-2 justify-center items-center">
     <span *ngIf="(address$ | async) as address">address: {{ address }}</span>
 
-
     <button app-action-button
-            class="bg-blue-500 disabled:bg-gray-400 text-white p-2 rounded-md"
+            class="bg-blue-500 disabled:bg-gray-400 text-white p-2 rounded-md mt-2"
             text="Sign Message"
             loadingText="Signing message..."
             [onClick]="signMessage.bind(this)">

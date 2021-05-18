@@ -2,17 +2,16 @@ import {Injectable} from '@angular/core';
 import {ethers} from 'ethers';
 import {EMPTY, from, Observable, of, Subject, throwError} from 'rxjs';
 import {catchError, concatMap, map, switchMap, tap} from 'rxjs/operators';
-import {SessionStore, WalletProvider} from '../../session/state/session.store';
+import {SessionStore} from '../../session/state/session.store';
 import {SessionQuery} from '../../session/state/session.query';
 import {DialogService} from './dialog.service';
 import {Router} from '@angular/router';
+import {PreferenceStore, WalletProvider} from '../../preference/state/preference.store';
 
 @Injectable({
   providedIn: 'root'
 })
 export class SignerService {
-  private signer: ethers.providers.JsonRpcSigner | null = null;
-
   private accountsChangedSub = new Subject<string[]>();
   private disconnectedSub = new Subject<void>();
 
@@ -21,32 +20,22 @@ export class SignerService {
 
   constructor(private sessionStore: SessionStore,
               private sessionQuery: SessionQuery,
+              private preferenceStore: PreferenceStore,
               private router: Router,
               private dialogService: DialogService) {
     this.subscribeToChanges();
   }
 
-  private setSigner(value: ethers.providers.JsonRpcSigner): void {
-    this.signer = value;
+  private setSigner(signer: ethers.providers.JsonRpcSigner): void {
+    this.sessionStore.update({
+      address: this.preferenceStore.getValue().address,
+      signer
+    });
     this.registerListeners();
   }
 
-  initSigner(): Observable<unknown> {
-    const session = this.sessionQuery.getValue();
-    if (session.address !== '' && session.providerType === WalletProvider.METAMASK) {
-      return this.login({force: false}).pipe(
-        catchError(() => {
-          this.logout();
-          return EMPTY;
-        }),
-      );
-    }
-
-    return EMPTY;
-  }
-
   private get ensureAuth(): Observable<ethers.providers.JsonRpcSigner> {
-    return of(this.signer).pipe(
+    return of(this.sessionQuery.signer).pipe(
       concatMap(signer => signer ?
         from(signer.getAddress()).pipe(map(() => signer)) :
         this.loginRequiredProcedure
@@ -70,7 +59,7 @@ export class SignerService {
         concatMap(address => opts.wallet ? (
           opts.wallet === address ? of(address) : throwError('WRONG_ADDRESS')
         ) : of(address)),
-        tap(address => this.sessionStore.update({address, providerType: WalletProvider.METAMASK})),
+        tap(address => this.preferenceStore.update({address, providerType: WalletProvider.METAMASK})),
         map(() => signer),
         )
       ),
@@ -86,8 +75,8 @@ export class SignerService {
   }
 
   logout(): void {
-    this.sessionStore.update({address: '', providerType: ''});
-    this.signer = null;
+    this.preferenceStore.update({address: '', providerType: ''});
+    this.sessionStore.reset();
   }
 
   getAddress(): Observable<string> {
@@ -110,13 +99,13 @@ export class SignerService {
   }
 
   registerListeners(): void {
-    (this.signer?.provider as any)?.provider.removeAllListeners(['accountsChanged']);
-    (this.signer?.provider as any)?.provider.on('accountsChanged', (accounts: string[]) => {
+    (this.sessionQuery.signer?.provider as any)?.provider.removeAllListeners(['accountsChanged']);
+    (this.sessionQuery.signer?.provider as any)?.provider.on('accountsChanged', (accounts: string[]) => {
       this.accountsChangedSub.next(accounts);
     });
 
-    (this.signer?.provider as any)?.provider.removeAllListeners(['disconnect']);
-    (this.signer?.provider as any)?.provider.on('disconnect', () => {
+    (this.sessionQuery.signer?.provider as any)?.provider.removeAllListeners(['disconnect']);
+    (this.sessionQuery.signer?.provider as any)?.provider.on('disconnect', () => {
       this.disconnectedSub.next();
     });
   }
