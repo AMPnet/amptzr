@@ -6,11 +6,19 @@
   <app-wallet-connect *ngIf="!(isLoggedIn$ | async)">
   </app-wallet-connect>
 
-
-  <button (click)="getSomethingFromBlockchain()"
-          class="mt-2 bg-blue-500 text-white p-2 rounded-md">
-    get default provider
+  <button app-action-button
+          class="bg-blue-500 disabled:bg-gray-400 text-white p-2 rounded-md mt-2"
+          [onClick]="showCurrentGasPrice.bind(this)"
+          text="Show gas price">
   </button>
+
+  <div>
+    Gas: <span *ngIf="(gas$ | async) as gas">{{ gas }}</span>
+  </div>
+
+  <div>
+    Block number: <span *ngIf="(blockNumber$ | async) as blockNumber">{{ blockNumber }}</span>
+  </div>
 
   <button class="bg-blue-500 text-white p-2 rounded-md"
           *ngIf="isLoggedIn$ | async" (click)="logout()">

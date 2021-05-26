@@ -2,8 +2,9 @@ import {ChangeDetectionStrategy, Component} from '@angular/core';
 import {SessionQuery} from '../session/state/session.query';
 import {SignerService} from '../shared/services/signer.service';
 import {ethers} from 'ethers';
-import {concatMap, map, take, tap, timeout} from 'rxjs/operators';
-import {from} from 'rxjs';
+import {catchError, concatMap, map, retry, take, tap, timeout} from 'rxjs/operators';
+import {from, Observable} from 'rxjs';
+import {DialogService} from '../shared/services/dialog.service';
 
 @Component({
   selector: 'app-wallet',
@@ -14,30 +15,39 @@ import {from} from 'rxjs';
 export class WalletComponent {
   isLoggedIn$ = this.sessionQuery.isLoggedIn$;
 
+  gas$ = this.sessionQuery.provider$.pipe(
+    concatMap(provider => from(provider.getGasPrice()).pipe(
+      timeout(3000),
+      catchError(() => retry())
+    )),
+    map(gasRaw => ethers.utils.formatEther(gasRaw)),
+  );
+
+  blockNumber$ = this.sessionQuery.provider$.pipe(
+    concatMap(provider => from(provider.getBlockNumber()).pipe(
+      timeout(3000),
+      catchError(() => retry())
+    )),
+  );
+
   constructor(private sessionQuery: SessionQuery,
-              private signerService: SignerService) {
+              private signerService: SignerService,
+              private dialogService: DialogService) {
   }
 
   logout(): void {
     this.signerService.logout();
   }
 
-  getSomethingFromBlockchain(): void {
-    this.sessionQuery.provider$.pipe(
+  showCurrentGasPrice(): Observable<any> {
+    return this.sessionQuery.provider$.pipe(
       take(1),
       concatMap(provider => from(provider.getGasPrice()).pipe(
         timeout(3000),
       )),
       map(gasRaw => ethers.utils.formatEther(gasRaw)),
-      tap(gas => console.log('gas: ', gas)),
-    ).subscribe();
-
-    this.sessionQuery.provider$.pipe(
-      take(1),
-      concatMap(provider => from(provider.getNetwork()).pipe(
-        timeout(3000),
-      )),
-      tap(res => console.log('network: ', res)),
-    ).subscribe();
+      concatMap(gasPrice =>
+        this.dialogService.info(`Current gas price is ${gasPrice}`, false))
+    );
   }
 }

@@ -2,6 +2,7 @@ import {ChangeDetectionStrategy, Component, ɵmarkDirty} from '@angular/core';
 import {SessionQuery} from '../../../session/state/session.query';
 import {concatMap, map, tap} from 'rxjs/operators';
 import {from} from 'rxjs';
+import {Router} from '@angular/router';
 
 @Component({
   selector: 'app-navbar',
@@ -19,6 +20,7 @@ export class NavbarComponent {
     tap(() => ɵmarkDirty(this)),
   );
 
-  constructor(private sessionQuery: SessionQuery) {
+  constructor(private sessionQuery: SessionQuery,
+              private router: Router) {
   }
 }
