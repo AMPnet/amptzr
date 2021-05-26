@@ -1,7 +1,6 @@
-import {ChangeDetectionStrategy, Component, OnInit} from '@angular/core';
+import {ChangeDetectionStrategy, Component, NgZone, OnInit} from '@angular/core';
 import {MatDialog} from '@angular/material/dialog';
 import {Router} from '@angular/router';
-import {SignerService} from '../../services/signer.service';
 import {SessionQuery} from '../../../session/state/session.query';
 
 @Component({
@@ -15,18 +14,16 @@ export class WalletStatusComponent implements OnInit {
 
   constructor(private dialog: MatDialog,
               private sessionQuery: SessionQuery,
+              private ngZone: NgZone,
               private router: Router) {
   }
 
   ngOnInit(): void {
   }
 
-  walletConnect(): Promise<boolean> {
-    // TODO: example of opening the dialog
-    // this.dialog.open(WalletConnectComponent, {
-    //   hasBackdrop: true
-    // });
-
-    return this.router.navigate(['wallet']);
+  walletConnect(): void {
+    this.ngZone.run(() => {
+      this.router.navigate(['wallet']);
+    });
   }
 }

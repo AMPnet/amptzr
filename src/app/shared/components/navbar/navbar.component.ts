@@ -1,6 +1,7 @@
 import {ChangeDetectionStrategy, Component, ɵmarkDirty} from '@angular/core';
 import {SessionQuery} from '../../../session/state/session.query';
-import {tap} from 'rxjs/operators';
+import {concatMap, map, tap} from 'rxjs/operators';
+import {from} from 'rxjs';
 
 @Component({
   selector: 'app-navbar',
@@ -11,6 +12,11 @@ import {tap} from 'rxjs/operators';
 export class NavbarComponent {
   address$ = this.sessionQuery.address$.pipe(
     tap(() => ɵmarkDirty(this))
+  );
+  chainID$ = this.sessionQuery.provider$.pipe(
+    concatMap(provider => from(provider.getNetwork())),
+    map(network => network.chainId),
+    tap(() => ɵmarkDirty(this)),
   );
 
   constructor(private sessionQuery: SessionQuery) {

@@ -11,10 +11,11 @@ export class DialogService {
   constructor(private dialog: MatDialog) {
   }
 
-  info(message: string): Observable<boolean> {
+  info(message: string, cancelable = true): Observable<boolean> {
     return this.dialog.open(InfoDialogComponent, {
       data: {
-        message
+        message,
+        cancelable
       } as InfoDialogData
     }).afterClosed().pipe(
       map(res => !!(res as InfoDialogResponse)?.confirmed),

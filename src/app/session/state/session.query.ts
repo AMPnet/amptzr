@@ -1,17 +1,40 @@
 import {Injectable} from '@angular/core';
 import {Query} from '@datorama/akita';
 import {SessionState, SessionStore} from './session.store';
-import {map} from 'rxjs/operators';
+import {map, tap} from 'rxjs/operators';
 import {ethers} from 'ethers';
+import {PreferenceQuery} from '../../preference/state/preference.query';
+import {Networks} from '../../shared/networks';
 
 @Injectable({providedIn: 'root'})
 export class SessionQuery extends Query<SessionState> {
   address$ = this.select('address');
-  isLoggedIn$ = this.select()
-    .pipe(map(this.stateIsLoggedIn));
+  provider$ = this.select('provider').pipe(
+    map(provider => {
+      if (!provider) {
+        const newProvider = ethers.getDefaultProvider(
+          Networks[this.preferenceQuery.getValue().chainID]
+        );
+        this.store.update({provider: newProvider});
+        return newProvider as ethers.providers.Provider;
+      }
 
-  constructor(protected store: SessionStore) {
+      return provider;
+    }),
+  );
+
+  isLoggedIn$ = this.select().pipe(
+    map(this.stateIsLoggedIn)
+  );
+
+  constructor(protected store: SessionStore,
+              private preferenceQuery: PreferenceQuery) {
     super(store);
+
+    preferenceQuery.select('chainID').pipe(
+      map(chainID => ethers.getDefaultProvider(Networks[chainID])),
+      tap(provider => store.update({provider}))
+    ).subscribe();
   }
 
   stateIsLoggedIn(state: SessionState): boolean {

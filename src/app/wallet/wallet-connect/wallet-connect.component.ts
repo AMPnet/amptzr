@@ -1,6 +1,9 @@
 import {ChangeDetectionStrategy, Component, OnInit} from '@angular/core';
 import {EMPTY, Observable} from 'rxjs';
 import {SignerService} from '../../shared/services/signer.service';
+import {ChainID, Networks} from '../../shared/networks';
+import {PreferenceQuery} from '../../preference/state/preference.query';
+import {PreferenceStore} from '../../preference/state/preference.store';
 
 @Component({
   selector: 'app-wallet-connect',
@@ -9,7 +12,12 @@ import {SignerService} from '../../shared/services/signer.service';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class WalletConnectComponent implements OnInit {
-  constructor(private signer: SignerService) {
+  networks = Object.values(Networks);
+  currentNetwork = Networks[this.preferenceQuery.getValue().chainID];
+
+  constructor(private signer: SignerService,
+              private preferenceStore: PreferenceStore,
+              private preferenceQuery: PreferenceQuery) {
   }
 
   ngOnInit(): void {
@@ -21,5 +29,11 @@ export class WalletConnectComponent implements OnInit {
 
   connectWalletConnect(): Observable<unknown> {
     return EMPTY;
+  }
+
+  networkChanged(e: Event): void {
+    const chainID = Number((e.target as HTMLSelectElement).value) as ChainID;
+    this.currentNetwork = Networks[chainID];
+    this.preferenceStore.update({chainID});
   }
 }

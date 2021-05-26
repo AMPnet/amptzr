@@ -2,12 +2,10 @@ import {Injectable} from '@angular/core';
 import {Store, StoreConfig} from '@datorama/akita';
 import {ethers} from 'ethers';
 
-
 export interface SessionState {
   address?: string;
-  chainID?: number;
   signer?: ethers.providers.JsonRpcSigner;
-  provider?: ethers.providers.JsonRpcProvider;
+  provider?: ethers.providers.Provider;
 }
 
 export function createInitialState(): SessionState {

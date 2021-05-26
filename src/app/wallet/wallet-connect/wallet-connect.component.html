@@ -1,4 +1,19 @@
-<div class="flex">
+<div>
+  <label for="network" class="app-page-label mt-3">
+    Network
+  </label>
+  <select name="network" id="network"
+          (change)="networkChanged($event)"
+          class="m-2 p-2 bg-blue-200 rounded-md">
+    <option *ngFor="let network of networks"
+            [selected]="currentNetwork === network"
+            [value]="network.chainId">
+      {{ network.name }}
+    </option>
+  </select>
+</div>
+
+<div class="flex space-x-2">
   <button app-action-button
           class="bg-blue-500 text-white p-2 rounded-md"
           [onClick]="connectMetamask.bind(this)"

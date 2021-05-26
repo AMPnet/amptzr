@@ -6,6 +6,12 @@
   <app-wallet-connect *ngIf="!(isLoggedIn$ | async)">
   </app-wallet-connect>
 
+
+  <button (click)="getSomethingFromBlockchain()"
+          class="mt-2 bg-blue-500 text-white p-2 rounded-md">
+    get default provider
+  </button>
+
   <button class="bg-blue-500 text-white p-2 rounded-md"
           *ngIf="isLoggedIn$ | async" (click)="logout()">
     Logout
