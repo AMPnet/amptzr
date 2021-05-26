@@ -6,6 +6,12 @@
   <app-wallet-connect *ngIf="!(isLoggedIn$ | async)">
   </app-wallet-connect>
 
+  <ng-container *ngIf="isLoggedIn$ | async">
+    <div>
+      Address: <span *ngIf="(address$ | async) as address">{{ address }}</span>
+    </div>
+  </ng-container>
+
   <button app-action-button
           class="bg-blue-500 disabled:bg-gray-400 text-white p-2 rounded-md mt-2"
           [onClick]="showCurrentGasPrice.bind(this)"

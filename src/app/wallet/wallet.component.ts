@@ -1,4 +1,4 @@
-import {ChangeDetectionStrategy, Component} from '@angular/core';
+import {ChangeDetectionStrategy, Component, ɵmarkDirty} from '@angular/core';
 import {SessionQuery} from '../session/state/session.query';
 import {SignerService} from '../shared/services/signer.service';
 import {ethers} from 'ethers';
@@ -28,6 +28,10 @@ export class WalletComponent {
       timeout(3000),
       catchError(() => retry())
     )),
+  );
+
+  address$ = this.sessionQuery.address$.pipe(
+    tap(() => ɵmarkDirty(this))
   );
 
   constructor(private sessionQuery: SessionQuery,
