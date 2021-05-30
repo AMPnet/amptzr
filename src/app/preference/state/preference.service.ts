@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-import {catchError} from 'rxjs/operators';
+import {catchError, concatMap, take} from 'rxjs/operators';
 import {PreferenceStore, WalletProvider} from './preference.store';
 import {EMPTY, Observable} from 'rxjs';
 import {PreferenceQuery} from './preference.query';
@@ -13,16 +13,15 @@ export class PreferenceService {
   }
 
   initSigner(): Observable<unknown> {
-    const session = this.preferenceQuery.getValue();
-    if (session.address !== '' && session.providerType === WalletProvider.METAMASK) {
-      return this.signer.login({force: false}).pipe(
-        catchError(() => {
-          this.signer.logout();
-          return EMPTY;
-        }),
-      );
-    }
-
-    return EMPTY;
+    return this.preferenceQuery.select().pipe(
+      take(1),
+      concatMap(session => session.address !== '' && session.providerType === WalletProvider.METAMASK ?
+        this.signer.login({force: false}) : EMPTY
+      ),
+      catchError(() => {
+        this.signer.logout();
+        return EMPTY;
+      })
+    );
   }
 }

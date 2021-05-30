@@ -2,7 +2,9 @@
   <span class="font-bold">AMPnet</span>
   <div class="flex space-x-4">
     <span class="self-center" *ngIf="(chainID$ | async) as chainID; else smallSpinner">
-      ChainID: {{ chainID }}
+      <ng-container *ngIf="!chainIDLoading; else smallSpinner">
+        ChainID: {{ chainID }}
+      </ng-container>
     </span>
     <span class="self-center" *ngIf="(address$ | async) as address">
       Address: {{ address | addrShort }}

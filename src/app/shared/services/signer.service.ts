@@ -1,7 +1,7 @@
 import {Injectable, NgZone} from '@angular/core';
 import {ethers} from 'ethers';
 import {EMPTY, from, Observable, of, Subject, throwError} from 'rxjs';
-import {catchError, concatMap, map, switchMap, take, tap} from 'rxjs/operators';
+import {catchError, concatMap, filter, map, pairwise, startWith, switchMap, take, tap} from 'rxjs/operators';
 import {SessionStore} from '../../session/state/session.store';
 import {SessionQuery} from '../../session/state/session.query';
 import {DialogService} from './dialog.service';
@@ -132,6 +132,11 @@ export class SignerService {
 
   private subscribeToChanges(): void {
     this.accountsChanged$.pipe(
+      startWith([]), pairwise(), // [previousAddresses, currentAddresses]
+      // Ignore when (prev -> curr) goes (0 -> 1). It's when a user just logged in.
+      // It can cause unwanted early auth event to fire.
+      filter(([prev, curr]) => !(prev.length === 0 && curr.length === 1)),
+      concatMap(([prev, curr]) => curr.length === 0 ? this.logoutNavToWallet() : of(curr)),
       concatMap(() => this.ensureAuth.pipe(concatMap(signer => signer.getAddress()))),
       tap(account => this.sessionStore.update({address: account}))
     ).subscribe();
@@ -157,9 +162,7 @@ export class SignerService {
     if (this.sessionQuery.isLoggedIn()) {
       this.logout();
     }
-    this.ngZone.run(() => {
-      this.router.navigate(['/wallet']);
-    });
+    this.ngZone.run(() => this.router.navigate(['/wallet']));
 
     return EMPTY;
   }
