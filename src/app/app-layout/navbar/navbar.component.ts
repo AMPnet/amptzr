@@ -1,8 +1,10 @@
 import {ChangeDetectionStrategy, Component, ɵmarkDirty} from '@angular/core';
-import {SessionQuery} from '../../../session/state/session.query';
-import {concatMap, map, startWith, tap} from 'rxjs/operators';
-import {EMPTY, from, NEVER, Observable, of} from 'rxjs';
+import {concatMap, map, tap} from 'rxjs/operators';
+import {from, Observable} from 'rxjs';
 import {Router} from '@angular/router';
+import {SessionQuery} from '../../session/state/session.query';
+import {AppLayoutStore} from '../state/app-layout.store';
+import {AppLayoutQuery} from '../state/app-layout.query';
 
 @Component({
   selector: 'app-navbar',
@@ -25,7 +27,15 @@ export class NavbarComponent {
     tap(() => ɵmarkDirty(this)),
   );
 
+  isNavbarOpen$ = this.appLayoutQuery.isSidebarOpen$;
+
   constructor(private sessionQuery: SessionQuery,
+              private appLayoutStore: AppLayoutStore,
+              private appLayoutQuery: AppLayoutQuery,
               private router: Router) {
+  }
+
+  toggleNavbarOpen(): void {
+    this.appLayoutStore.toggleNavbarOpen();
   }
 }

@@ -4,13 +4,18 @@ import {OffersComponent} from './offers/offers.component';
 import {PortfolioComponent} from './portfolio/portfolio.component';
 import {WalletComponent} from './wallet/wallet.component';
 import {DevPlaygroundComponent} from './shared/components/dev-playground/dev-playground.component';
+import {AppLayoutComponent} from './app-layout/app-layout.component';
 
 const routes: Routes = [
-  {path: '', pathMatch: 'full', redirectTo: 'offers'},
-  {path: 'offers', component: OffersComponent},
-  {path: 'portfolio', component: PortfolioComponent},
-  {path: 'wallet', component: WalletComponent},
-  {path: 'dev_playground', component: DevPlaygroundComponent}
+  {
+    path: '', component: AppLayoutComponent, children: [
+      {path: '', pathMatch: 'full', redirectTo: 'offers'},
+      {path: 'offers', component: OffersComponent},
+      {path: 'portfolio', component: PortfolioComponent},
+      {path: 'wallet', component: WalletComponent},
+      {path: 'dev_playground', component: DevPlaygroundComponent}
+    ]
+  }
 ];
 
 @NgModule({

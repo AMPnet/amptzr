@@ -3,8 +3,6 @@ import {APP_INITIALIZER, NgModule} from '@angular/core';
 
 import {AppRoutingModule} from './app-routing.module';
 import {AppComponent} from './app.component';
-import {NavbarComponent} from './shared/components/navbar/navbar.component';
-import {SidebarComponent} from './shared/components/sidebar/sidebar.component';
 import {NG_ENTITY_SERVICE_CONFIG} from '@datorama/akita-ng-entity-service';
 import {AkitaNgDevtools} from '@datorama/akita-ngdevtools';
 import {AkitaNgRouterStoreModule} from '@datorama/akita-ng-router-store';
@@ -21,6 +19,9 @@ import {AddrShortPipe} from './shared/pipes/addr-short.pipe';
 import {InfoDialogComponent} from './shared/components/info-dialog/info-dialog.component';
 import {DevPlaygroundComponent} from './shared/components/dev-playground/dev-playground.component';
 import {PreferenceService} from './preference/state/preference.service';
+import {AppLayoutComponent} from './app-layout/app-layout.component';
+import {NavbarComponent} from './app-layout/navbar/navbar.component';
+import {SidebarComponent} from './app-layout/sidebar/sidebar.component';
 
 @NgModule({
   declarations: [
@@ -35,7 +36,8 @@ import {PreferenceService} from './preference/state/preference.service';
     ActionButtonComponent,
     AddrShortPipe,
     InfoDialogComponent,
-    DevPlaygroundComponent
+    DevPlaygroundComponent,
+    AppLayoutComponent
   ],
   imports: [
     BrowserModule,
