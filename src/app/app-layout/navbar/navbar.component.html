@@ -2,19 +2,19 @@
 
   <div class="flex space-x-2">
     <button (click)="toggleNavbarOpen()" class="md:hidden">
-      <svg xmlns="http://www.w3.org/2000/svg" *ngIf="!(isNavbarOpen$ | async)"
-           class="h-6 w-6 transition duration-500 ease-in-out" fill="none"
+      <svg xmlns="http://www.w3.org/2000/svg" [class.hidden]="isNavbarOpen$ | async"
+           class="h-6 w-6" fill="none"
            viewBox="0 0 24 24" stroke="currentColor">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
       </svg>
-      <svg xmlns="http://www.w3.org/2000/svg" *ngIf="isNavbarOpen$ | async"
-           class="h-6 w-6 transition duration-500 ease-in-out" fill="none"
+      <svg xmlns="http://www.w3.org/2000/svg" [class.hidden]="!(isNavbarOpen$ | async)"
+           class="h-6 w-6" fill="none"
            viewBox="0 0 24 24" stroke="currentColor">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
       </svg>
     </button>
 
-    <span class="font-bold">AMPnet</span>
+    <span class="font-bold">Tokenizer</span>
   </div>
   <div class="flex space-x-4">
     <span class="self-center" *ngIf="(chainID$ | async) as chainID; else smallSpinner">
