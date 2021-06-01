@@ -8,6 +8,3 @@ Reproduce issue with login that results with autologout:
 Possible cause is live reload, and some listener race condition; need to investigate.
 
 ---
-
-- add eslint
-- make build/publish pipeline
