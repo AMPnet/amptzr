@@ -1,4 +1,4 @@
-import {ChangeDetectionStrategy, Component, OnInit} from '@angular/core';
+import {ChangeDetectionStrategy, Component} from '@angular/core';
 import {SessionQuery} from '../session/state/session.query';
 import {SignerService} from '../shared/services/signer.service';
 import {Observable} from 'rxjs';
