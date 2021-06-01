@@ -13,7 +13,7 @@ export class SidebarComponent {
               private appLayoutStore: AppLayoutStore) {
   }
 
-  toggleNavbarOpen(): void {
+  hideNavbar(): void {
     if (this.appLayoutQuery.isSidebarOpen()) {
       this.appLayoutStore.toggleNavbarOpen();
     }

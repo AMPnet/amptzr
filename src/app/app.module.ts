@@ -22,6 +22,8 @@ import {PreferenceService} from './preference/state/preference.service';
 import {AppLayoutComponent} from './app-layout/app-layout.component';
 import {NavbarComponent} from './app-layout/navbar/navbar.component';
 import {SidebarComponent} from './app-layout/sidebar/sidebar.component';
+import { FooterComponent } from './app-layout/footer/footer.component';
+import {A11yModule} from '@angular/cdk/a11y';
 
 @NgModule({
   declarations: [
@@ -37,7 +39,8 @@ import {SidebarComponent} from './app-layout/sidebar/sidebar.component';
     AddrShortPipe,
     InfoDialogComponent,
     DevPlaygroundComponent,
-    AppLayoutComponent
+    AppLayoutComponent,
+    FooterComponent
   ],
   imports: [
     BrowserModule,
@@ -46,6 +49,7 @@ import {SidebarComponent} from './app-layout/sidebar/sidebar.component';
     AkitaNgRouterStoreModule,
     BrowserAnimationsModule,
     MatDialogModule,
+    A11yModule,
   ],
   providers: [
     PreferenceService,
