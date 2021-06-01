@@ -6,10 +6,12 @@
     "start": "NODE_ENV=dev ng serve",
     "hmr": "NODE_ENV=dev ng serve --hmr",
     "build": "NODE_ENV=prod ng build --configuration=production",
+    "serve-build": "npx http-server ./dist/amptzr --cors -c-1 -g -b -o -P http://localhost:8080\\?",
     "test": "ng test",
     "test:ci": "ng test -- --no-watch --no-progress --browsers=ChromeHeadlessCI",
     "lint": "ng lint",
-    "deploy": "ng deploy",
+    "lint:fix": "ng lint --fix",
+    "deploy": "NODE_ENV=prod ng deploy",
     "e2e": "ng e2e"
   },
   "private": false,

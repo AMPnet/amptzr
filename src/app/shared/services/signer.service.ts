@@ -1,13 +1,13 @@
-import {Injectable, NgZone} from '@angular/core';
-import {ethers} from 'ethers';
-import {EMPTY, from, Observable, of, Subject, throwError} from 'rxjs';
-import {catchError, concatMap, filter, map, pairwise, startWith, switchMap, take, tap} from 'rxjs/operators';
-import {SessionStore} from '../../session/state/session.store';
-import {SessionQuery} from '../../session/state/session.query';
-import {DialogService} from './dialog.service';
-import {Router} from '@angular/router';
-import {PreferenceStore, WalletProvider} from '../../preference/state/preference.store';
-import {MetamaskNetworks} from '../networks';
+import {Injectable, NgZone} from '@angular/core'
+import {ethers} from 'ethers'
+import {EMPTY, from, Observable, of, Subject, throwError} from 'rxjs'
+import {catchError, concatMap, filter, map, pairwise, startWith, switchMap, take, tap} from 'rxjs/operators'
+import {SessionStore} from '../../session/state/session.store'
+import {SessionQuery} from '../../session/state/session.query'
+import {DialogService} from './dialog.service'
+import {Router} from '@angular/router'
+import {PreferenceStore, WalletProvider} from '../../preference/state/preference.store'
+import {MetamaskNetworks} from '../networks'
 
 @Injectable({
   providedIn: 'root'
@@ -28,15 +28,15 @@ export class SignerService {
               private ngZone: NgZone,
               private router: Router,
               private dialogService: DialogService) {
-    this.subscribeToChanges();
+    this.subscribeToChanges()
   }
 
   private setSigner(signer: ethers.providers.JsonRpcSigner): void {
     this.sessionStore.update({
       address: this.preferenceStore.getValue().address,
       signer
-    });
-    this.registerListeners();
+    })
+    this.registerListeners()
   }
 
   private get ensureAuth(): Observable<ethers.providers.JsonRpcSigner> {
@@ -47,13 +47,13 @@ export class SignerService {
       ),
       concatMap(signer => signer.getAddress() ?
         of(signer) : this.loginRequiredProcedure)
-    );
+    )
   }
 
   private get loginRequiredProcedure(): Observable<any> {
     return this.dialogService.info('Login with your wallet to proceed').pipe(
       concatMap(confirm => confirm ? from(this.router.navigate(['/wallet'])) : EMPTY)
-    );
+    )
   }
 
   login(opts: LoginOpts = {force: true}): Observable<ethers.providers.JsonRpcSigner> {
@@ -79,55 +79,55 @@ export class SignerService {
         )
       ),
       tap(signer => this.setSigner(signer)),
-    );
+    )
   }
 
   private loginGetAddress(signer: ethers.providers.JsonRpcSigner, force: boolean): Observable<string> {
     return from(signer.getAddress()).pipe(
       catchError(() => force ? from(signer.provider.send('eth_requestAccounts', [])) : throwError('NO_ADDRESS')),
       concatMap(address => !!address ? of(address) : throwError('NO_ADDRESS')),
-    );
+    )
   }
 
   logout(): void {
-    this.preferenceStore.update({address: '', providerType: ''});
-    this.sessionStore.update({address: '', signer: undefined});
+    this.preferenceStore.update({address: '', providerType: ''})
+    this.sessionStore.update({address: '', signer: undefined})
   }
 
   getAddress(): Observable<string> {
     return this.ensureAuth.pipe(
       switchMap(signer => from(signer.getAddress())),
-    );
+    )
   }
 
   signMessage(message: string): Observable<string> {
     return this.ensureAuth.pipe(
       switchMap(signer => from(signer.signMessage(message)))
-    );
+    )
   }
 
   sendTransaction(transaction: ethers.providers.TransactionRequest):
     Observable<ethers.providers.TransactionResponse> {
     return this.ensureAuth.pipe(
       switchMap(signer => from(signer.sendTransaction(transaction)))
-    );
+    )
   }
 
   registerListeners(): void {
     (this.sessionQuery.signer?.provider as any)?.provider.removeAllListeners(['accountsChanged']);
     (this.sessionQuery.signer?.provider as any)?.provider.on('accountsChanged', (accounts: string[]) => {
-      this.accountsChangedSub.next(accounts);
+      this.accountsChangedSub.next(accounts)
     });
 
     (this.sessionQuery.signer?.provider as any)?.provider.removeAllListeners(['chainChanged']);
     (this.sessionQuery.signer?.provider as any)?.provider.on('chainChanged', (chainID: string) => {
-      this.chainChangedSub.next(chainID);
+      this.chainChangedSub.next(chainID)
     });
 
     (this.sessionQuery.signer?.provider as any)?.provider.removeAllListeners(['disconnect']);
     (this.sessionQuery.signer?.provider as any)?.provider.on('disconnect', () => {
-      this.disconnectedSub.next();
-    });
+      this.disconnectedSub.next()
+    })
   }
 
   private subscribeToChanges(): void {
@@ -139,7 +139,7 @@ export class SignerService {
       concatMap(([prev, curr]) => curr.length === 0 ? this.logoutNavToWallet() : of(curr)),
       concatMap(() => this.ensureAuth.pipe(concatMap(signer => signer.getAddress()))),
       tap(account => this.sessionStore.update({address: account}))
-    ).subscribe();
+    ).subscribe()
 
     this.chainChanged$.pipe(
       concatMap(chainID => this.provider$.pipe(take(1),
@@ -149,22 +149,22 @@ export class SignerService {
       ),
       // provider.getNetwork() sometimes throws error on network mismatch.
       catchError(() => this.logoutNavToWallet())
-    ).subscribe();
+    ).subscribe()
 
     this.disconnected$.pipe(
       tap(() =>
         this.logoutNavToWallet().subscribe()
       )
-    ).subscribe();
+    ).subscribe()
   }
 
   private logoutNavToWallet(): Observable<unknown> {
     if (this.sessionQuery.isLoggedIn()) {
-      this.logout();
+      this.logout()
     }
-    this.ngZone.run(() => this.router.navigate(['/wallet']));
+    this.ngZone.run(() => this.router.navigate(['/wallet']))
 
-    return EMPTY;
+    return EMPTY
   }
 }
 

@@ -1,4 +1,4 @@
-import {ethers} from 'ethers';
+import {ethers} from 'ethers'
 
 export enum ChainID {
   // ETHEREUM_MAINNET = 1,
@@ -12,19 +12,19 @@ export const MaticNetwork: ethers.providers.Network = {
   chainId: ChainID.MATIC_MAINNET,
   _defaultProvider: (providers: any) =>
     new providers.JsonRpcProvider('https://matic-mainnet.chainstacklabs.com')
-};
+}
 
 export const MumbaiNetwork: ethers.providers.Network = {
   name: 'mumbai',
   chainId: ChainID.MUMBAI_TESTNET,
   _defaultProvider: providers =>
     new providers.JsonRpcProvider('https://matic-mumbai.chainstacklabs.com')
-};
+}
 
 export const Networks: { [key in ChainID]: ethers.providers.Network } = {
   [ChainID.MATIC_MAINNET]: MaticNetwork,
   [ChainID.MUMBAI_TESTNET]: MumbaiNetwork,
-};
+}
 
 export interface AddEthereumChainParameter {
   chainId: string; // A 0x-prefixed hexadecimal string
@@ -62,6 +62,6 @@ export const MetamaskNetworks: { [key in ChainID]: AddEthereumChainParameter } =
     rpcUrls: ['https://rpc-mumbai.maticvigil.com'],
     blockExplorerUrls: ['https://explorer-mainnet.maticvigil.com/']
   },
-};
+}
 
 

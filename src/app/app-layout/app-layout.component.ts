@@ -1,6 +1,6 @@
-import {ChangeDetectionStrategy, Component} from '@angular/core';
-import {AppLayoutQuery} from './state/app-layout.query';
-import {AppLayoutStore} from './state/app-layout.store';
+import {ChangeDetectionStrategy, Component} from '@angular/core'
+import {AppLayoutQuery} from './state/app-layout.query'
+import {AppLayoutStore} from './state/app-layout.store'
 
 @Component({
   selector: 'app-app-layout',
@@ -17,7 +17,7 @@ export class AppLayoutComponent {
 
   hideNavbar(): void {
     if (this.appLayoutQuery.isSidebarOpen()) {
-      this.appLayoutStore.toggleNavbarOpen();
+      this.appLayoutStore.toggleNavbarOpen()
     }
   }
 }

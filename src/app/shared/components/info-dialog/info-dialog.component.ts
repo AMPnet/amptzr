@@ -1,6 +1,6 @@
-import {ChangeDetectionStrategy, Component, Inject, OnInit, Optional} from '@angular/core';
-import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
-import {BehaviorSubject} from 'rxjs';
+import {ChangeDetectionStrategy, Component, Inject, OnInit, Optional} from '@angular/core'
+import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog'
+import {BehaviorSubject} from 'rxjs'
 
 @Component({
   selector: 'app-info-dialog',
@@ -24,21 +24,21 @@ export class InfoDialogComponent implements OnInit {
 
   ngOnInit(): void {
     if (!this.data) {
-      return;
+      return
     }
 
     this.dataSub.next({
       ...this.dataSub.value,
       ...this.data
-    });
+    })
   }
 
   confirm(): void {
-    this.dialogRef.close({confirmed: true} as InfoDialogResponse);
+    this.dialogRef.close({confirmed: true} as InfoDialogResponse)
   }
 
   cancel(): void {
-    this.dialogRef.close({confirmed: false} as InfoDialogResponse);
+    this.dialogRef.close({confirmed: false} as InfoDialogResponse)
   }
 }
 

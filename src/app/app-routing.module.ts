@@ -1,10 +1,10 @@
-import {NgModule} from '@angular/core';
-import {RouterModule, Routes} from '@angular/router';
-import {OffersComponent} from './offers/offers.component';
-import {PortfolioComponent} from './portfolio/portfolio.component';
-import {WalletComponent} from './wallet/wallet.component';
-import {DevPlaygroundComponent} from './shared/components/dev-playground/dev-playground.component';
-import {AppLayoutComponent} from './app-layout/app-layout.component';
+import {NgModule} from '@angular/core'
+import {RouterModule, Routes} from '@angular/router'
+import {OffersComponent} from './offers/offers.component'
+import {PortfolioComponent} from './portfolio/portfolio.component'
+import {WalletComponent} from './wallet/wallet.component'
+import {DevPlaygroundComponent} from './shared/components/dev-playground/dev-playground.component'
+import {AppLayoutComponent} from './app-layout/app-layout.component'
 
 const routes: Routes = [
   {
@@ -16,7 +16,7 @@ const routes: Routes = [
       {path: 'dev_playground', component: DevPlaygroundComponent}
     ]
   }
-];
+]
 
 @NgModule({
   imports: [RouterModule.forRoot(routes)],

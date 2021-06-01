@@ -1,6 +1,6 @@
-import {Injectable} from '@angular/core';
-import {Store, StoreConfig} from '@datorama/akita';
-import {ChainID, MumbaiNetwork} from '../../shared/networks';
+import {Injectable} from '@angular/core'
+import {Store, StoreConfig} from '@datorama/akita'
+import {ChainID, MumbaiNetwork} from '../../shared/networks'
 
 export interface PreferenceState {
   address: string;
@@ -13,14 +13,14 @@ export function createInitialState(): PreferenceState {
     address: '',
     providerType: '',
     chainID: MumbaiNetwork.chainId,
-  };
+  }
 }
 
 @Injectable({providedIn: 'root'})
 @StoreConfig({name: 'preference'})
 export class PreferenceStore extends Store<PreferenceState> {
   constructor() {
-    super(createInitialState());
+    super(createInitialState())
   }
 }
 

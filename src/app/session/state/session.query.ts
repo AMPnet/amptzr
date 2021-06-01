@@ -1,10 +1,10 @@
-import {Injectable} from '@angular/core';
-import {Query} from '@datorama/akita';
-import {SessionState, SessionStore} from './session.store';
-import {map, tap} from 'rxjs/operators';
-import {ethers} from 'ethers';
-import {PreferenceQuery} from '../../preference/state/preference.query';
-import {Networks} from '../../shared/networks';
+import {Injectable} from '@angular/core'
+import {Query} from '@datorama/akita'
+import {SessionState, SessionStore} from './session.store'
+import {map, tap} from 'rxjs/operators'
+import {ethers} from 'ethers'
+import {PreferenceQuery} from '../../preference/state/preference.query'
+import {Networks} from '../../shared/networks'
 
 @Injectable({providedIn: 'root'})
 export class SessionQuery extends Query<SessionState> {
@@ -14,12 +14,12 @@ export class SessionQuery extends Query<SessionState> {
       if (!provider) {
         const newProvider = ethers.getDefaultProvider(
           Networks[this.preferenceQuery.getValue().chainID]
-        );
-        this.store.update({provider: newProvider});
-        return newProvider as ethers.providers.Provider;
+        )
+        this.store.update({provider: newProvider})
+        return newProvider as ethers.providers.Provider
       }
 
-      return provider;
+      return provider
     }),
   );
 
@@ -29,24 +29,24 @@ export class SessionQuery extends Query<SessionState> {
 
   constructor(protected store: SessionStore,
               private preferenceQuery: PreferenceQuery) {
-    super(store);
+    super(store)
 
     preferenceQuery.select('chainID').pipe(
       map(chainID => ethers.getDefaultProvider(Networks[chainID])),
       tap(provider => store.update({provider}))
-    ).subscribe();
+    ).subscribe()
   }
 
   stateIsLoggedIn(state: SessionState): boolean {
     return !!state.address &&
-      !!state.signer;
+      !!state.signer
   }
 
   get signer(): ethers.providers.JsonRpcSigner | undefined {
-    return this.store._value().signer;
+    return this.store._value().signer
   }
 
   isLoggedIn(): boolean {
-    return this.stateIsLoggedIn(this.store._value());
+    return this.stateIsLoggedIn(this.store._value())
   }
 }

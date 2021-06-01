@@ -1,10 +1,10 @@
-import {ChangeDetectionStrategy, Component, ɵmarkDirty} from '@angular/core';
-import {SessionQuery} from '../session/state/session.query';
-import {SignerService} from '../shared/services/signer.service';
-import {ethers} from 'ethers';
-import {catchError, concatMap, map, retry, take, tap, timeout} from 'rxjs/operators';
-import {from, Observable} from 'rxjs';
-import {DialogService} from '../shared/services/dialog.service';
+import {ChangeDetectionStrategy, Component, ɵmarkDirty} from '@angular/core'
+import {SessionQuery} from '../session/state/session.query'
+import {SignerService} from '../shared/services/signer.service'
+import {ethers} from 'ethers'
+import {catchError, concatMap, map, retry, take, tap, timeout} from 'rxjs/operators'
+import {from, Observable} from 'rxjs'
+import {DialogService} from '../shared/services/dialog.service'
 
 @Component({
   selector: 'app-wallet',
@@ -40,7 +40,7 @@ export class WalletComponent {
   }
 
   logout(): void {
-    this.signerService.logout();
+    this.signerService.logout()
   }
 
   showCurrentGasPrice(): Observable<any> {
@@ -52,6 +52,6 @@ export class WalletComponent {
       map(gasRaw => ethers.utils.formatEther(gasRaw)),
       concatMap(gasPrice =>
         this.dialogService.info(`Current gas price is ${gasPrice}`, false))
-    );
+    )
   }
 }

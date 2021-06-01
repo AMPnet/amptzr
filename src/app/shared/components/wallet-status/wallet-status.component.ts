@@ -1,9 +1,9 @@
-import {ChangeDetectionStrategy, Component, NgZone} from '@angular/core';
-import {MatDialog} from '@angular/material/dialog';
-import {ActivatedRoute, NavigationEnd, Router} from '@angular/router';
-import {SessionQuery} from '../../../session/state/session.query';
-import {combineLatest, Observable} from 'rxjs';
-import {filter, map, startWith} from 'rxjs/operators';
+import {ChangeDetectionStrategy, Component, NgZone} from '@angular/core'
+import {MatDialog} from '@angular/material/dialog'
+import {ActivatedRoute, NavigationEnd, Router} from '@angular/router'
+import {SessionQuery} from '../../../session/state/session.query'
+import {combineLatest, Observable} from 'rxjs'
+import {filter, map, startWith} from 'rxjs/operators'
 
 @Component({
   selector: 'app-wallet-status',
@@ -20,7 +20,7 @@ export class WalletStatusComponent {
       map(event => (event as NavigationEnd).url)
     )]).pipe(
     map(([isLoggedIn, url]) => {
-      return isLoggedIn || url === '/wallet';
+      return isLoggedIn || url === '/wallet'
     })
   );
 
@@ -33,7 +33,7 @@ export class WalletStatusComponent {
 
   walletConnect(): void {
     this.ngZone.run(() => {
-      this.router.navigate(['wallet']);
-    });
+      this.router.navigate(['wallet'])
+    })
   }
 }

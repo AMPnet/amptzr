@@ -1,10 +1,10 @@
-import {ChangeDetectionStrategy, Component, ɵmarkDirty} from '@angular/core';
-import {concatMap, map, tap} from 'rxjs/operators';
-import {from, Observable} from 'rxjs';
-import {Router} from '@angular/router';
-import {SessionQuery} from '../../session/state/session.query';
-import {AppLayoutStore} from '../state/app-layout.store';
-import {AppLayoutQuery} from '../state/app-layout.query';
+import {ChangeDetectionStrategy, Component, ɵmarkDirty} from '@angular/core'
+import {concatMap, map, tap} from 'rxjs/operators'
+import {from, Observable} from 'rxjs'
+import {Router} from '@angular/router'
+import {SessionQuery} from '../../session/state/session.query'
+import {AppLayoutStore} from '../state/app-layout.store'
+import {AppLayoutQuery} from '../state/app-layout.query'
 
 @Component({
   selector: 'app-navbar',
@@ -36,6 +36,6 @@ export class NavbarComponent {
   }
 
   toggleNavbarOpen(): void {
-    this.appLayoutStore.toggleNavbarOpen();
+    this.appLayoutStore.toggleNavbarOpen()
   }
 }

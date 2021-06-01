@@ -7,9 +7,9 @@ import {
   Input,
   OnDestroy,
   OnInit
-} from '@angular/core';
-import {EMPTY, Observable, Subscription} from 'rxjs';
-import {finalize} from 'rxjs/operators';
+} from '@angular/core'
+import {EMPTY, Observable, Subscription} from 'rxjs'
+import {finalize} from 'rxjs/operators'
 
 @Component({
   // eslint-disable-next-line @angular-eslint/component-selector
@@ -33,33 +33,33 @@ export class ActionButtonComponent implements OnInit, OnDestroy {
   }
 
   @HostBinding('class') get buttonClass(): string {
-    return this.class || 'btn btn-primary';
+    return this.class || 'btn btn-primary'
   }
 
   @HostBinding('disabled') get buttonDisabled(): boolean {
-    return this.disabled || this.loading;
+    return this.disabled || this.loading
   }
 
   @HostListener('click')
   click(): void {
     if (this.buttonDisabled) {
-      return;
+      return
     }
 
-    this.loading = true;
+    this.loading = true
     this.sub = this.onClick().pipe(finalize(() => {
-      this.loading = false;
-      this.changeRef.markForCheck();
-    })).subscribe();
+      this.loading = false
+      this.changeRef.markForCheck()
+    })).subscribe()
   }
 
   ngOnInit(): void {
-    this.loadingText ||= this.text;
+    this.loadingText ||= this.text
   }
 
   ngOnDestroy(): void {
     if (this.sub !== undefined && !this.sub.closed) {
-      this.sub.unsubscribe();
+      this.sub.unsubscribe()
     }
   }
 }

@@ -1,6 +1,6 @@
-import {Injectable} from '@angular/core';
-import {Store, StoreConfig} from '@datorama/akita';
-import {ethers} from 'ethers';
+import {Injectable} from '@angular/core'
+import {Store, StoreConfig} from '@datorama/akita'
+import {ethers} from 'ethers'
 
 export interface SessionState {
   address?: string;
@@ -9,13 +9,13 @@ export interface SessionState {
 }
 
 export function createInitialState(): SessionState {
-  return {};
+  return {}
 }
 
 @Injectable({providedIn: 'root'})
 @StoreConfig({name: 'session', resettable: true})
 export class SessionStore extends Store<SessionState> {
   constructor() {
-    super(createInitialState());
+    super(createInitialState())
   }
 }

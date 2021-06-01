@@ -1,4 +1,4 @@
-import {Injectable, Pipe, PipeTransform} from '@angular/core';
+import {Injectable, Pipe, PipeTransform} from '@angular/core'
 
 @Injectable({
   providedIn: 'root',
@@ -12,11 +12,11 @@ export class AddrShortPipe implements PipeTransform {
 
   transform(value: any): any {
     if (!value) {
-      return '';
+      return ''
     }
 
-    const address = String(value).toLowerCase();
+    const address = String(value).toLowerCase()
 
-    return `${address.substr(0, 6)}...${address.substr(address.length - 4, 4)}`;
+    return `${address.substr(0, 6)}...${address.substr(address.length - 4, 4)}`
   }
 }
