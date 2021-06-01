@@ -12,7 +12,7 @@ import {EMPTY, Observable, Subscription} from 'rxjs';
 import {finalize} from 'rxjs/operators';
 
 @Component({
-  // tslint:disable-next-line:component-selector
+  // eslint-disable-next-line @angular-eslint/component-selector
   selector: 'button[app-action-button]',
   templateUrl: './action-button.component.html',
   styleUrls: ['./action-button.component.scss'],

@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import {ChangeDetectionStrategy, Component} from '@angular/core';
 
 @Component({
   selector: 'app-dev-playground',
@@ -6,9 +6,7 @@ import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
   styleUrls: ['./dev-playground.component.css'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class DevPlaygroundComponent implements OnInit {
-  constructor() { }
-
-  ngOnInit(): void {
+export class DevPlaygroundComponent {
+  constructor() {
   }
 }

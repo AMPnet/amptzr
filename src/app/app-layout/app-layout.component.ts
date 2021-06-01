@@ -1,4 +1,4 @@
-import {ChangeDetectionStrategy, Component, OnInit} from '@angular/core';
+import {ChangeDetectionStrategy, Component} from '@angular/core';
 import {AppLayoutQuery} from './state/app-layout.query';
 import {AppLayoutStore} from './state/app-layout.store';
 
@@ -8,14 +8,11 @@ import {AppLayoutStore} from './state/app-layout.store';
   styleUrls: ['./app-layout.component.css'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class AppLayoutComponent implements OnInit {
+export class AppLayoutComponent {
   isOpen$ = this.appLayoutQuery.isSidebarOpen$;
 
   constructor(private appLayoutQuery: AppLayoutQuery,
               private appLayoutStore: AppLayoutStore) {
-  }
-
-  ngOnInit(): void {
   }
 
   hideNavbar(): void {

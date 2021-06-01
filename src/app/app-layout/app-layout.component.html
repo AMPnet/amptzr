@@ -5,7 +5,7 @@
   <div class="flex overflow-x-hidden h-full relative ">
     <div class="w-0 h-full opacity-0 invisible md:w-64 md:opacity-100 md:visible
     transition-all ease-in-out duration-100 flex-shrink-0 z-20"
-         [class]="(isOpen$ | async) ? 'w-64 visible opacity-100' : ''">
+         [class]="(isOpen$ | async) === true ? 'w-64 visible opacity-100' : ''">
       <app-sidebar></app-sidebar>
     </div>
     <div class="bg-gray-900 absolute w-full h-full z-10

@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import {ChangeDetectionStrategy, Component} from '@angular/core';
 
 @Component({
   selector: 'app-portfolio',
@@ -6,11 +6,7 @@ import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
   styleUrls: ['./portfolio.component.css'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class PortfolioComponent implements OnInit {
-
-  constructor() { }
-
-  ngOnInit(): void {
+export class PortfolioComponent {
+  constructor() {
   }
-
 }

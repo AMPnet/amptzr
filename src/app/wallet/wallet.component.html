@@ -3,7 +3,7 @@
     — WALLET
   </h1>
 
-  <app-wallet-connect *ngIf="!(isLoggedIn$ | async)">
+  <app-wallet-connect *ngIf="(isLoggedIn$ | async) === false">
   </app-wallet-connect>
 
   <ng-container *ngIf="isLoggedIn$ | async">
