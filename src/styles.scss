@@ -30,3 +30,7 @@ body {
   margin: 0;
   font-family: Roboto, "Helvetica Neue", sans-serif;
 }
+
+button, textarea, input, select, a {
+  -webkit-tap-highlight-color: transparent;
+}
