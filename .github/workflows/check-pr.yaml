@@ -30,4 +30,4 @@ jobs:
         run: npm run lint
 
       - name: Generate production build
-        run: NODE_ENV=prod ng build --configuration production
+        run: NODE_ENV=prod npm run build

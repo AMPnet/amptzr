@@ -30,10 +30,7 @@ jobs:
       - name: Run linter
         run: npm run lint
 
-      - name: Generate production build
-        run: NODE_ENV=prod ng build --configuration production
-
       - name: Deploy to GitHub Pages
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: NODE_ENV=prod ng deploy --dry-run
+        run: NODE_ENV=prod npm run deploy
