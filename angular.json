@@ -126,6 +126,14 @@
               "devServerTarget": "amptzr:serve:production"
             }
           }
+        },
+        "deploy": {
+          "builder": "angular-cli-ghpages:deploy",
+          "options": {
+            "baseHref": "/amptzr/",
+            "name": "AMPnet Team",
+            "email": "info@ampnet.io"
+          }
         }
       }
     }

@@ -4,7 +4,9 @@ process.env.TAILWIND_MODE = guessProductionMode() ? 'build' : 'watch';
 
 module.exports = {
   prefix: '',
-  // mode: 'jit',
+  // set anything to NODE_ENV to trick tailwindcss plugin to
+  // show autocompletion correctly.
+  // Issue: https://youtrack.jetbrains.com/issue/WEB-50318
   mode: process.env.NODE_ENV ? 'jit' : undefined,
   purge: {
     content: [
