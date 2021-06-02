@@ -4,7 +4,7 @@ import {SignerService} from '../shared/services/signer.service'
 import {Observable} from 'rxjs'
 import {concatMap, tap} from 'rxjs/operators'
 import {ethers} from 'ethers'
-import {DialogService} from '../shared/services/dialog.service';
+import {DialogService} from '../shared/services/dialog.service'
 
 @Component({
   selector: 'app-offers',
