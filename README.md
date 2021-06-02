@@ -80,5 +80,5 @@ npm run test
 - [Ethers.js](https://ethers.io/) (library for interacting with Ethereum Blockchain)
   - [Official Documentation (SPA)](https://docs.ethers.io/v5/single-page/)
   
-- [Polygon Network](https://polygon.technology/) (previously Matic, Ethereum based L2 solution)
+- [Polygon Network](https://polygon.technology/) (previously Matic, Ethereum-based L2 solution)
   - [Developer documentation](https://docs.matic.network/docs/develop/getting-started)
