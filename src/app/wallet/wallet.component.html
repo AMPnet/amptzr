@@ -19,11 +19,11 @@
   </button>
 
   <div>
-    Gas: <span *ngIf="(gas$ | async) as gas">{{ gas }}</span>
+    Gas: <span *ngIf="(gas$ | async) as gas; else inlineSpinner">{{ gas }}</span>
   </div>
 
   <div>
-    Block number: <span *ngIf="(blockNumber$ | async) as blockNumber">{{ blockNumber }}</span>
+    Block number: <span *ngIf="(blockNumber$ | async) as blockNumber; else inlineSpinner">{{ blockNumber }}</span>
   </div>
 
   <button class="bg-blue-500 text-white p-2 rounded-md"
@@ -31,3 +31,7 @@
     Logout
   </button>
 </div>
+
+<ng-template #inlineSpinner>
+  <app-spinner type="inline-xs"></app-spinner>
+</ng-template>

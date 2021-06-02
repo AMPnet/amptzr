@@ -24,6 +24,7 @@ import {NavbarComponent} from './app-layout/navbar/navbar.component'
 import {SidebarComponent} from './app-layout/sidebar/sidebar.component'
 import {FooterComponent} from './app-layout/footer/footer.component'
 import {A11yModule} from '@angular/cdk/a11y'
+import {SpinnerComponent} from './shared/components/spinner/spinner.component'
 
 @NgModule({
   declarations: [
@@ -40,7 +41,8 @@ import {A11yModule} from '@angular/cdk/a11y'
     InfoDialogComponent,
     DevPlaygroundComponent,
     AppLayoutComponent,
-    FooterComponent
+    FooterComponent,
+    SpinnerComponent
   ],
   imports: [
     BrowserModule,

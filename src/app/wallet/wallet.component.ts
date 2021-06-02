@@ -2,8 +2,8 @@ import {ChangeDetectionStrategy, Component, ɵmarkDirty} from '@angular/core'
 import {SessionQuery} from '../session/state/session.query'
 import {SignerService} from '../shared/services/signer.service'
 import {ethers} from 'ethers'
-import {catchError, concatMap, map, retry, take, tap, timeout} from 'rxjs/operators'
-import {from, Observable} from 'rxjs'
+import {catchError, concatMap, map, retry, startWith, switchMap, take, tap, timeout} from 'rxjs/operators'
+import {combineLatest, EMPTY, from, interval, Observable} from 'rxjs'
 import {DialogService} from '../shared/services/dialog.service'
 
 @Component({
@@ -15,7 +15,7 @@ import {DialogService} from '../shared/services/dialog.service'
 export class WalletComponent {
   isLoggedIn$ = this.sessionQuery.isLoggedIn$;
 
-  gas$ = this.sessionQuery.provider$.pipe(
+  gas$ = WalletComponent.withInterval(this.sessionQuery.provider$, 5000).pipe(
     concatMap(provider => from(provider.getGasPrice()).pipe(
       timeout(3000),
       catchError(() => retry())
@@ -23,10 +23,10 @@ export class WalletComponent {
     map(gasRaw => ethers.utils.formatEther(gasRaw)),
   );
 
-  blockNumber$ = this.sessionQuery.provider$.pipe(
-    concatMap(provider => from(provider.getBlockNumber()).pipe(
-      timeout(3000),
-      catchError(() => retry())
+  blockNumber$ = WalletComponent.withInterval(this.sessionQuery.provider$, 2000).pipe(
+    switchMap(provider => from(provider.getBlockNumber()).pipe(
+      timeout(1800),
+      catchError(() => EMPTY),
     )),
   );
 
@@ -37,6 +37,14 @@ export class WalletComponent {
   constructor(private sessionQuery: SessionQuery,
               private signerService: SignerService,
               private dialogService: DialogService) {
+  }
+
+  private static withInterval<T>(observable: Observable<T>, offset: number): Observable<T> {
+    return combineLatest([
+      observable, interval(offset).pipe(startWith(0)),
+    ]).pipe(
+      map(([result, _]) => result)
+    )
   }
 
   logout(): void {
