@@ -3,6 +3,7 @@ import {SessionQuery} from '../session/state/session.query'
 import {SignerService} from '../shared/services/signer.service'
 import {Observable} from 'rxjs'
 import {tap} from 'rxjs/operators'
+import {ethers} from 'ethers'
 
 @Component({
   selector: 'app-offers',
@@ -18,9 +19,10 @@ export class OffersComponent {
   }
 
   signMessage(): Observable<string> {
-    return this.signerService.signMessage('YOLO').pipe(
-      tap(message => {
-        console.log('signed message:', message)
+    const message = 'YOLO'
+    return this.signerService.signMessage(message).pipe(
+      tap(signed => {
+        console.log('signed message author:', ethers.utils.verifyMessage(message, signed))
       })
     )
   }

@@ -27,8 +27,8 @@
     </span>
 
     </div>
-    <div class="flex-1 flex-grow-0">
-      <span class="self-center text-xs md:text-sm inline-flex"
+    <div class="flex-1 flex-grow-0 self-center">
+      <span class="self-center text-xs md:text-sm inline-flex align-middle"
             *ngIf="(address$ | async) as address">
       Address: {{ address | addrShort }}
     </span>

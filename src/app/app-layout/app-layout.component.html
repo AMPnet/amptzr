@@ -13,8 +13,9 @@
          [class]="(isOpen$ | async) ? 'visible opacity-30' : ''"
          (click)="hideNavbar()">
     </div>
-    <div class="flex flex-col flex-shrink-0 flex-grow-1 w-full overflow-x-hidden"
-         [attr.tabindex]="(isOpen$ | async) ? '-1' : '0'">
+    <div class="flex flex-col flex-grow-1 w-full overflow-x-hidden"
+         [attr.tabindex]="(isOpen$ | async) ? '-1' : '0'"
+         [class.flex-shrink-0]="isOpen$ | async">
       <main class="flex-1">
         <router-outlet></router-outlet>
       </main>
