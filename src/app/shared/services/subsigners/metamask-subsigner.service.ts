@@ -4,7 +4,7 @@ import {ethers} from 'ethers'
 import {catchError, concatMap, map, tap} from 'rxjs/operators'
 import {MetamaskNetworks} from '../../networks'
 import {PreferenceStore, WalletProvider} from '../../../preference/state/preference.store'
-import {ChangeDetection} from '@angular/cli/lib/config/workspace-schema';
+import {ChangeDetection} from '@angular/cli/lib/config/workspace-schema'
 
 @Injectable({
   providedIn: 'root'
