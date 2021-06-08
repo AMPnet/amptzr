@@ -2,7 +2,7 @@ import {ChangeDetectionStrategy, Component} from '@angular/core'
 import {SessionQuery} from '../session/state/session.query'
 import {SignerService} from '../shared/services/signer.service'
 import {Observable} from 'rxjs'
-import {concatMap, tap} from 'rxjs/operators'
+import {tap} from 'rxjs/operators'
 import {ethers} from 'ethers'
 import {DialogService} from '../shared/services/dialog.service'
 

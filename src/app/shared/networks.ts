@@ -7,23 +7,51 @@ export enum ChainID {
   MUMBAI_TESTNET = 80001, // Polygon
 }
 
-export const MaticNetwork: ethers.providers.Network = {
-  name: 'matic',
-  chainId: ChainID.MATIC_MAINNET,
+export interface Network {
+  chainID: ChainID,
+  name: string,
+  shortName: string,nativeCurrency: {
+    name: string,
+    symbol: string;
+  },
+  rpcURLs: string[],
+  explorerURLs: string[]
+}
+
+export const MaticNetwork: Network = {
+  chainID: ChainID.MATIC_MAINNET,
+  name: 'Matic',
+  shortName: 'matic',
+  nativeCurrency: {
+    name: 'MATIC',
+    symbol: 'MATIC',
+  },
+  rpcURLs: ['https://matic-mainnet.chainstacklabs.com'],
+  explorerURLs: ['https://explorer-mainnet.maticvigil.com/'],
+}
+
+export const MumbaiNetwork: Network = {
+  chainID: ChainID.MUMBAI_TESTNET,
+  name: 'Mumbai (Matic Testnet)',
+  shortName: 'mumbai',
+  nativeCurrency: {
+    name: 'MATIC',
+    symbol: 'MATIC',
+  },
+  rpcURLs: ['https://matic-mumbai.chainstacklabs.com'],
+  explorerURLs: ['https://explorer-mumbai.maticvigil.com/']
+}
+
+const getEthersNetwork = (network: Network): ethers.providers.Network => ({
+  name: network.shortName,
+  chainId: network.chainID,
   _defaultProvider: (providers: any) =>
-    new providers.JsonRpcProvider('https://matic-mainnet.chainstacklabs.com')
-}
+    new providers.JsonRpcProvider(network.rpcURLs[0])
+})
 
-export const MumbaiNetwork: ethers.providers.Network = {
-  name: 'mumbai',
-  chainId: ChainID.MUMBAI_TESTNET,
-  _defaultProvider: providers =>
-    new providers.JsonRpcProvider('https://matic-mumbai.chainstacklabs.com')
-}
-
-export const Networks: { [key in ChainID]: ethers.providers.Network } = {
-  [ChainID.MATIC_MAINNET]: MaticNetwork,
-  [ChainID.MUMBAI_TESTNET]: MumbaiNetwork,
+export const EthersNetworks: { [key in ChainID]: ethers.providers.Network } = {
+  [ChainID.MATIC_MAINNET]: getEthersNetwork(MaticNetwork),
+  [ChainID.MUMBAI_TESTNET]: getEthersNetwork(MumbaiNetwork),
 }
 
 export interface AddEthereumChainParameter {
@@ -39,29 +67,21 @@ export interface AddEthereumChainParameter {
   iconUrls?: string[]; // Currently ignored.
 }
 
+const getMetamaskNetwork = (network: Network): AddEthereumChainParameter => ({
+  chainId: ethers.utils.hexValue(network.chainID),
+  chainName: network.name,
+  nativeCurrency: {
+    name: network.nativeCurrency.name,
+    symbol: network.nativeCurrency.symbol,
+    decimals: 18,
+  },
+  rpcUrls: network.rpcURLs,
+  blockExplorerUrls: network.explorerURLs
+})
+
 export const MetamaskNetworks: { [key in ChainID]: AddEthereumChainParameter } = {
-  [ChainID.MATIC_MAINNET]: {
-    chainId: ethers.utils.hexValue(MaticNetwork.chainId),
-    chainName: 'Matic Network',
-    nativeCurrency: {
-      name: 'MATIC',
-      symbol: 'MATIC',
-      decimals: 18
-    },
-    rpcUrls: ['https://rpc-mainnet.maticvigil.com/'],
-    blockExplorerUrls: ['https://explorer-mainnet.maticvigil.com/']
-  },
-  [ChainID.MUMBAI_TESTNET]: {
-    chainId: ethers.utils.hexValue(MumbaiNetwork.chainId),
-    chainName: 'Matic Test Network (Mumbai)',
-    nativeCurrency: {
-      name: 'MATIC',
-      symbol: 'MATIC',
-      decimals: 18
-    },
-    rpcUrls: ['https://rpc-mumbai.maticvigil.com'],
-    blockExplorerUrls: ['https://explorer-mainnet.maticvigil.com/']
-  },
+  [ChainID.MATIC_MAINNET]: getMetamaskNetwork(MaticNetwork),
+  [ChainID.MUMBAI_TESTNET]: getMetamaskNetwork(MumbaiNetwork),
 }
 
 

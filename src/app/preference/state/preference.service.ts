@@ -4,23 +4,32 @@ import {PreferenceStore, WalletProvider} from './preference.store'
 import {EMPTY, Observable} from 'rxjs'
 import {PreferenceQuery} from './preference.query'
 import {SignerService} from '../../shared/services/signer.service'
+import {MetamaskSubsignerService} from '../../shared/services/subsigners/metamask-subsigner.service'
+import {WalletConnectSubsignerService} from '../../shared/services/subsigners/walletconnect-subsigner.service'
 
 @Injectable({providedIn: 'root'})
 export class PreferenceService {
   constructor(private preferenceStore: PreferenceStore,
               private preferenceQuery: PreferenceQuery,
+              private metamaskSubsignerService: MetamaskSubsignerService,
+              private walletConnectSubsignerService: WalletConnectSubsignerService,
               private signer: SignerService) {
   }
 
   initSigner(): Observable<unknown> {
     return this.preferenceQuery.select().pipe(
       take(1),
-      concatMap(session => session.address !== '' && session.providerType === WalletProvider.METAMASK ?
-        this.signer.login({force: false}) : EMPTY
-      ),
+      concatMap(session => {
+        if (session.address !== '' && session.providerType === WalletProvider.METAMASK) {
+          return this.signer.login(this.metamaskSubsignerService, {force: false})
+        } else if (session.address !== '' && session.providerType === WalletProvider.WALLET_CONNECT) {
+          return this.signer.login(this.walletConnectSubsignerService, {force: false})
+        } else {
+          return EMPTY
+        }
+      }),
       catchError(() => {
-        this.signer.logout()
-        return EMPTY
+        return this.signer.logout().pipe(concatMap(() => EMPTY))
       })
     )
   }

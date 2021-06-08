@@ -12,7 +12,7 @@ export function createInitialState(): PreferenceState {
   return {
     address: '',
     providerType: '',
-    chainID: MumbaiNetwork.chainId,
+    chainID: MumbaiNetwork.chainID,
   }
 }
 
@@ -26,5 +26,6 @@ export class PreferenceStore extends Store<PreferenceState> {
 
 export enum WalletProvider {
   METAMASK = 'METAMASK',
+  WALLET_CONNECT = 'WALLET_CONNECT',
   ARKANE = 'ARKANE',
 }

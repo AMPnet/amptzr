@@ -1,18 +1,19 @@
 import {Injectable, NgZone} from '@angular/core'
 import {ethers} from 'ethers'
-import {EMPTY, from, Observable, of, Subject, throwError} from 'rxjs'
-import {catchError, concatMap, map, switchMap, take, tap} from 'rxjs/operators'
+import {EMPTY, from, Observable, of, Subject} from 'rxjs'
+import {catchError, concatMap, finalize, map, switchMap, take, tap} from 'rxjs/operators'
 import {SessionStore} from '../../session/state/session.store'
 import {SessionQuery} from '../../session/state/session.query'
 import {DialogService} from './dialog.service'
 import {Router} from '@angular/router'
-import {PreferenceStore, WalletProvider} from '../../preference/state/preference.store'
-import {MetamaskNetworks} from '../networks'
+import {PreferenceStore} from '../../preference/state/preference.store'
+import {MetamaskSubsignerService, Subsigner} from './subsigners/metamask-subsigner.service'
 
 @Injectable({
   providedIn: 'root'
 })
 export class SignerService {
+  private subsigner: Subsigner = this.metamaskSubsignerService;
   private accountsChangedSub = new Subject<string[]>();
   private chainChangedSub = new Subject<string>();
   private disconnectedSub = new Subject<void>();
@@ -25,6 +26,7 @@ export class SignerService {
   constructor(private sessionStore: SessionStore,
               private sessionQuery: SessionQuery,
               private preferenceStore: PreferenceStore,
+              private metamaskSubsignerService: MetamaskSubsignerService,
               private ngZone: NgZone,
               private router: Router,
               private dialogService: DialogService) {
@@ -56,42 +58,20 @@ export class SignerService {
     )
   }
 
-  login(opts: LoginOpts = {force: true}): Observable<ethers.providers.JsonRpcSigner> {
-    return of((window as any)?.ethereum).pipe(
-      concatMap(web3Provider => web3Provider ?
-        of(new ethers.providers.Web3Provider(web3Provider)
-          .getSigner()) : throwError('NO_METAMASK')),
-      concatMap(signer => from(signer.getChainId()).pipe(
-        concatMap(chainID => chainID === this.preferenceStore.getValue().chainID ?
-          of(chainID) : from(signer.provider.send('wallet_addEthereumChain',
-            [MetamaskNetworks[this.preferenceStore.getValue().chainID]])).pipe(
-            concatMap(addChainResult => addChainResult === null ?
-              of(addChainResult) : throwError('CANNOT_CHANGE_NETWORK'))
-          )),
-        map(() => signer),
-      )),
-      concatMap(signer => this.loginGetAddress(signer, !!opts.force).pipe(
-        concatMap(address => opts.wallet ? (
-          opts.wallet === address ? of(address) : throwError('WRONG_ADDRESS')
-        ) : of(address)),
-        tap(address => this.preferenceStore.update({address, providerType: WalletProvider.METAMASK})),
-        map(() => signer),
-        )
-      ),
+  login<T extends Subsigner>(subsigner: T, opts: LoginOpts = {force: true}): Observable<ethers.providers.JsonRpcSigner> {
+    this.subsigner = subsigner
+    return this.subsigner.login(opts).pipe(
       tap(signer => this.setSigner(signer)),
     )
   }
 
-  private loginGetAddress(signer: ethers.providers.JsonRpcSigner, force: boolean): Observable<string> {
-    return from(signer.getAddress()).pipe(
-      catchError(() => force ? from(signer.provider.send('eth_requestAccounts', [])) : throwError('NO_ADDRESS')),
-      concatMap(address => !!address ? of(address) : throwError('NO_ADDRESS')),
+  logout(): Observable<unknown> {
+    return this.subsigner.logout().pipe(
+      finalize(() => {
+        this.preferenceStore.update({address: '', providerType: ''})
+        this.sessionStore.update({address: '', signer: undefined})
+      })
     )
-  }
-
-  logout(): void {
-    this.preferenceStore.update({address: '', providerType: ''})
-    this.sessionStore.update({address: '', signer: undefined})
   }
 
   getAddress(): Observable<string> {
@@ -155,12 +135,10 @@ export class SignerService {
   }
 
   private logoutNavToWallet(): Observable<unknown> {
-    if (this.sessionQuery.isLoggedIn()) {
-      this.logout()
-    }
-    this.ngZone.run(() => this.router.navigate(['/wallet']))
-
-    return EMPTY
+    return of(this.sessionQuery.isLoggedIn()).pipe(
+      concatMap(isLoggedIn => isLoggedIn ? this.logout() : of(isLoggedIn)),
+      concatMap(() => this.ngZone.run(() => this.router.navigate(['/wallet'])))
+    )
   }
 }
 

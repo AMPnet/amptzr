@@ -48,7 +48,7 @@ export class WalletComponent {
   }
 
   logout(): void {
-    this.signerService.logout()
+    this.signerService.logout().subscribe()
   }
 
   showCurrentGasPrice(): Observable<any> {

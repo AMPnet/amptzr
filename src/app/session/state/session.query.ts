@@ -4,7 +4,7 @@ import {SessionState, SessionStore} from './session.store'
 import {map, tap} from 'rxjs/operators'
 import {ethers} from 'ethers'
 import {PreferenceQuery} from '../../preference/state/preference.query'
-import {Networks} from '../../shared/networks'
+import {EthersNetworks} from '../../shared/networks'
 
 @Injectable({providedIn: 'root'})
 export class SessionQuery extends Query<SessionState> {
@@ -13,7 +13,7 @@ export class SessionQuery extends Query<SessionState> {
     map(provider => {
       if (!provider) {
         const newProvider = ethers.getDefaultProvider(
-          Networks[this.preferenceQuery.getValue().chainID]
+          EthersNetworks[this.preferenceQuery.getValue().chainID]
         )
         this.store.update({provider: newProvider})
         return newProvider as ethers.providers.Provider
@@ -32,7 +32,7 @@ export class SessionQuery extends Query<SessionState> {
     super(store)
 
     preferenceQuery.select('chainID').pipe(
-      map(chainID => ethers.getDefaultProvider(Networks[chainID])),
+      map(chainID => ethers.getDefaultProvider(EthersNetworks[chainID])),
       tap(provider => store.update({provider}))
     ).subscribe()
   }
