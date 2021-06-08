@@ -1,15 +1,16 @@
 import {Injectable} from '@angular/core'
-import {EMPTY, from, Observable} from 'rxjs'
+import {from, Observable, of, throwError} from 'rxjs'
 import {concatMap, map, tap} from 'rxjs/operators'
 import {ethers} from 'ethers'
 import {Subsigner, SubsignerLoginOpts} from './metamask-subsigner.service'
-import {SecretType} from '@arkane-network/arkane-connect'
+import {ArkaneConnect, SecretType} from '@arkane-network/arkane-connect'
 import {PreferenceStore, WalletProvider} from '../../../preference/state/preference.store'
 
 @Injectable({
   providedIn: 'root'
 })
 export class VenlySubsignerService implements Subsigner {
+  arkaneConnect!: ArkaneConnect;
 
   constructor(private preferenceStore: PreferenceStore) {
   }
@@ -18,13 +19,19 @@ export class VenlySubsignerService implements Subsigner {
     return from(import(
       /* webpackChunkName: "@arkane-network/web3-arkane-provider" */
       '@arkane-network/web3-arkane-provider')).pipe(
-      concatMap(a => a.Arkane.createArkaneProviderEngine({
+      concatMap(lib => lib.Arkane.createArkaneProviderEngine({
         clientId: 'AMPnet',
-        skipAuthentication: false,
-        environment: 'staging',
-        secretType: SecretType.MATIC
+        skipAuthentication: true,
+        environment: 'qa',
+        secretType: SecretType.MATIC,
       })),
+      tap(() => this.arkaneConnect = (window as any).Arkane.arkaneConnect()),
       map(p => new ethers.providers.Web3Provider(p as any).getSigner()),
+      concatMap(signer => from(this.arkaneConnect.checkAuthenticated()).pipe(
+        concatMap(authRes => authRes.isAuthenticated ? of(authRes) :
+          opts.force ? from(this.arkaneConnect.flows.authenticate()) : throwError('NO_ADDRESS')),
+        concatMap(() => of(signer))
+      )),
       concatMap(signer => from(signer.getAddress()).pipe(
         tap(address => this.preferenceStore.update({
           address: address,
@@ -36,6 +43,8 @@ export class VenlySubsignerService implements Subsigner {
   }
 
   logout(): Observable<unknown> {
-    return EMPTY
+    return of(this.arkaneConnect).pipe(
+      tap(arkaneConnect => arkaneConnect.logout())
+    )
   }
 }
