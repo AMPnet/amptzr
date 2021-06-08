@@ -3,8 +3,8 @@ import {EMPTY, from, Observable} from 'rxjs'
 import {concatMap, map, tap} from 'rxjs/operators'
 import {ethers} from 'ethers'
 import {Subsigner, SubsignerLoginOpts} from './metamask-subsigner.service'
-import {SecretType} from '@arkane-network/arkane-connect';
-import {PreferenceStore, WalletProvider} from '../../../preference/state/preference.store';
+import {SecretType} from '@arkane-network/arkane-connect'
+import {PreferenceStore, WalletProvider} from '../../../preference/state/preference.store'
 
 @Injectable({
   providedIn: 'root'

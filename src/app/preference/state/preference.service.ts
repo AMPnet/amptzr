@@ -6,7 +6,7 @@ import {PreferenceQuery} from './preference.query'
 import {SignerService} from '../../shared/services/signer.service'
 import {MetamaskSubsignerService} from '../../shared/services/subsigners/metamask-subsigner.service'
 import {WalletConnectSubsignerService} from '../../shared/services/subsigners/walletconnect-subsigner.service'
-import {VenlySubsignerService} from '../../shared/services/subsigners/venly-subsigner.service';
+import {VenlySubsignerService} from '../../shared/services/subsigners/venly-subsigner.service'
 
 @Injectable({providedIn: 'root'})
 export class PreferenceService {

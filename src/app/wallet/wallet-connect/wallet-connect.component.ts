@@ -6,7 +6,7 @@ import {PreferenceQuery} from '../../preference/state/preference.query'
 import {PreferenceStore} from '../../preference/state/preference.store'
 import {MetamaskSubsignerService} from '../../shared/services/subsigners/metamask-subsigner.service'
 import {WalletConnectSubsignerService} from '../../shared/services/subsigners/walletconnect-subsigner.service'
-import {VenlySubsignerService} from '../../shared/services/subsigners/venly-subsigner.service';
+import {VenlySubsignerService} from '../../shared/services/subsigners/venly-subsigner.service'
 
 @Component({
   selector: 'app-wallet-connect',
