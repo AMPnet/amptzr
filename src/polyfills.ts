@@ -62,11 +62,11 @@ import {Buffer} from 'buffer'
 /***************************************************************************************************
  * APPLICATION IMPORTS
  */
-//
 (window as any).global = window
 global.Buffer = Buffer
 global.process = {
   env: {DEBUG: undefined},
   version: '',
-  nextTick: require('next-tick')
+  nextTick: require('next-tick'),
+  browser: require('process/browser')
 } as any

@@ -47,13 +47,23 @@ export class WalletConnectSubsignerService implements Subsigner {
       map((lib) => {
         this.walletConnectProvider = new lib.default({
           chainId: this.preferenceStore.getValue().chainID,
+          infuraId: "27e484dcd9e3efcfd25a83a78777cdf1",
           rpc: {
             [ChainID.MATIC_MAINNET]: MaticNetwork.rpcURLs[0],
             [ChainID.MUMBAI_TESTNET]: MumbaiNetwork.rpcURLs[0],
           },
         }) as WalletConnectProvider
 
-        this.walletConnectProvider.connector.on('disconnect', () => this.disconnect$.next())
+        this.walletConnectProvider.connector.on('disconnect', () => this.disconnect$.next());
+
+        [
+          'connect', 'disconnect', 'session_update', 'session_request',
+          'call_request', 'wc_sessionRequest', 'wc_sessionUpdate'
+        ].forEach(e => {
+          this.walletConnectProvider?.connector.on(e, (...args: any[]) => {
+            console.log(e, 'payload', args)
+          })
+        })
 
         return this.walletConnectProvider
       })

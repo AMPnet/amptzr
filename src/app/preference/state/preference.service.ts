@@ -6,6 +6,7 @@ import {PreferenceQuery} from './preference.query'
 import {SignerService} from '../../shared/services/signer.service'
 import {MetamaskSubsignerService} from '../../shared/services/subsigners/metamask-subsigner.service'
 import {WalletConnectSubsignerService} from '../../shared/services/subsigners/walletconnect-subsigner.service'
+import {VenlySubsignerService} from '../../shared/services/subsigners/venly-subsigner.service';
 
 @Injectable({providedIn: 'root'})
 export class PreferenceService {
@@ -13,6 +14,7 @@ export class PreferenceService {
               private preferenceQuery: PreferenceQuery,
               private metamaskSubsignerService: MetamaskSubsignerService,
               private walletConnectSubsignerService: WalletConnectSubsignerService,
+              private venlySubsignerService: VenlySubsignerService,
               private signer: SignerService) {
   }
 
@@ -24,6 +26,8 @@ export class PreferenceService {
           return this.signer.login(this.metamaskSubsignerService, {force: false})
         } else if (session.address !== '' && session.providerType === WalletProvider.WALLET_CONNECT) {
           return this.signer.login(this.walletConnectSubsignerService, {force: false})
+        } else if (session.address !== '' && session.providerType === WalletProvider.ARKANE) {
+          return this.signer.login(this.venlySubsignerService, {force: false})
         } else {
           return EMPTY
         }

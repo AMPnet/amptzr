@@ -94,17 +94,18 @@ export class SignerService {
   }
 
   registerListeners(): void {
-    (this.sessionQuery.signer?.provider as any)?.provider.removeAllListeners(['accountsChanged']);
-    (this.sessionQuery.signer?.provider as any)?.provider.on('accountsChanged', (accounts: string[]) => {
-      this.accountsChangedSub.next(accounts)
-    });
-
-    (this.sessionQuery.signer?.provider as any)?.provider.removeAllListeners(['chainChanged']);
-    (this.sessionQuery.signer?.provider as any)?.provider.on('chainChanged', (chainID: string) => {
-      this.chainChangedSub.next(chainID)
-    });
-
-    (this.sessionQuery.signer?.provider as any)?.provider.removeAllListeners(['disconnect']);
+    // console.log((this.sessionQuery.signer?.provider as any)?.provider);
+    // (this.sessionQuery.signer?.provider as any)?.provider?.removeAllListeners(['accountsChanged']);
+    // (this.sessionQuery.signer?.provider as any)?.provider.on('accountsChanged', (accounts: string[]) => {
+    //   this.accountsChangedSub.next(accounts)
+    // });
+    //
+    // (this.sessionQuery.signer?.provider as any)?.provider?.removeAllListeners(['chainChanged']);
+    // (this.sessionQuery.signer?.provider as any)?.provider.on('chainChanged', (chainID: string) => {
+    //   this.chainChangedSub.next(chainID)
+    // });
+    //
+    // (this.sessionQuery.signer?.provider as any)?.provider?.removeAllListeners(['disconnect']);
     (this.sessionQuery.signer?.provider as any)?.provider.on('disconnect', () => {
       this.disconnectedSub.next()
     })
