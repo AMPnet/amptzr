@@ -43,4 +43,6 @@ export class WalletConnectComponent {
     this.currentNetwork = EthersNetworks[chainID]
     this.preferenceStore.update({chainID})
   }
+
+  isMetamaskAvailable = () => this.metamaskSubsignerService.isAvailable()
 }

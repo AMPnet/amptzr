@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core'
 import {Subsigner, SubsignerLoginOpts} from './metamask-subsigner.service'
 import {EMPTY, from, Observable, of, race, Subject} from 'rxjs'
-import {ethers} from 'ethers'
+import {providers} from 'ethers'
 import {ChainID, MaticNetwork, MumbaiNetwork} from '../../networks'
 import {catchError, concatMap, map, take, tap} from 'rxjs/operators'
 import {PreferenceStore, WalletProvider} from '../../../preference/state/preference.store'
@@ -16,11 +16,11 @@ export class WalletConnectSubsignerService implements Subsigner {
   constructor(private preferenceStore: PreferenceStore) {
   }
 
-  login(opts: SubsignerLoginOpts): Observable<ethers.providers.JsonRpcSigner> {
+  login(opts: SubsignerLoginOpts): Observable<providers.JsonRpcSigner> {
     return from(this.freshWalletConnectProvider).pipe(
       concatMap(p => p.connected && p.accounts.length > 0 ?
         of(p) : this.connect(p)),
-      map(p => new ethers.providers.Web3Provider(p).getSigner()),
+      map(p => new providers.Web3Provider(p).getSigner()),
     )
   }
 
