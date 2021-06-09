@@ -3,7 +3,7 @@ import {from, Observable, of, throwError} from 'rxjs'
 import {providers} from 'ethers'
 import {catchError, concatMap, map, tap} from 'rxjs/operators'
 import {MetamaskNetworks} from '../../networks'
-import {PreferenceStore, WalletProvider} from '../../../preference/state/preference.store'
+import {PreferenceStore, AuthProvider} from '../../../preference/state/preference.store'
 
 @Injectable({
   providedIn: 'root'
@@ -16,7 +16,7 @@ export class MetamaskSubsignerService implements Subsigner {
     return this.getSigner().pipe(
       concatMap(signer => this.checkChainID(signer, opts)),
       concatMap(signer => this.loginGetAddress(signer, opts).pipe(
-        tap(address => this.preferenceStore.update({address, providerType: WalletProvider.METAMASK})),
+        tap(address => this.preferenceStore.update({address, authProvider: AuthProvider.METAMASK})),
         map(() => signer)
       ))
     )

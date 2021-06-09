@@ -9,6 +9,7 @@ import {EthersNetworks} from '../../shared/networks'
 @Injectable({providedIn: 'root'})
 export class SessionQuery extends Query<SessionState> {
   address$ = this.select('address');
+  authProvider$ = this.select('authProvider');
   provider$ = this.select('provider').pipe(
     map(provider => {
       if (!provider) {

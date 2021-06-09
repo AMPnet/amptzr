@@ -36,6 +36,7 @@ export class SignerService {
   private setSigner(signer: providers.JsonRpcSigner): void {
     this.sessionStore.update({
       address: this.preferenceStore.getValue().address,
+      authProvider: this.preferenceStore.getValue().authProvider,
       signer
     })
     this.registerListeners()
@@ -68,7 +69,7 @@ export class SignerService {
   logout(): Observable<unknown> {
     return this.subsigner.logout().pipe(
       finalize(() => {
-        this.preferenceStore.update({address: '', providerType: ''})
+        this.preferenceStore.update({address: '', authProvider: ''})
         this.sessionStore.update({address: '', signer: undefined})
       })
     )

@@ -4,7 +4,7 @@ import {EMPTY, from, Observable, of, race, Subject} from 'rxjs'
 import {providers} from 'ethers'
 import {ChainID, MaticNetwork, MumbaiNetwork} from '../../networks'
 import {catchError, concatMap, map, take, tap} from 'rxjs/operators'
-import {PreferenceStore, WalletProvider} from '../../../preference/state/preference.store'
+import {PreferenceStore, AuthProvider} from '../../../preference/state/preference.store'
 
 @Injectable({
   providedIn: 'root'
@@ -33,7 +33,7 @@ export class WalletConnectSubsignerService implements Subsigner {
       catchError(() => EMPTY),
       tap(addresses => this.preferenceStore.update({
         address: addresses[0],
-        providerType: WalletProvider.WALLET_CONNECT
+        authProvider: AuthProvider.WALLET_CONNECT
       })),
       map(() => p)
     )

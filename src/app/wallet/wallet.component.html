@@ -8,7 +8,18 @@
 
   <ng-container *ngIf="isLoggedIn$ | async">
     <div>
+      Connected with: <span *ngIf="(authProvider$ | async) as authProvider">{{ authProvider }}</span>
+    </div>
+    <div>
       Address: <span *ngIf="(address$ | async) as address">{{ address }}</span>
+    </div>
+
+    <div *ngIf="(authProvider$ | async) === authProvider.ARKANE">
+      <button app-action-button
+              class="bg-blue-500 disabled:bg-gray-400 text-white p-2 rounded-md mt-2"
+              [onClick]="manageWallets.bind(this)"
+              text="Manage wallets">
+      </button>
     </div>
   </ng-container>
 

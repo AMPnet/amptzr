@@ -3,10 +3,9 @@ import {from, Observable, of, throwError} from 'rxjs'
 import {concatMap, map, tap} from 'rxjs/operators'
 import {providers} from 'ethers'
 import {Subsigner, SubsignerLoginOpts} from './metamask-subsigner.service'
-import {ArkaneConnect} from '@arkane-network/arkane-connect/dist/src/connect/connect'
-import {PreferenceStore, WalletProvider} from '../../../preference/state/preference.store'
+import {ArkaneConnect, AuthenticationResult} from '@arkane-network/arkane-connect/dist/src/connect/connect'
+import {AuthProvider, PreferenceStore} from '../../../preference/state/preference.store'
 import {VenlyNetworks} from '../../networks'
-import {AuthenticationResult} from '@arkane-network/arkane-connect/dist/src/connect/connect'
 
 @Injectable({
   providedIn: 'root'
@@ -23,7 +22,7 @@ export class VenlySubsignerService implements Subsigner {
       '@arkane-network/web3-arkane-provider')).pipe(
       concatMap(lib => lib.Arkane.createArkaneProviderEngine({
         clientId: 'AMPnet',
-        skipAuthentication: !opts.force,
+        skipAuthentication: true,
         environment: 'staging',
         secretType: VenlyNetworks[this.preferenceStore.getValue().chainID],
       })),
@@ -39,7 +38,7 @@ export class VenlySubsignerService implements Subsigner {
       concatMap(signer => from(signer.getAddress()).pipe(
         tap(address => this.preferenceStore.update({
           address: address,
-          providerType: WalletProvider.ARKANE
+          authProvider: AuthProvider.ARKANE
         })),
         map(() => signer)
       ))
@@ -49,6 +48,12 @@ export class VenlySubsignerService implements Subsigner {
   logout(): Observable<unknown> {
     return of(this.arkaneConnect).pipe(
       tap(arkaneConnect => arkaneConnect.logout())
+    )
+  }
+
+  manageWallets() {
+    return of(this.arkaneConnect).pipe(
+      concatMap(arkaneConnect => arkaneConnect.manageWallets(VenlyNetworks[this.preferenceStore.getValue().chainID])),
     )
   }
 }

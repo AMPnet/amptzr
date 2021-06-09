@@ -5,6 +5,11 @@ import {utils} from 'ethers'
 import {catchError, concatMap, map, retry, startWith, switchMap, take, tap, timeout} from 'rxjs/operators'
 import {combineLatest, EMPTY, from, interval, Observable} from 'rxjs'
 import {DialogService} from '../shared/services/dialog.service'
+import {VenlySubsignerService} from '../shared/services/subsigners/venly-subsigner.service'
+import {AuthProvider} from '../preference/state/preference.store'
+import {log} from 'util'
+import {PreferenceQuery} from '../preference/state/preference.query'
+import {MetamaskSubsignerService} from '../shared/services/subsigners/metamask-subsigner.service'
 
 @Component({
   selector: 'app-wallet',
@@ -13,7 +18,8 @@ import {DialogService} from '../shared/services/dialog.service'
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class WalletComponent {
-  isLoggedIn$ = this.sessionQuery.isLoggedIn$;
+  authProvider = AuthProvider
+  isLoggedIn$ = this.sessionQuery.isLoggedIn$
 
   gas$ = WalletComponent.withInterval(this.sessionQuery.provider$, 5000).pipe(
     concatMap(provider => from(provider.getGasPrice()).pipe(
@@ -34,8 +40,11 @@ export class WalletComponent {
     tap(() => ɵmarkDirty(this))
   );
 
+  authProvider$ = this.sessionQuery.authProvider$
+
   constructor(private sessionQuery: SessionQuery,
               private signerService: SignerService,
+              public venly: VenlySubsignerService,
               private dialogService: DialogService) {
   }
 
@@ -60,6 +69,13 @@ export class WalletComponent {
       map(gasRaw => utils.formatEther(gasRaw)),
       concatMap(gasPrice =>
         this.dialogService.info(`Current gas price is ${gasPrice}`, false))
+    )
+  }
+
+  manageWallets() {
+    return this.venly.manageWallets().pipe(
+      tap(res => console.log(res)),
+      concatMap(res => res ? this.signerService.login(this.venly) : EMPTY)
     )
   }
 }

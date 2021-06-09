@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core'
 import {catchError, concatMap, take} from 'rxjs/operators'
-import {PreferenceStore, WalletProvider} from './preference.store'
+import {AuthProvider, PreferenceStore} from './preference.store'
 import {EMPTY, Observable} from 'rxjs'
 import {PreferenceQuery} from './preference.query'
 import {SignerService} from '../../shared/services/signer.service'
@@ -22,11 +22,11 @@ export class PreferenceService {
     return this.preferenceQuery.select().pipe(
       take(1),
       concatMap(session => {
-        if (session.address !== '' && session.providerType === WalletProvider.METAMASK) {
+        if (session.address !== '' && session.authProvider === AuthProvider.METAMASK) {
           return this.signer.login(this.metamaskSubsignerService, {force: false})
-        } else if (session.address !== '' && session.providerType === WalletProvider.WALLET_CONNECT) {
+        } else if (session.address !== '' && session.authProvider === AuthProvider.WALLET_CONNECT) {
           return this.signer.login(this.walletConnectSubsignerService, {force: false})
-        } else if (session.address !== '' && session.providerType === WalletProvider.ARKANE) {
+        } else if (session.address !== '' && session.authProvider === AuthProvider.ARKANE) {
           return this.signer.login(this.venlySubsignerService, {force: false})
         } else {
           return EMPTY
