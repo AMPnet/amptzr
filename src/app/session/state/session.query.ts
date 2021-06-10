@@ -2,21 +2,22 @@ import {Injectable} from '@angular/core'
 import {Query} from '@datorama/akita'
 import {SessionState, SessionStore} from './session.store'
 import {map, tap} from 'rxjs/operators'
-import {ethers} from 'ethers'
+import {getDefaultProvider, providers} from 'ethers'
 import {PreferenceQuery} from '../../preference/state/preference.query'
 import {EthersNetworks} from '../../shared/networks'
 
 @Injectable({providedIn: 'root'})
 export class SessionQuery extends Query<SessionState> {
   address$ = this.select('address');
+  authProvider$ = this.select('authProvider');
   provider$ = this.select('provider').pipe(
     map(provider => {
       if (!provider) {
-        const newProvider = ethers.getDefaultProvider(
+        const newProvider = getDefaultProvider(
           EthersNetworks[this.preferenceQuery.getValue().chainID]
         )
         this.store.update({provider: newProvider})
-        return newProvider as ethers.providers.Provider
+        return newProvider as providers.Provider
       }
 
       return provider
@@ -32,7 +33,7 @@ export class SessionQuery extends Query<SessionState> {
     super(store)
 
     preferenceQuery.select('chainID').pipe(
-      map(chainID => ethers.getDefaultProvider(EthersNetworks[chainID])),
+      map(chainID => getDefaultProvider(EthersNetworks[chainID])),
       tap(provider => store.update({provider}))
     ).subscribe()
   }
@@ -42,7 +43,7 @@ export class SessionQuery extends Query<SessionState> {
       !!state.signer
   }
 
-  get signer(): ethers.providers.JsonRpcSigner | undefined {
+  get signer(): providers.JsonRpcSigner | undefined {
     return this.store._value().signer
   }
 

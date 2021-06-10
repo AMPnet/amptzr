@@ -4,14 +4,14 @@ import {ChainID, MumbaiNetwork} from '../../shared/networks'
 
 export interface PreferenceState {
   address: string;
-  providerType: WalletProvider | '';
+  authProvider: AuthProvider | '';
   chainID: ChainID;
 }
 
 export function createInitialState(): PreferenceState {
   return {
     address: '',
-    providerType: '',
+    authProvider: '',
     chainID: MumbaiNetwork.chainID,
   }
 }
@@ -24,8 +24,8 @@ export class PreferenceStore extends Store<PreferenceState> {
   }
 }
 
-export enum WalletProvider {
+export enum AuthProvider {
   METAMASK = 'METAMASK',
   WALLET_CONNECT = 'WALLET_CONNECT',
-  ARKANE = 'ARKANE',
+  VENLY = 'VENLY',
 }

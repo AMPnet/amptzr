@@ -1,10 +1,12 @@
 import {ChangeDetectionStrategy, Component, ɵmarkDirty} from '@angular/core'
 import {SessionQuery} from '../session/state/session.query'
 import {SignerService} from '../shared/services/signer.service'
-import {ethers} from 'ethers'
+import {utils} from 'ethers'
 import {catchError, concatMap, map, retry, startWith, switchMap, take, tap, timeout} from 'rxjs/operators'
 import {combineLatest, EMPTY, from, interval, Observable} from 'rxjs'
 import {DialogService} from '../shared/services/dialog.service'
+import {VenlySubsignerService} from '../shared/services/subsigners/venly-subsigner.service'
+import {AuthProvider} from '../preference/state/preference.store'
 
 @Component({
   selector: 'app-wallet',
@@ -13,14 +15,15 @@ import {DialogService} from '../shared/services/dialog.service'
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class WalletComponent {
-  isLoggedIn$ = this.sessionQuery.isLoggedIn$;
+  authProvider = AuthProvider
+  isLoggedIn$ = this.sessionQuery.isLoggedIn$
 
   gas$ = WalletComponent.withInterval(this.sessionQuery.provider$, 5000).pipe(
     concatMap(provider => from(provider.getGasPrice()).pipe(
       timeout(3000),
       catchError(() => retry())
     )),
-    map(gasRaw => ethers.utils.formatEther(gasRaw)),
+    map(gasRaw => utils.formatEther(gasRaw)),
   );
 
   blockNumber$ = WalletComponent.withInterval(this.sessionQuery.provider$, 2000).pipe(
@@ -34,8 +37,11 @@ export class WalletComponent {
     tap(() => ɵmarkDirty(this))
   );
 
+  authProvider$ = this.sessionQuery.authProvider$
+
   constructor(private sessionQuery: SessionQuery,
               private signerService: SignerService,
+              private venly: VenlySubsignerService,
               private dialogService: DialogService) {
   }
 
@@ -57,9 +63,15 @@ export class WalletComponent {
       concatMap(provider => from(provider.getGasPrice()).pipe(
         timeout(3000),
       )),
-      map(gasRaw => ethers.utils.formatEther(gasRaw)),
+      map(gasRaw => utils.formatEther(gasRaw)),
       concatMap(gasPrice =>
         this.dialogService.info(`Current gas price is ${gasPrice}`, false))
+    )
+  }
+
+  manageWallets() {
+    return this.venly.manageWallets().pipe(
+      concatMap(res => res ? this.signerService.login(this.venly) : EMPTY)
     )
   }
 }

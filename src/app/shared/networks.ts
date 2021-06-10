@@ -1,4 +1,5 @@
-import {ethers} from 'ethers'
+import {providers, utils} from 'ethers'
+import {SecretType} from '@arkane-network/arkane-connect/dist/src/models/SecretType'
 
 export enum ChainID {
   // ETHEREUM_MAINNET = 1,
@@ -10,7 +11,8 @@ export enum ChainID {
 export interface Network {
   chainID: ChainID,
   name: string,
-  shortName: string,nativeCurrency: {
+  shortName: string,
+  nativeCurrency: {
     name: string,
     symbol: string;
   },
@@ -42,14 +44,14 @@ export const MumbaiNetwork: Network = {
   explorerURLs: ['https://explorer-mumbai.maticvigil.com/']
 }
 
-const getEthersNetwork = (network: Network): ethers.providers.Network => ({
+const getEthersNetwork = (network: Network): providers.Network => ({
   name: network.shortName,
   chainId: network.chainID,
   _defaultProvider: (providers: any) =>
     new providers.JsonRpcProvider(network.rpcURLs[0])
 })
 
-export const EthersNetworks: { [key in ChainID]: ethers.providers.Network } = {
+export const EthersNetworks: { [key in ChainID]: providers.Network } = {
   [ChainID.MATIC_MAINNET]: getEthersNetwork(MaticNetwork),
   [ChainID.MUMBAI_TESTNET]: getEthersNetwork(MumbaiNetwork),
 }
@@ -68,7 +70,7 @@ export interface AddEthereumChainParameter {
 }
 
 const getMetamaskNetwork = (network: Network): AddEthereumChainParameter => ({
-  chainId: ethers.utils.hexValue(network.chainID),
+  chainId: utils.hexValue(network.chainID),
   chainName: network.name,
   nativeCurrency: {
     name: network.nativeCurrency.name,
@@ -84,4 +86,8 @@ export const MetamaskNetworks: { [key in ChainID]: AddEthereumChainParameter } =
   [ChainID.MUMBAI_TESTNET]: getMetamaskNetwork(MumbaiNetwork),
 }
 
+export const VenlyNetworks: { [key in ChainID]: SecretType } = {
+  [ChainID.MATIC_MAINNET]: SecretType.MATIC,
+  [ChainID.MUMBAI_TESTNET]: SecretType.MATIC,
+}
 

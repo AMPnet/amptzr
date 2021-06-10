@@ -6,6 +6,7 @@ import {PreferenceQuery} from '../../preference/state/preference.query'
 import {PreferenceStore} from '../../preference/state/preference.store'
 import {MetamaskSubsignerService} from '../../shared/services/subsigners/metamask-subsigner.service'
 import {WalletConnectSubsignerService} from '../../shared/services/subsigners/walletconnect-subsigner.service'
+import {VenlySubsignerService} from '../../shared/services/subsigners/venly-subsigner.service'
 
 @Component({
   selector: 'app-wallet-connect',
@@ -21,6 +22,7 @@ export class WalletConnectComponent {
               private preferenceStore: PreferenceStore,
               private metamaskSubsignerService: MetamaskSubsignerService,
               private walletConnectSubsignerService: WalletConnectSubsignerService,
+              private venlySubsignerService: VenlySubsignerService,
               private preferenceQuery: PreferenceQuery) {
   }
 
@@ -32,9 +34,15 @@ export class WalletConnectComponent {
     return this.signer.login(this.walletConnectSubsignerService)
   }
 
+  connectVenly(): Observable<unknown> {
+    return this.signer.login(this.venlySubsignerService)
+  }
+
   networkChanged(e: Event): void {
     const chainID = Number((e.target as HTMLSelectElement).value) as ChainID
     this.currentNetwork = EthersNetworks[chainID]
     this.preferenceStore.update({chainID})
   }
+
+  isMetamaskAvailable = () => this.metamaskSubsignerService.isAvailable()
 }

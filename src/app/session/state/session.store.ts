@@ -1,11 +1,13 @@
 import {Injectable} from '@angular/core'
 import {Store, StoreConfig} from '@datorama/akita'
-import {ethers} from 'ethers'
+import {providers} from 'ethers'
+import {AuthProvider} from '../../preference/state/preference.store'
 
 export interface SessionState {
   address?: string;
-  signer?: ethers.providers.JsonRpcSigner;
-  provider?: ethers.providers.Provider;
+  authProvider?: AuthProvider | '';
+  signer?: providers.JsonRpcSigner;
+  provider?: providers.Provider;
 }
 
 export function createInitialState(): SessionState {

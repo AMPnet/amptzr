@@ -3,7 +3,7 @@ import {SessionQuery} from '../session/state/session.query'
 import {SignerService} from '../shared/services/signer.service'
 import {Observable} from 'rxjs'
 import {tap} from 'rxjs/operators'
-import {ethers} from 'ethers'
+import {utils} from 'ethers'
 import {DialogService} from '../shared/services/dialog.service'
 
 @Component({
@@ -24,7 +24,7 @@ export class OffersComponent {
     const message = 'YOLO'
     return this.signerService.signMessage(message).pipe(
       tap(signed => this.dialogService.info(
-        `The address of the author that signed the message: ${ethers.utils.verifyMessage(message, signed)}`, false
+        `The address of the author that signed the message: ${utils.verifyMessage(message, signed)}`, false
       ).subscribe()),
     )
   }
