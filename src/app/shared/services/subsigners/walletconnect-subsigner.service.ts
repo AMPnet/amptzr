@@ -4,7 +4,7 @@ import {EMPTY, from, Observable, of, race, Subject} from 'rxjs'
 import {providers} from 'ethers'
 import {ChainID, MaticNetwork, MumbaiNetwork} from '../../networks'
 import {catchError, concatMap, map, take, tap} from 'rxjs/operators'
-import {PreferenceStore, AuthProvider} from '../../../preference/state/preference.store'
+import {AuthProvider, PreferenceStore} from '../../../preference/state/preference.store'
 
 @Injectable({
   providedIn: 'root'
@@ -47,7 +47,6 @@ export class WalletConnectSubsignerService implements Subsigner {
       map((lib) => {
         this.walletConnectProvider = new lib.default({
           chainId: this.preferenceStore.getValue().chainID,
-          infuraId: "27e484dcd9e3efcfd25a83a78777cdf1",
           rpc: {
             [ChainID.MATIC_MAINNET]: MaticNetwork.rpcURLs[0],
             [ChainID.MUMBAI_TESTNET]: MumbaiNetwork.rpcURLs[0],

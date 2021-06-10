@@ -38,7 +38,7 @@ export class VenlySubsignerService implements Subsigner {
       concatMap(signer => from(signer.getAddress()).pipe(
         tap(address => this.preferenceStore.update({
           address: address,
-          authProvider: AuthProvider.ARKANE
+          authProvider: AuthProvider.VENLY
         })),
         map(() => signer)
       ))

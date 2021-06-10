@@ -27,5 +27,5 @@ export class PreferenceStore extends Store<PreferenceState> {
 export enum AuthProvider {
   METAMASK = 'METAMASK',
   WALLET_CONNECT = 'WALLET_CONNECT',
-  ARKANE = 'ARKANE',
+  VENLY = 'VENLY',
 }

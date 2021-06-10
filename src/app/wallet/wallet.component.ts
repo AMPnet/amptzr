@@ -7,9 +7,6 @@ import {combineLatest, EMPTY, from, interval, Observable} from 'rxjs'
 import {DialogService} from '../shared/services/dialog.service'
 import {VenlySubsignerService} from '../shared/services/subsigners/venly-subsigner.service'
 import {AuthProvider} from '../preference/state/preference.store'
-import {log} from 'util'
-import {PreferenceQuery} from '../preference/state/preference.query'
-import {MetamaskSubsignerService} from '../shared/services/subsigners/metamask-subsigner.service'
 
 @Component({
   selector: 'app-wallet',
@@ -44,7 +41,7 @@ export class WalletComponent {
 
   constructor(private sessionQuery: SessionQuery,
               private signerService: SignerService,
-              public venly: VenlySubsignerService,
+              private venly: VenlySubsignerService,
               private dialogService: DialogService) {
   }
 
@@ -74,7 +71,6 @@ export class WalletComponent {
 
   manageWallets() {
     return this.venly.manageWallets().pipe(
-      tap(res => console.log(res)),
       concatMap(res => res ? this.signerService.login(this.venly) : EMPTY)
     )
   }

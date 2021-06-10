@@ -22,14 +22,18 @@ export class PreferenceService {
     return this.preferenceQuery.select().pipe(
       take(1),
       concatMap(session => {
-        if (session.address !== '' && session.authProvider === AuthProvider.METAMASK) {
-          return this.signer.login(this.metamaskSubsignerService, {force: false})
-        } else if (session.address !== '' && session.authProvider === AuthProvider.WALLET_CONNECT) {
-          return this.signer.login(this.walletConnectSubsignerService, {force: false})
-        } else if (session.address !== '' && session.authProvider === AuthProvider.ARKANE) {
-          return this.signer.login(this.venlySubsignerService, {force: false})
-        } else {
+        if (session.address === '') {
           return EMPTY
+        }
+        switch (session.authProvider) {
+          case AuthProvider.METAMASK:
+            return this.signer.login(this.metamaskSubsignerService, {force: false})
+          case AuthProvider.WALLET_CONNECT:
+            return this.signer.login(this.walletConnectSubsignerService, {force: false})
+          case AuthProvider.VENLY:
+            return this.signer.login(this.venlySubsignerService, {force: false})
+          default:
+            return EMPTY
         }
       }),
       catchError(() => {

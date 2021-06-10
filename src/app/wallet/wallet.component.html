@@ -14,7 +14,7 @@
       Address: <span *ngIf="(address$ | async) as address">{{ address }}</span>
     </div>
 
-    <div *ngIf="(authProvider$ | async) === authProvider.ARKANE">
+    <div *ngIf="(authProvider$ | async) === authProvider.VENLY">
       <button app-action-button
               class="bg-blue-500 disabled:bg-gray-400 text-white p-2 rounded-md mt-2"
               [onClick]="manageWallets.bind(this)"

@@ -3,7 +3,7 @@ import {from, Observable, of, throwError} from 'rxjs'
 import {providers} from 'ethers'
 import {catchError, concatMap, map, tap} from 'rxjs/operators'
 import {MetamaskNetworks} from '../../networks'
-import {PreferenceStore, AuthProvider} from '../../../preference/state/preference.store'
+import {AuthProvider, PreferenceStore} from '../../../preference/state/preference.store'
 
 @Injectable({
   providedIn: 'root'
