@@ -25,6 +25,7 @@ import {SidebarComponent} from './app-layout/sidebar/sidebar.component'
 import {FooterComponent} from './app-layout/footer/footer.component'
 import {A11yModule} from '@angular/cdk/a11y'
 import {SpinnerComponent} from './shared/components/spinner/spinner.component'
+import { ServiceWorkerModule } from '@angular/service-worker'
 
 @NgModule({
   declarations: [
@@ -52,6 +53,12 @@ import {SpinnerComponent} from './shared/components/spinner/spinner.component'
     BrowserAnimationsModule,
     MatDialogModule,
     A11yModule,
+    ServiceWorkerModule.register('ngsw-worker.js', {
+      enabled: environment.production,
+      // Register the ServiceWorker as soon as the app is stable
+      // or after 30 seconds (whichever comes first).
+      registrationStrategy: 'registerWhenStable:30000'
+    }),
   ],
   providers: [
     PreferenceService,
