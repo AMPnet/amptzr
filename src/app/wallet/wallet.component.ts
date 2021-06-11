@@ -71,7 +71,7 @@ export class WalletComponent {
 
   manageWallets() {
     return this.venly.manageWallets().pipe(
-      concatMap(res => res ? this.signerService.login(this.venly) : EMPTY)
+      concatMap(res => res ? this.signerService.login(this.venly, {force: false}) : EMPTY)
     )
   }
 }

@@ -11,12 +11,20 @@ import {VenlyNetworks} from '../../networks'
   providedIn: 'root'
 })
 export class VenlySubsignerService implements Subsigner {
-  arkaneConnect!: ArkaneConnect;
+  subprovider!: ArkaneSubprovider;
 
   constructor(private preferenceStore: PreferenceStore) {
   }
 
   login(opts: SubsignerLoginOpts): Observable<providers.JsonRpcSigner> {
+    return this.registerArkane().pipe(
+      map(p => new providers.Web3Provider(p as any).getSigner()),
+      concatMap(signer => this.checkAuthenticated(signer, opts)),
+      concatMap(signer => this.setAddress(signer))
+    )
+  }
+
+  private registerArkane() {
     return from(import(
       /* webpackChunkName: "@arkane-network/web3-arkane-provider" */
       '@arkane-network/web3-arkane-provider')).pipe(
@@ -26,34 +34,48 @@ export class VenlySubsignerService implements Subsigner {
         environment: 'staging',
         secretType: VenlyNetworks[this.preferenceStore.getValue().chainID],
       })),
-      tap(() => this.arkaneConnect = (window as any).Arkane.arkaneConnect()),
-      map(p => new providers.Web3Provider(p as any).getSigner()),
-      // TODO: when issue with checkAuthenticated() is fixed in the next release, change to:
-      // from(this.arkaneConnect.checkAuthenticated())
-      concatMap(signer => from((window as any).Arkane.checkAuthenticated() as Observable<AuthenticationResult>).pipe(
-        concatMap(authRes => authRes.isAuthenticated ? of(authRes) :
-          opts.force ? from(this.arkaneConnect.flows.authenticate()) : throwError('NO_ADDRESS')),
-        concatMap(() => of(signer))
-      )),
-      concatMap(signer => from(signer.getAddress()).pipe(
-        tap(address => this.preferenceStore.update({
-          address: address,
-          authProvider: AuthProvider.VENLY
-        })),
-        map(() => signer)
-      ))
+      tap(() => this.subprovider = (window as any).Arkane),
+    )
+  }
+
+  private checkAuthenticated(signer: providers.JsonRpcSigner,
+                             opts: SubsignerLoginOpts): Observable<providers.JsonRpcSigner> {
+    return of(opts.force).pipe(
+      concatMap(force => force ?
+        from(this.subprovider.authenticate()) :
+        from(this.subprovider.checkAuthenticated())),
+      concatMap(authRes => authRes.isAuthenticated ? of(authRes) : throwError('NO_ADDRESS')),
+      concatMap(() => of(signer))
+    )
+  }
+
+  private setAddress(signer: providers.JsonRpcSigner) {
+    return from(signer.getAddress()).pipe(
+      tap(address => this.preferenceStore.update({
+        address: address,
+        authProvider: AuthProvider.VENLY
+      })),
+      map(() => signer)
     )
   }
 
   logout(): Observable<unknown> {
-    return of(this.arkaneConnect).pipe(
+    return of(this.subprovider.arkaneConnect()).pipe(
       tap(arkaneConnect => arkaneConnect.logout())
     )
   }
 
   manageWallets() {
-    return of(this.arkaneConnect).pipe(
+    return of(this.subprovider.arkaneConnect()).pipe(
       concatMap(arkaneConnect => arkaneConnect.manageWallets(VenlyNetworks[this.preferenceStore.getValue().chainID])),
     )
   }
+}
+
+interface ArkaneSubprovider {
+  arkaneConnect(): ArkaneConnect
+
+  checkAuthenticated(): Promise<AuthenticationResult>
+
+  authenticate(): Promise<AuthenticationResult>
 }
