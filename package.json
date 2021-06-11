@@ -13,7 +13,8 @@
     "lint:fix": "ng lint --fix",
     "source-map-explorer": "source-map-explorer dist/amptzr/**/*.js",
     "deploy-staging-ghpages": "NODE_ENV=production ng run amptzr:deploy-staging-ghpages",
-    "e2e": "ng e2e"
+    "e2e": "ng e2e",
+    "prepare": "is-ci || husky install"
   },
   "private": false,
   "dependencies": {
@@ -61,6 +62,8 @@
     "crypto-browserify": "^3.12.0",
     "eslint": "^7.26.0",
     "https-browserify": "^1.0.0",
+    "husky": "^6.0.0",
+    "is-ci": "^3.0.0",
     "jasmine-core": "~3.6.0",
     "jasmine-spec-reporter": "~5.0.0",
     "karma": "~6.3.2",
