@@ -57,6 +57,8 @@ npm run lint:fix
 npm run test
 ```
 
+There are precommit rules set by [husky](https://github.com/typicode/husky). For more information, check the [docs](https://typicode.github.io/husky/#/).
+
 ## Learning Resources
 
 - RxJS (Reactive Programming)
