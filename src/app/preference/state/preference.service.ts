@@ -21,11 +21,12 @@ export class PreferenceService {
   initSigner(): Observable<unknown> {
     return this.preferenceQuery.select().pipe(
       take(1),
-      concatMap(session => {
-        if (session.address === '') {
+      concatMap(pref => {
+        console.log('TESTGHPAGES session pref', pref)
+        if (pref.address === '') {
           return EMPTY
         }
-        switch (session.authProvider) {
+        switch (pref.authProvider) {
           case AuthProvider.METAMASK:
             return this.signer.login(this.metamaskSubsignerService, {force: false})
           case AuthProvider.WALLET_CONNECT:
@@ -36,7 +37,8 @@ export class PreferenceService {
             return EMPTY
         }
       }),
-      catchError(() => {
+      catchError((err) => {
+        console.log('TESTGHPAGES error on sign in', err)
         return this.signer.logout().pipe(concatMap(() => EMPTY))
       })
     )
