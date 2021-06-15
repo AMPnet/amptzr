@@ -29,20 +29,18 @@
           text="Show gas price">
   </button>
 
-  <div>
-    Gas: <span *ngIf="(gas$ | async) as gas; else inlineSpinner">{{ gas }}</span>
+  <div class="mt-1">
+    Gas:
+    <app-inline-async [observable$]="gas$"></app-inline-async>
   </div>
 
-  <div>
-    Block number: <span *ngIf="(blockNumber$ | async) as blockNumber; else inlineSpinner">{{ blockNumber }}</span>
+  <div class="mt-1">
+    Block number:
+    <app-inline-async [observable$]="blockNumber$"></app-inline-async>
   </div>
 
-  <button class="bg-blue-500 text-white p-2 rounded-md"
+  <button class="mt-1 p-2 bg-blue-500 text-white rounded-md"
           *ngIf="isLoggedIn$ | async" (click)="logout()">
     Logout
   </button>
 </div>
-
-<ng-template #inlineSpinner>
-  <app-spinner type="inline-xs"></app-spinner>
-</ng-template>

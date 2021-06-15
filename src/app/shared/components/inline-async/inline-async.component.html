@@ -1,0 +1,11 @@
+<div class="inline" *ngIf="(observable$ | async) as observable">
+  <ng-container *ngIf="observable.loading">
+    <app-spinner></app-spinner>
+  </ng-container>
+  <ng-container *ngIf="observable.value">
+    {{ observable.value }}
+  </ng-container>
+  <ng-container *ngIf="observable.error">
+    ? <span hidden>{{observable.error}}</span>
+  </ng-container>
+</div>

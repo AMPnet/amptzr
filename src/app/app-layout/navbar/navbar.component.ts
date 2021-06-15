@@ -1,10 +1,10 @@
 import {ChangeDetectionStrategy, Component, ɵmarkDirty} from '@angular/core'
-import {concatMap, map, tap} from 'rxjs/operators'
+import {concatMap, distinctUntilChanged, map, tap} from 'rxjs/operators'
 import {from, Observable} from 'rxjs'
-import {Router} from '@angular/router'
 import {SessionQuery} from '../../session/state/session.query'
 import {AppLayoutStore} from '../state/app-layout.store'
 import {AppLayoutQuery} from '../state/app-layout.query'
+import {withStatus, WithStatus} from '../../shared/utils/observables'
 
 @Component({
   selector: 'app-navbar',
@@ -17,13 +17,10 @@ export class NavbarComponent {
     tap(() => ɵmarkDirty(this))
   );
 
-  chainIDLoading = false;
-  chainID$: Observable<number> = this.sessionQuery.provider$.pipe(
-    tap(() => this.chainIDLoading = true),
-    tap(() => ɵmarkDirty(this)),
-    concatMap(provider => from(provider.getNetwork())),
-    map(network => network.chainId),
-    tap(() => this.chainIDLoading = false),
+  chainID$: Observable<WithStatus<number>> = this.sessionQuery.provider$.pipe(
+    distinctUntilChanged(),
+    concatMap(provider => withStatus(from(provider.getNetwork())
+      .pipe(map(network => network.chainId)))),
     tap(() => ɵmarkDirty(this)),
   );
 
@@ -31,8 +28,7 @@ export class NavbarComponent {
 
   constructor(private sessionQuery: SessionQuery,
               private appLayoutStore: AppLayoutStore,
-              private appLayoutQuery: AppLayoutQuery,
-              private router: Router) {
+              private appLayoutQuery: AppLayoutQuery) {
   }
 
   toggleNavbarOpen(): void {
