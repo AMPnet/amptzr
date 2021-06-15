@@ -27,6 +27,7 @@ import {A11yModule} from '@angular/cdk/a11y'
 import {SpinnerComponent} from './shared/components/spinner/spinner.component'
 import {ServiceWorkerModule} from '@angular/service-worker'
 import {InlineAsyncComponent} from './shared/components/inline-async/inline-async.component'
+import {UnwrapStatusPipe} from './shared/pipes/unwrap-status.pipe'
 
 @NgModule({
   declarations: [
@@ -40,6 +41,7 @@ import {InlineAsyncComponent} from './shared/components/inline-async/inline-asyn
     WalletConnectComponent,
     ActionButtonComponent,
     AddrShortPipe,
+    UnwrapStatusPipe,
     InfoDialogComponent,
     DevPlaygroundComponent,
     AppLayoutComponent,

@@ -36,7 +36,9 @@
 
   <div class="mt-1">
     Block number:
-    <app-inline-async [observable$]="blockNumber$"></app-inline-async>
+    <span *ngIf="(blockNumber$ | async | unwrapStatus) as blockNumber">
+      {{ blockNumber }}
+    </span>
   </div>
 
   <button class="mt-1 p-2 bg-blue-500 text-white rounded-md"
