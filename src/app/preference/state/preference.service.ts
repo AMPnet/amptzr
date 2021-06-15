@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core'
-import {catchError, concatMap, take} from 'rxjs/operators'
+import {catchError, concatMap, take, timeout} from 'rxjs/operators'
 import {AuthProvider, PreferenceStore} from './preference.store'
 import {EMPTY, Observable} from 'rxjs'
 import {PreferenceQuery} from './preference.query'
@@ -22,7 +22,6 @@ export class PreferenceService {
     return this.preferenceQuery.select().pipe(
       take(1),
       concatMap(pref => {
-        console.log('TESTGHPAGES session pref', pref)
         if (pref.address === '') {
           return EMPTY
         }
@@ -37,8 +36,8 @@ export class PreferenceService {
             return EMPTY
         }
       }),
-      catchError((err) => {
-        console.log('TESTGHPAGES error on sign in', err)
+      timeout(4000),
+      catchError(() => {
         return this.signer.logout().pipe(concatMap(() => EMPTY))
       })
     )

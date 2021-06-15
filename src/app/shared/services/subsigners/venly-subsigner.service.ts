@@ -44,7 +44,6 @@ export class VenlySubsignerService implements Subsigner {
       concatMap(force => force ?
         from(this.subprovider.authenticate()) :
         from(this.subprovider.checkAuthenticated())),
-      tap(authRes => console.log('TESTGHPAGES authRes', authRes)),
       concatMap(authRes => authRes.isAuthenticated ? of(authRes) : throwError('NO_ADDRESS')),
       concatMap(() => of(signer))
     )
