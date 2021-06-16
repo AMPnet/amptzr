@@ -14,7 +14,9 @@
     "source-map-explorer": "source-map-explorer dist/amptzr/**/*.js",
     "deploy-staging-ghpages": "NODE_ENV=production ng run amptzr:deploy-staging-ghpages",
     "e2e": "ng e2e",
-    "prepare": "is-ci || husky install"
+    "typechain-gen": "sh scripts/typechain-gen.sh",
+    "husky-setup": "is-ci || husky install",
+    "postinstall": "npm run typechain-gen && npm run husky-setup"
   },
   "private": false,
   "dependencies": {
@@ -53,6 +55,7 @@
     "@angular/cli": "~12.0.4",
     "@angular/compiler-cli": "~12.0.4",
     "@datorama/akita-ngdevtools": "^6.0.0",
+    "@typechain/ethers-v5": "^7.0.1",
     "@types/jasmine": "~3.6.0",
     "@types/node": "^12.11.1",
     "@typescript-eslint/eslint-plugin": "4.23.0",
@@ -78,7 +81,9 @@
     "stream-browserify": "^3.0.0",
     "stream-http": "^3.2.0",
     "tailwindcss": "2.1.1",
+    "tokenizer-prototype": "^1.0.1",
     "ts-node": "~8.3.0",
+    "typechain": "^5.0.0",
     "typescript": "~4.2.4"
   }
 }
