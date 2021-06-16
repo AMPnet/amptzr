@@ -25,7 +25,9 @@ import {SidebarComponent} from './app-layout/sidebar/sidebar.component'
 import {FooterComponent} from './app-layout/footer/footer.component'
 import {A11yModule} from '@angular/cdk/a11y'
 import {SpinnerComponent} from './shared/components/spinner/spinner.component'
-import { ServiceWorkerModule } from '@angular/service-worker'
+import {ServiceWorkerModule} from '@angular/service-worker'
+import {InlineAsyncComponent} from './shared/components/inline-async/inline-async.component'
+import {UnwrapStatusPipe} from './shared/pipes/unwrap-status.pipe'
 
 @NgModule({
   declarations: [
@@ -39,11 +41,13 @@ import { ServiceWorkerModule } from '@angular/service-worker'
     WalletConnectComponent,
     ActionButtonComponent,
     AddrShortPipe,
+    UnwrapStatusPipe,
     InfoDialogComponent,
     DevPlaygroundComponent,
     AppLayoutComponent,
     FooterComponent,
-    SpinnerComponent
+    SpinnerComponent,
+    InlineAsyncComponent,
   ],
   imports: [
     BrowserModule,

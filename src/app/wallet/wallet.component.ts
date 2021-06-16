@@ -3,10 +3,11 @@ import {SessionQuery} from '../session/state/session.query'
 import {SignerService} from '../shared/services/signer.service'
 import {utils} from 'ethers'
 import {catchError, concatMap, map, retry, startWith, switchMap, take, tap, timeout} from 'rxjs/operators'
-import {combineLatest, EMPTY, from, interval, Observable} from 'rxjs'
+import {combineLatest, EMPTY, from, interval, Observable, of} from 'rxjs'
 import {DialogService} from '../shared/services/dialog.service'
 import {VenlySubsignerService} from '../shared/services/subsigners/venly-subsigner.service'
 import {AuthProvider} from '../preference/state/preference.store'
+import {withStatus} from '../shared/utils/observables'
 
 @Component({
   selector: 'app-wallet',
@@ -18,20 +19,26 @@ export class WalletComponent {
   authProvider = AuthProvider
   isLoggedIn$ = this.sessionQuery.isLoggedIn$
 
-  gas$ = WalletComponent.withInterval(this.sessionQuery.provider$, 5000).pipe(
-    concatMap(provider => from(provider.getGasPrice()).pipe(
-      timeout(3000),
-      catchError(() => retry())
-    )),
-    map(gasRaw => utils.formatEther(gasRaw)),
-  );
+  gas$ = this.sessionQuery.provider$.pipe(
+    switchMap(provider => withStatus(
+      WalletComponent.withInterval(of(provider), 5000).pipe(
+        concatMap(provider => from(provider.getGasPrice()).pipe(
+          timeout(3000),
+          catchError(() => retry())
+        )),
+        map(gasRaw => utils.formatEther(gasRaw))
+      )))
+  )
 
-  blockNumber$ = WalletComponent.withInterval(this.sessionQuery.provider$, 2000).pipe(
-    switchMap(provider => from(provider.getBlockNumber()).pipe(
-      timeout(1800),
-      catchError(() => EMPTY),
-    )),
-  );
+  blockNumber$ = this.sessionQuery.provider$.pipe(
+    switchMap(provider => withStatus(
+      WalletComponent.withInterval(of(provider), 2000).pipe(
+        switchMap(provider => from(provider.getBlockNumber()).pipe(
+          timeout(1800),
+          catchError(() => EMPTY),
+        )),
+      )))
+  )
 
   address$ = this.sessionQuery.address$.pipe(
     tap(() => ɵmarkDirty(this))
