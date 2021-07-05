@@ -2,12 +2,12 @@ import {ChangeDetectionStrategy, Component, ɵmarkDirty} from '@angular/core'
 import {SessionQuery} from '../session/state/session.query'
 import {SignerService} from '../shared/services/signer.service'
 import {utils} from 'ethers'
-import {catchError, concatMap, map, retry, startWith, switchMap, take, tap, timeout} from 'rxjs/operators'
-import {combineLatest, EMPTY, from, interval, Observable, of} from 'rxjs'
+import {catchError, concatMap, map, switchMap, take, tap, timeout} from 'rxjs/operators'
+import {EMPTY, from, Observable, of} from 'rxjs'
 import {DialogService} from '../shared/services/dialog.service'
 import {VenlySubsignerService} from '../shared/services/subsigners/venly-subsigner.service'
 import {AuthProvider} from '../preference/state/preference.store'
-import {withStatus} from '../shared/utils/observables'
+import {withInterval, withStatus,} from '../shared/utils/observables'
 
 @Component({
   selector: 'app-wallet',
@@ -21,10 +21,10 @@ export class WalletComponent {
 
   gas$ = this.sessionQuery.provider$.pipe(
     switchMap(provider => withStatus(
-      WalletComponent.withInterval(of(provider), 5000).pipe(
+      withInterval(of(provider), 5000).pipe(
         concatMap(provider => from(provider.getGasPrice()).pipe(
           timeout(3000),
-          catchError(() => retry())
+          catchError(() => EMPTY)
         )),
         map(gasRaw => utils.formatEther(gasRaw))
       )))
@@ -32,7 +32,7 @@ export class WalletComponent {
 
   blockNumber$ = this.sessionQuery.provider$.pipe(
     switchMap(provider => withStatus(
-      WalletComponent.withInterval(of(provider), 2000).pipe(
+      withInterval(of(provider), 2000).pipe(
         switchMap(provider => from(provider.getBlockNumber()).pipe(
           timeout(1800),
           catchError(() => EMPTY),
@@ -50,14 +50,6 @@ export class WalletComponent {
               private signerService: SignerService,
               private venly: VenlySubsignerService,
               private dialogService: DialogService) {
-  }
-
-  private static withInterval<T>(observable: Observable<T>, offset: number): Observable<T> {
-    return combineLatest([
-      observable, interval(offset).pipe(startWith(0)),
-    ]).pipe(
-      map(([result, _]) => result)
-    )
   }
 
   logout(): void {
