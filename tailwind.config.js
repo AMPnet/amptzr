@@ -1,6 +1,6 @@
-const {guessProductionMode} = require("@ngneat/tailwind");
-
-process.env.TAILWIND_MODE = guessProductionMode() ? 'build' : 'watch';
+// const {guessProductionMode} = require("@ngneat/tailwind");
+//
+// process.env.TAILWIND_MODE = guessProductionMode() ? 'build' : 'watch';
 
 module.exports = {
   prefix: '',
