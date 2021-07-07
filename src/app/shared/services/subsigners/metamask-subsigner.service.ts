@@ -33,19 +33,36 @@ export class MetamaskSubsignerService implements Subsigner {
   private checkChainID(signer: providers.JsonRpcSigner, opts: SubsignerLoginOpts) {
     return from(signer.getChainId()).pipe(
       concatMap(chainID => chainID === this.preferenceStore.getValue().chainID ?
-        of(chainID) : !opts.force ? throwError('WRONG_NETWORK') :
-          from(signer.provider.send('wallet_addEthereumChain',
-            [MetamaskNetworks[this.preferenceStore.getValue().chainID]])).pipe(
-            concatMap(addChainResult => addChainResult === null ?
-              of(addChainResult) : throwError('CANNOT_CHANGE_NETWORK'))
-          )),
+        of(chainID) : opts.force ? this.switchEthereumChain(signer, opts) :
+          throwError('WRONG_NETWORK')
+      ),
       map(() => signer),
+    )
+  }
+
+  private switchEthereumChain(
+    signer: providers.JsonRpcSigner, opts: SubsignerLoginOpts
+  ): Observable<unknown> {
+    return from(signer.provider.send('wallet_switchEthereumChain',
+      [{chainId: MetamaskNetworks[this.preferenceStore.getValue().chainID].chainId}])).pipe(
+      catchError(err => err.code === 4902 ? this.addEthereumChain(signer).pipe(
+        concatMap(() => this.checkChainID(signer, opts))
+      ) : throwError('UNHANDLED_SWITCH_CHAIN_ERROR'))
+    ).pipe(catchError(() => throwError('CANNOT_SWITCH_CHAIN')))
+  }
+
+  private addEthereumChain(signer: providers.JsonRpcSigner) {
+    return from(signer.provider.send('wallet_addEthereumChain',
+      [MetamaskNetworks[this.preferenceStore.getValue().chainID]])).pipe(
+      concatMap(addChainResult => addChainResult === null ?
+        of(addChainResult) : throwError('CANNOT_CHANGE_NETWORK'))
     )
   }
 
   private loginGetAddress(signer: providers.JsonRpcSigner, opts: SubsignerLoginOpts): Observable<string> {
     return from(signer.getAddress()).pipe(
-      catchError(() => opts.force ? from(signer.provider.send('eth_requestAccounts', [])) : throwError('NO_ADDRESS')),
+      catchError(() => opts.force ? from(signer.provider.send('eth_requestAccounts', [])) :
+        throwError('NO_ADDRESS')),
       concatMap(address => !!address ? of(address) : throwError('NO_ADDRESS')),
       concatMap(address => opts.wallet ? (
         opts.wallet === address ? of(address) : throwError('WRONG_ADDRESS')
