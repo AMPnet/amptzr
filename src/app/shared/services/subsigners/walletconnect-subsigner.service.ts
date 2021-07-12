@@ -55,6 +55,7 @@ export class WalletConnectSubsignerService implements Subsigner {
 
         this.walletConnectProvider.connector.on('disconnect', () => this.disconnect$.next());
 
+        // TODO: using this for debugging purposes. remove after finished with investigation.
         [
           'connect', 'disconnect', 'session_update', 'session_request',
           'call_request', 'wc_sessionRequest', 'wc_sessionUpdate'

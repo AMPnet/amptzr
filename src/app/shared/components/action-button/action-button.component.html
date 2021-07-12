@@ -1,10 +1,11 @@
 <div class="flex justify-around">
-    <div *ngIf="!loading; else notLoading">
-        <span>{{ text }}</span>
-    </div>
+  <div *ngIf="!loading; else notLoading">
+    <span>{{ text }}</span>
+  </div>
 
   <ng-template #notLoading>
-    <span></span> <!-- TODO: Set inline spinner here -->
+    <app-spinner class="inline-flex items-center mr-1">
+    </app-spinner>
     <span>{{ loadingText }}</span>
   </ng-template>
 </div>
