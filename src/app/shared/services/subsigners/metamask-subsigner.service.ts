@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core'
-import {from, Observable, of, throwError} from 'rxjs'
+import {from, Observable, of, throwError, zip} from 'rxjs'
 import {providers} from 'ethers'
 import {catchError, concatMap, map, tap} from 'rxjs/operators'
 import {MetamaskNetworks} from '../../networks'
@@ -14,18 +14,16 @@ export class MetamaskSubsignerService implements Subsigner {
 
   login(opts: SubsignerLoginOpts): Observable<providers.JsonRpcSigner> {
     return this.getSigner().pipe(
-      concatMap(signer => this.checkChainID(signer, opts)),
-      concatMap(signer => this.loginGetAddress(signer, opts).pipe(
-        tap(address => this.preferenceStore.update({address, authProvider: AuthProvider.METAMASK})),
-        map(() => signer)
-      ))
+      concatMap(signer => zip(this.loginGetAddress(signer, opts), this.checkChainID(signer, opts))),
+      tap(([address, _signer]) => this.preferenceStore.update({address, authProvider: AuthProvider.METAMASK})),
+      map(([_address, signer]) => signer),
     )
   }
 
   private getSigner(): Observable<providers.JsonRpcSigner> {
     return of((window as any)?.ethereum).pipe(
       concatMap(web3Provider => web3Provider ?
-        of(new providers.Web3Provider(web3Provider)
+        of(new providers.Web3Provider(web3Provider, 'any')
           .getSigner()) : throwError('NO_METAMASK'))
     )
   }
