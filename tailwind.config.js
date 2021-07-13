@@ -1,7 +1,3 @@
-// const {guessProductionMode} = require("@ngneat/tailwind");
-//
-// process.env.TAILWIND_MODE = guessProductionMode() ? 'build' : 'watch';
-
 module.exports = {
   prefix: '',
   // set anything to NODE_ENV to trick tailwindcss plugin to
