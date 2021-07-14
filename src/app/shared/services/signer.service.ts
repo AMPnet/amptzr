@@ -42,7 +42,7 @@ export class SignerService {
     this.registerListeners()
   }
 
-  private get ensureAuth(): Observable<providers.JsonRpcSigner> {
+  get ensureAuth(): Observable<providers.JsonRpcSigner> {
     return of(this.sessionQuery.signer).pipe(
       concatMap(signer => signer ?
         from(signer.getAddress()).pipe(map(() => signer)) :

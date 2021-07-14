@@ -33,7 +33,7 @@ export class ActionButtonComponent implements OnInit, OnDestroy {
   }
 
   @HostBinding('class') get buttonClass(): string {
-    return this.class || 'btn btn-primary'
+    return this.class || ''
   }
 
   @HostBinding('disabled') get buttonDisabled(): boolean {

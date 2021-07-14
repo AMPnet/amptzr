@@ -8,10 +8,10 @@ import {AuthProvider, PreferenceStore} from '../../../preference/state/preferenc
 import {VenlyNetworks} from '../../networks'
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class VenlySubsignerService implements Subsigner {
-  subprovider!: ArkaneSubprovider;
+  subprovider!: ArkaneSubprovider
 
   constructor(private preferenceStore: PreferenceStore) {
   }
@@ -20,7 +20,7 @@ export class VenlySubsignerService implements Subsigner {
     return this.registerArkane().pipe(
       map(p => new providers.Web3Provider(p as any).getSigner()),
       concatMap(signer => this.checkAuthenticated(signer, opts)),
-      concatMap(signer => this.setAddress(signer))
+      concatMap(signer => this.setAddress(signer)),
     )
   }
 
@@ -28,13 +28,21 @@ export class VenlySubsignerService implements Subsigner {
     return from(import(
       /* webpackChunkName: "@arkane-network/web3-arkane-provider" */
       '@arkane-network/web3-arkane-provider')).pipe(
-      concatMap(lib => lib.Arkane.createArkaneProviderEngine({
-        clientId: 'AMPnet',
-        skipAuthentication: true,
-        environment: 'staging',
-        secretType: VenlyNetworks[this.preferenceStore.getValue().chainID],
-      })),
-      tap(() => this.subprovider = (window as any).Arkane),
+      concatMap(lib => {
+        const network = VenlyNetworks[this.preferenceStore.getValue().chainID]
+        console.log(network)
+        return from(lib.Arkane.createArkaneProviderEngine({
+          clientId: 'AMPnet', // TODO: extract env variable
+          skipAuthentication: true,
+          secretType: network.secretType,
+          environment: network.env,
+        }))
+      }),
+      tap((p) => {
+        console.log(p)
+        this.subprovider = (window as any).Arkane
+      }),
+      tap(() => console.log(this.subprovider)),
     )
   }
 
@@ -45,7 +53,7 @@ export class VenlySubsignerService implements Subsigner {
         from(this.subprovider.authenticate()) :
         from(this.subprovider.checkAuthenticated())),
       concatMap(authRes => authRes.isAuthenticated ? of(authRes) : throwError('NO_ADDRESS')),
-      concatMap(() => of(signer))
+      concatMap(() => of(signer)),
     )
   }
 
@@ -53,21 +61,23 @@ export class VenlySubsignerService implements Subsigner {
     return from(signer.getAddress()).pipe(
       tap(address => this.preferenceStore.update({
         address: address,
-        authProvider: AuthProvider.VENLY
+        authProvider: AuthProvider.VENLY,
       })),
-      map(() => signer)
+      map(() => signer),
     )
   }
 
   logout(): Observable<unknown> {
     return of(this.subprovider.arkaneConnect()).pipe(
-      tap(arkaneConnect => arkaneConnect.logout())
+      tap(arkaneConnect => arkaneConnect.logout()),
     )
   }
 
   manageWallets() {
     return of(this.subprovider.arkaneConnect()).pipe(
-      concatMap(arkaneConnect => arkaneConnect.manageWallets(VenlyNetworks[this.preferenceStore.getValue().chainID])),
+      concatMap(arkaneConnect => arkaneConnect.manageWallets(
+        VenlyNetworks[this.preferenceStore.getValue().chainID].secretType,
+      )),
     )
   }
 }
