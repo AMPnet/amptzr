@@ -10,9 +10,6 @@ The platform for tokenizing real–world assets – powered by blockchain.
 # install dependencies
 npm install
 
-# prepare development environment 
-npm run prepare
-
 # run development server
 npm start
 ```

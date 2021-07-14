@@ -28,7 +28,7 @@ export const MaticNetwork: Network = {
     name: 'MATIC',
     symbol: 'MATIC',
   },
-  rpcURLs: ['https://matic-mainnet.chainstacklabs.com'],
+  rpcURLs: ['https://rpc-mainnet.maticvigil.com'],
   explorerURLs: ['https://explorer-mainnet.maticvigil.com/'],
 }
 
@@ -41,14 +41,14 @@ export const MumbaiNetwork: Network = {
     symbol: 'MATIC',
   },
   rpcURLs: ['https://matic-mumbai.chainstacklabs.com'],
-  explorerURLs: ['https://explorer-mumbai.maticvigil.com/']
+  explorerURLs: ['https://explorer-mumbai.maticvigil.com/'],
 }
 
 const getEthersNetwork = (network: Network): providers.Network => ({
   name: network.shortName,
   chainId: network.chainID,
   _defaultProvider: (providers: any) =>
-    new providers.JsonRpcProvider(network.rpcURLs[0])
+    new providers.JsonRpcProvider(network.rpcURLs[0]),
 })
 
 export const EthersNetworks: { [key in ChainID]: providers.Network } = {
@@ -78,7 +78,7 @@ const getMetamaskNetwork = (network: Network): AddEthereumChainParameter => ({
     decimals: 18,
   },
   rpcUrls: network.rpcURLs,
-  blockExplorerUrls: network.explorerURLs
+  blockExplorerUrls: network.explorerURLs,
 })
 
 export const MetamaskNetworks: { [key in ChainID]: AddEthereumChainParameter } = {
@@ -86,8 +86,14 @@ export const MetamaskNetworks: { [key in ChainID]: AddEthereumChainParameter } =
   [ChainID.MUMBAI_TESTNET]: getMetamaskNetwork(MumbaiNetwork),
 }
 
-export const VenlyNetworks: { [key in ChainID]: SecretType } = {
-  [ChainID.MATIC_MAINNET]: SecretType.MATIC,
-  [ChainID.MUMBAI_TESTNET]: SecretType.MATIC,
+export const VenlyNetworks: { [key in ChainID]: { secretType: SecretType, env: 'staging' | 'prod' } } = {
+  [ChainID.MATIC_MAINNET]: {
+    secretType: SecretType.MATIC,
+    env: 'prod',
+  },
+  [ChainID.MUMBAI_TESTNET]: {
+    secretType: SecretType.MATIC,
+    env: 'staging',
+  },
 }
 

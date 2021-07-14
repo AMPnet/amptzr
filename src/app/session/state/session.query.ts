@@ -47,6 +47,10 @@ export class SessionQuery extends Query<SessionState> {
     return this.store._value().signer
   }
 
+  get provider(): providers.Provider {
+    return this.store._value().provider!
+  }
+
   isLoggedIn(): boolean {
     return this.stateIsLoggedIn(this.store._value())
   }
