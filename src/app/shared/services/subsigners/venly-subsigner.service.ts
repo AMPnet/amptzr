@@ -30,7 +30,6 @@ export class VenlySubsignerService implements Subsigner {
       '@arkane-network/web3-arkane-provider')).pipe(
       concatMap(lib => {
         const network = VenlyNetworks[this.preferenceStore.getValue().chainID]
-        console.log(network)
         return from(lib.Arkane.createArkaneProviderEngine({
           clientId: 'AMPnet', // TODO: extract env variable
           skipAuthentication: true,
@@ -38,11 +37,7 @@ export class VenlySubsignerService implements Subsigner {
           environment: network.env,
         }))
       }),
-      tap((p) => {
-        console.log(p)
-        this.subprovider = (window as any).Arkane
-      }),
-      tap(() => console.log(this.subprovider)),
+      tap(() => this.subprovider = (window as any).Arkane),
     )
   }
 
