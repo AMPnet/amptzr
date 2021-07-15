@@ -1,4 +1,4 @@
-#!/usr/bin/sh
+#!/usr/bin/env bash
 
 echo "Setting up prebuild environment variables..."
 COMMIT_HASH=$(git rev-parse --short HEAD)

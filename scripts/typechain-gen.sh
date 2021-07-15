@@ -1,4 +1,4 @@
-#!/usr/bin/sh
+#!/usr/bin/env bash
 
 cp -r node_modules/tokenizer-prototype/artifacts/contracts abis
 find abis -name '*.dbg.json' -delete
