@@ -22,7 +22,6 @@ export class OffersComponent {
               private tokenMappingService: TokenMappingService,
               private signerService: SignerService,
               private dialogService: DialogService) {
-    console.log(environment.arkane.clientID)
   }
 
   signMessage(): Observable<unknown> {

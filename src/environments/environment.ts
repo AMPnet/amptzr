@@ -1,13 +1,16 @@
-import {Window} from '../../types/env'
+import {PostBuildEnv, PreBuildEnv} from '../../types/env'
 
-const windowEnv = (window as unknown as Window)?.env
+const preBuildEnv = process.env as unknown as PreBuildEnv
+const postBuildEnv = (window as any).env as PostBuildEnv
 export const environment = {
   production: false,
+  commitHash: preBuildEnv.COMMIT_HASH,
+  appVersion: preBuildEnv.APP_VERSION,
   arkane: {
-    clientID: windowEnv?.ARKANE_ID || 'AMPnet',
-    env: windowEnv?.ARKANE_ENV || 'prod',
+    clientID: postBuildEnv?.ARKANE_ID || 'AMPnet',
+    env: postBuildEnv?.ARKANE_ENV || 'prod',
   },
-  fixedChainID: windowEnv?.FIXED_CHAIN_ID,
+  fixedChainID: postBuildEnv?.FIXED_CHAIN_ID,
 }
 
 /*

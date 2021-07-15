@@ -1,4 +1,5 @@
 import {ChangeDetectionStrategy, Component} from '@angular/core'
+import {environment} from '../../../environments/environment'
 
 @Component({
   selector: 'app-footer',
@@ -7,6 +8,9 @@ import {ChangeDetectionStrategy, Component} from '@angular/core'
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class FooterComponent {
+  appVersion = environment.appVersion
+  commitHash = environment.commitHash
+
   constructor() {
   }
 }

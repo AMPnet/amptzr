@@ -7,6 +7,7 @@ interface Process {
 
 interface PreBuildEnv {
   COMMIT_HASH: string
+  APP_VERSION: string
 }
 
 export interface Window {
