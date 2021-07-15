@@ -5,7 +5,7 @@
     "ng": "ng",
     "start": "NODE_ENV=dev ng serve",
     "hmr": "NODE_ENV=dev ng serve --hmr",
-    "build": "NODE_ENV=production ng build --configuration=production",
+    "build": "NODE_ENV=production ng build && sh scripts/envsubst.sh",
     "serve-build": "npx http-server ./dist/amptzr --cors -c-1 -g -b -o -P http://localhost:8080\\?",
     "test": "ng test",
     "test:ci": "ng test -- --no-watch --no-progress --browsers=ChromeHeadlessCI",

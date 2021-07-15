@@ -1,9 +1,13 @@
-// This file can be replaced during build by using the `fileReplacements` array.
-// `ng build --prod` replaces `environment.ts` with `environment.prod.ts`.
-// The list of file replacements can be found in `angular.json`.
+import {Window} from '../../types/env'
 
+const windowEnv = (window as unknown as Window)?.env
 export const environment = {
-  production: false
+  production: false,
+  arkane: {
+    clientID: windowEnv?.ARKANE_ID || 'AMPnet',
+    env: windowEnv?.ARKANE_ENV || 'prod',
+  },
+  fixedChainID: windowEnv?.FIXED_CHAIN_ID,
 }
 
 /*
