@@ -7,6 +7,7 @@ import {utils} from 'ethers'
 import {DialogService} from '../shared/services/dialog.service'
 import {USDC__factory} from '../../../types/ethers-contracts'
 import {TokenMappingService} from '../shared/services/token-mapping.service'
+import {environment} from '../../environments/environment'
 
 @Component({
   selector: 'app-offers',
