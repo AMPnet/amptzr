@@ -147,7 +147,8 @@
           "options": {
             "cname": "stzr.ampnet.io",
             "name": "AMPnet Team",
-            "email": "info@ampnet.io"
+            "email": "info@ampnet.io",
+            "noBuild": true
           }
         }
       }
