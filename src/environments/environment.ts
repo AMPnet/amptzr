@@ -11,6 +11,10 @@ export const environment = {
     env: postBuildEnv?.ARKANE_ENV || 'prod',
   },
   fixedChainID: postBuildEnv?.FIXED_CHAIN_ID,
+  ipfs: {
+    apiURL: postBuildEnv?.IPFS_API_URL || 'http://localhost:5001',
+    gatewayURL: postBuildEnv?.IPFS_API_URL || 'http://localhost:8080',
+  },
 }
 
 /*

@@ -19,4 +19,6 @@ interface PostBuildEnv {
   ARKANE_ID: string
   ARKANE_ENV: string
   FIXED_CHAIN_ID: string
+  IPFS_API_URL: string
+  IPFS_GATEWAY_URL: string
 }
