@@ -13,7 +13,6 @@ import {MatDialogModule} from '@angular/material/dialog'
 import {PortfolioComponent} from './portfolio/portfolio.component'
 import {WalletStatusComponent} from './shared/components/wallet-status/wallet-status.component'
 import {WalletComponent} from './wallet/wallet.component'
-import {WalletConnectComponent} from './wallet/wallet-connect/wallet-connect.component'
 import {ActionButtonComponent} from './shared/components/action-button/action-button.component'
 import {AddrShortPipe} from './shared/pipes/addr-short.pipe'
 import {InfoDialogComponent} from './shared/components/info-dialog/info-dialog.component'
@@ -44,7 +43,6 @@ import { IdentityComponent } from './identity/identity.component'
     PortfolioComponent,
     WalletComponent,
     WalletStatusComponent,
-    WalletConnectComponent,
     ActionButtonComponent,
     AddrShortPipe,
     UnwrapStatusPipe,

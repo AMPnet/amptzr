@@ -33,7 +33,7 @@ export class WalletStatusComponent {
 
   walletConnect(): void {
     this.ngZone.run(() => {
-      this.router.navigate(['wallet'])
+      this.router.navigate(['/auth'])
     })
   }
 }
