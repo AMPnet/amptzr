@@ -11,6 +11,7 @@ import {InvestComponent} from './invest/invest.component'
 import {InvestPreviewComponent} from './invest-preview/invest-preview.component'
 import {IdentityComponent} from './identity/identity.component'
 import {DepositComponent} from './deposit/deposit.component'
+import { NoAuthGuard } from './shared/guards/no-auth.guard'
 
 const routes: Routes = [
   {
@@ -28,7 +29,7 @@ const routes: Routes = [
       {path: 'dev_playground', component: DevPlaygroundComponent},
     ]
   },
-  { path: "auth", component: AuthComponent }
+  { path: "auth", component: AuthComponent, canActivate: [NoAuthGuard] }
 ]
 
 @NgModule({

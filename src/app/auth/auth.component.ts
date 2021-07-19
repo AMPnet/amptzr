@@ -17,7 +17,7 @@ import { WalletConnectSubsignerService } from '../shared/services/subsigners/wal
   styleUrls: ['./auth.component.css'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class AuthComponent implements OnInit {
+export class AuthComponent {
 
   networks = Object.values(EthersNetworks)
   currentNetwork = EthersNetworks[this.preferenceQuery.getValue().chainID]
@@ -30,10 +30,6 @@ export class AuthComponent implements OnInit {
               private preferenceQuery: PreferenceQuery,
               private router: Router) {
 }
-
-  ngOnInit(): void {
-    this.signer.logout() // Prune state
-  }
 
   handleLogin() {
     this.router.navigate(['/'])
