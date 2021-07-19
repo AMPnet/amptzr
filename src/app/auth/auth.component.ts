@@ -1,14 +1,15 @@
-import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
-import { Router } from '@angular/router';
-import { Observable } from 'rxjs';
-import { PreferenceQuery } from '../preference/state/preference.query';
-import { PreferenceStore } from '../preference/state/preference.store';
-import { SessionQuery } from '../session/state/session.query';
-import { ChainID, EthersNetworks } from '../shared/networks';
-import { SignerService } from '../shared/services/signer.service';
-import { MetamaskSubsignerService } from '../shared/services/subsigners/metamask-subsigner.service';
-import { VenlySubsignerService } from '../shared/services/subsigners/venly-subsigner.service';
-import { WalletConnectSubsignerService } from '../shared/services/subsigners/walletconnect-subsigner.service';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core'
+import { Router } from '@angular/router'
+import { Observable } from 'rxjs'
+import { tap } from 'rxjs/operators'
+import { PreferenceQuery } from '../preference/state/preference.query'
+import { PreferenceStore } from '../preference/state/preference.store'
+import { SessionQuery } from '../session/state/session.query'
+import { ChainID, EthersNetworks } from '../shared/networks'
+import { SignerService } from '../shared/services/signer.service'
+import { MetamaskSubsignerService } from '../shared/services/subsigners/metamask-subsigner.service'
+import { VenlySubsignerService } from '../shared/services/subsigners/venly-subsigner.service'
+import { WalletConnectSubsignerService } from '../shared/services/subsigners/walletconnect-subsigner.service'
 
 @Component({
   selector: 'app-auth',
@@ -27,33 +28,27 @@ export class AuthComponent implements OnInit {
               private walletConnectSubsignerService: WalletConnectSubsignerService,
               private venlySubsignerService: VenlySubsignerService,
               private preferenceQuery: PreferenceQuery,
-              private sessionQuery: SessionQuery,
               private router: Router) {
 }
 
   ngOnInit(): void {
     this.signer.logout() // Prune state
-    this.handleLogin() 
   }
 
   handleLogin() {
-    this.sessionQuery
-      .isLoggedIn$
-      .subscribe(isLoggedIn => {
-      if(isLoggedIn) { this.router.navigate(["/"]) } // Navigate to "root" after finishing auth
-    })
+    this.router.navigate(['/'])
   }
 
   connectMetamask(): Observable<unknown> {
-    return this.signer.login(this.metamaskSubsignerService)
-  }
-
-  connectWalletConnect(): Observable<unknown> {
-    return this.signer.login(this.walletConnectSubsignerService)
+    return this.signer.login(this.metamaskSubsignerService).pipe(
+      tap(() => this.handleLogin())
+    )
   }
 
   connectVenly(): Observable<unknown> {
-    return this.signer.login(this.venlySubsignerService)
+    return this.signer.login(this.venlySubsignerService).pipe(
+      tap(() => this.handleLogin())
+    )
   }
 
   networkChanged(e: Event): void {
