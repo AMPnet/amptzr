@@ -31,19 +31,19 @@ export class AuthComponent {
               private router: Router) {
 }
 
-  handleLogin() {
+  afterLoginActions() {
     this.router.navigate(['/'])
   }
 
   connectMetamask(): Observable<unknown> {
     return this.signer.login(this.metamaskSubsignerService).pipe(
-      tap(() => this.handleLogin())
+      tap(() => this.afterLoginActions())
     )
   }
 
   connectVenly(): Observable<unknown> {
     return this.signer.login(this.venlySubsignerService).pipe(
-      tap(() => this.handleLogin())
+      tap(() => this.afterLoginActions())
     )
   }
 
