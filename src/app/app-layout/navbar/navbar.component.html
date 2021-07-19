@@ -1,11 +1,15 @@
-<div class="flex justify-end items-center h-14 pr-8 sticky w-screen bg-red-200">
+<div class="flex justify-start h-20 sticky w-screen bg-white shadow-md">
 
-  <a class=" border-b-4 text-indigo-800 font-bold" href="Hello">
-    Hello
-  </a>
-
-  <a href="Hello">
-    World
-  </a>
-
+  <div class="w-4/12 py-2 pl-8">
+    <img class="h-full" src="../../../assets/icons/icon-128x128.png" alt="" srcset="">
+  </div>
+  <div class="w-8/12 flex justify-end items-center pr-8">
+      <button *ngFor="let navbarItem of navbarItems" 
+              class="font-medium pb-2 w-20 mr-4"
+              [routerLink]="[navbarItem.routerLink]"
+              routerLinkActive="border-b-4 text-indigo-800 border-indigo-800">
+      {{navbarItem.title}}
+    </button>
+  </div>
+  
 </div>
