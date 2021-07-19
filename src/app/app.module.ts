@@ -29,6 +29,11 @@ import {ServiceWorkerModule} from '@angular/service-worker'
 import {InlineAsyncComponent} from './shared/components/inline-async/inline-async.component'
 import {UnwrapStatusPipe} from './shared/pipes/unwrap-status.pipe'
 import { AuthComponent } from './auth/auth.component'
+import { OfferComponent } from './offer/offer.component'
+import { DepositComponent } from './deposit/deposit.component'
+import { InvestComponent } from './invest/invest.component'
+import { InvestPreviewComponent } from './invest-preview/invest-preview.component'
+import { IdentityComponent } from './identity/identity.component'
 
 @NgModule({
   declarations: [
@@ -50,6 +55,11 @@ import { AuthComponent } from './auth/auth.component'
     SpinnerComponent,
     InlineAsyncComponent,
     AuthComponent,
+    OfferComponent,
+    DepositComponent,
+    InvestComponent,
+    InvestPreviewComponent,
+    IdentityComponent,
   ],
   imports: [
     BrowserModule,
