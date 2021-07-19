@@ -1,0 +1,47 @@
+<!-- Root -->
+<div class="w-screen h-screen flex justify-center items-center bg-gray-100">
+
+    <!-- Holder window -->
+    <div class="h-4/6 w-full px-4 md:px-0 md:w-4/12 shadow-md">
+        <div class="w-full h-2/6 bg-white rounded-t-md flex justify-center items-center">
+            <img src="../../assets/default-logo.png" class="w-30" alt="" srcset="">
+        </div>
+        <div class="w-full h-4/6 bg-white rounded-b-md px-8 flex items-center">
+            <div class="flex flex-col w-full">
+                <div class="w-full text-center mb-8 text-2xl text-gray-700">Login</div>
+                <div class="border border-indigo-900 w-full py-3 rounded-md mb-8 flex justify-around items-center">
+
+                    <button app-action-button
+                        class="cursor-pointer"
+                        iconPath="/assets/social-icons/fb-logo.svg"
+                        [onClick]="connectVenly.bind(this)"></button>
+
+                    <button app-action-button
+                        class="cursor-pointer"
+                        iconPath="/assets/social-icons/google-logo.svg"
+                        [onClick]="connectVenly.bind(this)"></button>
+
+                    <button app-action-button
+                        class="cursor-pointer"
+                        iconPath="/assets/social-icons/twitter-logo.svg"
+                        [onClick]="connectVenly.bind(this)"></button>
+
+                    <button app-action-button
+                        class="cursor-pointer"
+                        text="Email"
+                        [onClick]="connectVenly.bind(this)"></button>
+                    
+                </div>
+                <div class="border border-indigo-900 w-full py-3 rounded-md flex items-center justify-center">
+                    
+                    <button app-action-button
+                        class="cursor-pointer"
+                        iconPath="/assets/social-icons/metamask-logo.svg"
+                        [onClick]="connectMetamask.bind(this)"></button>
+
+                </div>
+            </div>         
+        </div>
+    </div>
+
+</div>

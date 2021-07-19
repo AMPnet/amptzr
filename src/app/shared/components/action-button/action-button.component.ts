@@ -26,6 +26,7 @@ export class ActionButtonComponent implements OnInit, OnDestroy {
   @Input() loadingText = '';
   @Input() class = '';
   @Input() disabled = false;
+  @Input() iconPath = '';
 
   @Input() onClick: () => Observable<unknown> = () => EMPTY;
 

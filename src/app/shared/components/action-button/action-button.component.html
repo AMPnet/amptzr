@@ -1,11 +1,14 @@
 <div class="flex justify-around">
-  <div *ngIf="!loading; else notLoading">
-    <span>{{ text }}</span>
-  </div>
-
-  <ng-template #notLoading>
-    <app-spinner class="inline-flex items-center mr-1">
-    </app-spinner>
-    <span>{{ loadingText }}</span>
-  </ng-template>
+  
+    <div class="flex justify-start items-center" *ngIf="!loading; else notLoading">
+      <img *ngIf="iconPath" class="h-8" src="{{ iconPath }}" alt="" srcset="">
+      <span>{{ text }}</span>
+    </div>
+  
+    <ng-template #notLoading>
+      <app-spinner class="inline-flex items-center mr-1">
+      </app-spinner>
+      <span>{{ loadingText }}</span>
+    </ng-template>
+  
 </div>

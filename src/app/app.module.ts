@@ -27,7 +27,8 @@ import {A11yModule} from '@angular/cdk/a11y'
 import {SpinnerComponent} from './shared/components/spinner/spinner.component'
 import {ServiceWorkerModule} from '@angular/service-worker'
 import {InlineAsyncComponent} from './shared/components/inline-async/inline-async.component'
-import {UnwrapStatusPipe} from './shared/pipes/unwrap-status.pipe'
+import {UnwrapStatusPipe} from './shared/pipes/unwrap-status.pipe';
+import { AuthComponent } from './auth/auth.component'
 
 @NgModule({
   declarations: [
@@ -48,6 +49,7 @@ import {UnwrapStatusPipe} from './shared/pipes/unwrap-status.pipe'
     FooterComponent,
     SpinnerComponent,
     InlineAsyncComponent,
+    AuthComponent,
   ],
   imports: [
     BrowserModule,
