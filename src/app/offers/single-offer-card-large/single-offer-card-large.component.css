@@ -1,3 +1,4 @@
+/* Override Tailwind classes - Design requirements need bigger radius than is offered by tailwind */
 .rounded-r-3xl {
     border-top-right-radius: 32px;
     border-bottom-right-radius: 32px;
@@ -12,10 +13,9 @@
     border-radius: 32px;
 }
 
+/* Radius elemets clash when changing from small to large, must be overriden - very difficult and confusing
+to do using pure Tailwind */
 @media(max-width: 1024px) {
-    .bottom-y-offeset-small-screen {
-        bottom: -42px;
-    }
 
     .top-rounded-small-screen {
         border-top-left-radius: 32px;

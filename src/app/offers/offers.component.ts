@@ -26,7 +26,7 @@ export class OffersComponent {
     // SAMPLE, DELETE LATER
     this.offers = [
       {
-        title: "Solar Farm Kadanovci",
+        title: "Solar Farm Zagreb",
         shortDescription: "This is a small change, but a big move for us. 140 was an arbitrary choice based on the 160 character SMS limit. Proud of how thoughtful the team has been in solving a real problem people have when trying to tweet. And at the same time maintaining our brevity, speed, and essence!",
         fundsRaised: 42500000,
         fundsRequired: 83300000,
