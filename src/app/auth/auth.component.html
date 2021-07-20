@@ -88,7 +88,6 @@
         <div class="border border-indigo-900 w-full py-3 mt-12 rounded-md flex items-center justify-center"
              *ngIf="isMetamaskAvailable()">
           <button app-action-button
-                  class="cursor-pointer"
                   iconPath="/assets/social-icons/metamask-logo.svg"
                   [onClick]="connectMetamask.bind(this)"></button>
         </div>
