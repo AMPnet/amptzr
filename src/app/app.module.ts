@@ -13,7 +13,6 @@ import {MatDialogModule} from '@angular/material/dialog'
 import {PortfolioComponent} from './portfolio/portfolio.component'
 import {WalletStatusComponent} from './shared/components/wallet-status/wallet-status.component'
 import {WalletComponent} from './wallet/wallet.component'
-import {WalletConnectComponent} from './wallet/wallet-connect/wallet-connect.component'
 import {ActionButtonComponent} from './shared/components/action-button/action-button.component'
 import {AddrShortPipe} from './shared/pipes/addr-short.pipe'
 import {InfoDialogComponent} from './shared/components/info-dialog/info-dialog.component'
@@ -36,6 +35,8 @@ import { IdentityComponent } from './identity/identity.component'
 import { SingleOfferCardLargeComponent } from './offers/single-offer-card-large/single-offer-card-large.component'
 import { CurrencyPipe, DatePipe } from '@angular/common'
 import { CurrencyDefaultPipe } from './shared/pipes/currency-default.pipe'
+import {AuthComponent} from './auth/auth.component'
+import {HttpClientModule} from '@angular/common/http'
 
 @NgModule({
   declarations: [
@@ -46,7 +47,6 @@ import { CurrencyDefaultPipe } from './shared/pipes/currency-default.pipe'
     PortfolioComponent,
     WalletComponent,
     WalletStatusComponent,
-    WalletConnectComponent,
     ActionButtonComponent,
     AddrShortPipe,
     UnwrapStatusPipe,
@@ -56,6 +56,7 @@ import { CurrencyDefaultPipe } from './shared/pipes/currency-default.pipe'
     FooterComponent,
     SpinnerComponent,
     InlineAsyncComponent,
+    AuthComponent,
     OfferComponent,
     DepositComponent,
     InvestComponent,
@@ -67,6 +68,7 @@ import { CurrencyDefaultPipe } from './shared/pipes/currency-default.pipe'
   imports: [
     BrowserModule,
     AppRoutingModule,
+    HttpClientModule,
     environment.production ? [] : AkitaNgDevtools.forRoot(),
     AkitaNgRouterStoreModule,
     BrowserAnimationsModule,
@@ -76,7 +78,7 @@ import { CurrencyDefaultPipe } from './shared/pipes/currency-default.pipe'
       enabled: environment.production,
       // Register the ServiceWorker as soon as the app is stable
       // or after 30 seconds (whichever comes first).
-      registrationStrategy: 'registerWhenStable:30000'
+      registrationStrategy: 'registerWhenStable:30000',
     }),
   ],
   providers: [
@@ -86,16 +88,16 @@ import { CurrencyDefaultPipe } from './shared/pipes/currency-default.pipe'
       useFactory: (pref: PreferenceService) =>
         () => pref.initSigner().toPromise(),
       multi: true,
-      deps: [PreferenceService]
+      deps: [PreferenceService],
     },
     {
       provide: NG_ENTITY_SERVICE_CONFIG,
-      useValue: {baseUrl: 'https://jsonplaceholder.typicode.com'}
+      useValue: {baseUrl: 'https://jsonplaceholder.typicode.com'},
     },
     DatePipe,
     CurrencyPipe
   ],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
 })
 
 export class AppModule {

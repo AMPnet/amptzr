@@ -3,9 +3,6 @@
     — WALLET
   </h1>
 
-  <app-wallet-connect *ngIf="(isLoggedIn$ | async) === false">
-  </app-wallet-connect>
-
   <ng-container *ngIf="isLoggedIn$ | async">
     <div>
       Connected with: <span *ngIf="(authProvider$ | async) as authProvider">{{ authProvider }}</span>
@@ -56,8 +53,9 @@
     </span>
   </div>
 
-  <button class="mt-1 p-2 bg-blue-500 text-white rounded-md"
-          *ngIf="isLoggedIn$ | async" (click)="logout()">
-    Logout
+  <button app-action-button
+          class="bg-blue-500 disabled:bg-gray-400 text-white p-2 rounded-md mt-2"
+          *ngIf="isLoggedIn$ | async" [onClick]="logout.bind(this)"
+          text="Logout">
   </button>
 </div>

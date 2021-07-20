@@ -1,13 +1,11 @@
 import {ChangeDetectionStrategy, Component} from '@angular/core'
 import {SessionQuery} from '../session/state/session.query'
 import {SignerService} from '../shared/services/signer.service'
-import {EMPTY, from, Observable} from 'rxjs'
-import {catchError, concatMap, map, tap} from 'rxjs/operators'
+import {Observable} from 'rxjs'
+import {concatMap} from 'rxjs/operators'
 import {utils} from 'ethers'
 import {DialogService} from '../shared/services/dialog.service'
-import {USDC__factory} from '../../../types/ethers-contracts'
 import {TokenMappingService} from '../shared/services/token-mapping.service'
-import {environment} from '../../environments/environment'
 
 @Component({
   selector: 'app-offers',
