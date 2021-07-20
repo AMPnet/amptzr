@@ -10,3 +10,18 @@ export class OfferComponent {
   constructor() {
   }
 }
+
+interface OfferModel {
+  title: string,
+  publishedBy: string,
+  shortDescription: string,
+  content: string,
+  fundsCollected: string,
+  fundsRequired: string,
+
+}
+
+interface OfferDocumentModel {
+  title: string,
+  link: string
+}
