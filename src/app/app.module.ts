@@ -13,6 +13,7 @@ import {MatDialogModule} from '@angular/material/dialog'
 import {PortfolioComponent} from './portfolio/portfolio.component'
 import {WalletStatusComponent} from './shared/components/wallet-status/wallet-status.component'
 import {WalletComponent} from './wallet/wallet.component'
+import {WalletConnectComponent} from './wallet/wallet-connect/wallet-connect.component'
 import {ActionButtonComponent} from './shared/components/action-button/action-button.component'
 import {AddrShortPipe} from './shared/pipes/addr-short.pipe'
 import {InfoDialogComponent} from './shared/components/info-dialog/info-dialog.component'
@@ -28,11 +29,12 @@ import {ServiceWorkerModule} from '@angular/service-worker'
 import {InlineAsyncComponent} from './shared/components/inline-async/inline-async.component'
 import {UnwrapStatusPipe} from './shared/pipes/unwrap-status.pipe'
 import { AuthComponent } from './auth/auth.component'
-import { OfferComponent } from './offer/offer.component'
-import { DepositComponent } from './deposit/deposit.component'
-import { InvestComponent } from './invest/invest.component'
-import { InvestPreviewComponent } from './invest-preview/invest-preview.component'
-import { IdentityComponent } from './identity/identity.component'
+import {OfferComponent} from './offer/offer.component'
+import {DepositComponent} from './deposit/deposit.component'
+import {InvestComponent} from './invest/invest.component'
+import {InvestPreviewComponent} from './invest-preview/invest-preview.component'
+import {IdentityComponent} from './identity/identity.component'
+import {HttpClientModule} from '@angular/common/http'
 
 @NgModule({
   declarations: [
@@ -43,6 +45,7 @@ import { IdentityComponent } from './identity/identity.component'
     PortfolioComponent,
     WalletComponent,
     WalletStatusComponent,
+    WalletConnectComponent,
     ActionButtonComponent,
     AddrShortPipe,
     UnwrapStatusPipe,
@@ -62,6 +65,7 @@ import { IdentityComponent } from './identity/identity.component'
   imports: [
     BrowserModule,
     AppRoutingModule,
+    HttpClientModule,
     environment.production ? [] : AkitaNgDevtools.forRoot(),
     AkitaNgRouterStoreModule,
     BrowserAnimationsModule,
@@ -71,7 +75,7 @@ import { IdentityComponent } from './identity/identity.component'
       enabled: environment.production,
       // Register the ServiceWorker as soon as the app is stable
       // or after 30 seconds (whichever comes first).
-      registrationStrategy: 'registerWhenStable:30000'
+      registrationStrategy: 'registerWhenStable:30000',
     }),
   ],
   providers: [
@@ -81,14 +85,14 @@ import { IdentityComponent } from './identity/identity.component'
       useFactory: (pref: PreferenceService) =>
         () => pref.initSigner().toPromise(),
       multi: true,
-      deps: [PreferenceService]
+      deps: [PreferenceService],
     },
     {
       provide: NG_ENTITY_SERVICE_CONFIG,
-      useValue: {baseUrl: 'https://jsonplaceholder.typicode.com'}
+      useValue: {baseUrl: 'https://jsonplaceholder.typicode.com'},
     },
   ],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
 })
 
 export class AppModule {
