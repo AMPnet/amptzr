@@ -1,5 +1,5 @@
 import {ChangeDetectionStrategy, Component} from '@angular/core'
-import {map, switchMap, tap} from 'rxjs/operators'
+import {switchMap, tap} from 'rxjs/operators'
 import {SwUpdate} from '@angular/service-worker'
 import {from} from 'rxjs'
 import {DialogService} from './shared/services/dialog.service'
