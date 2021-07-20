@@ -5,14 +5,14 @@ import {SessionQuery} from 'src/app/session/state/session.query'
 @Injectable({
   providedIn: 'root',
 })
-export class NoAuthGuard implements CanActivate {
+export class AuthGuard implements CanActivate {
   constructor(private sessionQuery: SessionQuery,
               private router: Router) {
   }
 
   canActivate(next: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean {
-    if (this.sessionQuery.isLoggedIn()) {
-      this.router.navigate(['/'])
+    if (!this.sessionQuery.isLoggedIn()) {
+      this.router.navigate(['/auth'])
       return false
     }
     return true

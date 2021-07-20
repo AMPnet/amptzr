@@ -1,12 +1,12 @@
 import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
-  Component,
+  Component, ContentChild,
   HostBinding,
   HostListener,
   Input,
   OnDestroy,
-  OnInit
+  OnInit, TemplateRef, ViewChild,
 } from '@angular/core'
 import {EMPTY, Observable, Subscription} from 'rxjs'
 import {finalize} from 'rxjs/operators'
@@ -27,6 +27,9 @@ export class ActionButtonComponent implements OnInit, OnDestroy {
   @Input() class = '';
   @Input() disabled = false;
   @Input() iconPath = '';
+
+  @ContentChild('content') content!: TemplateRef<any>
+  @ContentChild('loadingContent') loadingContent!: TemplateRef<any>
 
   @Input() onClick: () => Observable<unknown> = () => EMPTY;
 
