@@ -10,6 +10,7 @@ import {AuthProvider} from '../preference/state/preference.store'
 import {withInterval, withStatus} from '../shared/utils/observables'
 import {USDC__factory} from '../../../types/ethers-contracts'
 import {TokenMappingService} from '../shared/services/token-mapping.service'
+import {Router} from '@angular/router'
 
 @Component({
   selector: 'app-wallet',
@@ -69,11 +70,14 @@ export class WalletComponent {
               private tokenMappingService: TokenMappingService,
               private signerService: SignerService,
               private venly: VenlySubsignerService,
+              private router: Router,
               private dialogService: DialogService) {
   }
 
-  logout(): void {
-    this.signerService.logout().subscribe()
+  logout(): Observable<unknown> {
+    return this.signerService.logout().pipe(
+      tap(() => this.router.navigate(['/'])),
+    )
   }
 
   showCurrentGasPrice(): Observable<any> {

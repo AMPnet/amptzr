@@ -13,7 +13,6 @@ import {MatDialogModule} from '@angular/material/dialog'
 import {PortfolioComponent} from './portfolio/portfolio.component'
 import {WalletStatusComponent} from './shared/components/wallet-status/wallet-status.component'
 import {WalletComponent} from './wallet/wallet.component'
-import {WalletConnectComponent} from './wallet/wallet-connect/wallet-connect.component'
 import {ActionButtonComponent} from './shared/components/action-button/action-button.component'
 import {AddrShortPipe} from './shared/pipes/addr-short.pipe'
 import {InfoDialogComponent} from './shared/components/info-dialog/info-dialog.component'
@@ -28,6 +27,7 @@ import {SpinnerComponent} from './shared/components/spinner/spinner.component'
 import {ServiceWorkerModule} from '@angular/service-worker'
 import {InlineAsyncComponent} from './shared/components/inline-async/inline-async.component'
 import {UnwrapStatusPipe} from './shared/pipes/unwrap-status.pipe'
+import {AuthComponent} from './auth/auth.component'
 import {OfferComponent} from './offer/offer.component'
 import {DepositComponent} from './deposit/deposit.component'
 import {InvestComponent} from './invest/invest.component'
@@ -44,7 +44,6 @@ import {HttpClientModule} from '@angular/common/http'
     PortfolioComponent,
     WalletComponent,
     WalletStatusComponent,
-    WalletConnectComponent,
     ActionButtonComponent,
     AddrShortPipe,
     UnwrapStatusPipe,
@@ -54,6 +53,7 @@ import {HttpClientModule} from '@angular/common/http'
     FooterComponent,
     SpinnerComponent,
     InlineAsyncComponent,
+    AuthComponent,
     OfferComponent,
     DepositComponent,
     InvestComponent,
