@@ -9,7 +9,7 @@ import {filter, map, startWith} from 'rxjs/operators'
   selector: 'app-wallet-status',
   templateUrl: './wallet-status.component.html',
   styleUrls: ['./wallet-status.component.css'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class WalletStatusComponent {
   shouldShowLogin$: Observable<boolean> = combineLatest([
@@ -17,12 +17,12 @@ export class WalletStatusComponent {
     this.router.events.pipe(
       startWith(new NavigationEnd(1, this.router.url, this.router.url)),
       filter(event => event instanceof NavigationEnd),
-      map(event => (event as NavigationEnd).url)
+      map(event => (event as NavigationEnd).url),
     )]).pipe(
     map(([isLoggedIn, url]) => {
       return isLoggedIn || url === '/wallet'
-    })
-  );
+    }),
+  )
 
   constructor(private dialog: MatDialog,
               private sessionQuery: SessionQuery,

@@ -5,7 +5,7 @@ export function withInterval<T>(observable$: Observable<T>, offset: number): Obs
   return combineLatest([
     observable$, interval(offset).pipe(startWith(0)),
   ]).pipe(
-    map(([result, _]) => result)
+    map(([result, _]) => result),
   )
 }
 
@@ -15,7 +15,7 @@ export function withStatus<T>(observable$: Observable<T>): Observable<WithStatus
     observable$.pipe(
       map(val => ({loading: false, value: val} as WithStatus<T>)),
       catchError(err => of({loading: false, error: err} as WithStatus<T>)),
-    )
+    ),
   )
 }
 

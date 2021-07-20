@@ -39,7 +39,7 @@ export class PreferenceService {
       timeout(4000),
       catchError(() => {
         return this.signer.logout().pipe(concatMap(() => EMPTY))
-      })
+      }),
     )
   }
 }

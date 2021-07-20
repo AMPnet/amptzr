@@ -11,7 +11,7 @@ if (environment.production) {
 
 export const preferencePersistStorage = persistState({
   include: ['preference'],
-  key: 'preferenceStorage'
+  key: 'preferenceStorage',
 })
 const providers = [{provide: 'persistStorage', useValue: preferencePersistStorage}]
 

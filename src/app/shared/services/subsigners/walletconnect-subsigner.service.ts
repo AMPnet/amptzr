@@ -7,7 +7,7 @@ import {catchError, concatMap, map, take, tap} from 'rxjs/operators'
 import {AuthProvider, PreferenceStore} from '../../../preference/state/preference.store'
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class WalletConnectSubsignerService implements Subsigner {
   walletConnectProvider: WalletConnectProvider | undefined
@@ -33,9 +33,9 @@ export class WalletConnectSubsignerService implements Subsigner {
       catchError(() => EMPTY),
       tap(addresses => this.preferenceStore.update({
         address: addresses[0],
-        authProvider: AuthProvider.WALLET_CONNECT
+        authProvider: AuthProvider.WALLET_CONNECT,
       })),
-      map(() => p)
+      map(() => p),
     )
   }
 
@@ -58,7 +58,7 @@ export class WalletConnectSubsignerService implements Subsigner {
         // TODO: using this for debugging purposes. remove after finished with investigation.
         [
           'connect', 'disconnect', 'session_update', 'session_request',
-          'call_request', 'wc_sessionRequest', 'wc_sessionUpdate'
+          'call_request', 'wc_sessionRequest', 'wc_sessionUpdate',
         ].forEach(e => {
           this.walletConnectProvider?.connector.on(e, (...args: any[]) => {
             console.log(e, 'payload', args)
@@ -66,7 +66,7 @@ export class WalletConnectSubsignerService implements Subsigner {
         })
 
         return this.walletConnectProvider
-      })
+      }),
     )
   }
 }

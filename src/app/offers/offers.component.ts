@@ -1,11 +1,5 @@
 import {ChangeDetectionStrategy, Component} from '@angular/core'
 import {SessionQuery} from '../session/state/session.query'
-import {SignerService} from '../shared/services/signer.service'
-import {Observable} from 'rxjs'
-import {concatMap} from 'rxjs/operators'
-import {utils} from 'ethers'
-import {DialogService} from '../shared/services/dialog.service'
-import {TokenMappingService} from '../shared/services/token-mapping.service'
 
 @Component({
   selector: 'app-offers',
@@ -16,55 +10,47 @@ import {TokenMappingService} from '../shared/services/token-mapping.service'
 export class OffersComponent {
   address$ = this.sessionQuery.address$
 
-  constructor(private sessionQuery: SessionQuery,
-              private tokenMappingService: TokenMappingService,
-              private signerService: SignerService,
-              private dialogService: DialogService) {
+  offers: SingleOfferCardModel[] = []
+
+  constructor(private sessionQuery: SessionQuery) {
+
+    // SAMPLE, DELETE LATER
+    this.offers = [
+      {
+        title: "Solar Farm Zagreb",
+        shortDescription: "This is a small change, but a big move for us. 140 was an arbitrary choice based on the 160 character SMS limit. Proud of how thoughtful the team has been in solving a real problem people have when trying to tweet. And at the same time maintaining our brevity, speed, and essence!",
+        fundsRaised: 42500000,
+        fundsRequired: 83300000,
+        startDate: 0,
+        endDate: 0,
+        roi: "12%",
+        minInvestment: 65000,
+        titleImageSrc: "https://images.pexels.com/photos/2850347/pexels-photo-2850347.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260",
+      },
+      {
+        title: "Wind Farm Stupnik",
+        shortDescription: "This is a small change, but a big move for us. 140 was an arbitrary choice based on the 160 character SMS limit. Proud of how thoughtful the team has been in solving a real problem people have when trying to tweet. And at the same time maintaining our brevity, speed, and essence!",
+        fundsRaised: 42500000,
+        fundsRequired: 83300000,
+        startDate: 0,
+        endDate: 0,
+        roi: "12%",
+        minInvestment: 65000,
+        titleImageSrc: "https://www.afrik21.africa/wp-content/uploads/2019/06/shutterstock_275763713-2-800x400.jpg",
+      },
+    ]
   }
 
-  signMessage(): Observable<unknown> {
-    const message = 'YOLO'
-    return this.signerService.signMessage(message).pipe(
-      concatMap(signed => this.dialogService.info(
-        `The address of the author that signed the message: ${utils.verifyMessage(message, signed)}`, false,
-      )),
-    )
-  }
+}
 
-  // TODO: transaction examples. clean when it will be used elsewhere.
-  // sendUSDC(to: string, amount: string) {
-  //   return () => {
-  //     return this.signerService.ensureAuth.pipe(
-  //       map(signer => USDC__factory.connect(this.tokenMappingService.usdc, signer)),
-  //       concatMap(usdc => from(usdc.transfer(to, utils.parseEther(amount))).pipe(
-  //         tap(tx => console.log('transaction broadcasted: ', tx)),
-  //         concatMap(tx => from(this.sessionQuery.provider.waitForTransaction(tx.hash, 3))),
-  //         tap(receipt => console.log('receipt: ', receipt)),
-  //         catchError(err => {
-  //           console.log('error on sending usdc: ', err.code, err.reason, err)
-  //           return EMPTY
-  //         }),
-  //       )),
-  //     )
-  //   }
-  // }
-  //
-  // sendMATIC(to: string, amount: string) {
-  //   return () => {
-  //     return this.signerService.ensureAuth.pipe(
-  //       concatMap(signer => from(signer.sendTransaction({
-  //         to: to,
-  //         value: utils.parseEther(amount),
-  //         gasLimit: utils.hexlify('0x100000'), // 100000
-  //       }))),
-  //       tap(tx => console.log('transaction broadcasted: ', tx)),
-  //       concatMap(tx => from(this.sessionQuery.provider.waitForTransaction(tx.hash, 3))),
-  //       tap(receipt => console.log('receipt: ', receipt)),
-  //       catchError(err => {
-  //         console.log('error on send transaction: ', err.code)
-  //         return EMPTY
-  //       }),
-  //     )
-  //   }
-  // }
+export interface SingleOfferCardModel {
+  title: string
+  shortDescription: string
+  fundsRaised: number
+  fundsRequired: number
+  startDate: number
+  endDate: number
+  roi: string
+  minInvestment: number
+  titleImageSrc: string
 }

@@ -5,7 +5,7 @@ import {WithStatus} from '../utils/observables'
   providedIn: 'root',
 })
 @Pipe({
-  name: 'unwrapStatus'
+  name: 'unwrapStatus',
 })
 export class UnwrapStatusPipe implements PipeTransform {
   transform<T>(withStatus: WithStatus<T> | null): T | string {

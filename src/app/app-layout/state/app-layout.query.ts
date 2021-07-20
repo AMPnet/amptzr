@@ -5,7 +5,7 @@ import {Observable} from 'rxjs'
 
 @Injectable({providedIn: 'root'})
 export class AppLayoutQuery extends Query<AppLayoutState> {
-  isSidebarOpen$: Observable<boolean> = this.select('isSidebarOpen');
+  isSidebarOpen$: Observable<boolean> = this.select('isSidebarOpen')
 
   constructor(protected store: AppLayoutStore) {
     super(store)

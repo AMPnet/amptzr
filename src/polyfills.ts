@@ -68,5 +68,5 @@ global.process = {
   env: {DEBUG: undefined},
   version: '',
   nextTick: require('next-tick'),
-  browser: require('process/browser')
+  browser: require('process/browser'),
 } as any

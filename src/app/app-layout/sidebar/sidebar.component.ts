@@ -6,7 +6,7 @@ import {AppLayoutStore} from '../state/app-layout.store'
   selector: 'app-sidebar',
   templateUrl: './sidebar.component.html',
   styleUrls: ['./sidebar.component.css'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SidebarComponent {
   constructor(private appLayoutQuery: AppLayoutQuery,
