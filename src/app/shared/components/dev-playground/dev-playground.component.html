@@ -1,1 +1,9 @@
-<app-info-dialog></app-info-dialog>
+<button app-action-button
+        class="bg-blue-500 disabled:bg-gray-400 text-white p-2 rounded-md mt-2"
+        text="Upload"
+        [onClick]="upload.bind(this)">
+</button>
+
+<ng-container *ngIf="(content$ | async | unwrapStatus) as res">
+  {{ res | json }}
+</ng-container>
