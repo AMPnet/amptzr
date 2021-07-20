@@ -1,7 +1,7 @@
 <div class="w-full h-full flex justify-center items-center bg-gray-100">
 
   <!-- Holder window -->
-  <div class="min-h-md w-full max-w-md my-5 mx-2 p-4 bg-white shadow-md">
+  <div class="min-h-md w-full max-w-md my-5 mx-2 px-4 py-8 bg-white shadow-md">
     <!-- Upper Holder - contains Logo -->
     <div class="w-full h-2/6 rounded-t-md flex justify-center items-center">
       <img src="../../assets/default-logo.png" class="w-30" alt="Logo image">
@@ -9,10 +9,25 @@
 
     <!-- Bottom Holder Screen - Contains login options -->
     <div class="w-full h-4/6 bg-white rounded-b-md px-8 flex items-center">
-
-      <!-- Venly Powered Login options (FB, Google, Twitter, etc...) -->
       <div class="flex flex-col w-full">
+        <div class="flex content-center justify-center items-center">
+          <label for="network" class="">
+            Network
+          </label>
+          <select name="network" id="network"
+                  (change)="networkChanged($event)"
+                  class="m-2 p-2 bg-blue-200 rounded-md">
+            <option *ngFor="let network of networks"
+                    [selected]="currentNetwork === network"
+                    [value]="network.chainId">
+              {{ network.name }}
+            </option>
+          </select>
+        </div>
+
         <div class="w-full text-center text-2xl text-gray-700 mt-12">Login</div>
+
+        <!-- Venly Powered Login options (FB, Google, Twitter, etc...) -->
         <div class="border border-indigo-900 w-full py-3 rounded-md mt-12 flex justify-around items-center">
           <button class="w-full" app-action-button [onClick]="connectVenly.bind(this)">
             <ng-template #content>
@@ -70,7 +85,8 @@
         </div>
 
         <!-- Metamask login option -->
-        <div class="border border-indigo-900 w-full py-3 mt-12 rounded-md flex items-center justify-center">
+        <div class="border border-indigo-900 w-full py-3 mt-12 rounded-md flex items-center justify-center"
+             *ngIf="isMetamaskAvailable()">
           <button app-action-button
                   class="cursor-pointer"
                   iconPath="/assets/social-icons/metamask-logo.svg"

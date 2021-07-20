@@ -33,7 +33,7 @@ const routes: Routes = [
       {path: 'dev_playground', component: DevPlaygroundComponent},
     ],
   },
-  {path: "auth", component: AuthComponent, canActivate: [NoAuthGuard]},
+  {path: 'auth', component: AuthComponent, canActivate: [NoAuthGuard]},
   {path: 'dev_playground', component: DevPlaygroundComponent},
 ]
 

@@ -18,7 +18,6 @@ import { WalletConnectSubsignerService } from '../shared/services/subsigners/wal
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AuthComponent {
-
   networks = Object.values(EthersNetworks)
   currentNetwork = EthersNetworks[this.preferenceQuery.getValue().chainID]
 
@@ -54,5 +53,4 @@ export class AuthComponent {
   }
 
   isMetamaskAvailable = () => this.metamaskSubsignerService.isAvailable()
-
 }

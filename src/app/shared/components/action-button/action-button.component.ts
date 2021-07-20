@@ -1,12 +1,14 @@
 import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
-  Component, ContentChild,
+  Component,
+  ContentChild,
   HostBinding,
   HostListener,
   Input,
   OnDestroy,
-  OnInit, TemplateRef, ViewChild,
+  OnInit,
+  TemplateRef,
 } from '@angular/core'
 import {EMPTY, Observable, Subscription} from 'rxjs'
 import {finalize} from 'rxjs/operators'
@@ -16,22 +18,22 @@ import {finalize} from 'rxjs/operators'
   selector: 'button[app-action-button]',
   templateUrl: './action-button.component.html',
   styleUrls: ['./action-button.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ActionButtonComponent implements OnInit, OnDestroy {
-  loading = false;
-  sub: Subscription | undefined;
+  loading = false
+  sub: Subscription | undefined
 
-  @Input() text = '';
-  @Input() loadingText = '';
-  @Input() class = '';
-  @Input() disabled = false;
-  @Input() iconPath = '';
+  @Input() text = ''
+  @Input() loadingText = ''
+  @Input() class = ''
+  @Input() disabled = false
+  @Input() iconPath = ''
 
   @ContentChild('content') content!: TemplateRef<any>
   @ContentChild('loadingContent') loadingContent!: TemplateRef<any>
 
-  @Input() onClick: () => Observable<unknown> = () => EMPTY;
+  @Input() onClick: () => Observable<unknown> = () => EMPTY
 
   constructor(private changeRef: ChangeDetectorRef) {
   }
