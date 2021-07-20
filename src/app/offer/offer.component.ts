@@ -25,3 +25,8 @@ interface OfferDocumentModel {
   title: string,
   link: string
 }
+
+interface OfferNewsModel {
+  title: string, 
+  link: string
+}
