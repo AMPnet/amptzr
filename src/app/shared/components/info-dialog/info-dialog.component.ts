@@ -6,7 +6,7 @@ import {BehaviorSubject} from 'rxjs'
   selector: 'app-info-dialog',
   templateUrl: './info-dialog.component.html',
   styleUrls: ['./info-dialog.component.css'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class InfoDialogComponent implements OnInit {
   private dataSub = new BehaviorSubject<InfoDialogData>({
@@ -15,8 +15,8 @@ export class InfoDialogComponent implements OnInit {
     confirm_text: 'OK',
     cancel_text: 'Cancel',
     cancelable: true,
-  });
-  data$ = this.dataSub.asObservable();
+  })
+  data$ = this.dataSub.asObservable()
 
   constructor(@Inject(MAT_DIALOG_DATA) @Optional() public data: InfoDialogData,
               @Optional() private dialogRef: MatDialogRef<InfoDialogComponent>) {
@@ -29,7 +29,7 @@ export class InfoDialogComponent implements OnInit {
 
     this.dataSub.next({
       ...this.dataSub.value,
-      ...this.data
+      ...this.data,
     })
   }
 

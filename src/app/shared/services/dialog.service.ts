@@ -5,7 +5,7 @@ import {InfoDialogComponent, InfoDialogData, InfoDialogResponse} from '../compon
 import {map} from 'rxjs/operators'
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class DialogService {
   constructor(private dialog: MatDialog) {
@@ -15,8 +15,8 @@ export class DialogService {
     return this.dialog.open(InfoDialogComponent, {
       data: {
         message,
-        cancelable
-      } as InfoDialogData
+        cancelable,
+      } as InfoDialogData,
     }).afterClosed().pipe(
       map(res => !!(res as InfoDialogResponse)?.confirmed),
     )

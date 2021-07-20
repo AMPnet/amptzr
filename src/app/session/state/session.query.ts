@@ -8,13 +8,13 @@ import {EthersNetworks} from '../../shared/networks'
 
 @Injectable({providedIn: 'root'})
 export class SessionQuery extends Query<SessionState> {
-  address$ = this.select('address');
-  authProvider$ = this.select('authProvider');
+  address$ = this.select('address')
+  authProvider$ = this.select('authProvider')
   provider$ = this.select('provider').pipe(
     map(provider => {
       if (!provider) {
         const newProvider = getDefaultProvider(
-          EthersNetworks[this.preferenceQuery.getValue().chainID]
+          EthersNetworks[this.preferenceQuery.getValue().chainID],
         )
         this.store.update({provider: newProvider})
         return newProvider as providers.Provider
@@ -22,11 +22,11 @@ export class SessionQuery extends Query<SessionState> {
 
       return provider
     }),
-  );
+  )
 
   isLoggedIn$ = this.select().pipe(
-    map(this.stateIsLoggedIn)
-  );
+    map(this.stateIsLoggedIn),
+  )
 
   constructor(protected store: SessionStore,
               private preferenceQuery: PreferenceQuery) {
@@ -34,7 +34,7 @@ export class SessionQuery extends Query<SessionState> {
 
     preferenceQuery.select('chainID').pipe(
       map(chainID => getDefaultProvider(EthersNetworks[chainID])),
-      tap(provider => store.update({provider}))
+      tap(provider => store.update({provider})),
     ).subscribe()
   }
 

@@ -1,23 +1,23 @@
-<div class="flex justify-start h-full sticky w-screen bg-white bottom-shadow z-50">
+<div class="flex justify-start h-full sticky w-screen bg-white bottom-shadow">
   <div class="w-full py-2 pl-8">
     <img class="h-full object-contain" src="../../../assets/default-logo.png" alt="" srcset="">
   </div>
   <div class="flex justify-end items-center pr-8">
-      <button *ngFor="let navbarItem of navbarScreenLinks" 
-              class="font-medium py-4 mx-4 px-4 whitespace-nowrap"
-              [routerLink]="navbarItem.routerLink"
-              routerLinkActive="border-b-4 text-indigo-800 border-indigo-800">
-      {{navbarItem.title}}
+    <button *ngFor="let navbarItem of navbarScreenLinks"
+            class="mx-4 p-4 font-medium whitespace-nowrap"
+            [routerLink]="navbarItem.routerLink"
+            routerLinkActive="border-b-4 text-indigo-800 border-indigo-800">
+      {{ navbarItem.title }}
     </button>
     <button app-action-button
-          class="font-medium py-4 mx-4 px-4 whitespace-nowrap"
-          *ngIf="isLoggedIn$ | async; else loggedOut" [onClick]="logout.bind(this)"
-          text="Logout"></button>
-    <ng-template #loggedOut>
-      <button app-action-button
-          class="font-medium py-4 px-4 whitespace-nowrap"
-          (click)="login()"
-          text="Login"></button>
-    </ng-template>
+            class="mx-4 p-4 font-medium whitespace-nowrap"
+            *ngIf="(isLoggedIn$ | async) === true"
+            [onClick]="logout.bind(this)"
+            text="Logout"></button>
+    <button app-action-button
+            class="mx-4 p-4 font-medium whitespace-nowrap"
+            *ngIf="(isLoggedIn$ | async) === false"
+            routerLink="/auth"
+            text="Login"></button>
   </div>
 </div>

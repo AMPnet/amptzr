@@ -1,11 +1,5 @@
 import {ChangeDetectionStrategy, Component} from '@angular/core'
 import {SessionQuery} from '../session/state/session.query'
-import {SignerService} from '../shared/services/signer.service'
-import {Observable} from 'rxjs'
-import {concatMap} from 'rxjs/operators'
-import {utils} from 'ethers'
-import {DialogService} from '../shared/services/dialog.service'
-import {TokenMappingService} from '../shared/services/token-mapping.service'
 
 @Component({
   selector: 'app-offers',
@@ -18,10 +12,7 @@ export class OffersComponent {
 
   offers: SingleOfferCardModel[] = []
 
-  constructor(private sessionQuery: SessionQuery,
-              private tokenMappingService: TokenMappingService,
-              private signerService: SignerService,
-              private dialogService: DialogService) {
+  constructor(private sessionQuery: SessionQuery) {
 
     // SAMPLE, DELETE LATER
     this.offers = [
@@ -34,7 +25,7 @@ export class OffersComponent {
         endDate: 0,
         roi: "12%",
         minInvestment: 65000,
-        titleImageSrc: "https://images.pexels.com/photos/2850347/pexels-photo-2850347.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260"
+        titleImageSrc: "https://images.pexels.com/photos/2850347/pexels-photo-2850347.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260",
       },
       {
         title: "Wind Farm Stupnik",
@@ -45,21 +36,21 @@ export class OffersComponent {
         endDate: 0,
         roi: "12%",
         minInvestment: 65000,
-        titleImageSrc: "https://www.afrik21.africa/wp-content/uploads/2019/06/shutterstock_275763713-2-800x400.jpg"
-      }
+        titleImageSrc: "https://www.afrik21.africa/wp-content/uploads/2019/06/shutterstock_275763713-2-800x400.jpg",
+      },
     ]
   }
 
 }
 
 export interface SingleOfferCardModel {
-    title: string
-    shortDescription: string
-    fundsRaised: number
-    fundsRequired: number
-    startDate: number
-    endDate: number
-    roi: string
-    minInvestment: number
-    titleImageSrc: string
+  title: string
+  shortDescription: string
+  fundsRaised: number
+  fundsRequired: number
+  startDate: number
+  endDate: number
+  roi: string
+  minInvestment: number
+  titleImageSrc: string
 }

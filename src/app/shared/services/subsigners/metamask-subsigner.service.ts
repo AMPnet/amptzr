@@ -6,7 +6,7 @@ import {MetamaskNetworks} from '../../networks'
 import {AuthProvider, PreferenceStore} from '../../../preference/state/preference.store'
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class MetamaskSubsignerService implements Subsigner {
   constructor(private preferenceStore: PreferenceStore) {
@@ -24,7 +24,7 @@ export class MetamaskSubsignerService implements Subsigner {
     return of((window as any)?.ethereum).pipe(
       concatMap(web3Provider => web3Provider ?
         of(new providers.Web3Provider(web3Provider, 'any')
-          .getSigner()) : throwError('NO_METAMASK'))
+          .getSigner()) : throwError('NO_METAMASK')),
     )
   }
 
@@ -32,20 +32,20 @@ export class MetamaskSubsignerService implements Subsigner {
     return from(signer.getChainId()).pipe(
       concatMap(chainID => chainID === this.preferenceStore.getValue().chainID ?
         of(chainID) : opts.force ? this.switchEthereumChain(signer, opts) :
-          throwError('WRONG_NETWORK')
+          throwError('WRONG_NETWORK'),
       ),
       map(() => signer),
     )
   }
 
   private switchEthereumChain(
-    signer: providers.JsonRpcSigner, opts: SubsignerLoginOpts
+    signer: providers.JsonRpcSigner, opts: SubsignerLoginOpts,
   ): Observable<unknown> {
     return from(signer.provider.send('wallet_switchEthereumChain',
       [{chainId: MetamaskNetworks[this.preferenceStore.getValue().chainID].chainId}])).pipe(
       catchError(err => err.code === 4902 ? this.addEthereumChain(signer).pipe(
-        concatMap(() => this.checkChainID(signer, opts))
-      ) : throwError('UNHANDLED_SWITCH_CHAIN_ERROR'))
+        concatMap(() => this.checkChainID(signer, opts)),
+      ) : throwError('UNHANDLED_SWITCH_CHAIN_ERROR')),
     ).pipe(catchError(() => throwError('CANNOT_SWITCH_CHAIN')))
   }
 
@@ -53,7 +53,7 @@ export class MetamaskSubsignerService implements Subsigner {
     return from(signer.provider.send('wallet_addEthereumChain',
       [MetamaskNetworks[this.preferenceStore.getValue().chainID]])).pipe(
       concatMap(addChainResult => addChainResult === null ?
-        of(addChainResult) : throwError('CANNOT_CHANGE_NETWORK'))
+        of(addChainResult) : throwError('CANNOT_CHANGE_NETWORK')),
     )
   }
 
