@@ -7,12 +7,12 @@ import {shareReplay} from 'rxjs/operators'
   selector: 'app-app-layout',
   templateUrl: './app-layout.component.html',
   styleUrls: ['./app-layout.component.css'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AppLayoutComponent {
   isOpen$ = this.appLayoutQuery.isSidebarOpen$.pipe(
-    shareReplay(1)
-  );
+    shareReplay(1),
+  )
 
   constructor(private appLayoutQuery: AppLayoutQuery,
               private appLayoutStore: AppLayoutStore) {

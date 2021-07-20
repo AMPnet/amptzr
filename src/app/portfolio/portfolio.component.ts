@@ -4,7 +4,7 @@ import {ChangeDetectionStrategy, Component} from '@angular/core'
   selector: 'app-portfolio',
   templateUrl: './portfolio.component.html',
   styleUrls: ['./portfolio.component.css'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PortfolioComponent {
   constructor() {

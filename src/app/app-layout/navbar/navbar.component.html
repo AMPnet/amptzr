@@ -1,48 +1,23 @@
-<div class="flex justify-between items-center bg-blue-100 h-full w-full px-4">
-
-  <div class="flex space-x-2">
-    <button (click)="toggleNavbarOpen()" class="md:hidden">
-      <svg xmlns="http://www.w3.org/2000/svg" [class.hidden]="isNavbarOpen$ | async"
-           class="h-6 w-6" fill="none"
-           viewBox="0 0 24 24" stroke="currentColor">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
-      </svg>
-
-      <svg xmlns="http://www.w3.org/2000/svg" [class.hidden]="(isNavbarOpen$ | async) === false"
-           class="h-6 w-6" fill="none"
-           viewBox="0 0 24 24" stroke="currentColor">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
-      </svg>
-    </button>
-
-    <span class="font-mono font-medium">Tokenizer</span>
+<div class="flex justify-start h-full sticky w-screen bg-white bottom-shadow">
+  <div class="w-full py-2 pl-8">
+    <img class="h-full object-contain" src="../../../assets/default-logo.png" alt="" srcset="">
   </div>
-  <div class="flex space-x-4 mx-1 justify-end">
-    <div class="flex-1 flex-grow-0 self-center">
-      <div class="flex flex-col self-center text-xs md:text-sm inline-flex align-middle"
-           *ngIf="(chainID$ | async) as chainID">
-        <div>ChainID:</div>
-        <div>
-          <ng-container *ngIf="chainID.loading">
-            <app-spinner type="inline-xs"></app-spinner>
-          </ng-container>
-
-          <ng-container *ngIf="chainID.value">
-            {{ chainID.value }}
-          </ng-container>
-
-          <ng-container *ngIf="chainID.error">
-            ?
-          </ng-container>
-        </div>
-      </div>
-    </div>
-    <div class="flex-1 flex-grow-0 self-center">
-      <span class="self-center text-xs md:text-sm inline-flex align-middle"
-            *ngIf="(address$ | async) as address">
-      Address: {{ address | addrShort }}
-    </span>
-    </div>
-    <app-wallet-status></app-wallet-status>
+  <div class="flex justify-end items-center pr-8">
+    <button *ngFor="let navbarItem of navbarScreenLinks"
+            class="mx-4 p-4 font-medium whitespace-nowrap"
+            [routerLink]="navbarItem.routerLink"
+            routerLinkActive="border-b-4 text-indigo-800 border-indigo-800">
+      {{ navbarItem.title }}
+    </button>
+    <button app-action-button
+            class="mx-4 p-4 font-medium whitespace-nowrap"
+            *ngIf="(isLoggedIn$ | async) === true"
+            [onClick]="logout.bind(this)"
+            text="Logout"></button>
+    <button app-action-button
+            class="mx-4 p-4 font-medium whitespace-nowrap"
+            *ngIf="(isLoggedIn$ | async) === false"
+            routerLink="/auth"
+            text="Login"></button>
   </div>
 </div>
