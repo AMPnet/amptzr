@@ -33,6 +33,9 @@ import { DepositComponent } from './deposit/deposit.component'
 import { InvestComponent } from './invest/invest.component'
 import { InvestPreviewComponent } from './invest-preview/invest-preview.component'
 import { IdentityComponent } from './identity/identity.component'
+import { SingleOfferCardLargeComponent } from './offers/single-offer-card-large/single-offer-card-large.component'
+import { CurrencyPipe, DatePipe } from '@angular/common'
+import { CurrencyDefaultPipe } from './shared/pipes/currency-default.pipe'
 
 @NgModule({
   declarations: [
@@ -58,6 +61,8 @@ import { IdentityComponent } from './identity/identity.component'
     InvestComponent,
     InvestPreviewComponent,
     IdentityComponent,
+    SingleOfferCardLargeComponent,
+    CurrencyDefaultPipe
   ],
   imports: [
     BrowserModule,
@@ -87,6 +92,8 @@ import { IdentityComponent } from './identity/identity.component'
       provide: NG_ENTITY_SERVICE_CONFIG,
       useValue: {baseUrl: 'https://jsonplaceholder.typicode.com'}
     },
+    DatePipe,
+    CurrencyPipe
   ],
   bootstrap: [AppComponent]
 })

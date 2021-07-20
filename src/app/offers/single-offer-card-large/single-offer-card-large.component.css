@@ -1,0 +1,29 @@
+.rounded-r-3xl {
+    border-top-right-radius: 32px;
+    border-bottom-right-radius: 32px;
+}
+
+.rounded-l-3xl {
+    border-top-left-radius: 32px;
+    border-bottom-left-radius: 32px;
+}
+
+.rounded-3xl {
+    border-radius: 32px;
+}
+
+@media(max-width: 1024px) {
+    .bottom-y-offeset-small-screen {
+        bottom: -42px;
+    }
+
+    .top-rounded-small-screen {
+        border-top-left-radius: 32px;
+        border-top-right-radius: 32px;
+    }
+
+    .bottom-rounded-small-screen {
+        border-bottom-left-radius: 32px;
+        border-bottom-right-radius: 32px;
+    }
+}

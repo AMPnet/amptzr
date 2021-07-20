@@ -7,11 +7,6 @@ import {AppLayoutQuery} from '../state/app-layout.query'
 import {withStatus, WithStatus} from '../../shared/utils/observables'
 import { Router } from '@angular/router'
 
-interface NavbarItem {
-    title: string,
-    routerLink: string,
-}
-
 @Component({
   selector: 'app-navbar',
   templateUrl: './navbar.component.html',
@@ -20,34 +15,16 @@ interface NavbarItem {
 })
 export class NavbarComponent {
 
-  navbarItems: NavbarItem[];
-
-  address$ = this.sessionQuery.address$.pipe(
-    tap(() => ɵmarkDirty(this))
-  );
-
-  chainID$: Observable<WithStatus<number>> = this.sessionQuery.provider$.pipe(
-    distinctUntilChanged(),
-    concatMap(provider => withStatus(from(provider.getNetwork())
-      .pipe(map(network => network.chainId)))),
-    tap(() => ɵmarkDirty(this)),
-  );
-
-
-
-  isNavbarOpen$ = this.appLayoutQuery.isSidebarOpen$;
+  navbarItems: NavbarItem[] = [
+    { title: "Offers", routerLink: "offers" },
+    { title: "My Portfolio" , routerLink: "portfolio"},
+    { title: "Wallet", routerLink: "wallet" }
+  ]
 
   constructor(private sessionQuery: SessionQuery,
               private appLayoutStore: AppLayoutStore,
               private appLayoutQuery: AppLayoutQuery,
-              private router: Router) {
-
-      this.navbarItems = [
-        { title: "Portfolio" , routerLink: "portfolio"},
-        { title: "Offers", routerLink: "offers" },
-        { title: "Wallet", routerLink: "wallet" }
-      ]
-  }
+              private router: Router) { }
 
   openRoute(route: string) {
     this.router.navigate([route])
@@ -56,4 +33,9 @@ export class NavbarComponent {
   toggleNavbarOpen(): void {
     this.appLayoutStore.toggleNavbarOpen()
   }
+}
+
+interface NavbarItem {
+  title: string,
+  routerLink: string
 }
