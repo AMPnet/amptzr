@@ -58,7 +58,7 @@ export class NavbarComponent implements OnInit {
   }
 
   logout(): Observable<unknown> {
-    this.appLayoutStore.toggleDropdownMenu()
+    this.appLayoutStore.forceCloseDropdownMenu()
     return this.signerService.logout()
   }
 
