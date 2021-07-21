@@ -10,24 +10,19 @@ import { BehaviorSubject, Observable, Subject } from 'rxjs'
 export class OfferComponent implements OnInit {
 
   offer = new BehaviorSubject<OfferModel>({
-    title: "Wind Farm Stupnik",
-    publishedBy: "Golden Sparrow Equity",
-    shortDescription: "This is a small change, but a big move for us. 140 was an arbitrary choice based on the 160 character SMS limit. Proud of how thoughtful the team has been in solving a real problem people have when trying to tweet. And at the same time maintaining our brevity, speed, and essence!",
-    documents: [
-      { title: "Building Permit", link: "https://google.com" },
-      { title: "Corruption Permit", link: "https://google.com" }
-    ],
-    news: [
-      { title: "New News about New News", link: "https://google.com" }
-    ],
-    fundsCollected: 12300000,
-    fundsRequired: 25500000,
-    minInvestment: 50000,
-    maxInvestment: 2500000,
+    title: '',
+    publishedBy: '',
+    shortDescription: '',
+    documents: [],
+    news: [],
+    fundsCollected: 0,
+    fundsRequired: 0,
+    minInvestment: 0,
+    maxInvestment: 0,
     startDate: 0,
     endDate: 0,
-    roi: "11%",
-    content: "mockContent"
+    roi: "",
+    content: ""
   })
   offer$ = this.offer.asObservable()
 

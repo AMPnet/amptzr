@@ -1,16 +1,15 @@
 <div class="flex flex-col h-full bg-blue-50">
-  <div class="flex justify-center sticky top-0 h-24 bg-white shadow-md">
+  <div class="flex justify-center sticky top-0 bg-white shadow-md">
     <app-navbar></app-navbar>
   </div>
   <div class="top-2 flex overflow-x-hidden h-full relative ">
 
-    <div class="bg-gray-900 absolute w-full h-full z-10
+    <!-- <div class="bg-gray-900 absolute w-full h-full z-10
     transition-all ease-in-out duration-75 opacity-0 invisible"
          [class]="(isOpen$ | async) ? '!visible !opacity-30' : ''"
          (click)="hideNavbar()">
-    </div>
-    <div class="flex flex-col flex-grow-1 w-full overflow-x-hidden"
-         [class.flex-shrink-0]="isOpen$ | async">
+    </div> -->
+    <div class="flex flex-col flex-grow-1 w-full overflow-x-hidden">
       <main class="flex-1">
         <router-outlet></router-outlet>
       </main>

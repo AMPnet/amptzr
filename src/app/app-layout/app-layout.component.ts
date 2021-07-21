@@ -10,17 +10,7 @@ import {shareReplay} from 'rxjs/operators'
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AppLayoutComponent {
-  isOpen$ = this.appLayoutQuery.isSidebarOpen$.pipe(
-    shareReplay(1),
-  )
 
-  constructor(private appLayoutQuery: AppLayoutQuery,
-              private appLayoutStore: AppLayoutStore) {
-  }
+  constructor() { }
 
-  hideNavbar(): void {
-    if (this.appLayoutQuery.isSidebarOpen()) {
-      this.appLayoutStore.toggleNavbarOpen()
-    }
-  }
 }

@@ -1,39 +1,57 @@
-<div class="flex justify-start h-full sticky overflow-x-hidden max-w-6xl px-4 lg:px-0">
-  <div class="w-full py-2">
-    <img class="h-full py-2 object-contain" src="../../../assets/default-logo.png" alt="" srcset="">
-  </div>
-  <div class="flex justify-end items-center">
-    <button *ngFor="let navbarItem of navbarScreenLinks"
-            class="mx-2 p-4 text-gray-700 text-sm font-semibold whitespace-nowrap hidden lg:inline"
-            [routerLink]="navbarItem.routerLink"
-            routerLinkActive="border-b-4 text-indigo-800 border-indigo-800">
-      {{ navbarItem.title }}
-    </button>
+<div class="bg-white z-0 flex w-screen flex-col lg:flex-row justify-start lg:justify-center transition-all" [class.h-screen]="(isDropdownOpen$ | async)">
+    <div class=" flex w-full justify-start h-24 sticky overflow-x-hidden max-w-6xl px-4 lg:px-0"
+      [class.h-screen]="(isDropdownOpen$ | async)"
+      [class.fixed]="(isDropdownOpen$ | async)">
+      <div class="w-full py-2">
+        <img class="h-full py-4 object-contain" src="../../../assets/default-logo.png" alt="" srcset="">
+      </div>
+      <div class="flex justify-end items-center">
+        <button *ngFor="let navbarItem of navbarScreenLinks"
+          class="mx-2 p-4 text-gray-700 text-sm font-semibold whitespace-nowrap hidden lg:inline"
+          [routerLink]="navbarItem.routerLink" routerLinkActive="border-b-4 text-indigo-800 border-indigo-800">
+          {{ navbarItem.title }}
+        </button>
 
-    <button app-action-button
-            class="transition-all mx-4 px-8 py-4 border-2 border-indigo-800 
+        <button app-action-button class="transition-all mx-4 px-8 py-4 border-2 border-indigo-800 
                   font-semibold rounded-full text-sm 
                   text-gray-700 whitespace-nowrap hidden lg:inline
-                  hover:bg-indigo-800 hover:text-white"
-            *ngIf="(isLoggedIn$ | async) === true"
-            [onClick]="logout.bind(this)"
-            text="Log Out"></button>
+                  hover:bg-indigo-800 hover:text-white" *ngIf="(isLoggedIn$ | async) === true"
+          [onClick]="logout.bind(this)" text="Log Out"></button>
 
-    <button app-action-button
-            class="transition-all mx-4 px-8 py-4 border-2 border-indigo-800 
+        <button app-action-button class="transition-all mx-4 px-8 py-4 border-2 border-indigo-800 
             font-semibold rounded-full text-sm 
             text-gray-700 whitespace-nowrap hidden lg:inline
-            hover:bg-indigo-800 hover:text-white"
-            *ngIf="(isLoggedIn$ | async) === false"
-            routerLink="/auth"
-            text="Log In"></button>
+            hover:bg-indigo-800 hover:text-white" *ngIf="(isLoggedIn$ | async) === false" routerLink="/auth"
+          text="Log In"></button>
 
-    <!-- <button app-action-button
-            class="mx-4 px-8 py-4 border-2 border-indigo-800 
-            font-semibold uppercase rounded-full text-sm 
-            text-gray-700 whitespace-nowrap hidden lg:inline
-            hover:bg-indigo-800 hover:text-white"
-            routerLink="/auth"
-            text="|||"></button> -->
-  </div>
+        <button class="mx-4 pl-8 py-4 text-lg font-black text-gray-700 lg:hidden"
+          (click)="toggleDropdown()">
+          |||
+        </button>
+      </div>
+    </div>
+
+    <div [class.hidden]="(isDropdownOpen$ | async) === false" class="flex flex-col justify-around h-full transition-all">
+      <button *ngFor="let navbarItem of navbarScreenLinks" (click)="toggleDropdown()"
+        class="mx-2 pl-4 text-gray-700 text-3xl text-left whitespace-nowrap"
+        [routerLink]="navbarItem.routerLink" routerLinkActive="text-indigo-800 font-semibold">
+        {{ navbarItem.title }}
+      </button>
+
+      <button app-action-button class="pl-4 text-gray-700 mx-4
+        border-indigo-800 py-2 border-b-2 whitespace-nowrap"
+          *ngIf="(isLoggedIn$ | async) === true"
+          [onClick]="logout.bind(this)"
+          text="Log Out">
+      </button>
+
+      <button app-action-button class="pl-4 text-gray-700 mx-4
+        border-indigo-800 py-2 border-b-2 whitespace-nowrap"
+          *ngIf="(isLoggedIn$ | async) === false"
+          routerLink="/auth"
+          [onClick]="toggleDropdown.bind(this)"
+          text="Log In">
+      </button>
+
+    </div>
 </div>
