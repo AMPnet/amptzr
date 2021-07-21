@@ -1,4 +1,5 @@
 import {ChangeDetectionStrategy, Component, NgZone, OnInit} from '@angular/core'
+import { BehaviorSubject, Observable, Subject } from 'rxjs'
 
 @Component({
   selector: 'app-offer',
@@ -8,18 +9,27 @@ import {ChangeDetectionStrategy, Component, NgZone, OnInit} from '@angular/core'
 })
 export class OfferComponent implements OnInit {
 
-  offer: OfferModel = {
-    title: 'asd',
-    publishedBy: '',
-    shortDescription: 'ddd  ',
-    documents: [],
-    news: [],
-    fundsCollected: 0,
-    fundsRequired: 0,
-    minInvestment: 0,
-    maxInvestment: 0,
-    content: ''
-  }
+  offer = new BehaviorSubject<OfferModel>({
+    title: "Wind Farm Stupnik",
+    publishedBy: "Golden Sparrow Equity",
+    shortDescription: "This is a small change, but a big move for us. 140 was an arbitrary choice based on the 160 character SMS limit. Proud of how thoughtful the team has been in solving a real problem people have when trying to tweet. And at the same time maintaining our brevity, speed, and essence!",
+    documents: [
+      { title: "Building Permit", link: "https://google.com" },
+      { title: "Corruption Permit", link: "https://google.com" }
+    ],
+    news: [
+      { title: "New News about New News", link: "https://google.com" }
+    ],
+    fundsCollected: 12300000,
+    fundsRequired: 25500000,
+    minInvestment: 50000,
+    maxInvestment: 2500000,
+    startDate: 0,
+    endDate: 0,
+    roi: "11%",
+    content: "mockContent"
+  })
+  offer$ = this.offer.asObservable()
 
   constructor(private ngZone: NgZone) {
   }
@@ -37,24 +47,25 @@ export class OfferComponent implements OnInit {
     let fetchRes = await fetch("../../assets/mocks/mock-offer-content.html")
     let mockContent = await fetchRes.text()
 
-    this.ngZone.run(() => {
-      this.offer = {
-        title: "Wind Farm Stupnik",
-        publishedBy: "Golden Sparrow Equity",
-        shortDescription: "This is a small change, but a big move for us. 140 was an arbitrary choice based on the 160 character SMS limit. Proud of how thoughtful the team has been in solving a real problem people have when trying to tweet. And at the same time maintaining our brevity, speed, and essence!",
-        documents: [
-          { title: "Building Permit", link: "https://google.com" },
-          { title: "Corruption Permit", link: "https://google.com" }
-        ],
-        news: [
-          { title: "New News about New News", link: "https://google.com" }
-        ],
-        fundsCollected: 12300000,
-        fundsRequired: 25500000,
-        minInvestment: 50000,
-        maxInvestment: 2500000,
-        content: mockContent
-      }
+    this.offer.next({
+      title: "Wind Farm Stupnik",
+      publishedBy: "Golden Sparrow Equity",
+      shortDescription: "This is a small change, but a big move for us. 140 was an arbitrary choice based on the 160 character SMS limit. Proud of how thoughtful the team has been in solving a real problem people have when trying to tweet. And at the same time maintaining our brevity, speed, and essence!",
+      documents: [
+        { title: "Building Permit", link: "https://google.com" },
+        { title: "Corruption Permit", link: "https://google.com" }
+      ],
+      news: [
+        { title: "New News about New News", link: "https://google.com" }
+      ],
+      fundsCollected: 12300000,
+      fundsRequired: 25500000,
+      minInvestment: 50000,
+      maxInvestment: 2500000,
+      startDate: 0,
+      endDate: 0,
+      roi: "11%",
+      content: mockContent
     })
     
   }
@@ -70,6 +81,9 @@ interface OfferModel {
   fundsRequired: number,
   minInvestment: number,
   maxInvestment: number,
+  startDate: number,
+  endDate: number,
+  roi: string,
   documents: OfferDocumentModel[],
   news: OfferNewsModel[]
 }

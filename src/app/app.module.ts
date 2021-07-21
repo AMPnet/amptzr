@@ -37,7 +37,6 @@ import {CurrencyPipe} from '@angular/common'
 import {CurrencyDefaultPipe} from './shared/pipes/currency-default.pipe'
 import {AuthComponent} from './auth/auth.component'
 import {HttpClientModule} from '@angular/common/http'
-import { UnescapeHtmlPipe } from './shared/pipes/unescape-html'
 
 @NgModule({
   declarations: [
@@ -64,8 +63,7 @@ import { UnescapeHtmlPipe } from './shared/pipes/unescape-html'
     InvestPreviewComponent,
     IdentityComponent,
     OffersCardLargeComponent,
-    CurrencyDefaultPipe,
-    UnescapeHtmlPipe
+    CurrencyDefaultPipe
   ],
   imports: [
     BrowserModule,
