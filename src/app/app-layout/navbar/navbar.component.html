@@ -4,7 +4,7 @@
   </div>
   <div class="flex justify-end items-center pr-8">
     <button *ngFor="let navbarItem of navbarScreenLinks"
-            class="mx-4 p-4 font-medium whitespace-nowrap"
+            class="mx-4 p-4 text-lg whitespace-nowrap"
             [routerLink]="navbarItem.routerLink"
             routerLinkActive="border-b-4 text-indigo-800 border-indigo-800">
       {{ navbarItem.title }}
