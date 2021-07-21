@@ -13,6 +13,7 @@ import {IdentityComponent} from './identity/identity.component'
 import {DepositComponent} from './deposit/deposit.component'
 import {NoAuthGuard} from './shared/guards/no-auth.guard'
 import {AuthGuard} from './shared/guards/auth.guard'
+import {VeriffComponent} from './identity/veriff/veriff.component'
 
 const routes: Routes = [
   {
@@ -28,6 +29,7 @@ const routes: Routes = [
           {path: 'invest/preview', component: InvestPreviewComponent},
           {path: 'portfolio', component: PortfolioComponent},
           {path: 'identity', component: IdentityComponent},
+          {path: 'identity/veriff', component: VeriffComponent},
         ],
       },
       {path: 'dev_playground', component: DevPlaygroundComponent},

@@ -34,6 +34,7 @@ import {InvestComponent} from './invest/invest.component'
 import {InvestPreviewComponent} from './invest-preview/invest-preview.component'
 import {IdentityComponent} from './identity/identity.component'
 import {HttpClientModule} from '@angular/common/http'
+import {VeriffComponent} from './identity/veriff/veriff.component'
 
 @NgModule({
   declarations: [
@@ -59,6 +60,7 @@ import {HttpClientModule} from '@angular/common/http'
     InvestComponent,
     InvestPreviewComponent,
     IdentityComponent,
+    VeriffComponent,
   ],
   imports: [
     BrowserModule,

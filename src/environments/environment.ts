@@ -15,6 +15,7 @@ export const environment = {
     apiURL: postBuildEnv?.IPFS_API_URL || 'http://localhost:5001',
     gatewayURL: postBuildEnv?.IPFS_API_URL || 'http://localhost:8080',
   },
+  backendURL: postBuildEnv?.BACKEND_URL || 'https://eth-staging.ampnet.io'
 }
 
 /*
