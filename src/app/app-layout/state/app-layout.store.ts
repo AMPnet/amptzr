@@ -21,7 +21,7 @@ export class AppLayoutStore extends Store<AppLayoutState> {
   toggleNavbarOpen(): void {
     return this.update(state => ({
       ...state,
-      isSidebarOpen: !state.isSidebarOpen
+      isSidebarOpen: !state.isSidebarOpen,
     }))
   }
 }

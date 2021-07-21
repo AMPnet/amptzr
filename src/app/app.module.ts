@@ -27,12 +27,15 @@ import {SpinnerComponent} from './shared/components/spinner/spinner.component'
 import {ServiceWorkerModule} from '@angular/service-worker'
 import {InlineAsyncComponent} from './shared/components/inline-async/inline-async.component'
 import {UnwrapStatusPipe} from './shared/pipes/unwrap-status.pipe'
-import {AuthComponent} from './auth/auth.component'
 import {OfferComponent} from './offer/offer.component'
 import {DepositComponent} from './deposit/deposit.component'
 import {InvestComponent} from './invest/invest.component'
 import {InvestPreviewComponent} from './invest-preview/invest-preview.component'
 import {IdentityComponent} from './identity/identity.component'
+import {OffersCardLargeComponent} from './offers/offers-card-large/offers-card-large.component'
+import {CurrencyPipe} from '@angular/common'
+import {CurrencyDefaultPipe} from './shared/pipes/currency-default.pipe'
+import {AuthComponent} from './auth/auth.component'
 import {HttpClientModule} from '@angular/common/http'
 import {VeriffComponent} from './identity/veriff/veriff.component'
 
@@ -60,6 +63,8 @@ import {VeriffComponent} from './identity/veriff/veriff.component'
     InvestComponent,
     InvestPreviewComponent,
     IdentityComponent,
+    OffersCardLargeComponent,
+    CurrencyDefaultPipe,
     VeriffComponent,
   ],
   imports: [
@@ -91,6 +96,7 @@ import {VeriffComponent} from './identity/veriff/veriff.component'
       provide: NG_ENTITY_SERVICE_CONFIG,
       useValue: {baseUrl: 'https://jsonplaceholder.typicode.com'},
     },
+    CurrencyPipe,
   ],
   bootstrap: [AppComponent],
 })

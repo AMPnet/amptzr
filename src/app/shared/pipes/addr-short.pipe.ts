@@ -4,7 +4,7 @@ import {Injectable, Pipe, PipeTransform} from '@angular/core'
   providedIn: 'root',
 })
 @Pipe({
-  name: 'addrShort'
+  name: 'addrShort',
 })
 export class AddrShortPipe implements PipeTransform {
   constructor() {

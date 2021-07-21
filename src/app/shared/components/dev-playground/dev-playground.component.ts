@@ -1,8 +1,11 @@
 import {ChangeDetectionStrategy, Component} from '@angular/core'
 import {Observable, Subject} from 'rxjs'
-import {switchMap, tap} from 'rxjs/operators'
+import {concatMap, switchMap, tap} from 'rxjs/operators'
 import {withStatus} from '../../utils/observables'
 import {IpfsService} from '../../services/ipfs.service'
+import {SignerService} from '../../services/signer.service'
+import {utils} from 'ethers'
+import {DialogService} from '../../services/dialog.service'
 
 @Component({
   selector: 'app-dev-playground',
@@ -13,7 +16,9 @@ import {IpfsService} from '../../services/ipfs.service'
 export class DevPlaygroundComponent {
   contentSub = new Subject<string>()
 
-  constructor(private ipfsService: IpfsService) {
+  constructor(private ipfsService: IpfsService,
+              private signerService: SignerService,
+              private dialogService: DialogService) {
   }
 
   upload(): Observable<unknown> {
@@ -28,4 +33,50 @@ export class DevPlaygroundComponent {
   content$ = this.contentSub.asObservable().pipe(
     switchMap(contentPath => withStatus(this.ipfsService.get(contentPath))),
   )
+
+  signMessage(): Observable<unknown> {
+    const message = 'YOLO'
+    return this.signerService.signMessage(message).pipe(
+      concatMap(signed => this.dialogService.info(
+        `The address of the author that signed the message: ${utils.verifyMessage(message, signed)}`, false,
+      )),
+    )
+  }
+
+  // TODO: transaction examples. clean when it will be used elsewhere.
+  // sendUSDC(to: string, amount: string) {
+  //   return () => {
+  //     return this.signerService.ensureAuth.pipe(
+  //       map(signer => USDC__factory.connect(this.tokenMappingService.usdc, signer)),
+  //       concatMap(usdc => from(usdc.transfer(to, utils.parseEther(amount))).pipe(
+  //         tap(tx => console.log('transaction broadcasted: ', tx)),
+  //         concatMap(tx => from(this.sessionQuery.provider.waitForTransaction(tx.hash, 3))),
+  //         tap(receipt => console.log('receipt: ', receipt)),
+  //         catchError(err => {
+  //           console.log('error on sending usdc: ', err.code, err.reason, err)
+  //           return EMPTY
+  //         }),
+  //       )),
+  //     )
+  //   }
+  // }
+  //
+  // sendMATIC(to: string, amount: string) {
+  //   return () => {
+  //     return this.signerService.ensureAuth.pipe(
+  //       concatMap(signer => from(signer.sendTransaction({
+  //         to: to,
+  //         value: utils.parseEther(amount),
+  //         gasLimit: utils.hexlify('0x100000'), // 100000
+  //       }))),
+  //       tap(tx => console.log('transaction broadcasted: ', tx)),
+  //       concatMap(tx => from(this.sessionQuery.provider.waitForTransaction(tx.hash, 3))),
+  //       tap(receipt => console.log('receipt: ', receipt)),
+  //       catchError(err => {
+  //         console.log('error on send transaction: ', err.code)
+  //         return EMPTY
+  //       }),
+  //     )
+  //   }
+  // }
 }
