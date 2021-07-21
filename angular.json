@@ -83,17 +83,21 @@
                   "maximumError": "4kb"
                 }
               ]
-            }
+            },
+            "development": {}
           }
         },
         "serve": {
           "builder": "@angular-builders/custom-webpack:dev-server",
           "options": {
-            "browserTarget": "amptzr:build"
           },
+          "defaultConfiguration": "development",
           "configurations": {
             "production": {
               "browserTarget": "amptzr:build:production"
+            },
+            "development": {
+              "browserTarget": "amptzr:build:development"
             }
           }
         },
