@@ -1,7 +1,4 @@
 import {ChangeDetectionStrategy, Component} from '@angular/core'
-import {AppLayoutQuery} from './state/app-layout.query'
-import {AppLayoutStore} from './state/app-layout.store'
-import {shareReplay} from 'rxjs/operators'
 
 @Component({
   selector: 'app-app-layout',
@@ -11,6 +8,7 @@ import {shareReplay} from 'rxjs/operators'
 })
 export class AppLayoutComponent {
 
-  constructor() { }
+  constructor() {
+  }
 
 }

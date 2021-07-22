@@ -25,10 +25,10 @@ export class AppLayoutStore extends Store<AppLayoutState> {
     }))
   }
 
-  forceCloseDropdownMenu(): void {
+  closeDropdownMenu(): void {
     return this.update(state => ({
       ...state,
-      isDropdownMenuOpen: false
+      isDropdownMenuOpen: false,
     }))
   }
 }

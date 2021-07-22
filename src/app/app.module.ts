@@ -61,7 +61,7 @@ import {HttpClientModule} from '@angular/common/http'
     InvestPreviewComponent,
     IdentityComponent,
     OffersCardLargeComponent,
-    CurrencyDefaultPipe
+    CurrencyDefaultPipe,
   ],
   imports: [
     BrowserModule,

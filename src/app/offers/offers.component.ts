@@ -1,5 +1,5 @@
 import {ChangeDetectionStrategy, Component} from '@angular/core'
-import { BehaviorSubject } from 'rxjs'
+import {BehaviorSubject} from 'rxjs'
 import {SessionQuery} from '../session/state/session.query'
 
 @Component({
