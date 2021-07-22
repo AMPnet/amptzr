@@ -37,6 +37,7 @@ import {CurrencyPipe} from '@angular/common'
 import {CurrencyDefaultPipe} from './shared/pipes/currency-default.pipe'
 import {AuthComponent} from './auth/auth.component'
 import {HttpClientModule} from '@angular/common/http'
+import {AuthProviderNamePipe} from "./shared/pipes/auth-provider-name.pipe"
 
 @NgModule({
   declarations: [
@@ -64,6 +65,7 @@ import {HttpClientModule} from '@angular/common/http'
     IdentityComponent,
     OffersCardLargeComponent,
     CurrencyDefaultPipe,
+    AuthProviderNamePipe,
   ],
   imports: [
     BrowserModule,
