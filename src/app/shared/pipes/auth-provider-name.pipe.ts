@@ -24,7 +24,7 @@ export class AuthProviderNamePipe implements PipeTransform {
       case AuthProvider.VENLY:
         return 'Venly'
       default:
-        return ''
+        throw new Error("Unknown auth provider")
     }
   }
 }
