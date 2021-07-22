@@ -30,10 +30,8 @@
                     <div class="mt-4 text-lg font-light text-gray-500">
                         {{ offer.shortDescription }}
                     </div>
-                    <button (click)="printOffer()">Print</button>
-                    <div class="mt-4 font-light text-gray-700" [innerHtml]="offer.content">
-                        
-                    </div>
+                    <!-- TODO: Add safety for content parsing, prevent injection -->
+                    <div class="mt-4 font-light text-gray-700" [innerHtml]="offer.content"></div> 
                 </div>
     
                 <!-- RIGHT COLUMN -->

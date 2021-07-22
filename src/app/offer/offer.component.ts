@@ -33,10 +33,6 @@ export class OfferComponent implements OnInit {
     await this.fetchMockOffer()
   }
 
-  printOffer() {
-    console.log(this.offer)
-  }
-
   async fetchMockOffer() {
 
     let fetchRes = await fetch("../../assets/mocks/mock-offer-content.html")
