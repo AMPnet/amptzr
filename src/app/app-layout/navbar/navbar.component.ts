@@ -5,6 +5,7 @@ import {AppLayoutStore} from '../state/app-layout.store'
 import {AppLayoutQuery} from '../state/app-layout.query'
 import {Router} from '@angular/router'
 import {SignerService} from 'src/app/shared/services/signer.service'
+import {finalize} from 'rxjs/operators'
 
 @Component({
   selector: 'app-navbar',
@@ -30,7 +31,9 @@ export class NavbarComponent {
   }
 
   logout(): Observable<unknown> {
-    return this.signerService.logout()
+    return this.signerService.logout().pipe(
+      finalize(() => this.router.navigate(['/'])),
+    )
   }
 
   openRoute(route: string) {

@@ -1,6 +1,6 @@
 import {Injectable, NgZone} from '@angular/core'
 import {providers, utils} from 'ethers'
-import {EMPTY, from, Observable, of, Subject} from 'rxjs'
+import {from, Observable, of, Subject, throwError} from 'rxjs'
 import {catchError, concatMap, finalize, map, switchMap, take, tap} from 'rxjs/operators'
 import {SessionStore} from '../../session/state/session.store'
 import {SessionQuery} from '../../session/state/session.query'
@@ -8,6 +8,8 @@ import {DialogService} from './dialog.service'
 import {Router} from '@angular/router'
 import {PreferenceStore} from '../../preference/state/preference.store'
 import {MetamaskSubsignerService, Subsigner} from './subsigners/metamask-subsigner.service'
+import {MatDialog} from '@angular/material/dialog'
+import {AuthComponent} from '../../auth/auth.component'
 
 @Injectable({
   providedIn: 'root',
@@ -29,6 +31,7 @@ export class SignerService {
               private metamaskSubsignerService: MetamaskSubsignerService,
               private ngZone: NgZone,
               private router: Router,
+              private dialog: MatDialog,
               private dialogService: DialogService) {
     this.subscribeToChanges()
   }
@@ -45,17 +48,25 @@ export class SignerService {
   get ensureAuth(): Observable<providers.JsonRpcSigner> {
     return of(this.sessionQuery.signer).pipe(
       concatMap(signer => signer ?
-        from(signer.getAddress()).pipe(map(() => signer)) :
-        this.loginRequiredProcedure,
+        from(signer.getAddress()).pipe(map(() => signer!)) :
+        this.loginRequiredProcedure.pipe(
+          map(() => this.sessionQuery.signer!),
+        ),
       ),
-      concatMap(signer => signer.getAddress() ?
-        of(signer) : this.loginRequiredProcedure),
     )
   }
 
   private get loginRequiredProcedure(): Observable<any> {
     return this.dialogService.info('Login with your wallet to proceed').pipe(
-      concatMap(confirm => confirm ? from(this.router.navigate(['/wallet'])) : EMPTY),
+      concatMap(confirm => confirm ? this.loginDialog() : throwError('PRE_LOGIN_MODAL_DISMISSED')),
+    )
+  }
+
+  private loginDialog() {
+    return this.dialog.open(AuthComponent).afterClosed().pipe(
+      concatMap(authCompleted => authCompleted ?
+        this.sessionQuery.waitUntilLoggedIn() :
+        throwError('LOGIN_MODAL_DISMISSED')),
     )
   }
 
@@ -113,7 +124,7 @@ export class SignerService {
 
   private subscribeToChanges(): void {
     this.accountsChanged$.pipe(
-      concatMap((accounts) => accounts.length === 0 ? this.logoutNavToWallet() : of(accounts)),
+      concatMap((accounts) => accounts.length === 0 ? this.logoutNavToOffers() : of(accounts)),
       concatMap(() => this.sessionQuery.signer?.getAddress() || of('')),
       tap(account => account ? this.sessionStore.update({address: account}) : null),
     ).subscribe()
@@ -122,23 +133,23 @@ export class SignerService {
       concatMap(chainID => this.provider$.pipe(take(1),
         concatMap(provider => provider.getNetwork()),
         concatMap(network => utils.hexValue(network.chainId) === chainID ?
-          of(network) : this.logoutNavToWallet())),
+          of(network) : this.logoutNavToOffers())),
       ),
       // provider.getNetwork() sometimes throws error on network mismatch.
-      catchError(() => this.logoutNavToWallet()),
+      catchError(() => this.logoutNavToOffers()),
     ).subscribe()
 
     this.disconnected$.pipe(
       tap(() =>
-        this.logoutNavToWallet().subscribe(),
+        this.logoutNavToOffers().subscribe(),
       ),
     ).subscribe()
   }
 
-  private logoutNavToWallet(): Observable<unknown> {
+  private logoutNavToOffers(): Observable<unknown> {
     return of(this.sessionQuery.isLoggedIn()).pipe(
       concatMap(isLoggedIn => isLoggedIn ? this.logout() : of(isLoggedIn)),
-      concatMap(() => this.ngZone.run(() => this.router.navigate(['/wallet']))),
+      concatMap(() => this.ngZone.run(() => this.router.navigate(['/offers']))),
     )
   }
 }

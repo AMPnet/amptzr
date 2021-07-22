@@ -14,10 +14,10 @@
             *ngIf="(isLoggedIn$ | async) === true"
             [onClick]="logout.bind(this)"
             text="Logout"></button>
-    <button app-action-button
-            class="mx-4 p-4 font-medium whitespace-nowrap"
-            *ngIf="(isLoggedIn$ | async) === false"
-            routerLink="/auth"
-            text="Login"></button>
+<!--    <button app-action-button-->
+<!--            class="mx-4 p-4 font-medium whitespace-nowrap"-->
+<!--            *ngIf="(isLoggedIn$ | async) === false"-->
+<!--            routerLink="/auth"-->
+<!--            text="Login"></button>-->
   </div>
 </div>
