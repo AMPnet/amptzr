@@ -1,4 +1,5 @@
 import {ChangeDetectionStrategy, Component} from '@angular/core'
+import {BehaviorSubject} from 'rxjs'
 import {SessionQuery} from '../session/state/session.query'
 
 @Component({
@@ -10,12 +11,13 @@ import {SessionQuery} from '../session/state/session.query'
 export class OffersComponent {
   address$ = this.sessionQuery.address$
 
-  offers: SingleOfferCardModel[] = []
+  offers = new BehaviorSubject<SingleOfferCardModel[]>([])
+  offers$ = this.offers.asObservable()
 
   constructor(private sessionQuery: SessionQuery) {
 
     // SAMPLE, DELETE LATER
-    this.offers = [
+    this.offers.next([
       {
         title: "Solar Farm Zagreb",
         shortDescription: "This is a small change, but a big move for us. 140 was an arbitrary choice based on the 160 character SMS limit. Proud of how thoughtful the team has been in solving a real problem people have when trying to tweet. And at the same time maintaining our brevity, speed, and essence!",
@@ -38,7 +40,7 @@ export class OffersComponent {
         minInvestment: 65000,
         titleImageSrc: "https://www.afrik21.africa/wp-content/uploads/2019/06/shutterstock_275763713-2-800x400.jpg",
       },
-    ]
+    ])
   }
 
 }

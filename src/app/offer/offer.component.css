@@ -1,0 +1,8 @@
+.rounded-3xl {
+  border-radius: 42px;
+}
+
+.rounded-t-3xl {
+  border-top-right-radius: 42px;
+  border-top-left-radius: 42px;
+}

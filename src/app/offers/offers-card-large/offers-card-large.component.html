@@ -1,8 +1,12 @@
 <div class="w-full h-full flex flex-col lg:flex-row justify-start shadow-md hover:shadow-xl
             transition-all duration-300 rounded-3xl">
   <div class="relative w-full lg:w-7/12">
-    <img src="{{ offer.titleImageSrc }}"
-         class="w-full h-full top-rounded-small-screen lg:rounded-l-3xl">
+    <!-- TODO: remove hardcoded routerLink -->
+    <a routerLink="12">
+      <img src="{{ offer.titleImageSrc }}" alt="Offer image"
+           class="w-full h-full object-cover top-rounded-small-screen lg:rounded-l-3xl">
+    </a>
+
     <div class="absolute float-left lg:top-6 left-6 lg:rounded-full
     -bottom-10 lg:bottom-auto rounded-2xl
     py-3 px-6 shadow-lg bg-white">
@@ -40,8 +44,11 @@
         {{ offer.startDate | date: 'mediumDate'}} - {{ offer.endDate | date: 'mediumDate'}}
       </div>
     </div>
+
+    <!-- TODO: remove hardcoded routerLink from button -->
     <button class="bg-indigo-800 hover:bg-indigo-900 transition-all
-    w-full py-3 mt-6 text-white rounded-full flex items-center justify-center">
+    w-full py-3 mt-6 text-white rounded-full flex items-center justify-center"
+            routerLink="12">
       Learn more
       <svg class="ml-3" width="9" height="14" viewBox="0 0 9 14" fill="none" xmlns="http://www.w3.org/2000/svg">
         <path d="M1.5 1.1665L7.33333 6.99984L1.5 12.8332" stroke="white" stroke-width="2" stroke-linecap="round"

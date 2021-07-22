@@ -20,7 +20,6 @@ import {DevPlaygroundComponent} from './shared/components/dev-playground/dev-pla
 import {PreferenceService} from './preference/state/preference.service'
 import {AppLayoutComponent} from './app-layout/app-layout.component'
 import {NavbarComponent} from './app-layout/navbar/navbar.component'
-import {SidebarComponent} from './app-layout/sidebar/sidebar.component'
 import {FooterComponent} from './app-layout/footer/footer.component'
 import {A11yModule} from '@angular/cdk/a11y'
 import {SpinnerComponent} from './shared/components/spinner/spinner.component'
@@ -43,7 +42,6 @@ import {VeriffComponent} from './identity/veriff/veriff.component'
   declarations: [
     AppComponent,
     NavbarComponent,
-    SidebarComponent,
     OffersComponent,
     PortfolioComponent,
     WalletComponent,
