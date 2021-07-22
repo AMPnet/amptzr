@@ -14,7 +14,7 @@ export class VeriffService {
   }
 
   getSession() {
-    return this.http.get<VeriffSession>(`${this.path}/veriff/session`, {}, false, false)
+    return this.http.post<VeriffSession>(`${this.path}/veriff/session`, {})
   }
 }
 
