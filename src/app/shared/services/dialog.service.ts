@@ -28,7 +28,7 @@ export class DialogService {
         title: 'Success',
         message,
         cancelable: false,
-      } as InfoDialogData
+      } as InfoDialogData,
     }).afterClosed()
   }
 
@@ -38,7 +38,7 @@ export class DialogService {
         title: 'Error',
         message,
         cancelable: false,
-      } as InfoDialogData
+      } as InfoDialogData,
     }).afterClosed()
   }
 }

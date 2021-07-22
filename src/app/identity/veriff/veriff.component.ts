@@ -30,7 +30,7 @@ export class VeriffComponent {
               private veriffService: VeriffService) {
     this.session$ = this.sessionSubject.asObservable().pipe(
       switchMap(_ => this.http.ensureAuth.pipe(
-        switchMap(() => this.veriffService.getSession()))
+        switchMap(() => this.veriffService.getSession())),
       ),
       tap(session => {
         if (this.decisionPending(session)) {
