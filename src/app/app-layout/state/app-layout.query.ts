@@ -11,6 +11,10 @@ export class AppLayoutQuery extends Query<AppLayoutState> {
     super(store)
   }
 
+  forceClose() {
+    
+  }
+
   isDropdownMenuOpen(): boolean {
     return this.getValue().isDropdownMenuOpen
   }
