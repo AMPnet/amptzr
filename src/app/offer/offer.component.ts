@@ -1,4 +1,4 @@
-import {ChangeDetectionStrategy, Component, NgZone, OnInit} from '@angular/core'
+import {ChangeDetectionStrategy, Component, OnInit} from '@angular/core'
 import {BehaviorSubject} from 'rxjs'
 
 @Component({
@@ -8,7 +8,6 @@ import {BehaviorSubject} from 'rxjs'
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class OfferComponent implements OnInit {
-
   offer = new BehaviorSubject<OfferModel>({
     title: '',
     publishedBy: '',
@@ -26,7 +25,7 @@ export class OfferComponent implements OnInit {
   })
   offer$ = this.offer.asObservable()
 
-  constructor(private ngZone: NgZone) {
+  constructor() {
   }
 
   async ngOnInit() {
@@ -34,7 +33,6 @@ export class OfferComponent implements OnInit {
   }
 
   async fetchMockOffer() {
-
     let fetchRes = await fetch("../../assets/mocks/mock-offer-content.html")
     let mockContent = await fetchRes.text()
 
@@ -58,9 +56,7 @@ export class OfferComponent implements OnInit {
       roi: "11%",
       content: mockContent,
     })
-
   }
-
 }
 
 interface OfferModel {
