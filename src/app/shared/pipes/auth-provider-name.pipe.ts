@@ -16,15 +16,13 @@ export class AuthProviderNamePipe implements PipeTransform {
       return ''
     }
 
-    switch (value as AuthProvider) {
+    switch (value) {
       case AuthProvider.METAMASK:
         return 'Metamask'
       case AuthProvider.WALLET_CONNECT:
         return 'Wallet Connect'
       case AuthProvider.VENLY:
         return 'Venly'
-      default:
-        throw new Error("Unknown auth provider")
     }
   }
 }
