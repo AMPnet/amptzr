@@ -1,4 +1,4 @@
-import {Component, Renderer2} from '@angular/core'
+import {Component, Optional, Renderer2} from '@angular/core'
 import {BehaviorSubject, EMPTY, from, interval, Observable, Subject, timer} from 'rxjs'
 import {catchError, filter, switchMap, take, takeUntil, tap} from 'rxjs/operators'
 import {MESSAGES} from '@veriff/incontext-sdk'
@@ -7,6 +7,7 @@ import {Router} from '@angular/router'
 import {BackendUserService} from '../../shared/services/backend/backend-user.service'
 import {DialogService} from '../../shared/services/dialog.service'
 import {BackendHttpClient} from '../../shared/services/backend/backend-http-client.service'
+import {MatDialogRef} from '@angular/material/dialog'
 
 @Component({
   selector: 'app-veriff',
@@ -27,11 +28,10 @@ export class VeriffComponent {
               private userService: BackendUserService,
               private dialogService: DialogService,
               private http: BackendHttpClient,
-              private veriffService: VeriffService) {
+              private veriffService: VeriffService,
+              @Optional() private dialogRef: MatDialogRef<VeriffComponent>) {
     this.session$ = this.sessionSubject.asObservable().pipe(
-      switchMap(_ => this.http.ensureAuth.pipe(
-        switchMap(() => this.veriffService.getSession())),
-      ),
+      switchMap(() => this.veriffService.getSession()),
       tap(session => {
         if (this.decisionPending(session)) {
           timer(5000).pipe(tap(() => this.sessionSubject.next())).subscribe()
@@ -53,11 +53,11 @@ export class VeriffComponent {
       take(1),
       switchMap(() => this.dialogService.success('User data has been successfully verified.')),
       catchError(() => {
-        this.router.navigate(['/identity'])
+        this.dialogRef.close(false)
         return EMPTY
       }),
       switchMap(() => {
-        this.router.navigate(['/identity'])
+        this.dialogRef.close(true)
         return EMPTY
       }),
     )

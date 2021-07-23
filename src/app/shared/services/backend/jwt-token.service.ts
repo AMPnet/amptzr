@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core'
 import {HttpClient} from '@angular/common/http'
 import {Observable, of} from 'rxjs'
-import {catchError, tap} from 'rxjs/operators'
+import {catchError, finalize, tap} from 'rxjs/operators'
 import {environment} from '../../../../environments/environment'
 import {PreferenceQuery} from '../../../preference/state/preference.query'
 import {PreferenceStore} from '../../../preference/state/preference.store'
@@ -43,10 +43,7 @@ export class JwtTokenService {
   logout(): Observable<void> {
     return this.http.post<void>(`${this.path}/user/logout`, {}).pipe(
       catchError(() => of(undefined)),
-      tap(() => {
-        this.accessToken = ''
-        this.refreshToken = ''
-      }),
+      finalize(() => this.removeTokens()),
     )
   }
 
@@ -97,8 +94,10 @@ export class JwtTokenService {
   }
 
   removeTokens() {
-    this.accessToken = ''
-    this.refreshToken = ''
+    this.preferenceStore.update({
+      JWTAccessToken: '',
+      JWTRefreshToken: ''
+    })
   }
 }
 

@@ -30,13 +30,13 @@ import {OfferComponent} from './offer/offer.component'
 import {DepositComponent} from './deposit/deposit.component'
 import {InvestComponent} from './invest/invest.component'
 import {InvestPreviewComponent} from './invest-preview/invest-preview.component'
-import {IdentityComponent} from './identity/identity.component'
 import {OffersCardLargeComponent} from './offers/offers-card-large/offers-card-large.component'
 import {CurrencyPipe} from '@angular/common'
 import {CurrencyDefaultPipe} from './shared/pipes/currency-default.pipe'
 import {AuthComponent} from './auth/auth.component'
 import {HttpClientModule} from '@angular/common/http'
 import {VeriffComponent} from './identity/veriff/veriff.component'
+import {FaqComponent} from './faq/faq.component'
 
 @NgModule({
   declarations: [
@@ -60,10 +60,10 @@ import {VeriffComponent} from './identity/veriff/veriff.component'
     DepositComponent,
     InvestComponent,
     InvestPreviewComponent,
-    IdentityComponent,
     OffersCardLargeComponent,
     CurrencyDefaultPipe,
     VeriffComponent,
+    FaqComponent,
   ],
   imports: [
     BrowserModule,

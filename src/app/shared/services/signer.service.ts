@@ -80,7 +80,7 @@ export class SignerService {
   logout(): Observable<unknown> {
     return this.subsigner.logout().pipe(
       finalize(() => {
-        this.preferenceStore.update({address: '', authProvider: '', JWTAccessToken: '', JWTRefreshToken: ''})
+        this.preferenceStore.update({address: '', authProvider: ''})
         this.sessionStore.update({address: '', signer: undefined})
       }),
     )

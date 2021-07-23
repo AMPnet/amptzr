@@ -52,7 +52,7 @@ export class ErrorService {
           case AuthError.INVALID_REFRESH_TOKEN:
           case UserError.MISSING_JWT_ADDRESS:
             action$ = of(this.jwtTokenService.removeTokens()).pipe(
-              tap(() => this.router.navigate(['/login'])),
+              tap(() => this.router.navigate(['/'])),
             )
             break
 

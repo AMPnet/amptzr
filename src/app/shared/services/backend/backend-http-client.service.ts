@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core'
 import {HttpClient, HttpHeaders} from '@angular/common/http'
-import {defer, EMPTY, Observable, of, throwError} from 'rxjs'
-import {catchError, concatMap, finalize, map, switchMap} from 'rxjs/operators'
+import {EMPTY, Observable, of, throwError} from 'rxjs'
+import {catchError, concatMap, map, switchMap} from 'rxjs/operators'
 import {JwtTokenService} from './jwt-token.service'
 import {ErrorService} from '../error.service'
 import {PreferenceQuery} from '../../../preference/state/preference.query'
@@ -25,34 +25,39 @@ export class BackendHttpClient {
   }
 
   get<T>(path: string, params?: object, publicRoute = false, shouldHandleErrors = true): Observable<T> {
-    return defer(() => {
-      const httpOptions = this.authHttpOptions(publicRoute)
+    return (publicRoute ? of(undefined) : this.ensureAuth).pipe(
+      switchMap(() => {
+        const httpOptions = this.authHttpOptions(publicRoute)
+        if (params) httpOptions.params = params
 
-      if (params) httpOptions.params = params
-
-      return this.http.get<T>(path, httpOptions)
-    }).pipe(this.handleError(shouldHandleErrors))
+        return this.http.get<T>(path, httpOptions)
+      }),
+      this.handleError(shouldHandleErrors),
+    )
   }
 
   post<T>(path: string, body: any, publicRoute = false, shouldHandleErrors = true): Observable<T> {
-    return defer(() => this.http.post<T>(path, body, this.authHttpOptions(publicRoute))).pipe(
+    return (publicRoute ? of(undefined) : this.ensureAuth).pipe(
+      switchMap(() => this.http.post<T>(path, body, this.authHttpOptions(publicRoute))),
       this.handleError(shouldHandleErrors),
     )
   }
 
-  put<T>(path: string, body: object, shouldHandleErrors = true): Observable<T> {
-    return defer(() => this.http.put<T>(path, body, this.authHttpOptions())).pipe(
+  put<T>(path: string, body: any, publicRoute = false, shouldHandleErrors = true): Observable<T> {
+    return (publicRoute ? of(undefined) : this.ensureAuth).pipe(
+      switchMap(() => this.http.put<T>(path, body, this.authHttpOptions(publicRoute))),
       this.handleError(shouldHandleErrors),
     )
   }
 
-  delete<T>(path: string, params?: object, shouldHandleErrors = true): Observable<T | unknown> {
-    return defer(() => {
-      const httpOptions = this.authHttpOptions()
-      if (params) httpOptions.params = params
+  delete<T>(path: string, params?: object, publicRoute = false, shouldHandleErrors = true): Observable<T | unknown> {
+    return (publicRoute ? of(undefined) : this.ensureAuth).pipe(
+      switchMap(() => {
+        const httpOptions = this.authHttpOptions(publicRoute)
+        if (params) httpOptions.params = params
 
-      return this.http.delete<T>(path, httpOptions)
-    }).pipe(
+        return this.http.delete<T>(path, httpOptions)
+      }),
       this.handleError(shouldHandleErrors),
     )
   }
@@ -79,16 +84,12 @@ export class BackendHttpClient {
         switchMap(signedPayload => this.jwtTokenService.authJWT(address, signedPayload)),
         this.errorService.handleError(false, true),
       )),
-      catchError(() => this.router.navigate(['/identity'])),
+      catchError(() => this.router.navigate(['/'])),
     )
   }
 
   logout(): Observable<void> {
-    return this.jwtTokenService.logout().pipe(
-      finalize(() => {
-        // this.cacheService.clearAll()
-      }),
-    )
+    return this.jwtTokenService.logout()
   }
 
   public authHttpOptions(publicRoute = false): HttpOptions {

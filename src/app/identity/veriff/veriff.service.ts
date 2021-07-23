@@ -2,6 +2,10 @@ import {Injectable} from '@angular/core'
 import {BackendHttpClient} from '../../shared/services/backend/backend-http-client.service'
 import {environment} from '../../../environments/environment'
 import {ErrorService} from '../../shared/services/error.service'
+import {Observable, of, throwError} from 'rxjs'
+import {map, switchMap} from 'rxjs/operators'
+import {MatDialog} from '@angular/material/dialog'
+import {VeriffComponent} from './veriff.component'
 
 @Injectable({
   providedIn: 'root',
@@ -10,7 +14,14 @@ export class VeriffService {
   path = `${environment.backendURL}/api/identity`
 
   constructor(private http: BackendHttpClient,
-              private errorService: ErrorService) {
+              private matDialog: MatDialog) {
+  }
+
+  openVeriffDialog(): Observable<void> {
+    return this.matDialog.open(VeriffComponent).afterClosed().pipe(
+      switchMap(isSuccess => !!isSuccess ? of(undefined) :
+        throwError('VERIFF_DISMISSED')),
+    )
   }
 
   getSession() {
