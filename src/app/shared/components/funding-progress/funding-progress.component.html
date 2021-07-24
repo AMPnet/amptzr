@@ -1,0 +1,25 @@
+<div *ngIf="fundsRaised < fundsRequired">
+  <span class="mt-6 font-bold text-gray-800 text-sm">{{ fundsRaised | currencyDefault }}</span>
+  <span class="mx-1 text-sm">of</span>
+  <span class="mt-6 font-bold text-gray-800 text-sm">{{ fundsRequired | currencyDefault }}</span>
+  <div class="relative pt-1 mt-2">
+    <div class="overflow-hidden h-2 mb-2 text-xs flex rounded bg-gray-200">
+      <div [style.width.%]="raisedPercentage()"
+           class="shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-indigo-800"></div>
+    </div>
+  </div>
+  <div class="flex justify-between">
+    <div class="font-bold text-indigo-800 text-sm">{{ raisedPercentage() | number:'1.0-0' }}% funded</div>
+    <div class="font-light text-gray-400 text-sm">
+      {{ startDate | date: 'mediumDate'}} - {{ endDate | date: 'mediumDate'}}
+    </div>
+  </div>
+</div>
+<div *ngIf="fundsRaised >= fundsRequired">
+  <span class="mt-6 font-bold text-indigo-900 text-lg">{{ fundsRaised | currencyDefault }}</span> Raised
+  <div class="flex justify-between mt-3">
+    <div class="font-light text-gray-400 text-sm">
+      {{ startDate | date: 'mediumDate'}} - {{ endDate | date: 'mediumDate'}}
+    </div>
+  </div>
+</div>

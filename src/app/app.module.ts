@@ -37,6 +37,7 @@ import {AuthComponent} from './auth/auth.component'
 import {HttpClientModule} from '@angular/common/http'
 import {VeriffComponent} from './identity/veriff/veriff.component'
 import {FaqComponent} from './faq/faq.component'
+import {FundingProgressComponent} from "./shared/components/funding-progress/funding-progress.component"
 
 @NgModule({
   declarations: [
@@ -61,6 +62,7 @@ import {FaqComponent} from './faq/faq.component'
     InvestComponent,
     InvestPreviewComponent,
     OffersCardLargeComponent,
+    FundingProgressComponent,
     CurrencyDefaultPipe,
     VeriffComponent,
     FaqComponent,
