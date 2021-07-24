@@ -1,6 +1,6 @@
 import {Component, Optional, Renderer2} from '@angular/core'
-import {BehaviorSubject, EMPTY, from, interval, Observable, Subject, timer} from 'rxjs'
-import {catchError, filter, switchMap, take, takeUntil, tap} from 'rxjs/operators'
+import {BehaviorSubject, EMPTY, from, Observable, Subject, timer} from 'rxjs'
+import {catchError, delay, filter, repeatWhen, switchMap, take, tap} from 'rxjs/operators'
 import {MESSAGES} from '@veriff/incontext-sdk'
 import {DecisionStatus, State, VeriffService, VeriffSession} from './veriff.service'
 import {Router} from '@angular/router'
@@ -46,20 +46,18 @@ export class VeriffComponent {
 
     this.approved$ = this.approvedSubject.asObservable().pipe(
       switchMap(() =>
-        interval(1000).pipe(
-          takeUntil(this.userService.getUser().pipe(filter(user => user.kyc_completed))),
+        this.userService.getUser().pipe(
+          repeatWhen(obs => obs.pipe(delay(1000))),
+          filter(user => user.kyc_completed),
+          take(1),
         ),
       ),
-      take(1),
       switchMap(() => this.dialogService.success('User data has been successfully verified.')),
       catchError(() => {
         this.dialogRef.close(false)
         return EMPTY
       }),
-      switchMap(() => {
-        this.dialogRef.close(true)
-        return EMPTY
-      }),
+      tap(() => this.dialogRef.close(true)),
     )
   }
 
@@ -98,11 +96,20 @@ export class VeriffComponent {
     )
   }
 
-  decisionPending(session: VeriffSession) {
+  decisionPending(session: VeriffSession): boolean {
     return session.state === State.SUBMITTED && session.decision === null
   }
 
-  showDecision(session: VeriffSession) {
+  showDecision(session: VeriffSession): boolean {
     return !!session.decision?.status
+  }
+
+  isVerificationStartable(session: VeriffSession) {
+    return [State.STARTED, State.CREATED].includes(session.state)
+      || [DecisionStatus.RESUBMISSION_REQUESTED, DecisionStatus.DECLINED].includes(session.decision?.status!)
+  }
+
+  waitApproved(session: VeriffSession) {
+    return session.decision?.status === DecisionStatus.APPROVED
   }
 }

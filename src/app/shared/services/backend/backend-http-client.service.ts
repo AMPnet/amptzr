@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core'
 import {HttpClient, HttpHeaders} from '@angular/common/http'
-import {EMPTY, Observable, of, throwError} from 'rxjs'
+import {EMPTY, merge, Observable, of, throwError} from 'rxjs'
 import {catchError, concatMap, map, switchMap} from 'rxjs/operators'
 import {JwtTokenService} from './jwt-token.service'
 import {ErrorService} from '../error.service'
@@ -22,6 +22,7 @@ export class BackendHttpClient {
               private dialogService: DialogService,
               private router: Router,
               private jwtTokenService: JwtTokenService) {
+    this.subscribeToChanges()
   }
 
   get<T>(path: string, params?: object, publicRoute = false, shouldHandleErrors = true): Observable<T> {
@@ -108,6 +109,16 @@ export class BackendHttpClient {
 
   private handleError = (handleErrors: boolean) => (source: Observable<any>) =>
     source.pipe(handleErrors ? this.errorService.handleError() : () => EMPTY)
+
+  private subscribeToChanges() {
+    merge(
+      this.signerService.accountsChanged$,
+      this.signerService.chainChanged$,
+      this.signerService.disconnected$,
+    ).pipe(
+      switchMap(() => this.logout()),
+    ).subscribe()
+  }
 }
 
 interface HttpOptions {

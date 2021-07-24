@@ -6,7 +6,6 @@ import {IpfsService} from '../../services/ipfs.service'
 import {SignerService} from '../../services/signer.service'
 import {utils} from 'ethers'
 import {DialogService} from '../../services/dialog.service'
-import {VeriffService} from '../../../identity/veriff/veriff.service'
 import {IdentityService} from '../../../identity/identity.service'
 
 @Component({
@@ -49,7 +48,7 @@ export class DevPlaygroundComponent {
   checkInvest() {
     return this.signerService.ensureAuth.pipe(
       switchMap(() => this.identityService.ensureIdentityChecked),
-      switchMap(() => this.dialogService.info('You have passed all requirements for investing.', false))
+      switchMap(() => this.dialogService.info('You have passed all requirements for investing.', false)),
     )
   }
 

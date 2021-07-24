@@ -41,6 +41,8 @@ export class JwtTokenService {
   }
 
   logout(): Observable<void> {
+    if (!this.isLoggedIn()) return of(undefined)
+
     return this.http.post<void>(`${this.path}/user/logout`, {}).pipe(
       catchError(() => of(undefined)),
       finalize(() => this.removeTokens()),
@@ -96,7 +98,7 @@ export class JwtTokenService {
   removeTokens() {
     this.preferenceStore.update({
       JWTAccessToken: '',
-      JWTRefreshToken: ''
+      JWTRefreshToken: '',
     })
   }
 }

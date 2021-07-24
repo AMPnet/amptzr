@@ -1,9 +1,8 @@
 import {Injectable} from '@angular/core'
 import {BackendHttpClient} from '../../shared/services/backend/backend-http-client.service'
 import {environment} from '../../../environments/environment'
-import {ErrorService} from '../../shared/services/error.service'
 import {Observable, of, throwError} from 'rxjs'
-import {map, switchMap} from 'rxjs/operators'
+import {switchMap} from 'rxjs/operators'
 import {MatDialog} from '@angular/material/dialog'
 import {VeriffComponent} from './veriff.component'
 
