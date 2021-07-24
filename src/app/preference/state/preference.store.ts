@@ -6,8 +6,8 @@ export interface PreferenceState {
   address: string;
   authProvider: AuthProvider | '';
   chainID: ChainID;
-  JWTAccessToken?: string;
-  JWTRefreshToken?: string;
+  JWTAccessToken: string;
+  JWTRefreshToken: string;
 }
 
 export function createInitialState(): PreferenceState {

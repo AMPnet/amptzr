@@ -10,8 +10,9 @@
           Declined
         </h2>
 
-        <!-- TODO: replace decision reason with translations of reason codes -->
-        <p class="mt-1">{{ session.decision!.reason }}</p>
+        <p class="mt-1" *ngIf="session.decision">
+          {{ session.decision.reason }}
+        </p>
       </div>
 
       <div *ngIf="decisionPending(session)" class="mt-3">
