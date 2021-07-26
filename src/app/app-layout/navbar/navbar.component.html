@@ -55,7 +55,7 @@
        class="flex flex-col justify-around h-full flex-1 transition-all lg:hidden">
 
     <!-- Navigation links -->
-    <div class="flex flex-col flex-1 space-y-4">
+    <div class="flex flex-col justify-around flex-1 space-y-4">
       <button *ngFor="let navbarItem of navbarScreenLinks" (click)="toggleDropdown()"
               class="mx-2 pl-4 text-gray-700 text-3xl text-left whitespace-nowrap"
               [routerLink]="navbarItem.routerLink"
@@ -67,7 +67,7 @@
     <!-- Session buttons -->
     <div class="flex flex-col">
       <button app-action-button class="pl-4 text-gray-700 mx-4
-        border-indigo-800 py-2 border-b-2 whitespace-nowrap my-2"
+        border-indigo-800 py-2 text-2xl text-left border-b-2 whitespace-nowrap my-2"
               *ngIf="(isLoggedIn$ | async) === true"
               [onClick]="logout.bind(this)"
               text="Log Out">
@@ -77,8 +77,8 @@
         border-indigo-800 py-2 border-b-2 whitespace-nowrap my-2"
               *ngIf="(isLoggedIn$ | async) === false"
               routerLink="/auth"
-              [onClick]="toggleDropdown.bind(this)"
-              text="Log In">
+              [onClick]="toggleDropdown.bind(this)">
+              ABC
       </button>
     </div>
   </div>
