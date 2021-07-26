@@ -45,19 +45,21 @@ export class VeriffComponent {
     )
 
     this.approved$ = this.approvedSubject.asObservable().pipe(
-      switchMap(() =>
-        this.userService.getUser().pipe(
-          repeatWhen(obs => obs.pipe(delay(1000))),
-          filter(user => user.kyc_completed),
-          take(1),
-        ),
-      ),
+      switchMap(() => this.waitUntilIdentityCheckPassed),
       switchMap(() => this.dialogService.success('User data has been successfully verified.')),
       catchError(() => {
         this.dialogRef.close(false)
         return EMPTY
       }),
       tap(() => this.dialogRef.close(true)),
+    )
+  }
+
+  private get waitUntilIdentityCheckPassed() {
+    return this.userService.getUser().pipe(
+      repeatWhen(obs => obs.pipe(delay(1000))),
+      filter(user => user.kyc_completed),
+      take(1),
     )
   }
 

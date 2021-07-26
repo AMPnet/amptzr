@@ -13,13 +13,13 @@ export class IdentityService {
   }
 
   get ensureIdentityChecked(): Observable<void> {
-    return this.identityChecked.pipe(
+    return this.identityCheck.pipe(
       switchMap(identityChecked => identityChecked ? of(undefined) : this.openIdentityDialog),
       map(() => undefined),
     )
   }
 
-  private get identityChecked(): Observable<boolean> {
+  private get identityCheck(): Observable<boolean> {
     return this.backendUser.getUser().pipe(
       map(user => user.kyc_completed),
     )
