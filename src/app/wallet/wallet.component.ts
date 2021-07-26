@@ -66,6 +66,24 @@ export class WalletComponent {
 
   authProvider$ = this.sessionQuery.authProvider$
 
+  transactionHistory: WalletTransaction[] = [ // TODO used for testing only
+      {
+          type: TransactionType.INVESTMENT,
+          projectName: 'Solarna elektrana Hvar',
+          amount: -12990
+      },
+      {
+          type: TransactionType.DIVIDEND_PAYOUT,
+          projectName: 'Test project',
+          amount: 505
+      },
+      {
+          type: TransactionType.INVESTMENT,
+          projectName: 'LatCorp',
+          amount: -420
+      }
+  ]
+
   constructor(private sessionQuery: SessionQuery,
               private tokenMappingService: TokenMappingService,
               private signerService: SignerService,
@@ -97,4 +115,33 @@ export class WalletComponent {
       concatMap(res => res ? this.signerService.login(this.venly, {force: false}) : EMPTY),
     )
   }
+
+  copyAddressToClipboard() {
+    this.sessionQuery.address$.pipe(take(1))
+        .subscribe(address => {
+          const selBox = document.createElement('textarea')
+          selBox.style.position = 'fixed'
+          selBox.style.left = '0'
+          selBox.style.top = '0'
+          selBox.style.opacity = '0'
+          selBox.value = address || ''
+          document.body.appendChild(selBox)
+          selBox.focus()
+          selBox.select()
+          document.execCommand('copy')
+          document.body.removeChild(selBox)
+          alert('Address copied to clipboard: ' + address) // TODO remove alert and use HTML instead
+        })
+  }
+}
+
+export enum TransactionType {
+    INVESTMENT = 'INVESTMENT',
+    DIVIDEND_PAYOUT = 'DIVIDEND_PAYOUT',
+}
+
+export interface WalletTransaction {
+    type: TransactionType
+    projectName: string
+    amount: number
 }

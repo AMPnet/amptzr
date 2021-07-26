@@ -1,4 +1,66 @@
 <div class="max-w-6xl mx-auto px-4">
+  <!-- TODO add breakpoints for other resolutions when they become available in the design -->
+  <div class="mt-6 rounded-3xl shadow-lg bg-white px-6 py-4">
+    <div class="flex flex-col">
+      <b class="text-xs">Your balance:</b>
+      <div class="flex flex-row mt-2 mb-9">
+        <!-- TODO show actual balance -->
+        <p class="text-3xl mr-8 font-light">145 045,232 USDC</p>
+        <!-- TODO: buttons should be the same width -->
+        <!-- TODO: add deposit button action -->
+        <button
+          class="text-white text-xs flex items-center justify-center rounded-full bg-green-600 hover:bg-green-700 pl-4 pr-6 mr-3">
+          <svg class="h-3.5 w-3.5 mr-2" width="18" height="14" viewBox="0 0 18 14" fill="none"
+               xmlns="http://www.w3.org/2000/svg">
+            <path d="M8.78568 1V7M8.78568 7V13M8.78568 7H16.0255M8.78568 7H1.5459" stroke="white" stroke-width="2"
+                  stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          Deposit
+        </button>
+        <!-- TODO: add withdraw button action -->
+        <button
+          class="text-white text-xs flex items-center justify-center rounded-full bg-indigo-800 hover:bg-indigo-900 pl-4 pr-6">
+          <svg class="h-3.5 w-3.5 mr-2" width="22" height="18" viewBox="0 0 22 18" fill="none"
+               xmlns="http://www.w3.org/2000/svg">
+            <path
+              d="M1.47461 13V14C1.47461 14.7956 1.85599 15.5587 2.53485 16.1213C3.21371 16.6839 4.13444 17 5.0945 17H17.1608C18.1209 17 19.0416 16.6839 19.7204 16.1213C20.3993 15.5587 20.7807 14.7956 20.7807 14V13M15.9542 9L11.1276 13M11.1276 13L6.30113 9M11.1276 13V1"
+              stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          Withdraw
+        </button>
+      </div>
+      <div class="flex flex-row text-xs justify-between">
+        <!-- TODO: extract identity from login info -->
+        <p class="flex-grow">Identity: Ivo Robić</p>
+        <p class="flex-grow-0 mr-6">Wallet address: <span *ngIf="(address$ | async | addrShort) as address">{{ address }}</span></p>
+        <!-- TODO: show some kind of popup that address was copied -->
+        <button class="flex items-center justify-center flex-grow-0 mr-6" (click)="copyAddressToClipboard()">
+          <svg class="h-3 w-3 mr-2" width="14" height="14" viewBox="0 0 14 14" fill="none"
+               xmlns="http://www.w3.org/2000/svg">
+            <path
+              d="M4.33317 3.66667V9C4.33317 9.35362 4.47365 9.69276 4.72369 9.94281C4.97374 10.1929 5.31288 10.3333 5.6665 10.3333H9.6665M4.33317 3.66667V2.33333C4.33317 1.97971 4.47365 1.64057 4.72369 1.39052C4.97374 1.14048 5.31288 1 5.6665 1H8.72384C8.90063 1.00004 9.07018 1.0703 9.19517 1.19533L12.1378 4.138C12.2629 4.263 12.3331 4.43254 12.3332 4.60933V9C12.3332 9.35362 12.1927 9.69276 11.9426 9.94281C11.6926 10.1929 11.3535 10.3333 10.9998 10.3333H9.6665M4.33317 3.66667H2.99984C2.64622 3.66667 2.30708 3.80714 2.05703 4.05719C1.80698 4.30724 1.6665 4.64638 1.6665 5V11.6667C1.6665 12.0203 1.80698 12.3594 2.05703 12.6095C2.30708 12.8595 2.64622 13 2.99984 13H8.33317C8.68679 13 9.02593 12.8595 9.27598 12.6095C9.52603 12.3594 9.6665 12.0203 9.6665 11.6667V10.3333"
+              stroke="#3F3F46" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          <b>Copy address</b>
+        </button>
+        <p class="flex-grow-0">Connected with: <b *ngIf="(authProvider$ | async | authProviderName) as authProvider">{{ authProvider }}</b></p>
+      </div>
+    </div>
+  </div>
+  <div class="flex flex-col mt-6">
+    <b>Transaction history:</b>
+    <!-- TODO: extract into wallet sub-component -->
+    <!-- TODO: finish transaction items when design is finalized -->
+    <div class="flex flex-col">
+      <div *ngFor="let transaction of transactionHistory" class="rounded-xl shadow-md bg-white p-4 my-1.5">
+        {{ transaction.type }}: {{ transaction.projectName }} {{ transaction.amount }}
+      </div>
+    </div>
+  </div>
+
+  <!-- TODO remove rest of the HTML from here -->
+
+
   <h1 class="text-xl py-2 -mx-4 px-4 bg-blue-50 md:bg-transparent md:text-3xl">
     — WALLET
   </h1>

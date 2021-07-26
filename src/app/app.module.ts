@@ -38,6 +38,8 @@ import {HttpClientModule} from '@angular/common/http'
 import {VeriffComponent} from './identity/veriff/veriff.component'
 import {FaqComponent} from './faq/faq.component'
 import {FundingProgressComponent} from "./shared/components/funding-progress/funding-progress.component"
+import {OffersCardSmallComponent} from "./offers/offers-card-small/offers-card-small.component"
+import {AuthProviderNamePipe} from "./shared/pipes/auth-provider-name.pipe"
 
 @NgModule({
   declarations: [
@@ -62,10 +64,12 @@ import {FundingProgressComponent} from "./shared/components/funding-progress/fun
     InvestComponent,
     InvestPreviewComponent,
     OffersCardLargeComponent,
+    OffersCardSmallComponent,
     FundingProgressComponent,
     CurrencyDefaultPipe,
     VeriffComponent,
     FaqComponent,
+    AuthProviderNamePipe,
   ],
   imports: [
     BrowserModule,
