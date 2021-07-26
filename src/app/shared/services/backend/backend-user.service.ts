@@ -15,6 +15,10 @@ export class BackendUserService {
   getUser(): Observable<User> {
     return this.http.get<User>(`${this.path}/user`)
   }
+
+  updateUser(userUpdate: UserUpdate): Observable<User> {
+    return this.http.put<User>(`${this.path}/user`, userUpdate)
+  }
 }
 
 interface User {
@@ -22,4 +26,8 @@ interface User {
   email: string | null;
   email_verified: boolean;
   kyc_completed: boolean;
+}
+
+interface UserUpdate {
+  email: string;
 }

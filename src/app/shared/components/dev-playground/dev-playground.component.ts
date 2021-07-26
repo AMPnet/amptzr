@@ -7,6 +7,7 @@ import {SignerService} from '../../services/signer.service'
 import {utils} from 'ethers'
 import {DialogService} from '../../services/dialog.service'
 import {IdentityService} from '../../../identity/identity.service'
+import {ProfileService} from '../../../profile/profile.service'
 
 @Component({
   selector: 'app-dev-playground',
@@ -20,6 +21,7 @@ export class DevPlaygroundComponent {
   constructor(private ipfsService: IpfsService,
               private signerService: SignerService,
               private identityService: IdentityService,
+              private profileService: ProfileService,
               private dialogService: DialogService) {
   }
 
@@ -48,6 +50,7 @@ export class DevPlaygroundComponent {
   checkInvest() {
     return this.signerService.ensureAuth.pipe(
       switchMap(() => this.identityService.ensureIdentityChecked),
+      switchMap(() => this.profileService.ensureBasicInfo),
       switchMap(() => this.dialogService.info('You have passed all requirements for investing.', false)),
     )
   }

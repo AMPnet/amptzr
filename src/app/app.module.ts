@@ -40,6 +40,8 @@ import {FaqComponent} from './faq/faq.component'
 import {FundingProgressComponent} from "./shared/components/funding-progress/funding-progress.component"
 import {OffersCardSmallComponent} from "./offers/offers-card-small/offers-card-small.component"
 import {AuthProviderNamePipe} from "./shared/pipes/auth-provider-name.pipe"
+import {ProfileAddMandatoryComponent} from './profile/profile-add-mandatory/profile-add-mandatory.component'
+import {ReactiveFormsModule} from '@angular/forms'
 
 @NgModule({
   declarations: [
@@ -70,12 +72,14 @@ import {AuthProviderNamePipe} from "./shared/pipes/auth-provider-name.pipe"
     VeriffComponent,
     FaqComponent,
     AuthProviderNamePipe,
+    ProfileAddMandatoryComponent,
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     HttpClientModule,
     environment.production ? [] : AkitaNgDevtools.forRoot(),
+    ReactiveFormsModule,
     AkitaNgRouterStoreModule,
     BrowserAnimationsModule,
     MatDialogModule,
