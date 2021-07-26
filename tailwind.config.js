@@ -11,7 +11,11 @@ module.exports = {
   },
   darkMode: false, // or 'media' or 'class'
   theme: {
-    extend: {},
+    extend: {
+      borderRadius: {
+        '4xl': '32px'
+      }
+    },
   },
   variants: {
     extend: {},

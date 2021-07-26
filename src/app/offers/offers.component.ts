@@ -28,17 +28,43 @@ export class OffersComponent {
         roi: "12%",
         minInvestment: 65000,
         titleImageSrc: "https://images.pexels.com/photos/2850347/pexels-photo-2850347.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260",
+        display: "large"
       },
       {
         title: "Wind Farm Stupnik",
         shortDescription: "This is a small change, but a big move for us. 140 was an arbitrary choice based on the 160 character SMS limit. Proud of how thoughtful the team has been in solving a real problem people have when trying to tweet. And at the same time maintaining our brevity, speed, and essence!",
-        fundsRaised: 42500000,
+        fundsRaised: 83300000,
         fundsRequired: 83300000,
         startDate: 0,
         endDate: 0,
         roi: "12%",
         minInvestment: 65000,
         titleImageSrc: "https://www.afrik21.africa/wp-content/uploads/2019/06/shutterstock_275763713-2-800x400.jpg",
+        display: "small"
+      },
+      {
+        title: "Yacht Charter in Murter, Croatia",
+        shortDescription: "This is a small change, but a big move for us. 140 was an arbitrary choice based on the 160 character SMS limit. Proud of how thoughtful the team has been in solving a real problem people have when trying to tweet. And at the same time maintaining our brevity, speed, and essence!",
+        fundsRaised: 31000000,
+        fundsRequired: 40000000,
+        startDate: 0,
+        endDate: 0,
+        roi: "6,5%",
+        minInvestment: 5000,
+        titleImageSrc: "https://marinanovi.hr/wp-content/uploads/2020/12/152-1024x575.jpg",
+        display: "small"
+      },
+      {
+        title: "Fairmont Kea Lani, Maui Resort Renewal",
+        shortDescription: "This is a small change, but a big move for us. 140 was an arbitrary choice based on the 160 character SMS limit. Proud of how thoughtful the team has been in solving a real problem people have when trying to tweet. And at the same time maintaining our brevity, speed, and essence!",
+        fundsRaised: 40000000,
+        fundsRequired: 40000000,
+        startDate: 0,
+        endDate: 0,
+        roi: "12%",
+        minInvestment: 20000,
+        titleImageSrc: "https://media.kempinski.com/1139/kempinski-hotel-adriatic-luxury-pool-area-at-daytime.jpg;width=1905;height=794;mode=crop;anchor=middlecenter;autorotate=true;quality=85;scale=both;progressive=true;encoder=freeimage;format=jpg",
+        display: "large"
       },
     ])
   }
@@ -54,5 +80,6 @@ export interface SingleOfferCardModel {
   endDate: number
   roi: string
   minInvestment: number
-  titleImageSrc: string
+  titleImageSrc: string,
+  display: 'large' | 'small'
 }

@@ -24,7 +24,7 @@ const routes: Routes = [
         path: '', canActivate: [AuthGuard], children: [
           {path: 'wallet', component: WalletComponent, canActivate: [AuthGuard]},
           {path: 'deposit', component: DepositComponent},
-          {path: 'invest', component: InvestComponent},
+          {path: 'offers/:id/invest', component: InvestComponent},
           {path: 'invest/preview', component: InvestPreviewComponent},
           {path: 'portfolio', component: PortfolioComponent},
           {path: 'identity', component: IdentityComponent},

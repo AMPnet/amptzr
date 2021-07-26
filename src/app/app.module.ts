@@ -37,6 +37,7 @@ import {CurrencyDefaultPipe} from './shared/pipes/currency-default.pipe'
 import {AuthComponent} from './auth/auth.component'
 import {HttpClientModule} from '@angular/common/http'
 import {FundingProgressComponent} from "./shared/components/funding-progress/funding-progress.component"
+import {OffersCardSmallComponent} from "./offers/offers-card-small/offers-card-small.component"
 
 @NgModule({
   declarations: [
@@ -62,6 +63,7 @@ import {FundingProgressComponent} from "./shared/components/funding-progress/fun
     InvestPreviewComponent,
     IdentityComponent,
     OffersCardLargeComponent,
+    OffersCardSmallComponent,
     FundingProgressComponent,
     CurrencyDefaultPipe,
   ],
