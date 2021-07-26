@@ -38,6 +38,7 @@ import {AuthComponent} from './auth/auth.component'
 import {HttpClientModule} from '@angular/common/http'
 import {FundingProgressComponent} from "./shared/components/funding-progress/funding-progress.component"
 import {OffersCardSmallComponent} from "./offers/offers-card-small/offers-card-small.component"
+import {AuthProviderNamePipe} from "./shared/pipes/auth-provider-name.pipe"
 
 @NgModule({
   declarations: [
@@ -66,6 +67,7 @@ import {OffersCardSmallComponent} from "./offers/offers-card-small/offers-card-s
     OffersCardSmallComponent,
     FundingProgressComponent,
     CurrencyDefaultPipe,
+    AuthProviderNamePipe,
   ],
   imports: [
     BrowserModule,
