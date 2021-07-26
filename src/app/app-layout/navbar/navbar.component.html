@@ -29,7 +29,8 @@
       font-semibold rounded-full text-sm tracking-wider uppercase
       text-gray-700 whitespace-nowrap hidden lg:inline
       hover:bg-indigo-800 hover:text-white"
-              *ngIf="(isLoggedIn$ | async) === false" routerLink="/auth"
+              *ngIf="(isLoggedIn$ | async) === false"
+              [onClick]="login.bind(this)"
               text="Log In"></button>
 
       <!-- Toggle dropdown -->
@@ -76,9 +77,8 @@
       <button app-action-button class="pl-4 text-gray-700 mx-4
         border-indigo-800 py-2 border-b-2 whitespace-nowrap my-2"
               *ngIf="(isLoggedIn$ | async) === false"
-              routerLink="/auth"
-              [onClick]="toggleDropdown.bind(this)">
-              ABC
+              [onClick]="login.bind(this)"
+              text="Log In">
       </button>
     </div>
   </div>

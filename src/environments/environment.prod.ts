@@ -1,6 +1,6 @@
-import {environment as devEnvironment} from './environment'
+import {environment as baseEnvironment} from './env.base'
 
 export const environment = {
-  ...devEnvironment,
+  ...baseEnvironment,
   production: true,
 }

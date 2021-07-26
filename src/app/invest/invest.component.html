@@ -1,5 +1,5 @@
 <ng-container *ngIf="(project$ | async) as project">
-    <div class="flex justify-center">
+    <div class="flex justify-center pb-8">
 
         <!-- Input investment -->
         <div class="max-w-6xl w-full">
@@ -8,19 +8,34 @@
                     src="https://images.pexels.com/photos/2850347/pexels-photo-2850347.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260"
                     alt="">
                 <div class="w-full flex flex-col p-8">
-                    <div>
+                    <form [formGroup]="investmentAmountForm" id="investmentAmountForm">
                         <h1 class="pt-8 text-4xl uppercase">{{ project.title }}</h1>
-                        <div class="mt-8 text-sm">
-                            I want to invest
-                        </div>
+                        <!-- Input Form -->
                         <div class="mt-4 flex justify-between">
-                            <form class="w-full mr-16">
-                                <input class="w-full h-full p-3 border outline-none  rounded-xl" type="text"
-                                    placeholder="Ca$h Dolla">
-                            </form>
-                            <div class="ml-8 flex flex-col items-end">
+                            
+                            <div 
+                                  class="w-full h-full mr-16">
+                                <label for="investmentAmount" class="text-sm">
+                                    I want to invest
+                                </label>
+                                <input class="w-full h-full mt-2 p-3 border outline-none rounded-xl"
+                                       type="text"
+                                       placeholder="$"
+                                       formControlName="investmentAmount"/>
+                                <div class="mt-4 w-full flex items-end justify-between">
+                                    <span class="text-sm flex">
+                                        <span class="font-semibold mr-1">{{ project.minInvestment | currencyDefault }}</span>
+                                        Min. Investment
+                                    </span>
+                                    <span class="text-sm flex">
+                                        <span class="font-semibold mr-1">{{ project.maxInvestment | currencyDefault }}</span>
+                                        Max Investment
+                                    </span>
+                                </div> 
+                            </div>
+                            <div class="ml-8 mt-8 flex flex-col items-end bg-gray-200 p-4 rounded-2xl">
                                 <div class="text-lg">{{ project.walletBalance | currencyDefault }}</div>
-                                <div class="text-sm text-gray-500 whitespace-nowrap flex items-center mt-2">
+                                <div class="text-sm text-gray-500 whitespace-nowrap flex items-center mt-1">
                                     <span>
                                         <svg width="20" height="20" viewBox="0 0 20 20" fill="none"
                                             xmlns="http://www.w3.org/2000/svg">
@@ -35,37 +50,57 @@
                                 </div>
                             </div>
                         </div>
-                        <button class="bg-indigo-800 rounded-full px-16 py-2 text-sm mt-8 text-white float-right">
-                            Next ->
-                        </button>
-                    </div>
+                        <div class="w-full flex justify-between items-end">
+                            <div class="flex items-center">
+                                <div class="flex items-center" *ngIf="(invalidInvestmentAmountMessage$ | async) != ''">
+                                    <svg width="26" height="26" viewBox="0 0 26 26" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M14.3333 18.3333H13V13H11.6667M13 7.66667H13.0133M25 13C25 14.5759 24.6896 16.1363 24.0866 17.5922C23.4835 19.0481 22.5996 20.371 21.4853 21.4853C20.371 22.5996 19.0481 23.4835 17.5922 24.0866C16.1363 24.6896 14.5759 25 13 25C11.4241 25 9.86371 24.6896 8.4078 24.0866C6.95189 23.4835 5.62902 22.5996 4.51472 21.4853C3.40042 20.371 2.5165 19.0481 1.91345 17.5922C1.31039 16.1363 1 14.5759 1 13C1 9.8174 2.26428 6.76516 4.51472 4.51472C6.76516 2.26428 9.8174 1 13 1C16.1826 1 19.2348 2.26428 21.4853 4.51472C23.7357 6.76516 25 9.8174 25 13Z" stroke="#EF4444" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                    </svg>
+                                    <span class="ml-3 text-red-600 text-sm font-semibold">{{ invalidInvestmentAmountMessage$ | async }}</span>    
+                                </div>
+                                <!-- <span class="ml-2 text-gray-500 text-sm">Add funds in wallet.</span> -->
+                            </div>  
+                            <!-- Submit Button for Input Form, connected through `form` field -->
+                            <button
+                                (click)="nextButtonClicked()"
+                                [disabled]="(isEditingDisabled$ | async) ?? true" 
+                                class="bg-indigo-800 rounded-full px-16 py-2 text-sm mt-8 text-white float-right
+                                       disabled:bg-gray-500 disabled:cursor-default">
+                                    Next ->
+                            </button>
+                        </div>
+                        
+                    </form>
                 </div>
             </div>
 
             <!-- Review investment -->
-            <div class="mt-8 font-semibold">Review your investment</div>
-            <div class="mt-4 shadow-lg rounded-3xl bg-white p-8 flex flex-col">
-                <div class="font-semibold mb-4">Investing</div>
-                <div class="flex items-center">
-                    <span class="text-3xl mr-2 font-semibold">{{ ( investmentAmount$ | async )! | currencyDefault }}</span>
-                    <span>-></span>
-                    <span class="text-3xl ml-2 uppercase">{{ project.title }}</span>
-                </div>
-                <div class="mt-4 rounded-full px-4 py-2 bg-gray-100 flex items-center fit-content">
-                    <div class="font-semibold">{{ project.roi }}</div>
-                    <div class="text-sm ml-2">Expected annual return on investment</div>
-                </div>
-                <div class="mt-4 text-gray-500">{{ project.description }}</div>
-                <div class="w-full flex justify-end mt-8 mb-4">
-                    <button routerLink="/offers" class="rounded-full px-16 py-2 text-sm font-semibold fit-content">
-                        Cancel
-                    </button>
-                    <button class="bg-indigo-800 ml-4 rounded-full px-16 py-2 text-sm text-white fit-content">
-                        Confirm ->
-                    </button>
-
+            <div [hidden]="!(isInReview$ | async)">
+                <div class="mt-8 font-semibold">Review your investment</div>
+                <div class="mt-4 shadow-lg rounded-3xl bg-white p-8 flex flex-col">
+                    <div class="font-semibold mb-4">Investing</div>
+                    <div class="flex items-center">
+                        <span class="text-3xl mr-2 font-semibold">{{ (investmentAmountState$ | async)!.amount | currencyDefault }}</span>
+                        <span>-></span>
+                        <span class="text-3xl ml-2 uppercase">{{ project.title }}</span>
+                    </div>
+                    <div class="mt-4 rounded-full px-4 py-2 bg-gray-100 flex items-center fit-content">
+                        <div class="font-semibold">{{ project.roi }}</div>
+                        <div class="text-sm ml-2">Expected annual return on investment</div>
+                    </div>
+                    <div class="mt-4 text-gray-500">{{ project.description }}</div>
+                    <div class="w-full flex justify-end mt-8 mb-4">
+                        <button (click)="cancelButtonClicked()" class="rounded-full px-16 py-2 text-sm font-semibold fit-content">
+                            Cancel
+                        </button>
+                        <button class="bg-indigo-800 ml-4 rounded-full px-16 py-2 text-sm text-white fit-content">
+                            Confirm & Invest ->
+                        </button>
+    
+                    </div>
                 </div>
             </div>
+            
 
 
         </div>

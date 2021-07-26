@@ -30,14 +30,18 @@ import {OfferComponent} from './offer/offer.component'
 import {DepositComponent} from './deposit/deposit.component'
 import {InvestComponent} from './invest/invest.component'
 import {InvestPreviewComponent} from './invest-preview/invest-preview.component'
-import {IdentityComponent} from './identity/identity.component'
 import {OffersCardLargeComponent} from './offers/offers-card-large/offers-card-large.component'
 import {CurrencyPipe} from '@angular/common'
 import {CurrencyDefaultPipe} from './shared/pipes/currency-default.pipe'
 import {AuthComponent} from './auth/auth.component'
 import {HttpClientModule} from '@angular/common/http'
+import {VeriffComponent} from './identity/veriff/veriff.component'
+import {FaqComponent} from './faq/faq.component'
 import {FundingProgressComponent} from "./shared/components/funding-progress/funding-progress.component"
 import {OffersCardSmallComponent} from "./offers/offers-card-small/offers-card-small.component"
+import {AuthProviderNamePipe} from "./shared/pipes/auth-provider-name.pipe"
+import {ProfileAddMandatoryComponent} from './profile/profile-add-mandatory/profile-add-mandatory.component'
+import {ReactiveFormsModule} from '@angular/forms'
 
 @NgModule({
   declarations: [
@@ -61,17 +65,21 @@ import {OffersCardSmallComponent} from "./offers/offers-card-small/offers-card-s
     DepositComponent,
     InvestComponent,
     InvestPreviewComponent,
-    IdentityComponent,
     OffersCardLargeComponent,
     OffersCardSmallComponent,
     FundingProgressComponent,
     CurrencyDefaultPipe,
+    VeriffComponent,
+    FaqComponent,
+    AuthProviderNamePipe,
+    ProfileAddMandatoryComponent,
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     HttpClientModule,
     environment.production ? [] : AkitaNgDevtools.forRoot(),
+    ReactiveFormsModule,
     AkitaNgRouterStoreModule,
     BrowserAnimationsModule,
     MatDialogModule,

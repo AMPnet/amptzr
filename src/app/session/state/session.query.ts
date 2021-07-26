@@ -1,10 +1,11 @@
 import {Injectable} from '@angular/core'
 import {Query} from '@datorama/akita'
 import {SessionState, SessionStore} from './session.store'
-import {map, tap} from 'rxjs/operators'
+import {filter, map, take, tap} from 'rxjs/operators'
 import {getDefaultProvider, providers} from 'ethers'
 import {PreferenceQuery} from '../../preference/state/preference.query'
 import {EthersNetworks} from '../../shared/networks'
+import {Observable} from 'rxjs'
 
 @Injectable({providedIn: 'root'})
 export class SessionQuery extends Query<SessionState> {
@@ -53,5 +54,9 @@ export class SessionQuery extends Query<SessionState> {
 
   isLoggedIn(): boolean {
     return this.stateIsLoggedIn(this.store._value())
+  }
+
+  waitUntilLoggedIn(): Observable<boolean> {
+    return this.isLoggedIn$.pipe(filter(isLoggedIn => isLoggedIn), take(1))
   }
 }

@@ -48,6 +48,7 @@
             "serviceWorker": true,
             "ngswConfigPath": "ngsw-config.json"
           },
+          "defaultConfiguration": "production",
           "configurations": {
             "production": {
               "fileReplacements": [
@@ -73,8 +74,8 @@
               "budgets": [
                 {
                   "type": "initial",
-                  "maximumWarning": "500kb",
-                  "maximumError": "1mb"
+                  "maximumWarning": "1500kb",
+                  "maximumError": "2mb"
                 },
                 {
                   "type": "anyComponentStyle",
@@ -82,17 +83,21 @@
                   "maximumError": "4kb"
                 }
               ]
-            }
+            },
+            "development": {}
           }
         },
         "serve": {
           "builder": "@angular-builders/custom-webpack:dev-server",
           "options": {
-            "browserTarget": "amptzr:build"
           },
+          "defaultConfiguration": "development",
           "configurations": {
             "production": {
               "browserTarget": "amptzr:build:production"
+            },
+            "development": {
+              "browserTarget": "amptzr:build:development"
             }
           }
         },
@@ -133,14 +138,17 @@
         "e2e": {
           "builder": "@angular-devkit/build-angular:protractor",
           "options": {
-            "protractorConfig": "e2e/protractor.conf.js",
-            "devServerTarget": "amptzr:serve"
+            "protractorConfig": "e2e/protractor.conf.js"
           },
           "configurations": {
             "production": {
               "devServerTarget": "amptzr:serve:production"
+            },
+            "development": {
+              "devServerTarget": "amptzr:serve:development"
             }
-          }
+          },
+          "defaultConfiguration": "development"
         },
         "deploy-staging-ghpages": {
           "builder": "angular-cli-ghpages:deploy",

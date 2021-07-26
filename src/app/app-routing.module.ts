@@ -5,14 +5,12 @@ import {PortfolioComponent} from './portfolio/portfolio.component'
 import {WalletComponent} from './wallet/wallet.component'
 import {DevPlaygroundComponent} from './shared/components/dev-playground/dev-playground.component'
 import {AppLayoutComponent} from './app-layout/app-layout.component'
-import {AuthComponent} from './auth/auth.component'
 import {OfferComponent} from './offer/offer.component'
 import {InvestComponent} from './invest/invest.component'
 import {InvestPreviewComponent} from './invest-preview/invest-preview.component'
-import {IdentityComponent} from './identity/identity.component'
 import {DepositComponent} from './deposit/deposit.component'
-import {NoAuthGuard} from './shared/guards/no-auth.guard'
 import {AuthGuard} from './shared/guards/auth.guard'
+import {FaqComponent} from './faq/faq.component'
 
 const routes: Routes = [
   {
@@ -22,19 +20,17 @@ const routes: Routes = [
       {path: 'offers/:id', component: OfferComponent},
       {
         path: '', canActivate: [AuthGuard], children: [
-          {path: 'wallet', component: WalletComponent, canActivate: [AuthGuard]},
+          {path: 'wallet', component: WalletComponent},
           {path: 'deposit', component: DepositComponent},
           {path: 'offers/:id/invest', component: InvestComponent},
           {path: 'invest/preview', component: InvestPreviewComponent},
           {path: 'portfolio', component: PortfolioComponent},
-          {path: 'identity', component: IdentityComponent},
         ],
       },
+      {path: 'faq', component: FaqComponent},
       {path: 'dev_playground', component: DevPlaygroundComponent},
     ],
   },
-  {path: 'auth', component: AuthComponent, canActivate: [NoAuthGuard]},
-  {path: 'dev_playground', component: DevPlaygroundComponent},
 ]
 
 @NgModule({

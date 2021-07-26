@@ -21,4 +21,24 @@ export class DialogService {
       map(res => !!(res as InfoDialogResponse)?.confirmed),
     )
   }
+
+  success(message: string): Observable<void> {
+    return this.dialog.open(InfoDialogComponent, {
+      data: {
+        title: 'Success',
+        message,
+        cancelable: false,
+      } as InfoDialogData,
+    }).afterClosed()
+  }
+
+  error(message: string): Observable<void> {
+    return this.dialog.open(InfoDialogComponent, {
+      data: {
+        title: 'Error',
+        message,
+        cancelable: false,
+      } as InfoDialogData,
+    }).afterClosed()
+  }
 }

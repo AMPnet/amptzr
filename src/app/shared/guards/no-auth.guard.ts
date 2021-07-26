@@ -10,11 +10,11 @@ export class NoAuthGuard implements CanActivate {
               private router: Router) {
   }
 
-  canActivate(next: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean {
+  canActivate(next: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
     if (this.sessionQuery.isLoggedIn()) {
-      this.router.navigate(['/'])
-      return false
+      return this.router.parseUrl('/')
+    } else {
+      return true
     }
-    return true
   }
 }
