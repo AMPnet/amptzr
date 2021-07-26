@@ -1,12 +1,12 @@
 import {ChangeDetectionStrategy, Component} from '@angular/core'
 
 @Component({
-  selector: 'app-identity',
-  templateUrl: './identity.component.html',
-  styleUrls: ['./identity.component.css'],
+  selector: 'app-faq',
+  templateUrl: './faq.component.html',
+  styleUrls: ['./faq.component.css'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class IdentityComponent {
+export class FaqComponent {
   constructor() {
   }
 }

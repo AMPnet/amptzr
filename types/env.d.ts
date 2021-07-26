@@ -21,4 +21,5 @@ interface PostBuildEnv {
   FIXED_CHAIN_ID: string
   IPFS_API_URL: string
   IPFS_GATEWAY_URL: string
+  BACKEND_URL: string
 }

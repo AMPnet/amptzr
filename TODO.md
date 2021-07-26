@@ -19,3 +19,4 @@ https://github.com/actions/setup-node/issues/214#issuecomment-774020466
 
 ---
 
+- when changing accounts with Venly, accountsChange$ doesn't fire.. so user's JWT doesn't get cleaned.

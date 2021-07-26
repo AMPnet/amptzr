@@ -3,12 +3,11 @@ import {Observable, of} from 'rxjs'
 import {SessionQuery} from '../../session/state/session.query'
 import {AppLayoutStore} from '../state/app-layout.store'
 import {AppLayoutQuery} from '../state/app-layout.query'
-import {SignerService} from 'src/app/shared/services/signer.service'
-import {filter, tap} from 'rxjs/operators'
-
-// @ts-ignore
-import tailwindConfig from '../../../../tailwind.config.js'
+import {filter, finalize, tap} from 'rxjs/operators'
 import {TailwindService} from '../../shared/services/tailwind.service'
+import {Router} from '@angular/router'
+import {UserService} from '../../shared/services/user.service'
+import {SignerService} from '../../shared/services/signer.service'
 
 @Component({
   selector: 'app-navbar',
@@ -31,6 +30,8 @@ export class NavbarComponent {
   constructor(private sessionQuery: SessionQuery,
               private appLayoutStore: AppLayoutStore,
               private appLayoutQuery: AppLayoutQuery,
+              private userService: UserService,
+              private router: Router,
               private signerService: SignerService,
               private tailwindService: TailwindService) {
     this.dropdownCloser$ = this.tailwindService.screenResize$.pipe(
@@ -39,9 +40,17 @@ export class NavbarComponent {
     )
   }
 
+  login(): Observable<unknown> {
+    return this.signerService.ensureAuth.pipe(
+      tap(() => this.appLayoutStore.closeDropdownMenu()),
+    )
+  }
+
   logout(): Observable<unknown> {
-    this.appLayoutStore.closeDropdownMenu()
-    return this.signerService.logout()
+    return this.userService.logout().pipe(
+      tap(() => this.appLayoutStore.closeDropdownMenu()),
+      finalize(() => this.router.navigate(['/'])),
+    )
   }
 
   toggleDropdown(): Observable<unknown> {
