@@ -1,10 +1,10 @@
 <div class="w-full h-full flex flex-col lg:flex-row justify-start shadow-md hover:shadow-xl
-            transition-all duration-300 rounded-3xl">
+            transition-all duration-300 rounded-4xl">
   <div class="relative w-full lg:w-7/12">
     <!-- TODO: remove hardcoded routerLink -->
     <a routerLink="12">
       <img src="{{ offer.titleImageSrc }}" alt="Offer image"
-           class="w-full h-full object-cover top-rounded-small-screen lg:rounded-l-3xl">
+           class="w-full h-full object-cover rounded-t-4xl lg:rounded-none lg:rounded-l-4xl">
     </a>
 
     <div class="absolute float-left lg:top-6 left-6 lg:rounded-full
@@ -22,7 +22,7 @@
       </div>
     </div>
   </div>
-  <div class="w-full lg:w-5/12 bg-white bottom-rounded-small-screen md:rounded-r-3xl p-6">
+  <div class="w-full p-6 bg-white rounded-b-4xl lg:rounded-none lg:rounded-r-4xl lg:w-5/12">
     <h1 class="mt-6 lg:mt-0 text-4xl uppercase tracking-wider font-light leading-relaxed">
       {{ offer.title }}
     </h1>
