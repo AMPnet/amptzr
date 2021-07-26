@@ -2,12 +2,12 @@ import {ChangeDetectionStrategy, Component, Input} from '@angular/core'
 import {SingleOfferCardModel} from '../offers.component'
 
 @Component({
-  selector: 'app-offers-card-large',
-  templateUrl: './offers-card-large.component.html',
-  styleUrls: ['./offers-card-large.component.css'],
+  selector: 'app-offers-card-small',
+  templateUrl: './offers-card-small.component.html',
+  styleUrls: ['./offers-card-small.component.css'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class OffersCardLargeComponent {
+export class OffersCardSmallComponent {
   @Input() offer: SingleOfferCardModel = {
     title: '',
     shortDescription: '',
@@ -18,7 +18,7 @@ export class OffersCardLargeComponent {
     roi: '',
     minInvestment: 0,
     titleImageSrc: '',
-    display: 'large'
+    display: 'small'
   }
 
   constructor() {
