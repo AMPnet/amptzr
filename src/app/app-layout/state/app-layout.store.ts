@@ -2,12 +2,12 @@ import {Injectable} from '@angular/core'
 import {Store, StoreConfig} from '@datorama/akita'
 
 export interface AppLayoutState {
-  isSidebarOpen: boolean;
+  isDropdownMenuOpen: boolean;
 }
 
 export function createInitialState(): AppLayoutState {
   return {
-    isSidebarOpen: false,
+    isDropdownMenuOpen: false,
   }
 }
 
@@ -18,10 +18,17 @@ export class AppLayoutStore extends Store<AppLayoutState> {
     super(createInitialState())
   }
 
-  toggleNavbarOpen(): void {
+  toggleDropdownMenu(): void {
     return this.update(state => ({
       ...state,
-      isSidebarOpen: !state.isSidebarOpen,
+      isDropdownMenuOpen: !state.isDropdownMenuOpen,
+    }))
+  }
+
+  closeDropdownMenu(): void {
+    return this.update(state => ({
+      ...state,
+      isDropdownMenuOpen: false,
     }))
   }
 }

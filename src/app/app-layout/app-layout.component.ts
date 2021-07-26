@@ -1,7 +1,4 @@
 import {ChangeDetectionStrategy, Component} from '@angular/core'
-import {AppLayoutQuery} from './state/app-layout.query'
-import {AppLayoutStore} from './state/app-layout.store'
-import {shareReplay} from 'rxjs/operators'
 
 @Component({
   selector: 'app-app-layout',
@@ -10,17 +7,8 @@ import {shareReplay} from 'rxjs/operators'
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AppLayoutComponent {
-  isOpen$ = this.appLayoutQuery.isSidebarOpen$.pipe(
-    shareReplay(1),
-  )
 
-  constructor(private appLayoutQuery: AppLayoutQuery,
-              private appLayoutStore: AppLayoutStore) {
+  constructor() {
   }
 
-  hideNavbar(): void {
-    if (this.appLayoutQuery.isSidebarOpen()) {
-      this.appLayoutStore.toggleNavbarOpen()
-    }
-  }
 }

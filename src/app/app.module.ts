@@ -20,7 +20,6 @@ import {DevPlaygroundComponent} from './shared/components/dev-playground/dev-pla
 import {PreferenceService} from './preference/state/preference.service'
 import {AppLayoutComponent} from './app-layout/app-layout.component'
 import {NavbarComponent} from './app-layout/navbar/navbar.component'
-import {SidebarComponent} from './app-layout/sidebar/sidebar.component'
 import {FooterComponent} from './app-layout/footer/footer.component'
 import {A11yModule} from '@angular/cdk/a11y'
 import {SpinnerComponent} from './shared/components/spinner/spinner.component'
@@ -37,13 +36,14 @@ import {CurrencyPipe} from '@angular/common'
 import {CurrencyDefaultPipe} from './shared/pipes/currency-default.pipe'
 import {AuthComponent} from './auth/auth.component'
 import {HttpClientModule} from '@angular/common/http'
+import {FundingProgressComponent} from "./shared/components/funding-progress/funding-progress.component"
+import {OffersCardSmallComponent} from "./offers/offers-card-small/offers-card-small.component"
 import {AuthProviderNamePipe} from "./shared/pipes/auth-provider-name.pipe"
 
 @NgModule({
   declarations: [
     AppComponent,
     NavbarComponent,
-    SidebarComponent,
     OffersComponent,
     PortfolioComponent,
     WalletComponent,
@@ -64,6 +64,8 @@ import {AuthProviderNamePipe} from "./shared/pipes/auth-provider-name.pipe"
     InvestPreviewComponent,
     IdentityComponent,
     OffersCardLargeComponent,
+    OffersCardSmallComponent,
+    FundingProgressComponent,
     CurrencyDefaultPipe,
     AuthProviderNamePipe,
   ],
