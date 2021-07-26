@@ -1,78 +1,74 @@
-<div class="flex justify-center">
+<ng-container *ngIf="(project$ | async) as project">
+    <div class="flex justify-center">
 
-    <!-- Input investment -->
-    <div class="max-w-6xl w-full">
-        <div class="flex mt-8 shadow-lg rounded-3xl bg-white">
-            <img class="w-4/12 rounded-l-3xl"
-                src="https://images.pexels.com/photos/2850347/pexels-photo-2850347.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260"
-                alt="">
-            <div class="w-full flex flex-col">
-                <div class="ml-8 mr-4">
-                    <h1 class="pt-8 text-4xl uppercase">SuperCool Invest-O-Pia</h1>
-                    <div class="mt-8 text-sm">
-                        I want to invest
-                    </div>
-                    <div class="mt-4 flex justify-between">
-                        <form class="w-6/12">
-                            <input class="w-full h-full p-3 border outline-none  rounded-xl" type="text"
-                                placeholder="Ca$h Dolla">
-                        </form>
-                        <div class="ml-8 flex flex-col items-end">
-                            <div class="text-lg">$5.000,00</div>
-                            <div class="text-sm text-gray-500 whitespace-nowrap flex items-center mt-2">
-                                <span>
-                                    <svg width="20" height="20" viewBox="0 0 20 20" fill="none"
-                                        xmlns="http://www.w3.org/2000/svg">
-                                        <path
-                                            d="M18.6087 1.78261C18.8246 1.78261 19 1.60721 19 1.3913C19 1.1754 18.8246 1 18.6087 1H2.95652C1.87776 1 1 1.87776 1 2.95652V17.0435C1 18.1222 1.87776 19 2.95652 19H18.6087C18.8246 19 19 18.8252 19 18.6087V4.52174C19 4.30583 18.8246 4.13044 18.6087 4.13044C17.9616 4.13044 17.4348 3.60366 17.4348 2.95652C17.4348 2.30938 17.9616 1.78261 18.6087 1.78261ZM2.95652 1.78261H17.0442C16.7985 2.10971 16.6522 2.5163 16.6522 2.95652C16.6522 3.39674 16.7985 3.80333 17.0442 4.13044H2.95652C2.30938 4.13044 1.78261 3.60366 1.78261 2.95652C1.78261 2.30938 2.30938 1.78261 2.95652 1.78261ZM18.2174 13.5217H11.5652C10.4865 13.5217 9.6087 12.644 9.6087 11.5652C9.6087 10.4865 10.4865 9.6087 11.5652 9.6087H18.2174V13.5217ZM18.2174 4.91304V8.82609H11.5652C10.0548 8.82609 8.82609 10.0548 8.82609 11.5652C8.82609 13.0752 10.0548 14.3043 11.5652 14.3043H18.2174V18.2174H2.95652C2.30938 18.2174 1.78261 17.6906 1.78261 17.0435V4.52097C2.10971 4.76669 2.5163 4.91304 2.95652 4.91304H18.2174Z"
-                                            fill="black" stroke="#6B7280" />
-                                    </svg>
+        <!-- Input investment -->
+        <div class="max-w-6xl w-full">
+            <div class="flex mt-8 shadow-lg rounded-3xl bg-white">
+                <img class="w-4/12 rounded-l-3xl"
+                    src="https://images.pexels.com/photos/2850347/pexels-photo-2850347.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260"
+                    alt="">
+                <div class="w-full flex flex-col p-8">
+                    <div>
+                        <h1 class="pt-8 text-4xl uppercase">{{ project.title }}</h1>
+                        <div class="mt-8 text-sm">
+                            I want to invest
+                        </div>
+                        <div class="mt-4 flex justify-between">
+                            <form class="w-full mr-16">
+                                <input class="w-full h-full p-3 border outline-none  rounded-xl" type="text"
+                                    placeholder="Ca$h Dolla">
+                            </form>
+                            <div class="ml-8 flex flex-col items-end">
+                                <div class="text-lg">{{ project.walletBalance | currencyDefault }}</div>
+                                <div class="text-sm text-gray-500 whitespace-nowrap flex items-center mt-2">
+                                    <span>
+                                        <svg width="20" height="20" viewBox="0 0 20 20" fill="none"
+                                            xmlns="http://www.w3.org/2000/svg">
+                                            <path
+                                                d="M18.6087 1.78261C18.8246 1.78261 19 1.60721 19 1.3913C19 1.1754 18.8246 1 18.6087 1H2.95652C1.87776 1 1 1.87776 1 2.95652V17.0435C1 18.1222 1.87776 19 2.95652 19H18.6087C18.8246 19 19 18.8252 19 18.6087V4.52174C19 4.30583 18.8246 4.13044 18.6087 4.13044C17.9616 4.13044 17.4348 3.60366 17.4348 2.95652C17.4348 2.30938 17.9616 1.78261 18.6087 1.78261ZM2.95652 1.78261H17.0442C16.7985 2.10971 16.6522 2.5163 16.6522 2.95652C16.6522 3.39674 16.7985 3.80333 17.0442 4.13044H2.95652C2.30938 4.13044 1.78261 3.60366 1.78261 2.95652C1.78261 2.30938 2.30938 1.78261 2.95652 1.78261ZM18.2174 13.5217H11.5652C10.4865 13.5217 9.6087 12.644 9.6087 11.5652C9.6087 10.4865 10.4865 9.6087 11.5652 9.6087H18.2174V13.5217ZM18.2174 4.91304V8.82609H11.5652C10.0548 8.82609 8.82609 10.0548 8.82609 11.5652C8.82609 13.0752 10.0548 14.3043 11.5652 14.3043H18.2174V18.2174H2.95652C2.30938 18.2174 1.78261 17.6906 1.78261 17.0435V4.52097C2.10971 4.76669 2.5163 4.91304 2.95652 4.91304H18.2174Z"
+                                                fill="black" stroke="#6B7280" />
+                                        </svg>
 
-                                </span>
-                                <span class="ml-2">Available in wallet</span>
+                                    </span>
+                                    <span class="ml-2">Available in wallet</span>
 
+                                </div>
                             </div>
                         </div>
+                        <button class="bg-indigo-800 rounded-full px-16 py-2 text-sm mt-8 text-white float-right">
+                            Next ->
+                        </button>
                     </div>
-                    <button class="bg-indigo-800 rounded-full px-16 py-2 text-sm mt-8 mb-4 text-white float-right">
-                        Next
-                    </button>
                 </div>
             </div>
-        </div>
 
-        <!-- Review investment -->
-        <div>
+            <!-- Review investment -->
             <div class="mt-8 font-semibold">Review your investment</div>
-            <div class="mt-4 shadow-lg rounded-3xl bg-white pl-8 pr-4 pt-8 flex flex-col">
+            <div class="mt-4 shadow-lg rounded-3xl bg-white p-8 flex flex-col">
                 <div class="font-semibold mb-4">Investing</div>
                 <div class="flex items-center">
-                    <span class="text-3xl mr-2 font-semibold">$900</span>
+                    <span class="text-3xl mr-2 font-semibold">{{ ( investmentAmount$ | async )! | currencyDefault }}</span>
                     <span>-></span>
-                    <span class="text-3xl ml-2 uppercase">SuperCool Invest-O-Pia</span>
+                    <span class="text-3xl ml-2 uppercase">{{ project.title }}</span>
                 </div>
                 <div class="mt-4 rounded-full px-4 py-2 bg-gray-100 flex items-center fit-content">
-                    <div class="font-semibold">12%</div>
+                    <div class="font-semibold">{{ project.roi }}</div>
                     <div class="text-sm ml-2">Expected annual return on investment</div>
                 </div>
-                <div class="mt-4 text-gray-500">
-                    This is a small change, but a big move for us. 140 was an arbitrary choice based on the 160
-                    character SMS limit. Proud of how thoughtful the team has been in solving a real problem people have
-                    when trying to tweet. And at the same time maintaining our brevity, speed, and essence!
-                </div>
+                <div class="mt-4 text-gray-500">{{ project.description }}</div>
                 <div class="w-full flex justify-end mt-8 mb-4">
-                    <button class="rounded-full px-16 py-2 text-sm font-semibold fit-content">
+                    <button routerLink="/offers" class="rounded-full px-16 py-2 text-sm font-semibold fit-content">
                         Cancel
                     </button>
                     <button class="bg-indigo-800 ml-4 rounded-full px-16 py-2 text-sm text-white fit-content">
-                        Confirm
+                        Confirm ->
                     </button>
-                    
+
                 </div>
             </div>
+
+
         </div>
 
-
     </div>
-
-</div>
+</ng-container>
