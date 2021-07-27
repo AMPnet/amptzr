@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core'
+import { ChangeDetectionStrategy, Component, ElementRef, OnInit } from '@angular/core'
 import { FormBuilder, Validators } from '@angular/forms'
 import { BehaviorSubject, combineLatest, Observable, of, zip } from 'rxjs'
 import { map, startWith, tap } from 'rxjs/operators'
@@ -9,12 +9,12 @@ import { map, startWith, tap } from 'rxjs/operators'
   styleUrls: ['./invest.component.css'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class InvestComponent implements OnInit {
+export class InvestComponent {
 
   project = new BehaviorSubject<InvestProjectModel>({
     title: "Supercool Invest-O-Pia",
     walletBalance: 50000,
-    roi: "8% - 11%",
+    roi: "8%",
     description: "This is a small change, but a big move for us. 140 was an arbitrary choice based on the 160 character SMS limit. Proud of how thoughtful the team has been in solving a real problem people have when trying to tweet. And at the same time maintaining our brevity, speed, and essence!",
     minInvestment: 10000,
     maxInvestment: 100000
@@ -23,19 +23,15 @@ export class InvestComponent implements OnInit {
 
   investmentState = new BehaviorSubject<InvestmentState>(InvestmentState.Editing)
   investmentState$ = this.investmentState.asObservable()
+  investAmountState = InvestmentAmountState;
+
   investmentAmountForm = this.fb.group({ investmentAmount: ['', Validators.required] })
 
   investmentAmountValueChanges$ = this.investmentAmountForm.controls['investmentAmount'].valueChanges
 
   investmentAmountState$ =
     this.investmentAmountValueChanges$
-      .pipe(map((amount) => {
-        let state = this.handleStateChange(parseInt(amount))
-        if (state.state == InvestmentAmountState.Empty) {
-          console.log(amount)
-        }
-        return state;
-      }), startWith(this.handleStateChange(0)))
+      .pipe(map((amount) => { return this.handleStateChange(parseInt(amount)) }), startWith(this.handleStateChange(0)))
 
   isInReview$ = this.investmentState.asObservable().pipe(map((x) => { return x == InvestmentState.InReview }))
 
@@ -47,16 +43,12 @@ export class InvestComponent implements OnInit {
         })
       )
 
-  invalidInvestmentAmountMessage$ = this.investmentAmountState$?.pipe(map((x) => { return String(x.state) }))
-
   constructor(private fb: FormBuilder) { }
 
-  ngOnInit() {
-  }
 
   handleStateChange(amount: number): InvestmentAmountModel {
 
-    let model = this.project.value;
+    let model = this.project.value
     let investmentAmountFieldIsDirty = this.investmentAmountForm.controls['investmentAmount'].dirty
 
     if (!investmentAmountFieldIsDirty) { return { amount: amount, state: InvestmentAmountState.Empty } }
@@ -69,14 +61,17 @@ export class InvestComponent implements OnInit {
 
   nextButtonClicked() {
     this.investmentState.next(InvestmentState.InReview)
-    let control = this.investmentAmountForm.controls['investmentAmount']
-    control.disable()
+    this.setAmountInputEnabled(false)
   }
 
   cancelButtonClicked() {
     this.investmentState.next(InvestmentState.Editing)
+    this.setAmountInputEnabled(true)
+  }
+
+  setAmountInputEnabled(enabled: boolean) {
     let control = this.investmentAmountForm.controls['investmentAmount']
-    control.enable()
+    enabled ? control.enable() : control.disable()
   }
 }
 
@@ -99,10 +94,10 @@ interface InvestmentAmountModel {
   state: InvestmentAmountState
 }
 
-enum InvestmentAmountState {
-  Valid = '',
-  Empty = '',
-  InvestmentAmountTooHigh = 'Investment amount too high',
-  InvestmentAmountTooLow = 'Investment amount too low',
-  NotEnoughFunds = 'Not enough funds'
+export enum InvestmentAmountState {
+  Valid,
+  Empty,
+  InvestmentAmountTooHigh,
+  InvestmentAmountTooLow,
+  NotEnoughFunds
 }
