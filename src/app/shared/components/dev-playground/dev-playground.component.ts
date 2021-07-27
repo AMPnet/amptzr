@@ -11,6 +11,7 @@ import {ProfileService} from '../../../profile/profile.service'
 import {TokenMappingService} from '../../services/token-mapping.service'
 import {SessionQuery} from '../../../session/state/session.query'
 import {HttpClient} from '@angular/common/http'
+import {FormBuilder, FormGroup, Validators} from '@angular/forms'
 
 @Component({
   selector: 'app-dev-playground',
@@ -20,6 +21,7 @@ import {HttpClient} from '@angular/common/http'
 })
 export class DevPlaygroundComponent {
   contentSub = new Subject<string>()
+  investForm: FormGroup
 
   constructor(private ipfsService: IpfsService,
               private signerService: SignerService,
@@ -28,7 +30,11 @@ export class DevPlaygroundComponent {
               private tokenMappingService: TokenMappingService,
               private sessionQuery: SessionQuery,
               private http: HttpClient,
+              private fb: FormBuilder,
               private dialogService: DialogService) {
+    this.investForm = this.fb.group({
+      amount: [0, Validators.required]
+    })
   }
 
   upload(): Observable<unknown> {

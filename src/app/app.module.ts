@@ -42,6 +42,7 @@ import {OffersCardSmallComponent} from "./offers/offers-card-small/offers-card-s
 import {AuthProviderNamePipe} from "./shared/pipes/auth-provider-name.pipe"
 import {ProfileAddMandatoryComponent} from './profile/profile-add-mandatory/profile-add-mandatory.component'
 import {ReactiveFormsModule} from '@angular/forms'
+import {CurrencyMaskDirective} from './shared/directives/currency-mask.directive'
 
 @NgModule({
   declarations: [
@@ -73,6 +74,7 @@ import {ReactiveFormsModule} from '@angular/forms'
     FaqComponent,
     AuthProviderNamePipe,
     ProfileAddMandatoryComponent,
+    CurrencyMaskDirective,
   ],
   imports: [
     BrowserModule,
