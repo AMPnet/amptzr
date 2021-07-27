@@ -55,7 +55,7 @@ export class InvestComponent {
     if (amount > model.maxInvestment) { return InvestmentAmountState.InvestmentAmountTooLow }
     if (amount > model.walletBalance) {  return InvestmentAmountState.NotEnoughFunds }
 
-    return InvestmentAmountState.Valid;
+    return InvestmentAmountState.Valid
   }
 
   nextButtonClicked() {
