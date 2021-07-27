@@ -1,9 +1,68 @@
-<div class="max-w-6xl mx-auto px-4">
-  <h1 class="text-xl py-2 -mx-4 px-4 bg-blue-50 md:bg-transparent md:text-3xl">
-    — PORTFOLIO
-  </h1>
-
-  <div>
-    <p>...portfolio stuff here...</p>
+<ng-container *ngIf="(porfolioModel$ | async) as portfolio">
+  <div class="w-full h-full flex justify-center mt-8 px-2 pb-8">
+    <div class="bg-red w-full max-w-6xl">
+  
+      <!-- Top card - overview of all investment and total unclaimed earnings -->
+      <div class="w-full rounded-3xl flex-col shadow-lg justify-between bg-white p-4 lg:p-8 flex lg:flex-row lg:items-end ">
+        <div class="flex flex-row justify-between lg:items-center">
+          <div class="flex flex-col justify-start">
+            <div class="text-sm text-black font-semibold">Total investment</div>
+            <div class="text-3xl lg:text-4xl mt-3">{{ portfolio.totalInvestment | currencyDefault }}</div>
+          </div>
+          <div class="flex flex-col justify-start lg:ml-16">
+            <div class="text-sm text-black font-semibold">Unclaimed earnings</div>
+            <div class="text-3xl lg:text-4xl mt-3">{{ portfolio.unclaimedEarning | currencyDefault }}</div>
+          </div>
+        </div>
+        <div class="h-full lg:w-80 flex flex-col justify-end items-end lg:mt-0">        
+          <button app-action-button
+            text="Claim"
+            class="lg:w-52 w-full py-2 mt-8 lg:mt-4 bg-indigo-800 text-white rounded-full">
+          </button>
+        </div>
+      </div>
+  
+      <div class="w-full mt-8">
+  
+        <!-- Single Portfolio Card Item -->
+        <div *ngFor="let item of portfolio.items" class="w-full rounded-3xl shadow-lg flex flex-col lg:flex-row mt-4">
+          <div class="w-full lg:w-4/12">
+            <img class="w-full h-32 lg:h-full object-cover rounded-t-3xl lg:rounded-t-none lg:rounded-l-3xl" src="{{ item.imgSrc }}" alt="" srcset="">
+          </div>
+          <div class="w-full bg-white rounded-b-3xl lg:rounded-none lg:rounded-r-3xl p-6">
+            <div class="flex">
+              <div class="bg-gray-200 px-8 rounded-full py-2 flex items-center">
+                <span class="font-bold">{{ item.fundsInvested | currencyDefault }}</span>
+                <span class="ml-2">Invested</span>
+              </div>
+            </div>     
+            <div class="text-3xl mt-4 lg:text-4xl tracking-wider font-light uppercase">{{ item.name }}</div>
+            <div class="mt-2 flex flex-col lg:flex-row justify-start lg:justify-between">
+              <div class="w-full lg:mr-16">
+                <app-funding-progress 
+                  [startDate]="item.startDate"
+                  [endDate]="item.endDate"
+                  [fundsRaised]="item.fundsRaised"
+                  [fundsRequired]="item.fundsNeeded"></app-funding-progress>
+              </div>
+              <div class="flex items-end">
+                <button *ngIf="item.projectState === projectStateType.InFunding" app-action-button
+                  class="w-full lg:w-52 lg:px-20 lg:ml-8 mt-8 lg:mt-0 py-2 bg-red-500 text-white rounded-full whitespace-nowrap"
+                  text="Cancel Investment"></button>
+                <button *ngIf="item.projectState === projectStateType.Unsuccessful" app-action-button
+                  class="w-full lg:w-52 lg:px-20 lg:ml-8 mt-8 lg:mt-0 py-2 bg-red-500 text-white rounded-full whitespace-nowrap"
+                  text="Get funds back"></button>
+                <button *ngIf="item.projectState === projectStateType.Finalized" app-action-button
+                  class="w-full lg:w-52 lg:px-20 lg:ml-8 mt-8 lg:mt-0 py-2 bg-gray-400 text-white rounded-full whitespace-nowrap"
+                  text="Investment Finalized"></button>
+                <button *ngIf="item.projectState === projectStateType.Successful" app-action-button
+                  class="w-full lg:w-52 lg:px-20 lg:ml-8 mt-8 lg:mt-0 py-2 bg-indigo-800 text-white rounded-full whitespace-nowrap"
+                  text="Finalize Investment"></button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
-</div>
+</ng-container>
