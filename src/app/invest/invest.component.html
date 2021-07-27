@@ -1,12 +1,12 @@
 <ng-container *ngIf="(project$ | async) as project">
     <div class="flex justify-center pb-8 px-2">
 
-        <!-- Input investment -->
         <div class="max-w-6xl w-full">
 
+             <!-- Input investment card -->
             <div [hidden]="(isInReview$ | async) === true" >
                 <div class="flex flex-col lg:max-h-80 lg:flex-row mt-8 shadow-lg rounded-3xl bg-white">
-                    <img class="lg:w-5/12 w-full rounded-t-3xl lg:rounded-l-3xl object-cover h-full"
+                    <img class="lg:w-5/12 w-full rounded-t-3xl lg:rounded-l-3xl object-cover h-full card-corner-radius-override"
                         src="https://images.pexels.com/photos/2850347/pexels-photo-2850347.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260"
                         alt="">
                     <div class="w-full flex flex-col p-4 lg:p-8">
@@ -65,7 +65,13 @@
                                 </div>  
     
                                 <!-- Submit Button for Amount input form -->
-                                <button
+                                <button *ngIf="(investmentAmountState$ | async)?.state === investAmountStateType.NotEnoughFunds"
+                                    routerLink="/wallet"
+                                    class="bg-indigo-800 rounded-full w-full lg:w-auto px-16 py-2 text-sm mt-4 lg:mt-8 text-white float-right
+                                           disabled:bg-gray-500 disabled:cursor-default">
+                                        Open Wallet ->
+                                </button>
+                                <button *ngIf="(investmentAmountState$ | async)?.state !== investAmountStateType.NotEnoughFunds"
                                     (click)="nextButtonClicked()"
                                     [disabled]="(isEditingDisabled$ | async) ?? true" 
                                     class="bg-indigo-800 rounded-full w-full lg:w-auto px-16 py-2 text-sm mt-4 lg:mt-8 text-white float-right
@@ -90,16 +96,16 @@
                         <span class="hidden lg:inline">-></span>
                         <span class="text-3xl lg:ml-2 mt-2 lg:mt-auto uppercase">{{ project.title }}</span>
                     </div>
-                    <div class="mt-4 rounded-full px-4 py-2 bg-gray-100 flex items-center fit-content">
+                    <div class="mt-4 rounded-full px-4 py-2 bg-gray-100 flex items-center">
                         <div class="font-semibold">{{ project.roi }}</div>
                         <div class="text-sm ml-2">Expected return on investment</div>
                     </div>
                     <div class="mt-4 text-gray-500">{{ project.description }}</div>
                     <div class="w-full flex justify-end mt-8 mb-4">
-                        <button (click)="cancelButtonClicked()" class="rounded-full lg:px-16 py-2 text-sm font-semibold fit-content">
+                        <button (click)="cancelButtonClicked()" class="rounded-full lg:px-16 py-2 text-sm font-semibold">
                             Cancel
                         </button>
-                        <button class="bg-indigo-800 ml-4 rounded-full lg:px-16 px-4 py-2 text-sm text-white fit-content">
+                        <button class="bg-indigo-800 ml-4 rounded-full lg:px-16 px-4 py-2 text-sm text-white">
                             Confirm & Invest ->
                         </button>
                     </div>

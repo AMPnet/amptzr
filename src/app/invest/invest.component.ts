@@ -23,7 +23,7 @@ export class InvestComponent {
 
   investmentState = new BehaviorSubject<InvestmentState>(InvestmentState.Editing)
   investmentState$ = this.investmentState.asObservable()
-  investAmountState = InvestmentAmountState;
+  investAmountStateType = InvestmentAmountState;
 
   investmentAmountForm = this.fb.group({ investmentAmount: ['', Validators.required] })
 

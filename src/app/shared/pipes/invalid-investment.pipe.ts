@@ -13,11 +13,11 @@ export class InvalidInvestmentPipe implements PipeTransform {
 
   transform(value: InvestmentAmountState | null): string | null {
     switch(value) {
-        case InvestmentAmountState.Empty: return null;
-        case InvestmentAmountState.Valid: return null;
-        case InvestmentAmountState.NotEnoughFunds: return "Not enough funds. Please fill wallet";
-        case InvestmentAmountState.InvestmentAmountTooHigh: return "Amount exceeds maximum allowed investment";
-        case InvestmentAmountState.InvestmentAmountTooLow: return "Amount is lower than minimum required investment";
+        case InvestmentAmountState.Empty: return null
+        case InvestmentAmountState.Valid: return null
+        case InvestmentAmountState.NotEnoughFunds: return "Not enough funds. Please fill wallet"
+        case InvestmentAmountState.InvestmentAmountTooHigh: return "Amount exceeds maximum allowed investment"
+        case InvestmentAmountState.InvestmentAmountTooLow: return "Amount is lower than minimum required investment"
     }
     return ''
   }

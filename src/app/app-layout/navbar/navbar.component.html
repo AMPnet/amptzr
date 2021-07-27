@@ -13,20 +13,20 @@
     <!-- Navbar items -->
     <div class="flex justify-end items-center">
       <button *ngFor="let navbarItem of navbarScreenLinks"
-              class="mx-2 p-4 text-gray-700 text-sm uppercase tracking-wider font-semibold border-b-4 border-transparent
+              class="mx-2 p-4 text-gray-700 text-sm border-b-4 border-transparent
               whitespace-nowrap hidden lg:inline"
               [routerLink]="navbarItem.routerLink" routerLinkActive=" text-indigo-800 border-indigo-800">
         {{ navbarItem.title }}
       </button>
 
       <button app-action-button class="transition-all mx-4 px-8 py-4 border-2 border-indigo-800
-                  font-semibold rounded-full text-sm tracking-wider uppercase
+                 rounded-full text-sm
                   text-gray-700 whitespace-nowrap hidden lg:inline
                   hover:bg-indigo-800 hover:text-white" *ngIf="(isLoggedIn$ | async) === true"
               [onClick]="logout.bind(this)" text="Log Out"></button>
 
       <button app-action-button class="transition-all mx-4 px-8 py-4 border-2 border-indigo-800
-      font-semibold rounded-full text-sm tracking-wider uppercase
+      rounded-full text-sm
       text-gray-700 whitespace-nowrap hidden lg:inline
       hover:bg-indigo-800 hover:text-white"
               *ngIf="(isLoggedIn$ | async) === false"
@@ -58,7 +58,7 @@
     <!-- Navigation links -->
     <div class="flex flex-col justify-around flex-1 space-y-4">
       <button *ngFor="let navbarItem of navbarScreenLinks" (click)="toggleDropdown()"
-              class="mx-2 pl-4 text-gray-700 text-3xl uppercase tracking-wider text-left whitespace-nowrap"
+              class="mx-2 pl-4 text-gray-700 text-3xl text-left whitespace-nowrap"
               [routerLink]="navbarItem.routerLink"
               routerLinkActive="text-indigo-800 font-semibold">
         {{ navbarItem.title }}
