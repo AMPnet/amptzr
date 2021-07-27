@@ -57,21 +57,21 @@
                             <div class="w-full flex lg:flex-row flex-col lg:justify-between lg:items-end">
                                 <div class="flex lg:items-center mt-4 lg:mt-auto">
                                     <div class="flex items-center" *ngIf="(investmentAmountState$ | async) as amountState">
-                                        <svg *ngIf="(amountState.state | invalidInvestment) !== null" width="26" height="26" viewBox="0 0 26 26" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <svg *ngIf="(amountState | invalidInvestment) !== null" width="26" height="26" viewBox="0 0 26 26" fill="none" xmlns="http://www.w3.org/2000/svg">
                                             <path d="M14.3333 18.3333H13V13H11.6667M13 7.66667H13.0133M25 13C25 14.5759 24.6896 16.1363 24.0866 17.5922C23.4835 19.0481 22.5996 20.371 21.4853 21.4853C20.371 22.5996 19.0481 23.4835 17.5922 24.0866C16.1363 24.6896 14.5759 25 13 25C11.4241 25 9.86371 24.6896 8.4078 24.0866C6.95189 23.4835 5.62902 22.5996 4.51472 21.4853C3.40042 20.371 2.5165 19.0481 1.91345 17.5922C1.31039 16.1363 1 14.5759 1 13C1 9.8174 2.26428 6.76516 4.51472 4.51472C6.76516 2.26428 9.8174 1 13 1C16.1826 1 19.2348 2.26428 21.4853 4.51472C23.7357 6.76516 25 9.8174 25 13Z" stroke="#EF4444" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                                         </svg>
-                                        <span class="ml-3 text-red-600 text-sm font-semibold">{{ amountState.state | invalidInvestment }} </span>    
+                                        <span class="ml-3 text-red-600 text-sm font-semibold">{{ amountState | invalidInvestment }} </span>    
                                     </div>
                                 </div>  
     
                                 <!-- Submit Button for Amount input form -->
-                                <button *ngIf="(investmentAmountState$ | async)?.state === investAmountStateType.NotEnoughFunds"
+                                <button *ngIf="(investmentAmountState$ | async) === investAmountStateType.NotEnoughFunds"
                                     routerLink="/wallet"
                                     class="bg-indigo-800 rounded-full w-full lg:w-auto px-16 py-2 text-sm mt-4 lg:mt-8 text-white float-right
                                            disabled:bg-gray-500 disabled:cursor-default">
                                         Open Wallet ->
                                 </button>
-                                <button *ngIf="(investmentAmountState$ | async)?.state !== investAmountStateType.NotEnoughFunds"
+                                <button *ngIf="(investmentAmountState$ | async) !== investAmountStateType.NotEnoughFunds"
                                     (click)="nextButtonClicked()"
                                     [disabled]="(isEditingDisabled$ | async) ?? true" 
                                     class="bg-indigo-800 rounded-full w-full lg:w-auto px-16 py-2 text-sm mt-4 lg:mt-8 text-white float-right
@@ -92,7 +92,7 @@
                 <div class="mt-4 shadow-lg rounded-3xl bg-white p-8 flex flex-col">
                     <div class="font-semibold mb-4">Investing</div>
                     <div class="flex flex-col lg:flex-row lg:items-center">
-                        <span class="text-3xl mr-2 font-semibold">{{ (investmentAmountState$ | async)!.amount | currencyDefault }}</span>
+                        <span class="text-3xl mr-2 font-semibold">{{ (investmentAmount$ | async)! | currencyDefault }}</span>
                         <span class="hidden lg:inline">-></span>
                         <span class="text-3xl lg:ml-2 mt-2 lg:mt-auto uppercase">{{ project.title }}</span>
                     </div>

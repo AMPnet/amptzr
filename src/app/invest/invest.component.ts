@@ -19,53 +19,52 @@ export class InvestComponent {
     minInvestment: 10000,
     maxInvestment: 100000
   })
-  project$ = this.project.asObservable()
 
-  investmentState = new BehaviorSubject<InvestmentState>(InvestmentState.Editing)
-  investmentState$ = this.investmentState.asObservable()
-  investAmountStateType = InvestmentAmountState;
-
-  investmentAmountForm = this.fb.group({ investmentAmount: ['', Validators.required] })
-
-  investmentAmountValueChanges$ = this.investmentAmountForm.controls['investmentAmount'].valueChanges
+  project$                        = this.project.asObservable()
+  componentState                  = new BehaviorSubject<ComponentState>(ComponentState.Editing)
+  investmentState$                = this.componentState.asObservable()
+  investmentAmountForm            = this.fb.group({ investmentAmount: ['', Validators.required] })
+  investmentAmountValueChanges$   = this.investmentAmountForm.controls['investmentAmount'].valueChanges
+  investAmountStateType           = InvestmentAmountState
 
   investmentAmountState$ =
     this.investmentAmountValueChanges$
-      .pipe(map((amount) => { return this.handleStateChange(parseInt(amount)) }), startWith(this.handleStateChange(0)))
+      .pipe(map((amount) => { return this.handleAmountValueChange(parseInt(amount)) }), 
+            startWith(this.handleAmountValueChange(0)))
 
-  isInReview$ = this.investmentState.asObservable().pipe(map((x) => { return x == InvestmentState.InReview }))
+  investmentAmount$ = 
+    this.investmentAmountValueChanges$.pipe(map((amount) => { return parseInt(amount) }))
 
-  isEditingDisabled$ =
-    combineLatest([this.investmentAmountState$, this.investmentState$])
-      .pipe(
-        map(([amountState, investmentState]) => {
-          return !(amountState.state == InvestmentAmountState.Valid) || (investmentState == InvestmentState.InReview)
-        })
-      )
+  isInReview$ = 
+    this.componentState.asObservable().pipe(
+      map((x) => { return x == ComponentState.InReview }))
+
+  isEditingDisabled$ = this.investmentAmountState$.pipe(
+    map((state) => state !== InvestmentAmountState.Valid)
+  )
 
   constructor(private fb: FormBuilder) { }
 
-
-  handleStateChange(amount: number): InvestmentAmountModel {
+  handleAmountValueChange(amount: number): InvestmentAmountState {
 
     let model = this.project.value
     let investmentAmountFieldIsDirty = this.investmentAmountForm.controls['investmentAmount'].dirty
 
-    if (!investmentAmountFieldIsDirty) { return { amount: amount, state: InvestmentAmountState.Empty } }
-    if (amount < model.minInvestment) { return { amount: amount, state: InvestmentAmountState.InvestmentAmountTooLow } }
-    if (amount > model.maxInvestment) { return { amount: amount, state: InvestmentAmountState.InvestmentAmountTooHigh } }
-    if (amount > model.walletBalance) { return { amount: amount, state: InvestmentAmountState.NotEnoughFunds } }
+    if (!investmentAmountFieldIsDirty) { return InvestmentAmountState.Empty }
+    if (amount < model.minInvestment) { return InvestmentAmountState.InvestmentAmountTooLow }
+    if (amount > model.maxInvestment) { return InvestmentAmountState.InvestmentAmountTooLow }
+    if (amount > model.walletBalance) {  return InvestmentAmountState.NotEnoughFunds }
 
-    return { amount: amount, state: InvestmentAmountState.Valid }
+    return InvestmentAmountState.Valid;
   }
 
   nextButtonClicked() {
-    this.investmentState.next(InvestmentState.InReview)
+    this.componentState.next(ComponentState.InReview)
     this.setAmountInputEnabled(false)
   }
 
   cancelButtonClicked() {
-    this.investmentState.next(InvestmentState.Editing)
+    this.componentState.next(ComponentState.Editing)
     this.setAmountInputEnabled(true)
   }
 
@@ -73,6 +72,7 @@ export class InvestComponent {
     let control = this.investmentAmountForm.controls['investmentAmount']
     enabled ? control.enable() : control.disable()
   }
+
 }
 
 interface InvestProjectModel {
@@ -84,14 +84,9 @@ interface InvestProjectModel {
   maxInvestment: number
 }
 
-enum InvestmentState {
+enum ComponentState {
   Editing,
   InReview
-}
-
-interface InvestmentAmountModel {
-  amount: number,
-  state: InvestmentAmountState
 }
 
 export enum InvestmentAmountState {
