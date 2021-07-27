@@ -17,7 +17,8 @@ export class InvestComponent {
     roi: "8%",
     description: "This is a small change, but a big move for us. 140 was an arbitrary choice based on the 160 character SMS limit. Proud of how thoughtful the team has been in solving a real problem people have when trying to tweet. And at the same time maintaining our brevity, speed, and essence!",
     minInvestment: 10000,
-    maxInvestment: 100000
+    maxInvestment: 100000,
+    imgSrc: "https://images.pexels.com/photos/2850347/pexels-photo-2850347.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260"
   })
 
   project$                        = this.project.asObservable()
@@ -81,7 +82,8 @@ interface InvestProjectModel {
   roi: string,
   description: string,
   minInvestment: number,
-  maxInvestment: number
+  maxInvestment: number,
+  imgSrc: string
 }
 
 enum ComponentState {
