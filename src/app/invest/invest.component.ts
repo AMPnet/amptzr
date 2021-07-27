@@ -23,37 +23,35 @@ export class InvestComponent {
 
   project$                        = this.project.asObservable()
   componentState                  = new BehaviorSubject<ComponentState>(ComponentState.Editing)
-  investmentState$                = this.componentState.asObservable()
   investmentAmountForm            = this.fb.group({ investmentAmount: ['', Validators.required] })
   investmentAmountValueChanges$   = this.investmentAmountForm.controls['investmentAmount'].valueChanges
   investAmountStateType           = InvestmentAmountState
 
   investmentAmountState$ =
     this.investmentAmountValueChanges$
-      .pipe(map((amount) => { return this.handleAmountValueChange(parseInt(amount)) }), 
+      .pipe(map((amount) => this.handleAmountValueChange(parseInt(amount)) ), 
             startWith(this.handleAmountValueChange(0)))
 
   investmentAmount$ = 
-    this.investmentAmountValueChanges$.pipe(map((amount) => { return parseInt(amount) }))
+    this.investmentAmountValueChanges$.pipe(map((amount) => parseInt(amount) ))
 
   isInReview$ = 
     this.componentState.asObservable().pipe(
-      map((x) => { return x == ComponentState.InReview }))
+      map((x) => x == ComponentState.InReview ))
 
-  isEditingDisabled$ = this.investmentAmountState$.pipe(
-    map((state) => state !== InvestmentAmountState.Valid)
-  )
+  isNextButtonDisabled$ = this.investmentAmountState$.pipe(
+    map((state) => state !== InvestmentAmountState.Valid ))
 
   constructor(private fb: FormBuilder) { }
 
   handleAmountValueChange(amount: number): InvestmentAmountState {
 
     let model = this.project.value
-    let investmentAmountFieldIsDirty = this.investmentAmountForm.controls['investmentAmount'].dirty
+    let investmentAmountFieldIsEmpty = this.investmentAmountForm.controls['investmentAmount'].value !== ''
 
-    if (!investmentAmountFieldIsDirty) { return InvestmentAmountState.Empty }
+    if (!investmentAmountFieldIsEmpty) { return InvestmentAmountState.Empty }
     if (amount < model.minInvestment) { return InvestmentAmountState.InvestmentAmountTooLow }
-    if (amount > model.maxInvestment) { return InvestmentAmountState.InvestmentAmountTooLow }
+    if (amount > model.maxInvestment) { return InvestmentAmountState.InvestmentAmountTooHigh }
     if (amount > model.walletBalance) {  return InvestmentAmountState.NotEnoughFunds }
 
     return InvestmentAmountState.Valid

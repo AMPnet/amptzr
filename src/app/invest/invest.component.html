@@ -7,7 +7,7 @@
             <div [hidden]="(isInReview$ | async) === true" >
                 <div class="flex flex-col lg:max-h-80 lg:flex-row mt-8 shadow-lg rounded-3xl bg-white">
                     <img class="lg:w-5/12 w-full rounded-t-3xl lg:rounded-l-3xl object-cover h-full card-corner-radius-override"
-                        src="project.imgSrc"
+                        src="{{ project.imgSrc }}"
                         alt="">
                     <div class="w-full flex flex-col p-4 lg:p-8">
                         <form [formGroup]="investmentAmountForm" id="investmentAmountForm">
@@ -73,7 +73,7 @@
                                 </button>
                                 <button *ngIf="(investmentAmountState$ | async) !== investAmountStateType.NotEnoughFunds"
                                     (click)="nextButtonClicked()"
-                                    [disabled]="(isEditingDisabled$ | async) ?? true" 
+                                    [disabled]="(isNextButtonDisabled$ | async) ?? true" 
                                     class="bg-indigo-800 rounded-full w-full lg:w-auto px-16 py-2 text-sm mt-4 lg:mt-8 text-white float-right
                                            disabled:bg-gray-500 disabled:cursor-default">
                                         Next ->
