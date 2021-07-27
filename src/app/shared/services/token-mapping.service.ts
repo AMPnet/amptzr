@@ -25,7 +25,7 @@ const maticMapping: TokenMapping = {
 
 const usdcMapping: TokenMapping = {
   [ChainID.MATIC_MAINNET]: '0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174',
-  [ChainID.MUMBAI_TESTNET]: '',
+  [ChainID.MUMBAI_TESTNET]: '0xb573c6e38a433ed05b98eec9d8a0c34b382eeaf4',
 }
 
 type TokenMapping = { [key in ChainID]: string }
