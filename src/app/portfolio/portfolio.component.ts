@@ -9,7 +9,7 @@ import {map} from 'rxjs/operators'
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PortfolioComponent {
-    projectStateType = ProjectState
+    projectState = ProjectState
 
     portfolioSub = new BehaviorSubject<PortfolioModel>({
         totalInvestment: 10000,
