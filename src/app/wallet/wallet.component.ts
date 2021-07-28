@@ -21,6 +21,7 @@ import {Router} from '@angular/router'
 export class WalletComponent {
   authProvider = AuthProvider
   isLoggedIn$ = this.sessionQuery.isLoggedIn$
+  transactionType = TransactionType
 
   gas$ = this.sessionQuery.provider$.pipe(
     switchMap(provider => withStatus(
@@ -68,19 +69,19 @@ export class WalletComponent {
 
   transactionHistory: WalletTransaction[] = [ // TODO used for testing only
     {
-      type: TransactionType.INVESTMENT,
+      type: TransactionType.Investment,
       projectName: 'Solarna elektrana Hvar',
       amount: 129,
     },
     {
-      type: TransactionType.DIVIDEND_PAYOUT,
+      type: TransactionType.DividendPayout,
       projectName: 'Test project',
-      amount: 505,
+      amount: 30255,
     },
     {
-      type: TransactionType.INVESTMENT,
+      type: TransactionType.Investment,
       projectName: 'LatCorp',
-      amount: 420,
+      amount: -2230,
     },
   ]
 
@@ -136,8 +137,8 @@ export class WalletComponent {
 }
 
 export enum TransactionType {
-  INVESTMENT = 'INVESTMENT',
-  DIVIDEND_PAYOUT = 'DIVIDEND_PAYOUT',
+  Investment = "Investment",
+  DividendPayout = "Dividend Payout"
 }
 
 export interface WalletTransaction {

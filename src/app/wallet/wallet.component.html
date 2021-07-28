@@ -3,13 +3,14 @@
   <div class="mt-6 rounded-3xl shadow-lg bg-white px-6 py-4">
     <div class="flex flex-col">
       <b class="text-xs">Your balance:</b>
-      <div class="flex flex-row mt-2 mb-9">
+      <div class="flex flex-col lg:flex-row mt-2">
         <!-- TODO show actual balance -->
-        <p class="text-3xl mr-8 font-light">{{ 5472 | currencyDefault }}</p>
+        <p class="text-3xl mr-8 font-light">${{ balanceUSDC$ | async | unwrapStatus }}</p>
         <!-- TODO: buttons should be the same width -->
         <!-- TODO: add deposit button action -->
-        <button
-          class="text-white text-xs flex items-center justify-center rounded-full bg-green-600 hover:bg-green-700 pl-4 pr-6 mr-3">
+        <div class="w-full flex items-center justify-between lg:justify-start mt-2 lg:mt-0">
+          <button
+          class="text-white w-full lg:w-auto mr-2 text-xs flex items-center justify-center rounded-full bg-green-600 hover:bg-green-700 py-2 mt-2 lg:mt-0 pl-4 pr-6 lg:mr-3">
           <svg class="h-3.5 w-3.5 mr-2" width="18" height="14" viewBox="0 0 18 14" fill="none"
                xmlns="http://www.w3.org/2000/svg">
             <path d="M8.78568 1V7M8.78568 7V13M8.78568 7H16.0255M8.78568 7H1.5459" stroke="white" stroke-width="2"
@@ -19,7 +20,7 @@
         </button>
         <!-- TODO: add withdraw button action -->
         <button
-          class="text-white text-xs flex items-center justify-center rounded-full bg-indigo-800 hover:bg-indigo-900 pl-4 pr-6">
+          class="text-white w-full lg:w-auto ml-2 lg:ml-0 text-xs flex items-center justify-center rounded-full bg-indigo-800 hover:bg-indigo-900 py-2 mt-2 lg:mt-0 pl-4 pr-6">
           <svg class="h-3.5 w-3.5 mr-2" width="22" height="18" viewBox="0 0 22 18" fill="none"
                xmlns="http://www.w3.org/2000/svg">
             <path
@@ -28,97 +29,54 @@
           </svg>
           Withdraw
         </button>
+        </div>
+        
       </div>
-      <div class="flex flex-row text-xs justify-between">
+      <div class="flex flex-col lg:flex-row text-xs lg:items-center justify-between mt-4">
         <!-- TODO: extract identity from login info -->
         <p class="flex-grow">Identity: Ivo Robić</p>
-        <p class="flex-grow-0 mr-6">Wallet address: <span
-          *ngIf="(address$ | async | addrShort) as address">{{ address }}</span></p>
-        <!-- TODO: show some kind of popup that address was copied -->
-        <button class="flex items-center justify-center flex-grow-0 mr-6" (click)="copyAddressToClipboard()">
-          <svg class="h-3 w-3 mr-2" width="14" height="14" viewBox="0 0 14 14" fill="none"
-               xmlns="http://www.w3.org/2000/svg">
-            <path
-              d="M4.33317 3.66667V9C4.33317 9.35362 4.47365 9.69276 4.72369 9.94281C4.97374 10.1929 5.31288 10.3333 5.6665 10.3333H9.6665M4.33317 3.66667V2.33333C4.33317 1.97971 4.47365 1.64057 4.72369 1.39052C4.97374 1.14048 5.31288 1 5.6665 1H8.72384C8.90063 1.00004 9.07018 1.0703 9.19517 1.19533L12.1378 4.138C12.2629 4.263 12.3331 4.43254 12.3332 4.60933V9C12.3332 9.35362 12.1927 9.69276 11.9426 9.94281C11.6926 10.1929 11.3535 10.3333 10.9998 10.3333H9.6665M4.33317 3.66667H2.99984C2.64622 3.66667 2.30708 3.80714 2.05703 4.05719C1.80698 4.30724 1.6665 4.64638 1.6665 5V11.6667C1.6665 12.0203 1.80698 12.3594 2.05703 12.6095C2.30708 12.8595 2.64622 13 2.99984 13H8.33317C8.68679 13 9.02593 12.8595 9.27598 12.6095C9.52603 12.3594 9.6665 12.0203 9.6665 11.6667V10.3333"
-              stroke="#3F3F46" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
-          <b>Copy address</b>
-        </button>
-        <p class="flex-grow-0">Connected with: <b
+        <div class="flex items-center mt-2 lg:mt-0">
+          <p class="flex-grow-0 mr-6">Wallet address: <span
+            *ngIf="(address$ | async | addrShort) as address">{{ address }}</span></p>
+          <!-- TODO: show some kind of popup that address was copied -->
+          <button class="flex items-center justify-center flex-grow-0 mr-6" (click)="copyAddressToClipboard()">
+            <svg class="h-3 w-3 mr-2" width="14" height="14" viewBox="0 0 14 14" fill="none"
+                 xmlns="http://www.w3.org/2000/svg">
+              <path
+                d="M4.33317 3.66667V9C4.33317 9.35362 4.47365 9.69276 4.72369 9.94281C4.97374 10.1929 5.31288 10.3333 5.6665 10.3333H9.6665M4.33317 3.66667V2.33333C4.33317 1.97971 4.47365 1.64057 4.72369 1.39052C4.97374 1.14048 5.31288 1 5.6665 1H8.72384C8.90063 1.00004 9.07018 1.0703 9.19517 1.19533L12.1378 4.138C12.2629 4.263 12.3331 4.43254 12.3332 4.60933V9C12.3332 9.35362 12.1927 9.69276 11.9426 9.94281C11.6926 10.1929 11.3535 10.3333 10.9998 10.3333H9.6665M4.33317 3.66667H2.99984C2.64622 3.66667 2.30708 3.80714 2.05703 4.05719C1.80698 4.30724 1.6665 4.64638 1.6665 5V11.6667C1.6665 12.0203 1.80698 12.3594 2.05703 12.6095C2.30708 12.8595 2.64622 13 2.99984 13H8.33317C8.68679 13 9.02593 12.8595 9.27598 12.6095C9.52603 12.3594 9.6665 12.0203 9.6665 11.6667V10.3333"
+                stroke="#3F3F46" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <b>Copy</b>
+          </button>
+        </div>
+        <p class="flex-grow-0 mt-2 lg:mt-0">Connected with: <b
           *ngIf="(authProvider$ | async | authProviderName) as authProvider">{{ authProvider }}</b></p>
       </div>
     </div>
   </div>
   <div class="flex flex-col mt-6">
-    <b>Transaction history:</b>
+    <span class="font-semibold">Transaction history:</span>
     <!-- TODO: extract into wallet sub-component -->
     <!-- TODO: finish transaction items when design is finalized -->
-    <div class="flex flex-col">
-      <div *ngFor="let transaction of transactionHistory" class="rounded-xl shadow-md bg-white p-4 my-1.5">
-        {{ transaction.type }}: {{ transaction.projectName }} {{ transaction.amount | currencyDefault }}
+    <div class="flex flex-col mt-4">
+      <div *ngFor="let transaction of transactionHistory" 
+        class="rounded-xl whitespace-nowrap shadow-md bg-white p-4 my-1.5 flex items-center justify-between">
+        <div class="flex">
+          <div class="rounded-full w-10 h-10 bg-pink-700 flex justify-center items-center text-white">
+            <ng-container *ngIf="transaction.type == transactionType.Investment">
+              ->
+            </ng-container>
+            <ng-container *ngIf="transaction.type == transactionType.DividendPayout">
+              --
+            </ng-container>
+          </div>
+          <div class="flex flex-col ml-3">
+            <span class="font-semibold">{{ transaction.type }}</span>
+            <span>{{ transaction.amount }}</span>
+          </div>
+        </div>
+        <div class="text-right float-right">{{ transaction.amount | currencyDefault }}</div>
       </div>
     </div>
   </div>
-
-  <!-- TODO remove rest of the HTML from here -->
-
-
-  <h1 class="text-xl py-2 -mx-4 px-4 bg-blue-50 md:bg-transparent md:text-3xl">
-    — WALLET
-  </h1>
-
-  <ng-container *ngIf="isLoggedIn$ | async">
-    <div>
-      Connected with: <span *ngIf="(authProvider$ | async) as authProvider">{{ authProvider }}</span>
-    </div>
-    <div>
-      Address: <span *ngIf="(address$ | async) as address">{{ address }}</span>
-    </div>
-
-    <div>
-      Balance:
-      <ng-container *ngIf="(balanceUSDC$ | async | unwrapStatus) as balanceUSDC">
-        ${{ balanceUSDC }}
-      </ng-container>
-    </div>
-
-    <!-- TODO: MATIC balance is just used for testing. Think about showing it on the platform. -->
-    <div>
-      MATIC balance:
-      <ng-container *ngIf="(balanceMATIC$ | async | unwrapStatus) as balanceMATIC">
-        {{ balanceMATIC }} MATIC
-      </ng-container>
-    </div>
-
-    <div *ngIf="(authProvider$ | async) === authProvider.VENLY">
-      <button app-action-button
-              class="bg-blue-500 disabled:bg-gray-400 text-white p-2 rounded-md mt-2"
-              [onClick]="manageWallets.bind(this)"
-              text="Manage wallets">
-      </button>
-    </div>
-  </ng-container>
-
-  <button app-action-button
-          class="bg-blue-500 disabled:bg-gray-400 text-white p-2 rounded-md mt-2"
-          [onClick]="showCurrentGasPrice.bind(this)"
-          text="Show gas price">
-  </button>
-
-  <div class="mt-1">
-    Gas:
-    <app-inline-async [observable$]="gas$"></app-inline-async>
-  </div>
-
-  <div class="mt-1">
-    Block number:
-    <span *ngIf="(blockNumber$ | async | unwrapStatus) as blockNumber">
-      {{ blockNumber }}
-    </span>
-  </div>
-
-  <button app-action-button class="bg-blue-500 disabled:bg-gray-400 text-white p-2 rounded-md mt-2"
-          *ngIf="isLoggedIn$ | async" [onClick]="logout.bind(this)"
-          text="Logout">
-  </button>
 </div>
