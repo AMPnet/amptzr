@@ -1,0 +1,5 @@
+@media (min-width: 1024px) {
+    .card-corner-radius-override {
+        border-top-right-radius: 0px!important;
+    }
+}

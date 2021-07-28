@@ -1,10 +1,10 @@
-<div class="w-full h-full flex flex-col lg:flex-row justify-start shadow-md hover:shadow-xl
+<div class="w-full h-full flex flex-col lg:flex-row justify-start shadow-xl hover:shadow-2xl
             transition-all duration-300 rounded-4xl">
   <div class="relative w-full lg:w-7/12">
     <!-- TODO: remove hardcoded routerLink -->
     <a routerLink="12">
       <img src="{{ offer.titleImageSrc }}" alt="Offer image"
-           class="w-full h-full object-cover rounded-t-4xl lg:rounded-none lg:rounded-l-4xl">
+           class="w-full h-52 lg:h-full object-cover rounded-t-4xl lg:rounded-none lg:rounded-l-4xl">
     </a>
 
     <div class="absolute float-left lg:top-6 left-6 lg:rounded-full
@@ -23,10 +23,10 @@
     </div>
   </div>
   <div class="w-full p-6 bg-white rounded-b-4xl lg:rounded-none lg:rounded-r-4xl lg:w-5/12">
-    <h1 class="mt-6 lg:mt-0 text-4xl uppercase tracking-wider font-light leading-relaxed">
+    <h1 class="mt-6 lg:mt-0 text-3xl lg:text-4xl uppercase tracking-wider font-light leading-relaxed">
       {{ offer.title }}
     </h1>
-    <p class="my-2 font-light text-gray-500 leading-relaxed">
+    <p class="my-2 font-light text-sm lg:text-base text-gray-500 leading-relaxed">
       {{ offer.shortDescription }}
     </p>
     <app-funding-progress

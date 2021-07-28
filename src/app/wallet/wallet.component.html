@@ -5,7 +5,7 @@
       <b class="text-xs">Your balance:</b>
       <div class="flex flex-row mt-2 mb-9">
         <!-- TODO show actual balance -->
-        <p class="text-3xl mr-8 font-light">145 045,232 USDC</p>
+        <p class="text-3xl mr-8 font-light">{{ 5472 | currencyDefault }}</p>
         <!-- TODO: buttons should be the same width -->
         <!-- TODO: add deposit button action -->
         <button
@@ -32,7 +32,8 @@
       <div class="flex flex-row text-xs justify-between">
         <!-- TODO: extract identity from login info -->
         <p class="flex-grow">Identity: Ivo Robić</p>
-        <p class="flex-grow-0 mr-6">Wallet address: <span *ngIf="(address$ | async | addrShort) as address">{{ address }}</span></p>
+        <p class="flex-grow-0 mr-6">Wallet address: <span
+          *ngIf="(address$ | async | addrShort) as address">{{ address }}</span></p>
         <!-- TODO: show some kind of popup that address was copied -->
         <button class="flex items-center justify-center flex-grow-0 mr-6" (click)="copyAddressToClipboard()">
           <svg class="h-3 w-3 mr-2" width="14" height="14" viewBox="0 0 14 14" fill="none"
@@ -43,7 +44,8 @@
           </svg>
           <b>Copy address</b>
         </button>
-        <p class="flex-grow-0">Connected with: <b *ngIf="(authProvider$ | async | authProviderName) as authProvider">{{ authProvider }}</b></p>
+        <p class="flex-grow-0">Connected with: <b
+          *ngIf="(authProvider$ | async | authProviderName) as authProvider">{{ authProvider }}</b></p>
       </div>
     </div>
   </div>
@@ -53,7 +55,7 @@
     <!-- TODO: finish transaction items when design is finalized -->
     <div class="flex flex-col">
       <div *ngFor="let transaction of transactionHistory" class="rounded-xl shadow-md bg-white p-4 my-1.5">
-        {{ transaction.type }}: {{ transaction.projectName }} {{ transaction.amount }}
+        {{ transaction.type }}: {{ transaction.projectName }} {{ transaction.amount | currencyDefault }}
       </div>
     </div>
   </div>
@@ -115,8 +117,7 @@
     </span>
   </div>
 
-  <button app-action-button
-          class="bg-blue-500 disabled:bg-gray-400 text-white p-2 rounded-md mt-2"
+  <button app-action-button class="bg-blue-500 disabled:bg-gray-400 text-white p-2 rounded-md mt-2"
           *ngIf="isLoggedIn$ | async" [onClick]="logout.bind(this)"
           text="Logout">
   </button>

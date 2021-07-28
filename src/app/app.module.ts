@@ -29,7 +29,6 @@ import {UnwrapStatusPipe} from './shared/pipes/unwrap-status.pipe'
 import {OfferComponent} from './offer/offer.component'
 import {DepositComponent} from './deposit/deposit.component'
 import {InvestComponent} from './invest/invest.component'
-import {InvestPreviewComponent} from './invest-preview/invest-preview.component'
 import {OffersCardLargeComponent} from './offers/offers-card-large/offers-card-large.component'
 import {CurrencyPipe} from '@angular/common'
 import {CurrencyDefaultPipe} from './shared/pipes/currency-default.pipe'
@@ -65,7 +64,6 @@ import {CurrencyMaskDirective} from './shared/directives/currency-mask.directive
     OfferComponent,
     DepositComponent,
     InvestComponent,
-    InvestPreviewComponent,
     OffersCardLargeComponent,
     OffersCardSmallComponent,
     FundingProgressComponent,

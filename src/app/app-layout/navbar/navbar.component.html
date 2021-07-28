@@ -7,26 +7,26 @@
 
     <!-- Logo -->
     <div class="flex-1 py-2">
-      <img class="h-full py-4 object-contain" src="../../../assets/default-logo.png" alt="Logo">
+      <img class="h-full pl-4 py-4 object-contain" src="../../../assets/default-logo.png" alt="Logo">
     </div>
 
     <!-- Navbar items -->
     <div class="flex justify-end items-center">
       <button *ngFor="let navbarItem of navbarScreenLinks"
-              class="mx-2 p-4 text-gray-700 text-sm font-semibold border-b-4 border-transparent
+              class="mx-2 p-4 text-gray-700 text-sm border-b-4 border-transparent
               whitespace-nowrap hidden lg:inline"
               [routerLink]="navbarItem.routerLink" routerLinkActive=" text-indigo-800 border-indigo-800">
         {{ navbarItem.title }}
       </button>
 
       <button app-action-button class="transition-all mx-4 px-8 py-4 border-2 border-indigo-800
-                  font-semibold rounded-full text-sm
+                 rounded-full text-sm
                   text-gray-700 whitespace-nowrap hidden lg:inline
                   hover:bg-indigo-800 hover:text-white" *ngIf="(isLoggedIn$ | async) === true"
               [onClick]="logout.bind(this)" text="Log Out"></button>
 
       <button app-action-button class="transition-all mx-4 px-8 py-4 border-2 border-indigo-800
-      font-semibold rounded-full text-sm
+      rounded-full text-sm
       text-gray-700 whitespace-nowrap hidden lg:inline
       hover:bg-indigo-800 hover:text-white"
               *ngIf="(isLoggedIn$ | async) === false"
@@ -56,7 +56,7 @@
        class="flex flex-col justify-around h-full flex-1 transition-all lg:hidden">
 
     <!-- Navigation links -->
-    <div class="flex flex-col flex-1 space-y-4">
+    <div class="flex flex-col justify-around flex-1 space-y-4">
       <button *ngFor="let navbarItem of navbarScreenLinks" (click)="toggleDropdown()"
               class="mx-2 pl-4 text-gray-700 text-3xl text-left whitespace-nowrap"
               [routerLink]="navbarItem.routerLink"
@@ -68,7 +68,7 @@
     <!-- Session buttons -->
     <div class="flex flex-col">
       <button app-action-button class="pl-4 text-gray-700 mx-4
-        border-indigo-800 py-2 border-b-2 whitespace-nowrap my-2"
+        border-indigo-800 py-2 text-2xl text-left border-b-2 whitespace-nowrap my-2"
               *ngIf="(isLoggedIn$ | async) === true"
               [onClick]="logout.bind(this)"
               text="Log Out">

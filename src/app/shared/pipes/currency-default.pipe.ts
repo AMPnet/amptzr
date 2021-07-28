@@ -18,6 +18,6 @@ export class CurrencyDefaultPipe implements PipeTransform {
     digitsInfo = '1.0-2',
     locale = 'en',
   ) {
-    return this.currencyPipe.transform(value / 100, code, display, digitsInfo, locale)
+    return this.currencyPipe.transform(value, code, display, digitsInfo, locale)
   }
 }

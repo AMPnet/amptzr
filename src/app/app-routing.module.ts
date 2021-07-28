@@ -7,7 +7,6 @@ import {DevPlaygroundComponent} from './shared/components/dev-playground/dev-pla
 import {AppLayoutComponent} from './app-layout/app-layout.component'
 import {OfferComponent} from './offer/offer.component'
 import {InvestComponent} from './invest/invest.component'
-import {InvestPreviewComponent} from './invest-preview/invest-preview.component'
 import {DepositComponent} from './deposit/deposit.component'
 import {AuthGuard} from './shared/guards/auth.guard'
 import {FaqComponent} from './faq/faq.component'
@@ -20,10 +19,9 @@ const routes: Routes = [
       {path: 'offers/:id', component: OfferComponent},
       {
         path: '', canActivate: [AuthGuard], children: [
+          {path: 'offers/:id/invest', component: InvestComponent},
           {path: 'wallet', component: WalletComponent},
           {path: 'deposit', component: DepositComponent},
-          {path: 'invest', component: InvestComponent},
-          {path: 'invest/preview', component: InvestPreviewComponent},
           {path: 'portfolio', component: PortfolioComponent},
         ],
       },
