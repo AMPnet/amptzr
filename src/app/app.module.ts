@@ -42,7 +42,8 @@ import {OffersCardSmallComponent} from "./offers/offers-card-small/offers-card-s
 import {AuthProviderNamePipe} from "./shared/pipes/auth-provider-name.pipe"
 import {ProfileAddMandatoryComponent} from './profile/profile-add-mandatory/profile-add-mandatory.component'
 import {ReactiveFormsModule} from '@angular/forms'
-import { InvalidInvestmentPipe } from './shared/pipes/invalid-investment.pipe'
+import {CurrencyMaskDirective} from './shared/directives/currency-mask.directive'
+import {InvalidInvestmentPipe} from './shared/pipes/invalid-investment.pipe'
 
 @NgModule({
   declarations: [
@@ -74,7 +75,8 @@ import { InvalidInvestmentPipe } from './shared/pipes/invalid-investment.pipe'
     FaqComponent,
     AuthProviderNamePipe,
     ProfileAddMandatoryComponent,
-    InvalidInvestmentPipe
+    InvalidInvestmentPipe,
+    CurrencyMaskDirective,
   ],
   imports: [
     BrowserModule,
