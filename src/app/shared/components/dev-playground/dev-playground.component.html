@@ -1,39 +1,62 @@
-<div class="flex space-x-4 px-2">
-  <div>
+<div class="px-4">
+  <form [formGroup]="investForm" class="mt-2">
+    <label class="block max-w-sm">
+      <span>Amount</span>
+      <input type="text" appCurrencyMask
+             class="mt-1 block w-full rounded-md border-gray-300 shadow-sm
+    focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+             formControlName="amount">
+    </label>
+    <div>
+      {{ investForm.value | json }}
+    </div>
+  </form>
+
+  <div class="flex space-x-4 px-2">
+    <div>
+      <button app-action-button
+              class="bg-blue-500 disabled:bg-gray-400 text-white p-2 rounded-md mt-2"
+              text="Upload"
+              [onClick]="upload.bind(this)">
+      </button>
+
+      <ng-container *ngIf="(content$ | async | unwrapStatus) as res">
+        {{ res | json }}
+      </ng-container>
+    </div>
+
+    <!-- TODO: transaction examples. clean when it will be used elsewhere. -->
+    <!--    <button app-action-button-->
+    <!--            class="bg-blue-500 disabled:bg-gray-400 text-white p-2 rounded-md mt-2"-->
+    <!--            text="Send USDC"-->
+    <!--            [onClick]="sendUSDC('0x338c7f21E0195449',-->
+    <!--            '0.000000000000000002').bind(this)">-->
+    <!--    </button>-->
+
+    <!--    <button app-action-button-->
+    <!--            class="bg-blue-500 disabled:bg-gray-400 text-white p-2 rounded-md mt-2"-->
+    <!--            text="Send MATIC"-->
+    <!--            [onClick]="sendMATIC('0x7FEB921abdd0d05100', '0.02').bind(this)">-->
+    <!--    </button>-->
+
     <button app-action-button
             class="bg-blue-500 disabled:bg-gray-400 text-white p-2 rounded-md mt-2"
-            text="Upload"
-            [onClick]="upload.bind(this)">
+            text="Sign Message"
+            loadingText="Signing message..."
+            [onClick]="signMessage.bind(this)">
     </button>
 
-    <ng-container *ngIf="(content$ | async | unwrapStatus) as res">
-      {{ res | json }}
-    </ng-container>
+    <!-- Filtering example -->
+    <!--  <button app-action-button-->
+    <!--          class="bg-blue-500 disabled:bg-gray-400 text-white p-2 rounded-md mt-2"-->
+    <!--          text="Filter"-->
+    <!--          loadingText="Filtering..."-->
+    <!--          [onClick]="filter.bind(this)">-->
+    <!--  </button>-->
+
+    <button app-action-button
+            class="bg-red-500 disabled:bg-gray-400 text-white p-2 rounded-md mt-2"
+            text="Invest" [onClick]="checkInvest.bind(this)">
+    </button>
   </div>
-
-  <!-- TODO: transaction examples. clean when it will be used elsewhere. -->
-  <!--    <button app-action-button-->
-  <!--            class="bg-blue-500 disabled:bg-gray-400 text-white p-2 rounded-md mt-2"-->
-  <!--            text="Send USDC"-->
-  <!--            [onClick]="sendUSDC('0x338c7f21E0195449',-->
-  <!--            '0.000000000000000002').bind(this)">-->
-  <!--    </button>-->
-
-  <!--    <button app-action-button-->
-  <!--            class="bg-blue-500 disabled:bg-gray-400 text-white p-2 rounded-md mt-2"-->
-  <!--            text="Send MATIC"-->
-  <!--            [onClick]="sendMATIC('0x7FEB921abdd0d05100', '0.02').bind(this)">-->
-  <!--    </button>-->
-
-  <button app-action-button
-          class="bg-blue-500 disabled:bg-gray-400 text-white p-2 rounded-md mt-2"
-          text="Sign Message"
-          loadingText="Signing message..."
-          [onClick]="signMessage.bind(this)">
-  </button>
-
-  <button app-action-button
-          class="bg-red-500 disabled:bg-gray-400 text-white p-2 rounded-md mt-2"
-          text="Invest" [onClick]="checkInvest.bind(this)">
-  </button>
 </div>
