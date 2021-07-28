@@ -12,7 +12,7 @@ export class PortfolioComponent {
 
   porfolioModel = new BehaviorSubject<PortfolioModel>({
     totalInvestment: 10000,
-    unclaimedEarning: 1000,
+    unclaimedEarning: 0,
     items: [
       {
         name: "Wind Farm Stupnik",
@@ -62,6 +62,7 @@ export class PortfolioComponent {
   })
   porfolioModel$ = this.porfolioModel.asObservable()
   projectStateType = ProjectState
+  isClaimButtonVisible$ = this.porfolioModel$.pipe(map((portfolio) => portfolio.unclaimedEarning > 0 ))
 
   constructor() { }
 }

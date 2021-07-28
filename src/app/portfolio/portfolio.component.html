@@ -16,6 +16,7 @@
         </div>
         <div class="h-full lg:w-80 flex flex-col justify-end items-end lg:mt-0">        
           <button app-action-button
+            [hidden]="(isClaimButtonVisible$ | async) === false"
             text="Claim"
             class="lg:w-52 w-full py-2 mt-8 lg:mt-4 bg-indigo-800 text-white rounded-full">
           </button>
