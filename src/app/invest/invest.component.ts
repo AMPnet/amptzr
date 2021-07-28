@@ -1,7 +1,6 @@
-import { ChangeDetectionStrategy, Component, ElementRef, OnInit } from '@angular/core'
-import { FormBuilder, Validators } from '@angular/forms'
-import { BehaviorSubject, combineLatest, Observable, of, zip } from 'rxjs'
-import { map, startWith, tap } from 'rxjs/operators'
+import {ChangeDetectionStrategy, Component} from '@angular/core'
+import {AbstractControl, FormBuilder, FormGroup, ValidatorFn} from '@angular/forms'
+import {BehaviorSubject} from 'rxjs'
 
 @Component({
   selector: 'app-invest',
@@ -10,68 +9,55 @@ import { map, startWith, tap } from 'rxjs/operators'
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class InvestComponent {
+  investState = InvestState
 
-  project = new BehaviorSubject<InvestProjectModel>({
+  projectSub = new BehaviorSubject<InvestProjectModel>({
     title: "Supercool Invest-O-Pia",
-    walletBalance: 50000,
+    walletBalance: 500,
     roi: "8%",
     description: "This is a small change, but a big move for us. 140 was an arbitrary choice based on the 160 character SMS limit. Proud of how thoughtful the team has been in solving a real problem people have when trying to tweet. And at the same time maintaining our brevity, speed, and essence!",
-    minInvestment: 10000,
-    maxInvestment: 100000,
-    imgSrc: "https://images.pexels.com/photos/2850347/pexels-photo-2850347.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260"
+    minInvestment: 100,
+    maxInvestment: 1000,
+    imgSrc: "https://images.pexels.com/photos/2850347/pexels-photo-2850347.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260",
   })
+  project$ = this.projectSub.asObservable()
+  investStateSub = new BehaviorSubject<InvestState>(InvestState.Editing)
+  investState$ = this.investStateSub.asObservable()
 
-  project$                        = this.project.asObservable()
-  componentState                  = new BehaviorSubject<ComponentState>(ComponentState.Editing)
-  investmentAmountForm            = this.fb.group({ investmentAmount: ['', Validators.required] })
-  investmentAmountValueChanges$   = this.investmentAmountForm.controls['investmentAmount'].valueChanges
-  investAmountStateType           = InvestmentAmountState
+  investmentForm: FormGroup
 
-  investmentAmountState$ =
-    this.investmentAmountValueChanges$
-      .pipe(map((amount) => this.handleAmountValueChange(parseInt(amount)) ), 
-            startWith(this.handleAmountValueChange(0)))
-
-  investmentAmount$ = 
-    this.investmentAmountValueChanges$.pipe(map((amount) => parseInt(amount) ))
-
-  isInReview$ = 
-    this.componentState.asObservable().pipe(
-      map((x) => x == ComponentState.InReview ))
-
-  isNextButtonDisabled$ = this.investmentAmountState$.pipe(
-    map((state) => state !== InvestmentAmountState.Valid ))
-
-  constructor(private fb: FormBuilder) { }
-
-  handleAmountValueChange(amount: number): InvestmentAmountState {
-
-    let model = this.project.value
-    let investmentAmountFieldIsEmpty = this.investmentAmountForm.controls['investmentAmount'].value !== ''
-
-    if (!investmentAmountFieldIsEmpty) { return InvestmentAmountState.Empty }
-    if (amount < model.minInvestment) { return InvestmentAmountState.InvestmentAmountTooLow }
-    if (amount > model.maxInvestment) { return InvestmentAmountState.InvestmentAmountTooHigh }
-    if (amount > model.walletBalance) {  return InvestmentAmountState.NotEnoughFunds }
-
-    return InvestmentAmountState.Valid
+  constructor(private fb: FormBuilder) {
+    this.investmentForm = this.fb.group({
+      amount: [0, [this.amountValidator()]],
+    })
   }
 
-  nextButtonClicked() {
-    this.componentState.next(ComponentState.InReview)
-    this.setAmountInputEnabled(false)
+  private amountValidator(): ValidatorFn {
+    return (control: AbstractControl) => {
+      const project = this.projectSub.value
+      const amount = control.value
+
+      if (!amount) {
+        return {amountEmpty: true}
+      } else if (amount < project.minInvestment) {
+        return {amountTooLow: true}
+      } else if (amount > project.maxInvestment) {
+        return {amountTooHigh: true}
+      } else if (amount > project.walletBalance) {
+        return {walletBalanceTooLow: true}
+      }
+
+      return null
+    }
   }
 
-  cancelButtonClicked() {
-    this.componentState.next(ComponentState.Editing)
-    this.setAmountInputEnabled(true)
+  goToReview() {
+    this.investStateSub.next(InvestState.InReview)
   }
 
-  setAmountInputEnabled(enabled: boolean) {
-    let control = this.investmentAmountForm.controls['investmentAmount']
-    enabled ? control.enable() : control.disable()
+  backToEdit() {
+    this.investStateSub.next(InvestState.Editing)
   }
-
 }
 
 interface InvestProjectModel {
@@ -84,15 +70,7 @@ interface InvestProjectModel {
   imgSrc: string
 }
 
-enum ComponentState {
+enum InvestState {
   Editing,
   InReview
-}
-
-export enum InvestmentAmountState {
-  Valid,
-  Empty,
-  InvestmentAmountTooHigh,
-  InvestmentAmountTooLow,
-  NotEnoughFunds
 }

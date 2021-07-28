@@ -29,7 +29,6 @@ import {UnwrapStatusPipe} from './shared/pipes/unwrap-status.pipe'
 import {OfferComponent} from './offer/offer.component'
 import {DepositComponent} from './deposit/deposit.component'
 import {InvestComponent} from './invest/invest.component'
-import {InvestPreviewComponent} from './invest-preview/invest-preview.component'
 import {OffersCardLargeComponent} from './offers/offers-card-large/offers-card-large.component'
 import {CurrencyPipe} from '@angular/common'
 import {CurrencyDefaultPipe} from './shared/pipes/currency-default.pipe'
@@ -43,7 +42,6 @@ import {AuthProviderNamePipe} from "./shared/pipes/auth-provider-name.pipe"
 import {ProfileAddMandatoryComponent} from './profile/profile-add-mandatory/profile-add-mandatory.component'
 import {ReactiveFormsModule} from '@angular/forms'
 import {CurrencyMaskDirective} from './shared/directives/currency-mask.directive'
-import {InvalidInvestmentPipe} from './shared/pipes/invalid-investment.pipe'
 
 @NgModule({
   declarations: [
@@ -66,7 +64,6 @@ import {InvalidInvestmentPipe} from './shared/pipes/invalid-investment.pipe'
     OfferComponent,
     DepositComponent,
     InvestComponent,
-    InvestPreviewComponent,
     OffersCardLargeComponent,
     OffersCardSmallComponent,
     FundingProgressComponent,
@@ -75,7 +72,6 @@ import {InvalidInvestmentPipe} from './shared/pipes/invalid-investment.pipe'
     FaqComponent,
     AuthProviderNamePipe,
     ProfileAddMandatoryComponent,
-    InvalidInvestmentPipe,
     CurrencyMaskDirective,
   ],
   imports: [

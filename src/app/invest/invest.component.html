@@ -1,115 +1,128 @@
 <ng-container *ngIf="(project$ | async) as project">
-    <div class="flex justify-center pb-8 px-2">
-
-        <div class="max-w-6xl w-full">
-
-             <!-- Input investment card -->
-            <div [hidden]="(isInReview$ | async) === true" >
-                <div class="flex flex-col lg:max-h-80 lg:flex-row mt-8 shadow-lg rounded-3xl bg-white">
-                    <img class="lg:w-5/12 w-full rounded-t-3xl lg:rounded-l-3xl object-cover h-full card-corner-radius-override"
-                        src="{{ project.imgSrc }}"
-                        alt="">
-                    <div class="w-full flex flex-col p-4 lg:p-8">
-                        <form [formGroup]="investmentAmountForm" id="investmentAmountForm">
-    
-                            <!-- Input with label, min invest and max invest amounts -->
-                            <h1 class="pt-2 lg:pt-8 text-4xl uppercase">{{ project.title }}</h1>
-                            <div class="mt-4 flex flex-col lg:flex-row justify-between">
-                                <div class="w-full h-full mr-16">
-                                    <label for="investmentAmount" class="text-sm">
-                                        I want to invest
-                                    </label>
-                                    <input class="w-full h-full mt-2 p-3 border outline-none rounded-xl"
-                                           type="text"
-                                           placeholder="$"
-                                           formControlName="investmentAmount"/>
-                                    <div class="mt-4 w-full flex items-end justify-between">
-                                        <span class="text-sm flex">
-                                            <span class="font-semibold mr-1">{{ project.minInvestment | currencyDefault }}</span>
-                                            Min. Investment
-                                        </span>
-                                        <span class="text-sm flex">
-                                            <span class="font-semibold mr-1">{{ project.maxInvestment | currencyDefault }}</span>
-                                            Max Investment
-                                        </span>
-                                    </div> 
-                                </div>
-    
-                                <!-- Wallet view section -->
-                                <div class="lg:ml-8 mt-8 flex flex-col items-end bg-gray-200 p-4 rounded-2xl">
-                                    <div class="text-lg">{{ project.walletBalance | currencyDefault }}</div>
-                                    <div class="text-sm text-gray-500 whitespace-nowrap flex items-center mt-1">
-                                        <span>
-                                            <svg width="20" height="20" viewBox="0 0 20 20" fill="none"
-                                                xmlns="http://www.w3.org/2000/svg">
-                                                <path
-                                                    d="M18.6087 1.78261C18.8246 1.78261 19 1.60721 19 1.3913C19 1.1754 18.8246 1 18.6087 1H2.95652C1.87776 1 1 1.87776 1 2.95652V17.0435C1 18.1222 1.87776 19 2.95652 19H18.6087C18.8246 19 19 18.8252 19 18.6087V4.52174C19 4.30583 18.8246 4.13044 18.6087 4.13044C17.9616 4.13044 17.4348 3.60366 17.4348 2.95652C17.4348 2.30938 17.9616 1.78261 18.6087 1.78261ZM2.95652 1.78261H17.0442C16.7985 2.10971 16.6522 2.5163 16.6522 2.95652C16.6522 3.39674 16.7985 3.80333 17.0442 4.13044H2.95652C2.30938 4.13044 1.78261 3.60366 1.78261 2.95652C1.78261 2.30938 2.30938 1.78261 2.95652 1.78261ZM18.2174 13.5217H11.5652C10.4865 13.5217 9.6087 12.644 9.6087 11.5652C9.6087 10.4865 10.4865 9.6087 11.5652 9.6087H18.2174V13.5217ZM18.2174 4.91304V8.82609H11.5652C10.0548 8.82609 8.82609 10.0548 8.82609 11.5652C8.82609 13.0752 10.0548 14.3043 11.5652 14.3043H18.2174V18.2174H2.95652C2.30938 18.2174 1.78261 17.6906 1.78261 17.0435V4.52097C2.10971 4.76669 2.5163 4.91304 2.95652 4.91304H18.2174Z"
-                                                    fill="black" stroke="#6B7280" />
-                                            </svg>
-    
-                                        </span>
-                                        <span class="ml-2">Available in wallet</span>
-                                    </div>
-                                </div>
-                            </div>
-    
-                            <!-- Error message for invalid investment amount -->
-                            <div class="w-full flex lg:flex-row flex-col lg:justify-between lg:items-end">
-                                <div class="flex lg:items-center mt-4 lg:mt-auto">
-                                    <div class="flex items-center" *ngIf="(investmentAmountState$ | async) as amountState">
-                                        <svg *ngIf="(amountState | invalidInvestment) !== null" width="26" height="26" viewBox="0 0 26 26" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                            <path d="M14.3333 18.3333H13V13H11.6667M13 7.66667H13.0133M25 13C25 14.5759 24.6896 16.1363 24.0866 17.5922C23.4835 19.0481 22.5996 20.371 21.4853 21.4853C20.371 22.5996 19.0481 23.4835 17.5922 24.0866C16.1363 24.6896 14.5759 25 13 25C11.4241 25 9.86371 24.6896 8.4078 24.0866C6.95189 23.4835 5.62902 22.5996 4.51472 21.4853C3.40042 20.371 2.5165 19.0481 1.91345 17.5922C1.31039 16.1363 1 14.5759 1 13C1 9.8174 2.26428 6.76516 4.51472 4.51472C6.76516 2.26428 9.8174 1 13 1C16.1826 1 19.2348 2.26428 21.4853 4.51472C23.7357 6.76516 25 9.8174 25 13Z" stroke="#EF4444" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                                        </svg>
-                                        <span class="ml-3 text-red-600 text-sm font-semibold">{{ amountState | invalidInvestment }} </span>    
-                                    </div>
-                                </div>  
-    
-                                <!-- Submit Button for Amount input form -->
-                                <button *ngIf="(investmentAmountState$ | async) === investAmountStateType.NotEnoughFunds"
-                                    routerLink="/wallet"
-                                    class="bg-indigo-800 rounded-full w-full lg:w-auto px-16 py-2 text-sm mt-4 lg:mt-8 text-white float-right
-                                           disabled:bg-gray-500 disabled:cursor-default">
-                                        Open Wallet ->
-                                </button>
-                                <button *ngIf="(investmentAmountState$ | async) !== investAmountStateType.NotEnoughFunds"
-                                    (click)="nextButtonClicked()"
-                                    [disabled]="(isNextButtonDisabled$ | async) ?? true" 
-                                    class="bg-indigo-800 rounded-full w-full lg:w-auto px-16 py-2 text-sm mt-4 lg:mt-8 text-white float-right
-                                           disabled:bg-gray-500 disabled:cursor-default">
-                                        Next ->
-                                </button>
-                            </div>
-                        </form>
+  <div class="flex justify-center pb-8 px-2">
+    <div class="max-w-6xl w-full">
+      <form [formGroup]="investmentForm">
+        <!-- Input investment card -->
+        <div *ngIf="(investState$ | async) === investState.Editing">
+          <div class="flex flex-col lg:max-h-80 lg:flex-row mt-8 shadow-lg rounded-3xl bg-white">
+            <img class="lg:w-5/12 w-full rounded-t-3xl lg:rounded-l-3xl object-cover h-full card-corner-radius-override"
+                 src="{{ project.imgSrc }}" alt="Project image">
+            <div class="w-full flex flex-col p-4 lg:p-8">
+              <!-- Input with label, min invest and max invest amounts -->
+              <h1 class="pt-2 lg:pt-8 text-4xl uppercase">{{ project.title }}</h1>
+              <div class="mt-4 flex flex-col lg:flex-row justify-between">
+                <div class="w-full h-full mr-16">
+                  <label for="investmentAmount" class="text-sm">
+                    I want to invest
+                  </label>
+                  <input class="w-full mt-2 p-3 border outline-none rounded-xl"
+                         type="text" appCurrencyMask
+                         id="investmentAmount"
+                         formControlName="amount"/>
+                  <div class="mt-4 w-full flex items-end justify-between">
+                    <div class="text-sm flex">
+                      <span class="font-semibold mr-1">{{ project.minInvestment | currencyDefault }}</span>
+                      Min. Investment
                     </div>
+                    <div class="text-sm flex">
+                      <span class="font-semibold mr-1">{{ project.maxInvestment | currencyDefault }}</span>
+                      Max Investment
+                    </div>
+                  </div>
                 </div>
-            </div>
-            
 
-            <!-- Review investment card -->
-            <div id="reviewInvestmentCard" [hidden]="(isInReview$ | async) === false">
-                <div class="mt-8 hidden lg:block font-semibold">Review your investment</div>
-                <div class="mt-4 shadow-lg rounded-3xl bg-white p-8 flex flex-col">
-                    <div class="font-semibold mb-4">Investing</div>
-                    <div class="flex flex-col lg:flex-row lg:items-center">
-                        <span class="text-3xl mr-2 font-semibold">{{ (investmentAmount$ | async)! | currencyDefault }}</span>
-                        <span class="hidden lg:inline">-></span>
-                        <span class="text-3xl lg:ml-2 mt-2 lg:mt-auto uppercase">{{ project.title }}</span>
-                    </div>
-                    <div class="mt-4 rounded-full px-4 py-2 bg-gray-100 flex items-center">
-                        <div class="font-semibold">{{ project.roi }}</div>
-                        <div class="text-sm ml-2">Expected return on investment</div>
-                    </div>
-                    <div class="mt-4 text-gray-500">{{ project.description }}</div>
-                    <div class="w-full flex justify-end mt-8 mb-4">
-                        <button (click)="cancelButtonClicked()" class="rounded-full lg:px-16 py-2 text-sm font-semibold">
-                            Cancel
-                        </button>
-                        <button class="bg-indigo-800 ml-4 rounded-full lg:px-16 px-4 py-2 text-sm text-white">
-                            Confirm & Invest ->
-                        </button>
-                    </div>
+                <!-- Wallet view section -->
+                <div class="lg:ml-8 mt-8 flex flex-col items-end bg-gray-200 p-4 rounded-2xl">
+                  <div class="text-lg">{{ project.walletBalance | currencyDefault }}</div>
+                  <div class="text-sm text-gray-500 whitespace-nowrap flex items-center mt-1">
+                    <svg width="20" height="20" viewBox="0 0 20 20" fill="none"
+                         xmlns="http://www.w3.org/2000/svg">
+                      <path
+                        d="M18.6087 1.78261C18.8246 1.78261 19 1.60721 19 1.3913C19 1.1754 18.8246 1 18.6087 1H2.95652C1.87776 1 1 1.87776 1 2.95652V17.0435C1 18.1222 1.87776 19 2.95652 19H18.6087C18.8246 19 19 18.8252 19 18.6087V4.52174C19 4.30583 18.8246 4.13044 18.6087 4.13044C17.9616 4.13044 17.4348 3.60366 17.4348 2.95652C17.4348 2.30938 17.9616 1.78261 18.6087 1.78261ZM2.95652 1.78261H17.0442C16.7985 2.10971 16.6522 2.5163 16.6522 2.95652C16.6522 3.39674 16.7985 3.80333 17.0442 4.13044H2.95652C2.30938 4.13044 1.78261 3.60366 1.78261 2.95652C1.78261 2.30938 2.30938 1.78261 2.95652 1.78261ZM18.2174 13.5217H11.5652C10.4865 13.5217 9.6087 12.644 9.6087 11.5652C9.6087 10.4865 10.4865 9.6087 11.5652 9.6087H18.2174V13.5217ZM18.2174 4.91304V8.82609H11.5652C10.0548 8.82609 8.82609 10.0548 8.82609 11.5652C8.82609 13.0752 10.0548 14.3043 11.5652 14.3043H18.2174V18.2174H2.95652C2.30938 18.2174 1.78261 17.6906 1.78261 17.0435V4.52097C2.10971 4.76669 2.5163 4.91304 2.95652 4.91304H18.2174Z"
+                        fill="black" stroke="#6B7280"/>
+                    </svg>
+                    <span class="ml-2">Available in wallet</span>
+                  </div>
                 </div>
+              </div>
+
+              <!-- Error message for invalid investment amount -->
+              <div class="w-full lg:flex lg:justify-between">
+                <div class="flex lg:items-center mt-4 lg:mt-auto">
+                  <div class="flex items-center" *ngIf="investmentForm.dirty && investmentForm.invalid">
+                    <svg width="26" height="26" viewBox="0 0 26 26" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path
+                        d="M14.3333 18.3333H13V13H11.6667M13 7.66667H13.0133M25 13C25 14.5759 24.6896 16.1363 24.0866 17.5922C23.4835 19.0481 22.5996 20.371 21.4853 21.4853C20.371 22.5996 19.0481 23.4835 17.5922 24.0866C16.1363 24.6896 14.5759 25 13 25C11.4241 25 9.86371 24.6896 8.4078 24.0866C6.95189 23.4835 5.62902 22.5996 4.51472 21.4853C3.40042 20.371 2.5165 19.0481 1.91345 17.5922C1.31039 16.1363 1 14.5759 1 13C1 9.8174 2.26428 6.76516 4.51472 4.51472C6.76516 2.26428 9.8174 1 13 1C16.1826 1 19.2348 2.26428 21.4853 4.51472C23.7357 6.76516 25 9.8174 25 13Z"
+                        stroke="#EF4444" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                    <span class="ml-3 text-red-600 text-sm font-semibold">
+                      <ng-container *ngIf="investmentForm.get('amount')?.errors?.amountEmpty">
+                        The amount cannot be empty.
+                      </ng-container>
+                      <ng-container *ngIf="investmentForm.get('amount')?.errors?.amountTooLow">
+                        The amount is lower than minimum required investment.
+                      </ng-container>
+                      <ng-container *ngIf="investmentForm.get('amount')?.errors?.amountTooHigh">
+                        The amount exceeds maximum allowed investment.
+                      </ng-container>
+                      <ng-container *ngIf="investmentForm.get('amount')?.errors?.walletBalanceTooLow">
+                        Not enough funds. Please top up your wallet.
+                      </ng-container>
+                    </span>
+                  </div>
+                </div>
+
+                <!-- Submit Button for Amount input form -->
+                <button *ngIf="investmentForm.get('amount')?.errors?.walletBalanceTooLow"
+                        routerLink="/wallet"
+                        class="bg-indigo-800 rounded-full w-full lg:w-auto px-16 py-2 text-sm mt-4
+                        lg:mt-8 text-white float-right disabled:bg-gray-500">
+                  Open Wallet ->
+                </button>
+                <button *ngIf="!investmentForm.get('amount')?.errors?.walletBalanceTooLow"
+                        (click)="goToReview()"
+                        [disabled]="!investmentForm.valid"
+                        class="bg-indigo-800 rounded-full w-full lg:w-auto px-16 py-2 text-sm mt-4
+                        lg:mt-8 text-white float-right disabled:bg-gray-500">
+                  Next ->
+                </button>
+              </div>
             </div>
+          </div>
         </div>
+
+        <!-- Review investment card -->
+        <div id="reviewInvestmentCard" *ngIf="(investState$ | async) === investState.InReview">
+          <h2 class="mt-8 hidden lg:block font-semibold">
+            Review your investment
+          </h2>
+          <div class="mt-4 shadow-lg rounded-3xl bg-white p-8 flex flex-col">
+            <h3 class="font-semibold mb-4">
+              Investing
+            </h3>
+            <div class="flex flex-col lg:flex-row lg:items-center">
+            <span class="text-3xl mr-2 font-semibold">
+              {{ investmentForm.get('amount')?.value | currencyDefault }}
+            </span>
+              <span class="hidden lg:inline">-></span>
+              <span class="text-3xl lg:ml-2 mt-2 lg:mt-auto uppercase">{{ project.title }}</span>
+            </div>
+            <div class="mt-4 rounded-full px-4 py-2 bg-gray-100 flex items-center">
+              <span class="font-semibold">{{ project.roi }}</span>
+              <span class="text-sm ml-2">Expected return on investment</span>
+            </div>
+            <div class="mt-4 text-gray-500">{{ project.description }}</div>
+            <div class="w-full flex justify-end mt-8 mb-4">
+              <button (click)="backToEdit()" class="rounded-full lg:px-16 py-2 text-sm font-semibold">
+                Cancel
+              </button>
+              <button class="bg-indigo-800 ml-4 rounded-full lg:px-16 px-4 py-2 text-sm text-white">
+                Confirm & Invest ->
+              </button>
+            </div>
+          </div>
+        </div>
+      </form>
     </div>
+  </div>
 </ng-container>
