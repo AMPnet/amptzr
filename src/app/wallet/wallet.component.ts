@@ -2,7 +2,7 @@ import {ChangeDetectionStrategy, Component, ɵmarkDirty} from '@angular/core'
 import {SessionQuery} from '../session/state/session.query'
 import {SignerService} from '../shared/services/signer.service'
 import {utils} from 'ethers'
-import {catchError, concatMap, map, switchMap, take, tap, timeout} from 'rxjs/operators'
+import {catchError, concatMap, delay, filter, map, switchMap, take, tap, timeout} from 'rxjs/operators'
 import {BehaviorSubject, combineLatest, EMPTY, from, Observable, of} from 'rxjs'
 import {DialogService} from '../shared/services/dialog.service'
 import {VenlySubsignerService} from '../shared/services/subsigners/venly-subsigner.service'
@@ -24,6 +24,7 @@ export class WalletComponent {
   transactionType = TransactionType
 
   copyLabelSub = new BehaviorSubject<string>("Copy")
+  
   copyLabel$ = this.copyLabelSub.asObservable()
 
   gas$ = this.sessionQuery.provider$.pipe(
@@ -102,18 +103,6 @@ export class WalletComponent {
     )
   }
 
-  showCurrentGasPrice(): Observable<any> {
-    return this.sessionQuery.provider$.pipe(
-      take(1),
-      concatMap(provider => from(provider.getGasPrice()).pipe(
-        timeout(3000),
-      )),
-      map(gasRaw => utils.formatEther(gasRaw)),
-      concatMap(gasPrice =>
-        this.dialogService.info(`Current gas price is ${gasPrice}`, false)),
-    )
-  }
-
   manageWallets() {
     return this.venly.manageWallets().pipe(
       concatMap(res => res ? this.signerService.login(this.venly, {force: false}) : EMPTY),
@@ -134,7 +123,9 @@ export class WalletComponent {
         selBox.select()
         document.execCommand('copy')
         document.body.removeChild(selBox)
-        alert('Address copied to clipboard: ' + address) // TODO remove alert and use HTML instead
+        
+        this.copyLabelSub.next("Copied")
+        setTimeout(() => { this.copyLabelSub.next("Copy") }, 2000)
       })
   }
 }
