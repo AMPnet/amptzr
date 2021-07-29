@@ -41,7 +41,6 @@
     "@tailwindcss/forms": "^0.3.3",
     "@veriff/incontext-sdk": "^1.2.0",
     "@walletconnect/web3-provider": "^1.4.1",
-    "ethereumjs-abi": "^0.6.8",
     "ethers": "^5.1.4",
     "ipfs-core-types": "^0.5.2",
     "ipfs-http-client": "^50.1.2",
