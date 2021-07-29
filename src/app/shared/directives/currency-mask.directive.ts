@@ -23,7 +23,6 @@ export class CurrencyMaskDirective extends NGXDirective implements OnInit {
     suffix: '',
     thousands: ',',
     nullable: false,
-    
     inputMode: CurrencyMaskInputMode.FINANCIAL,
   }
 }

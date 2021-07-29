@@ -1,13 +1,11 @@
 <div class="max-w-6xl mx-auto px-4">
-  <!-- TODO add breakpoints for other resolutions when they become available in the design -->
   <div class="mt-6 rounded-3xl shadow-lg bg-white p-4 lg:p-6">
     <div class="flex flex-col">
       <b class="text-sm">Your balance:</b>
       <div class="flex flex-col lg:items-center lg:flex-row mt-2">
-        <!-- TODO show actual balance -->
         <p class="text-3xl mr-8 font-light">${{ balanceUSDC$ | async | unwrapStatus }}</p>
-        <!-- TODO: buttons should be the same width -->
-        <!-- TODO: add deposit button action -->
+
+        <!-- Deposit and Withdraw Buttons -->
         <div class="w-full flex items-center justify-between lg:justify-start mt-2 lg:mt-0">
           <button
           class="text-white w-full lg:w-auto mr-2 text-sm flex items-center justify-center rounded-full 
@@ -19,7 +17,6 @@
           </svg>
           <span class="font-semibold tracking-wider">Deposit</span>
         </button>
-        <!-- TODO: add withdraw button action -->
         <button
           class="text-white w-full lg:w-auto ml-2 lg:ml-0 text-sm flex items-center 
           justify-center rounded-full bg-indigo-800 hover:bg-indigo-900 py-4 mt-2 lg:mt-0 lg:px-8">
@@ -32,15 +29,14 @@
           <span class="font-semibold tracking-wider">Withdraw</span>
         </button>
         </div>
-        
       </div>
+
+      <!-- Wallet Info - User Identity, Provider, Address -->
       <div class="flex flex-col lg:flex-row text-xs lg:items-center justify-between mt-4">
-        <!-- TODO: extract identity from login info -->
-        <p class="flex-grow">Identity: Ivo Robić</p>
+        <p class="flex-grow">{{ userIdentity$ | async }}</p>
         <div class="flex items-center mt-2 lg:mt-0">
           <p class="flex-grow-0 mr-6">Wallet address: <span
             *ngIf="(address$ | async | addrShort) as address">{{ address }}</span></p>
-          <!-- TODO: show some kind of popup that address was copied -->
           <button class="flex items-center justify-center flex-grow-0 mr-6" (click)="copyAddressToClipboard()">
             <svg class="h-3 w-3 mr-2" width="14" height="14" viewBox="0 0 14 14" fill="none"
                  xmlns="http://www.w3.org/2000/svg">
@@ -56,10 +52,10 @@
       </div>
     </div>
   </div>
+
+  <!-- Transaction History Component -->
   <div class="flex flex-col mt-6">
     <span class="font-semibold">Transaction History</span>
-    <!-- TODO: extract into wallet sub-component -->
-    <!-- TODO: finish transaction items when design is finalized -->
     <div class="flex flex-col mt-4">
       <div *ngFor="let transaction of transactionHistory" 
         class="rounded-xl whitespace-nowrap shadow-md bg-white p-4 my-1.5 flex items-center justify-between">

@@ -1,9 +1,9 @@
-import {ChangeDetectionStrategy, Component, ɵmarkDirty} from '@angular/core'
+import {ChangeDetectionStrategy, Component, OnInit, ɵmarkDirty} from '@angular/core'
 import {SessionQuery} from '../session/state/session.query'
 import {SignerService} from '../shared/services/signer.service'
 import {utils} from 'ethers'
 import {catchError, concatMap, delay, filter, map, switchMap, take, tap, timeout} from 'rxjs/operators'
-import {BehaviorSubject, combineLatest, EMPTY, from, Observable, of} from 'rxjs'
+import {BehaviorSubject, combineLatest, EMPTY, from, Observable, of, Subject} from 'rxjs'
 import {DialogService} from '../shared/services/dialog.service'
 import {VenlySubsignerService} from '../shared/services/subsigners/venly-subsigner.service'
 import {AuthProvider} from '../preference/state/preference.store'
@@ -18,7 +18,7 @@ import {Router} from '@angular/router'
   styleUrls: ['./wallet.component.css'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class WalletComponent {
+export class WalletComponent implements OnInit {
   authProvider = AuthProvider
   isLoggedIn$ = this.sessionQuery.isLoggedIn$
   transactionType = TransactionType
@@ -26,6 +26,9 @@ export class WalletComponent {
   copyLabelSub = new BehaviorSubject<string>("Copy")
   
   copyLabel$ = this.copyLabelSub.asObservable()
+
+  userIdentitySub = new Subject<String>()
+  userIdentity$ = this.userIdentitySub.asObservable()
 
   gas$ = this.sessionQuery.provider$.pipe(
     switchMap(provider => withStatus(
@@ -95,6 +98,10 @@ export class WalletComponent {
               private venly: VenlySubsignerService,
               private router: Router,
               private dialogService: DialogService) {
+  }
+
+  ngOnInit() {
+    this.userIdentitySub.next("Jozo Jozić")
   }
 
   logout(): Observable<unknown> {
