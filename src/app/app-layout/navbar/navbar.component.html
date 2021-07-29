@@ -13,7 +13,7 @@
     <!-- Navbar items -->
     <div class="flex justify-end items-center">
       <button *ngFor="let navbarItem of navbarScreenLinks"
-              class="mx-2 p-4 text-gray-700 text-sm border-b-4 border-transparent
+              class="mx-2 p-4 text-gray-700 text-sm border-b-4 font-semibold border-transparent tracking-wider
               whitespace-nowrap hidden lg:inline"
               [routerLink]="navbarItem.routerLink" routerLinkActive=" text-indigo-800 border-indigo-800">
         {{ navbarItem.title }}

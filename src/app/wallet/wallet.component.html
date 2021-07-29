@@ -2,15 +2,15 @@
   <!-- TODO add breakpoints for other resolutions when they become available in the design -->
   <div class="mt-6 rounded-3xl shadow-lg bg-white px-6 py-4">
     <div class="flex flex-col">
-      <b class="text-xs">Your balance:</b>
-      <div class="flex flex-col lg:flex-row mt-2">
+      <b class="text-sm">Your balance:</b>
+      <div class="flex flex-col lg:items-center lg:flex-row mt-2">
         <!-- TODO show actual balance -->
         <p class="text-3xl mr-8 font-light">${{ balanceUSDC$ | async | unwrapStatus }}</p>
         <!-- TODO: buttons should be the same width -->
         <!-- TODO: add deposit button action -->
         <div class="w-full flex items-center justify-between lg:justify-start mt-2 lg:mt-0">
           <button
-          class="text-white w-full lg:w-auto mr-2 text-xs flex items-center justify-center rounded-full bg-green-600 hover:bg-green-700 py-2 mt-2 lg:mt-0 pl-4 pr-6 lg:mr-3">
+          class="text-white w-full lg:w-auto mr-2 text-sm flex items-center justify-center rounded-full bg-green-600 hover:bg-green-700 py-4 mt-2 lg:mt-0 px-8 lg:mr-3">
           <svg class="h-3.5 w-3.5 mr-2" width="18" height="14" viewBox="0 0 18 14" fill="none"
                xmlns="http://www.w3.org/2000/svg">
             <path d="M8.78568 1V7M8.78568 7V13M8.78568 7H16.0255M8.78568 7H1.5459" stroke="white" stroke-width="2"
@@ -20,7 +20,7 @@
         </button>
         <!-- TODO: add withdraw button action -->
         <button
-          class="text-white w-full lg:w-auto ml-2 lg:ml-0 text-xs flex items-center justify-center rounded-full bg-indigo-800 hover:bg-indigo-900 py-2 mt-2 lg:mt-0 pl-4 pr-6">
+          class="text-white w-full lg:w-auto ml-2 lg:ml-0 text-sm flex items-center justify-center rounded-full bg-indigo-800 hover:bg-indigo-900 py-4 mt-2 lg:mt-0 px-8">
           <svg class="h-3.5 w-3.5 mr-2" width="22" height="18" viewBox="0 0 22 18" fill="none"
                xmlns="http://www.w3.org/2000/svg">
             <path
@@ -55,24 +55,26 @@
     </div>
   </div>
   <div class="flex flex-col mt-6">
-    <span class="font-semibold">Transaction history:</span>
+    <span class="font-semibold">Transaction History</span>
     <!-- TODO: extract into wallet sub-component -->
     <!-- TODO: finish transaction items when design is finalized -->
     <div class="flex flex-col mt-4">
       <div *ngFor="let transaction of transactionHistory" 
         class="rounded-xl whitespace-nowrap shadow-md bg-white p-4 my-1.5 flex items-center justify-between">
         <div class="flex">
-          <div class="rounded-full w-10 h-10 bg-pink-700 flex justify-center items-center text-white">
-            <ng-container *ngIf="transaction.type == transactionType.Investment">
-              ->
-            </ng-container>
-            <ng-container *ngIf="transaction.type == transactionType.DividendPayout">
-              --
-            </ng-container>
+          <div *ngIf="transaction.type === transactionType.DividendPayout" class="rounded-full w-10 h-10 bg-green-800 flex justify-center items-center text-white">
+            <svg width="18" height="18" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M18.2454 7.91846L26.1025 16.0001M26.1025 16.0001L18.2454 24.0817M26.1025 16.0001H5.89844" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
           </div>
-          <div class="flex flex-col ml-3">
+          <div *ngIf="transaction.type === transactionType.Investment" class="rounded-full w-10 h-10 bg-blue-800 flex justify-center items-center text-white">
+            <svg width="18" height="18" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M13.7546 24.0815L5.89748 15.9999M5.89748 15.9999L13.7546 7.91828M5.89748 15.9999L26.1016 15.9999" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>              
+          </div>
+          <div class="flex flex-col ml-4">
             <span class="font-semibold">{{ transaction.type }}</span>
-            <span>{{ transaction.amount }}</span>
+            <span>{{ transaction.projectName }}</span>
           </div>
         </div>
         <div class="text-right float-right">{{ transaction.amount | currencyDefault }}</div>
