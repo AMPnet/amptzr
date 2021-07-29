@@ -3,7 +3,7 @@ import {SessionQuery} from '../session/state/session.query'
 import {SignerService} from '../shared/services/signer.service'
 import {utils} from 'ethers'
 import {catchError, concatMap, map, switchMap, take, tap, timeout} from 'rxjs/operators'
-import {combineLatest, EMPTY, from, Observable, of} from 'rxjs'
+import {BehaviorSubject, combineLatest, EMPTY, from, Observable, of} from 'rxjs'
 import {DialogService} from '../shared/services/dialog.service'
 import {VenlySubsignerService} from '../shared/services/subsigners/venly-subsigner.service'
 import {AuthProvider} from '../preference/state/preference.store'
@@ -22,6 +22,9 @@ export class WalletComponent {
   authProvider = AuthProvider
   isLoggedIn$ = this.sessionQuery.isLoggedIn$
   transactionType = TransactionType
+
+  copyLabelSub = new BehaviorSubject<string>("Copy")
+  copyLabel$ = this.copyLabelSub.asObservable()
 
   gas$ = this.sessionQuery.provider$.pipe(
     switchMap(provider => withStatus(
