@@ -19,42 +19,19 @@ import {Router} from '@angular/router'
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class WalletComponent implements OnInit {
-  authProvider = AuthProvider
-  isLoggedIn$ = this.sessionQuery.isLoggedIn$
-  transactionType = TransactionType
 
-  copyLabelSub = new BehaviorSubject<string>("Copy")
-  
-  copyLabel$ = this.copyLabelSub.asObservable()
-
-  userIdentitySub = new Subject<String>()
-  userIdentity$ = this.userIdentitySub.asObservable()
-
-  gas$ = this.sessionQuery.provider$.pipe(
-    switchMap(provider => withStatus(
-      withInterval(of(provider), 5000).pipe(
-        concatMap(provider => from(provider.getGasPrice()).pipe(
-          timeout(3000),
-          catchError(() => EMPTY),
-        )),
-        map(gasRaw => utils.formatEther(gasRaw)),
-      ))),
-  )
-
-  blockNumber$ = this.sessionQuery.provider$.pipe(
-    switchMap(provider => withStatus(
-      withInterval(of(provider), 2000).pipe(
-        switchMap(provider => from(provider.getBlockNumber()).pipe(
-          timeout(1800),
-          catchError(() => EMPTY),
-        )),
-      ))),
-  )
+  authProvider      = AuthProvider
+  isLoggedIn$       = this.sessionQuery.isLoggedIn$
+  transactionType   = TransactionType
+  authProvider$     = this.sessionQuery.authProvider$
+  copyLabelSub      = new BehaviorSubject<string>("Copy")
+  copyLabel$        = this.copyLabelSub.asObservable()
+  userIdentitySub   = new Subject<String>()
+  userIdentity$     = this.userIdentitySub.asObservable()
 
   address$ = this.sessionQuery.address$.pipe(
     tap(() => ɵmarkDirty(this)),
   )
-
   balanceUSDC$ = combineLatest([this.sessionQuery.provider$, this.sessionQuery.address$]).pipe(
     switchMap(([provider, address]) => withStatus(
       of(USDC__factory.connect(this.tokenMappingService.usdc, provider)).pipe(
@@ -63,7 +40,6 @@ export class WalletComponent implements OnInit {
       ),
     )),
   )
-
   balanceMATIC$ = combineLatest([this.sessionQuery.provider$, this.sessionQuery.address$]).pipe(
     switchMap(([provider, address]) => withStatus(
       from(provider.getBalance(address!)).pipe(
@@ -71,9 +47,6 @@ export class WalletComponent implements OnInit {
       ),
     )),
   )
-
-  authProvider$ = this.sessionQuery.authProvider$
-
   transactionHistory: WalletTransaction[] = [ // TODO used for testing only
     {
       type: TransactionType.Investment,
