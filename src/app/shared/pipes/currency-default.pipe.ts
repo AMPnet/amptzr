@@ -12,7 +12,7 @@ export class CurrencyDefaultPipe implements PipeTransform {
   }
 
   transform(
-    value: number,
+    value: number | string,
     code = 'USD',
     display = 'symbol',
     digitsInfo = '1.0-2',

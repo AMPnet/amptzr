@@ -2,12 +2,11 @@ import {ChangeDetectionStrategy, Component, ɵmarkDirty} from '@angular/core'
 import {SessionQuery} from '../session/state/session.query'
 import {SignerService} from '../shared/services/signer.service'
 import {utils} from 'ethers'
-import {catchError, concatMap, map, switchMap, take, tap, timeout} from 'rxjs/operators'
-import {combineLatest, EMPTY, from, Observable, of} from 'rxjs'
-import {DialogService} from '../shared/services/dialog.service'
+import {concatMap, map, switchMap, tap} from 'rxjs/operators'
+import {BehaviorSubject, combineLatest, EMPTY, Observable, of} from 'rxjs'
 import {VenlySubsignerService} from '../shared/services/subsigners/venly-subsigner.service'
 import {AuthProvider} from '../preference/state/preference.store'
-import {withInterval, withStatus} from '../shared/utils/observables'
+import {withStatus} from '../shared/utils/observables'
 import {USDC__factory} from '../../../types/ethers-contracts'
 import {TokenMappingService} from '../shared/services/token-mapping.service'
 import {Router} from '@angular/router'
@@ -19,68 +18,52 @@ import {Router} from '@angular/router'
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class WalletComponent {
-  authProvider = AuthProvider
-  isLoggedIn$ = this.sessionQuery.isLoggedIn$
+  authProviderType = AuthProvider
+  transactionType = TransactionType
 
-  gas$ = this.sessionQuery.provider$.pipe(
-    switchMap(provider => withStatus(
-      withInterval(of(provider), 5000).pipe(
-        concatMap(provider => from(provider.getGasPrice()).pipe(
-          timeout(3000),
-          catchError(() => EMPTY),
-        )),
-        map(gasRaw => utils.formatEther(gasRaw)),
-      ))),
-  )
+  authProvider$ = this.sessionQuery.authProvider$
 
-  blockNumber$ = this.sessionQuery.provider$.pipe(
-    switchMap(provider => withStatus(
-      withInterval(of(provider), 2000).pipe(
-        switchMap(provider => from(provider.getBlockNumber()).pipe(
-          timeout(1800),
-          catchError(() => EMPTY),
-        )),
-      ))),
-  )
+  userIdentitySub = new BehaviorSubject<string>('John Smith')
+  userIdentity$ = this.userIdentitySub.asObservable()
 
   address$ = this.sessionQuery.address$.pipe(
     tap(() => ɵmarkDirty(this)),
   )
 
-  balanceUSDC$ = combineLatest([this.sessionQuery.provider$, this.sessionQuery.address$]).pipe(
+  paymentTokenBalance$ = combineLatest([this.sessionQuery.provider$, this.sessionQuery.address$]).pipe(
     switchMap(([provider, address]) => withStatus(
       of(USDC__factory.connect(this.tokenMappingService.usdc, provider)).pipe(
         concatMap(usdc => usdc.balanceOf(address!)),
         map(value => utils.formatEther(value)),
+        tap(() => ɵmarkDirty(this)),
       ),
     )),
   )
 
-  balanceMATIC$ = combineLatest([this.sessionQuery.provider$, this.sessionQuery.address$]).pipe(
-    switchMap(([provider, address]) => withStatus(
-      from(provider.getBalance(address!)).pipe(
-        map(value => utils.formatEther(value)),
-      ),
-    )),
-  )
+  // TODO: base currency balance will probably be used here in the future for gas indicator.
+  // nativeTokenBalance$ = combineLatest([this.sessionQuery.provider$, this.sessionQuery.address$]).pipe(
+  //   switchMap(([provider, address]) => withStatus(
+  //     from(provider.getBalance(address!)).pipe(
+  //       map(value => utils.formatEther(value)),
+  //     ),
+  //   )),
+  // )
 
-  authProvider$ = this.sessionQuery.authProvider$
-
-  transactionHistory: WalletTransaction[] = [ // TODO used for testing only
+  transactionHistory: WalletTransaction[] = [ // TODO: used for testing only
     {
-      type: TransactionType.INVESTMENT,
+      type: TransactionType.Investment,
       projectName: 'Solarna elektrana Hvar',
       amount: 129,
     },
     {
-      type: TransactionType.DIVIDEND_PAYOUT,
+      type: TransactionType.DividendPayout,
       projectName: 'Test project',
-      amount: 505,
+      amount: 30255,
     },
     {
-      type: TransactionType.INVESTMENT,
+      type: TransactionType.Investment,
       projectName: 'LatCorp',
-      amount: 420,
+      amount: -2230,
     },
   ]
 
@@ -88,8 +71,7 @@ export class WalletComponent {
               private tokenMappingService: TokenMappingService,
               private signerService: SignerService,
               private venly: VenlySubsignerService,
-              private router: Router,
-              private dialogService: DialogService) {
+              private router: Router) {
   }
 
   logout(): Observable<unknown> {
@@ -98,49 +80,19 @@ export class WalletComponent {
     )
   }
 
-  showCurrentGasPrice(): Observable<any> {
-    return this.sessionQuery.provider$.pipe(
-      take(1),
-      concatMap(provider => from(provider.getGasPrice()).pipe(
-        timeout(3000),
-      )),
-      map(gasRaw => utils.formatEther(gasRaw)),
-      concatMap(gasPrice =>
-        this.dialogService.info(`Current gas price is ${gasPrice}`, false)),
-    )
-  }
-
-  manageWallets() {
+  manageVenlyWallets(): Observable<unknown> {
     return this.venly.manageWallets().pipe(
       concatMap(res => res ? this.signerService.login(this.venly, {force: false}) : EMPTY),
     )
   }
-
-  copyAddressToClipboard() {
-    this.sessionQuery.address$.pipe(take(1))
-      .subscribe(address => {
-        const selBox = document.createElement('textarea')
-        selBox.style.position = 'fixed'
-        selBox.style.left = '0'
-        selBox.style.top = '0'
-        selBox.style.opacity = '0'
-        selBox.value = address || ''
-        document.body.appendChild(selBox)
-        selBox.focus()
-        selBox.select()
-        document.execCommand('copy')
-        document.body.removeChild(selBox)
-        alert('Address copied to clipboard: ' + address) // TODO remove alert and use HTML instead
-      })
-  }
 }
 
-export enum TransactionType {
-  INVESTMENT = 'INVESTMENT',
-  DIVIDEND_PAYOUT = 'DIVIDEND_PAYOUT',
+enum TransactionType {
+  Investment = 'Investment',
+  DividendPayout = 'Dividend Payout'
 }
 
-export interface WalletTransaction {
+interface WalletTransaction {
   type: TransactionType
   projectName: string
   amount: number

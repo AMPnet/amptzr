@@ -42,6 +42,7 @@ import {AuthProviderNamePipe} from "./shared/pipes/auth-provider-name.pipe"
 import {ProfileAddMandatoryComponent} from './profile/profile-add-mandatory/profile-add-mandatory.component'
 import {ReactiveFormsModule} from '@angular/forms'
 import {CurrencyMaskDirective} from './shared/directives/currency-mask.directive'
+import {ValueCopyComponent} from './shared/components/value-copy/value-copy.component'
 
 @NgModule({
   declarations: [
@@ -73,6 +74,7 @@ import {CurrencyMaskDirective} from './shared/directives/currency-mask.directive
     AuthProviderNamePipe,
     ProfileAddMandatoryComponent,
     CurrencyMaskDirective,
+    ValueCopyComponent,
   ],
   imports: [
     BrowserModule,
