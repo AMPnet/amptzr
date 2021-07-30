@@ -1,13 +1,12 @@
-import {ChangeDetectionStrategy, Component, OnInit, ɵmarkDirty} from '@angular/core'
+import {ChangeDetectionStrategy, Component, ɵmarkDirty} from '@angular/core'
 import {SessionQuery} from '../session/state/session.query'
 import {SignerService} from '../shared/services/signer.service'
 import {utils} from 'ethers'
-import {catchError, concatMap, delay, filter, map, switchMap, take, tap, timeout} from 'rxjs/operators'
-import {BehaviorSubject, combineLatest, EMPTY, from, Observable, of, Subject} from 'rxjs'
-import {DialogService} from '../shared/services/dialog.service'
+import {concatMap, map, switchMap, tap} from 'rxjs/operators'
+import {BehaviorSubject, combineLatest, EMPTY, Observable, of} from 'rxjs'
 import {VenlySubsignerService} from '../shared/services/subsigners/venly-subsigner.service'
 import {AuthProvider} from '../preference/state/preference.store'
-import {withInterval, withStatus} from '../shared/utils/observables'
+import {withStatus} from '../shared/utils/observables'
 import {USDC__factory} from '../../../types/ethers-contracts'
 import {TokenMappingService} from '../shared/services/token-mapping.service'
 import {Router} from '@angular/router'
@@ -18,36 +17,39 @@ import {Router} from '@angular/router'
   styleUrls: ['./wallet.component.css'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class WalletComponent implements OnInit {
+export class WalletComponent {
+  authProviderType = AuthProvider
+  transactionType = TransactionType
 
-  authProvider      = AuthProvider
-  isLoggedIn$       = this.sessionQuery.isLoggedIn$
-  transactionType   = TransactionType
-  authProvider$     = this.sessionQuery.authProvider$
-  copyLabelSub      = new BehaviorSubject<string>("Copy")
-  copyLabel$        = this.copyLabelSub.asObservable()
-  userIdentitySub   = new Subject<String>()
-  userIdentity$     = this.userIdentitySub.asObservable()
+  authProvider$ = this.sessionQuery.authProvider$
+
+  userIdentitySub = new BehaviorSubject<string>('John Smith')
+  userIdentity$ = this.userIdentitySub.asObservable()
 
   address$ = this.sessionQuery.address$.pipe(
     tap(() => ɵmarkDirty(this)),
   )
-  balanceUSDC$ = combineLatest([this.sessionQuery.provider$, this.sessionQuery.address$]).pipe(
+
+  paymentTokenBalance$ = combineLatest([this.sessionQuery.provider$, this.sessionQuery.address$]).pipe(
     switchMap(([provider, address]) => withStatus(
       of(USDC__factory.connect(this.tokenMappingService.usdc, provider)).pipe(
         concatMap(usdc => usdc.balanceOf(address!)),
         map(value => utils.formatEther(value)),
+        tap(() => ɵmarkDirty(this)),
       ),
     )),
   )
-  balanceMATIC$ = combineLatest([this.sessionQuery.provider$, this.sessionQuery.address$]).pipe(
-    switchMap(([provider, address]) => withStatus(
-      from(provider.getBalance(address!)).pipe(
-        map(value => utils.formatEther(value)),
-      ),
-    )),
-  )
-  transactionHistory: WalletTransaction[] = [ // TODO used for testing only
+
+  // TODO: base currency balance will probably be used here in the future for gas indicator.
+  // nativeTokenBalance$ = combineLatest([this.sessionQuery.provider$, this.sessionQuery.address$]).pipe(
+  //   switchMap(([provider, address]) => withStatus(
+  //     from(provider.getBalance(address!)).pipe(
+  //       map(value => utils.formatEther(value)),
+  //     ),
+  //   )),
+  // )
+
+  transactionHistory: WalletTransaction[] = [ // TODO: used for testing only
     {
       type: TransactionType.Investment,
       projectName: 'Solarna elektrana Hvar',
@@ -69,12 +71,7 @@ export class WalletComponent implements OnInit {
               private tokenMappingService: TokenMappingService,
               private signerService: SignerService,
               private venly: VenlySubsignerService,
-              private router: Router,
-              private dialogService: DialogService) {
-  }
-
-  ngOnInit() {
-    this.userIdentitySub.next("Jozo Jozić")
+              private router: Router) {
   }
 
   logout(): Observable<unknown> {
@@ -83,39 +80,19 @@ export class WalletComponent implements OnInit {
     )
   }
 
-  manageWallets() {
+  manageVenlyWallets(): Observable<unknown> {
     return this.venly.manageWallets().pipe(
       concatMap(res => res ? this.signerService.login(this.venly, {force: false}) : EMPTY),
     )
   }
-
-  copyAddressToClipboard() {
-    this.sessionQuery.address$.pipe(take(1))
-      .subscribe(address => {
-        const selBox = document.createElement('textarea')
-        selBox.style.position = 'fixed'
-        selBox.style.left = '0'
-        selBox.style.top = '0'
-        selBox.style.opacity = '0'
-        selBox.value = address || ''
-        document.body.appendChild(selBox)
-        selBox.focus()
-        selBox.select()
-        document.execCommand('copy')
-        document.body.removeChild(selBox)
-        
-        this.copyLabelSub.next("Copied")
-        setTimeout(() => { this.copyLabelSub.next("Copy") }, 2000)
-      })
-  }
 }
 
-export enum TransactionType {
-  Investment = "Investment",
-  DividendPayout = "Dividend Payout"
+enum TransactionType {
+  Investment = 'Investment',
+  DividendPayout = 'Dividend Payout'
 }
 
-export interface WalletTransaction {
+interface WalletTransaction {
   type: TransactionType
   projectName: string
   amount: number
