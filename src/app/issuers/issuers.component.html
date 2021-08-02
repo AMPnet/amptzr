@@ -1,0 +1,9 @@
+<p>issuers works!</p>
+
+<ng-container *ngIf="issuers$ | async | unwrapStatus as issuers">
+  {{ issuers | json }}
+</ng-container>
+
+<ng-container *ngIf="issuer$ | async as issuer">
+  {{ issuer | json }}
+</ng-container>

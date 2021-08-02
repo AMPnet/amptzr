@@ -13,7 +13,13 @@ export class IpfsService {
   client: IPFS
 
   constructor(private http: HttpClient) {
-    this.client = ipfsCreate({url: environment.ipfs.apiURL})
+    this.client = ipfsCreate({
+      url: environment.ipfs.apiURL,
+      // headers: {
+      //   authorization: `Basic ${Buffer.from('1w2A3WbgrDvT4yo5qNg8TLxAfuT:314ae7096c91ebb12b1b6ce177fe295a')
+      //     .toString('base64')}`,
+      // },
+    })
   }
 
   get<T>(cid: string): Observable<T> {

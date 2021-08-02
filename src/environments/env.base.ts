@@ -12,8 +12,9 @@ export const environment = {
   },
   fixedChainID: postBuildEnv?.FIXED_CHAIN_ID,
   ipfs: {
-    apiURL: postBuildEnv?.IPFS_API_URL || 'http://localhost:5001',
-    gatewayURL: postBuildEnv?.IPFS_API_URL || 'http://localhost:8080',
+    apiURL: postBuildEnv?.IPFS_API_URL || 'https://ipfs.infura.io:5001',
+    gatewayURL: postBuildEnv?.IPFS_API_URL || 'https://ipfs.infura.io',
+    pinataApiURL: postBuildEnv?.IPFS_PINATA_API_URL || '',
   },
   backendURL: postBuildEnv?.BACKEND_URL || 'https://eth-staging.ampnet.io',
 }

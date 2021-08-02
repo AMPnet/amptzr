@@ -43,6 +43,7 @@ import {ProfileAddMandatoryComponent} from './profile/profile-add-mandatory/prof
 import {ReactiveFormsModule} from '@angular/forms'
 import {CurrencyMaskDirective} from './shared/directives/currency-mask.directive'
 import {ValueCopyComponent} from './shared/components/value-copy/value-copy.component'
+import { IssuersComponent } from './issuers/issuers.component'
 
 @NgModule({
   declarations: [
@@ -75,6 +76,7 @@ import {ValueCopyComponent} from './shared/components/value-copy/value-copy.comp
     ProfileAddMandatoryComponent,
     CurrencyMaskDirective,
     ValueCopyComponent,
+    IssuersComponent,
   ],
   imports: [
     BrowserModule,
