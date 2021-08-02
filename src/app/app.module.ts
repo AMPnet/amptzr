@@ -43,7 +43,9 @@ import {ProfileAddMandatoryComponent} from './profile/profile-add-mandatory/prof
 import {ReactiveFormsModule} from '@angular/forms'
 import {CurrencyMaskDirective} from './shared/directives/currency-mask.directive'
 import {ValueCopyComponent} from './shared/components/value-copy/value-copy.component'
-import { IssuersComponent } from './issuers/issuers.component'
+import {IssuersComponent} from './issuers/issuers.component'
+import {ToImageUrlPipe} from './shared/pipes/to-image-url.pipe'
+import {FileInputAccessorDirective} from './shared/directives/file-input-accessor.directive'
 
 @NgModule({
   declarations: [
@@ -73,10 +75,12 @@ import { IssuersComponent } from './issuers/issuers.component'
     VeriffComponent,
     FaqComponent,
     AuthProviderNamePipe,
+    ToImageUrlPipe,
     ProfileAddMandatoryComponent,
     CurrencyMaskDirective,
     ValueCopyComponent,
     IssuersComponent,
+    FileInputAccessorDirective
   ],
   imports: [
     BrowserModule,

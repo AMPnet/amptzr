@@ -1,8 +1,7 @@
 import {ChangeDetectionStrategy, Component} from '@angular/core'
-import {Observable, Subject} from 'rxjs'
+import {combineLatest, Observable, Subject} from 'rxjs'
 import {concatMap, switchMap, tap} from 'rxjs/operators'
 import {withStatus} from '../../utils/observables'
-import {IpfsService} from '../../services/ipfs.service'
 import {SignerService} from '../../services/signer.service'
 import {utils} from 'ethers'
 import {DialogService} from '../../services/dialog.service'
@@ -12,6 +11,9 @@ import {TokenMappingService} from '../../services/token-mapping.service'
 import {SessionQuery} from '../../../session/state/session.query'
 import {HttpClient} from '@angular/common/http'
 import {FormBuilder, FormGroup, Validators} from '@angular/forms'
+import {IpfsService} from '../../services/ipfs/ipfs.service'
+import {IPFSIssuer} from '../../../../../types/ipfs/issuer'
+import {IPFSAddResult} from '../../services/ipfs/ipfs.service.types'
 
 @Component({
   selector: 'app-dev-playground',
@@ -20,8 +22,9 @@ import {FormBuilder, FormGroup, Validators} from '@angular/forms'
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DevPlaygroundComponent {
-  contentSub = new Subject<string>()
+  contentSub = new Subject<IPFSAddResult>()
   investForm: FormGroup
+  uploadForm: FormGroup
 
   constructor(private ipfsService: IpfsService,
               private signerService: SignerService,
@@ -33,21 +36,32 @@ export class DevPlaygroundComponent {
               private fb: FormBuilder,
               private dialogService: DialogService) {
     this.investForm = this.fb.group({
-      amount: [0, Validators.required]
+      amount: [0, Validators.required],
+    })
+
+    this.uploadForm = this.fb.group({
+      name: ['', Validators.required],
+      logo: [null, Validators.required],
     })
   }
 
   upload(): Observable<unknown> {
-    return this.ipfsService.addJSON({halo: 'theres'}).pipe(
+    return combineLatest([
+      this.ipfsService.addFile(this.uploadForm.get('logo')!.value[0]),
+    ]).pipe(
+      switchMap(([logo]) => this.ipfsService.addObject<IPFSIssuer>({
+        name: this.uploadForm.get('name')!.value,
+        logo: logo.path,
+      })),
       tap(res => {
         console.log(res)
-        this.contentSub.next(res.path)
+        this.contentSub.next(res)
       }),
     )
   }
 
   content$ = this.contentSub.asObservable().pipe(
-    switchMap(contentPath => withStatus(this.ipfsService.get(contentPath))),
+    switchMap(contentPath => withStatus(this.ipfsService.get<IPFSIssuer>(contentPath.path))),
   )
 
   signMessage(): Observable<unknown> {

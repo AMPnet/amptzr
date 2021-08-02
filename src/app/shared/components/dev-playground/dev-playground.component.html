@@ -12,18 +12,48 @@
     </div>
   </form>
 
-  <div class="flex space-x-4 px-2">
-    <div>
-      <button app-action-button
-              class="bg-blue-500 disabled:bg-gray-400 text-white p-2 rounded-md mt-2"
-              text="Upload"
-              [onClick]="upload.bind(this)">
-      </button>
 
-      <ng-container *ngIf="(content$ | async | unwrapStatus) as res">
-        {{ res | json }}
+  <form [formGroup]="uploadForm">
+    <label class="block">
+      <span>Name</span>
+      <input type="text" formControlName="name">
+    </label>
+
+    <label class="block mt-2">
+      <span>Logo</span>
+      <input type="file" formControlName="logo" multiple>
+    </label>
+
+    <button app-action-button
+            class="bg-blue-500 disabled:bg-gray-400 text-white p-2 rounded-md mt-2"
+            text="Upload"
+            [disabled]="!uploadForm.valid"
+            [onClick]="upload.bind(this)">
+    </button>
+
+    {{ uploadForm.value | json }}
+  </form>
+
+  <div>
+    <ng-container *ngIf="(content$ | async) as res">
+      <ng-container *ngIf="res.value">
+        {{ res.value | json }}
+
+        <img src="{{ res.value.logo | toImageURL }}" alt="Image">
       </ng-container>
-    </div>
+
+      <ng-container *ngIf="res.error">
+        {{ res.error }}
+      </ng-container>
+
+      <ng-container *ngIf="res.loading">
+        Loading from IPFS...
+      </ng-container>
+    </ng-container>
+  </div>
+
+  <div class="flex space-x-4 px-2">
+
 
     <!-- TODO: transaction examples. clean when it will be used elsewhere. -->
     <!--    <button app-action-button-->
