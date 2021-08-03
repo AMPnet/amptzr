@@ -21,14 +21,14 @@ import { TypedEventFilter, TypedEvent, TypedListener } from "./commons";
 
 interface IssuerFactoryInterface extends ethers.utils.Interface {
   functions: {
-    "create(address,address,address)": FunctionFragment;
+    "create(address,address,address,string)": FunctionFragment;
     "getInstances()": FunctionFragment;
     "instances(uint256)": FunctionFragment;
   };
 
   encodeFunctionData(
     functionFragment: "create",
-    values: [string, string, string]
+    values: [string, string, string, string]
   ): string;
   encodeFunctionData(
     functionFragment: "getInstances",
@@ -47,7 +47,7 @@ interface IssuerFactoryInterface extends ethers.utils.Interface {
   decodeFunctionResult(functionFragment: "instances", data: BytesLike): Result;
 
   events: {
-    "IssuerCreated(address)": EventFragment;
+    "IssuerCreated(address,address,uint256,uint256)": EventFragment;
   };
 
   getEvent(nameOrSignatureOrTopic: "IssuerCreated"): EventFragment;
@@ -98,9 +98,10 @@ export class IssuerFactory extends BaseContract {
 
   functions: {
     create(
-      _owner: string,
-      _stablecoin: string,
-      _registry: string,
+      owner: string,
+      stablecoin: string,
+      walletApprover: string,
+      info: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
@@ -110,9 +111,10 @@ export class IssuerFactory extends BaseContract {
   };
 
   create(
-    _owner: string,
-    _stablecoin: string,
-    _registry: string,
+    owner: string,
+    stablecoin: string,
+    walletApprover: string,
+    info: string,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
@@ -122,9 +124,10 @@ export class IssuerFactory extends BaseContract {
 
   callStatic: {
     create(
-      _owner: string,
-      _stablecoin: string,
-      _registry: string,
+      owner: string,
+      stablecoin: string,
+      walletApprover: string,
+      info: string,
       overrides?: CallOverrides
     ): Promise<string>;
 
@@ -135,15 +138,22 @@ export class IssuerFactory extends BaseContract {
 
   filters: {
     IssuerCreated(
-      _asset?: null
-    ): TypedEventFilter<[string], { _asset: string }>;
+      creator?: string | null,
+      issuer?: null,
+      id?: null,
+      timestamp?: null
+    ): TypedEventFilter<
+      [string, string, BigNumber, BigNumber],
+      { creator: string; issuer: string; id: BigNumber; timestamp: BigNumber }
+    >;
   };
 
   estimateGas: {
     create(
-      _owner: string,
-      _stablecoin: string,
-      _registry: string,
+      owner: string,
+      stablecoin: string,
+      walletApprover: string,
+      info: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
@@ -157,9 +167,10 @@ export class IssuerFactory extends BaseContract {
 
   populateTransaction: {
     create(
-      _owner: string,
-      _stablecoin: string,
-      _registry: string,
+      owner: string,
+      stablecoin: string,
+      walletApprover: string,
+      info: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 

@@ -22,5 +22,5 @@ export function withStatus<T>(observable$: Observable<T>): Observable<WithStatus
 export interface WithStatus<T> {
   loading: boolean;
   value?: T;
-  error?: any
+  error?: unknown
 }

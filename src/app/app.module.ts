@@ -46,6 +46,8 @@ import {ValueCopyComponent} from './shared/components/value-copy/value-copy.comp
 import {IssuersComponent} from './issuers/issuers.component'
 import {ToImageUrlPipe} from './shared/pipes/to-image-url.pipe'
 import {FileInputAccessorDirective} from './shared/directives/file-input-accessor.directive'
+import {IssuersEditComponent} from './issuers/issuers-edit/issuers-edit.component'
+import {SafePipe} from './shared/pipes/safe.pipe'
 
 @NgModule({
   declarations: [
@@ -76,11 +78,13 @@ import {FileInputAccessorDirective} from './shared/directives/file-input-accesso
     FaqComponent,
     AuthProviderNamePipe,
     ToImageUrlPipe,
+    SafePipe,
     ProfileAddMandatoryComponent,
     CurrencyMaskDirective,
     ValueCopyComponent,
     IssuersComponent,
-    FileInputAccessorDirective
+    FileInputAccessorDirective,
+    IssuersEditComponent,
   ],
   imports: [
     BrowserModule,

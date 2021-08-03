@@ -11,37 +11,37 @@ const _abi = [
     inputs: [
       {
         internalType: "address",
-        name: "_creator",
+        name: "creator",
         type: "address",
       },
       {
         internalType: "address",
-        name: "_issuer",
+        name: "issuer",
         type: "address",
       },
       {
-        internalType: "enum AssetState",
-        name: "_state",
-        type: "uint8",
-      },
-      {
         internalType: "uint256",
-        name: "_categoryId",
+        name: "initialTokenSupply",
         type: "uint256",
       },
       {
-        internalType: "uint256",
-        name: "_totalShares",
-        type: "uint256",
+        internalType: "bool",
+        name: "whitelistRequiredForTransfer",
+        type: "bool",
       },
       {
         internalType: "string",
-        name: "_name",
+        name: "name",
         type: "string",
       },
       {
         internalType: "string",
-        name: "_symbol",
+        name: "symbol",
+        type: "string",
+      },
+      {
+        internalType: "string",
+        name: "info",
         type: "string",
       },
     ],
@@ -59,6 +59,25 @@ const _abi = [
   {
     inputs: [],
     name: "getInstances",
+    outputs: [
+      {
+        internalType: "address[]",
+        name: "",
+        type: "address[]",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "issuer",
+        type: "address",
+      },
+    ],
+    name: "getInstancesForIssuer",
     outputs: [
       {
         internalType: "address[]",

@@ -8,42 +8,132 @@ import type { IIssuer, IIssuerInterface } from "../IIssuer";
 
 const _abi = [
   {
-    inputs: [],
-    name: "getAssets",
-    outputs: [
+    inputs: [
       {
-        internalType: "address[]",
-        name: "",
-        type: "address[]",
+        internalType: "address",
+        name: "wallet",
+        type: "address",
       },
     ],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [],
-    name: "getCfManagers",
-    outputs: [
-      {
-        internalType: "address[]",
-        name: "",
-        type: "address[]",
-      },
-    ],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [],
-    name: "info",
-    outputs: [
-      {
-        internalType: "string",
-        name: "",
-        type: "string",
-      },
-    ],
+    name: "approveWallet",
+    outputs: [],
     stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "newOwner",
+        type: "address",
+      },
+    ],
+    name: "changeOwnership",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "newWalletApprover",
+        type: "address",
+      },
+    ],
+    name: "changeWalletApprover",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "getInfoHistory",
+    outputs: [
+      {
+        components: [
+          {
+            internalType: "string",
+            name: "info",
+            type: "string",
+          },
+          {
+            internalType: "uint256",
+            name: "timestamp",
+            type: "uint256",
+          },
+        ],
+        internalType: "struct Structs.InfoEntry[]",
+        name: "",
+        type: "tuple[]",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "getState",
+    outputs: [
+      {
+        components: [
+          {
+            internalType: "uint256",
+            name: "id",
+            type: "uint256",
+          },
+          {
+            internalType: "address",
+            name: "owner",
+            type: "address",
+          },
+          {
+            internalType: "address",
+            name: "stablecoin",
+            type: "address",
+          },
+          {
+            internalType: "address",
+            name: "walletApprover",
+            type: "address",
+          },
+          {
+            internalType: "string",
+            name: "info",
+            type: "string",
+          },
+        ],
+        internalType: "struct Structs.IssuerState",
+        name: "",
+        type: "tuple",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "getWalletRecords",
+    outputs: [
+      {
+        components: [
+          {
+            internalType: "address",
+            name: "wallet",
+            type: "address",
+          },
+          {
+            internalType: "bool",
+            name: "whitelisted",
+            type: "bool",
+          },
+        ],
+        internalType: "struct Structs.WalletRecord[]",
+        name: "",
+        type: "tuple[]",
+      },
+    ],
+    stateMutability: "view",
     type: "function",
   },
   {
@@ -66,16 +156,29 @@ const _abi = [
     type: "function",
   },
   {
-    inputs: [],
-    name: "stablecoin",
-    outputs: [
+    inputs: [
+      {
+        internalType: "string",
+        name: "info",
+        type: "string",
+      },
+    ],
+    name: "setInfo",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
       {
         internalType: "address",
-        name: "",
+        name: "wallet",
         type: "address",
       },
     ],
-    stateMutability: "view",
+    name: "suspendWallet",
+    outputs: [],
+    stateMutability: "nonpayable",
     type: "function",
   },
 ];

@@ -24,8 +24,13 @@ const _abi = [
       },
       {
         internalType: "address",
-        name: "_registry",
+        name: "_walletApprover",
         type: "address",
+      },
+      {
+        internalType: "string",
+        name: "_info",
+        type: "string",
       },
     ],
     name: "create",

@@ -11,6 +11,7 @@ import {DepositComponent} from './deposit/deposit.component'
 import {AuthGuard} from './shared/guards/auth.guard'
 import {FaqComponent} from './faq/faq.component'
 import {IssuersComponent} from './issuers/issuers.component'
+import {IssuersEditComponent} from './issuers/issuers-edit/issuers-edit.component'
 
 const routes: Routes = [
   {
@@ -28,6 +29,7 @@ const routes: Routes = [
       },
       {path: 'faq', component: FaqComponent},
       {path: 'issuers', component: IssuersComponent},
+      {path: 'issuers/:id/edit', component: IssuersEditComponent},
       {path: 'dev_playground', component: DevPlaygroundComponent},
     ],
   },

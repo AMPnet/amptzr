@@ -24,7 +24,6 @@ import {IPFSAddResult} from '../../services/ipfs/ipfs.service.types'
 export class DevPlaygroundComponent {
   contentSub = new Subject<IPFSAddResult>()
   investForm: FormGroup
-  uploadForm: FormGroup
 
   constructor(private ipfsService: IpfsService,
               private signerService: SignerService,
@@ -38,31 +37,7 @@ export class DevPlaygroundComponent {
     this.investForm = this.fb.group({
       amount: [0, Validators.required],
     })
-
-    this.uploadForm = this.fb.group({
-      name: ['', Validators.required],
-      logo: [null, Validators.required],
-    })
   }
-
-  upload(): Observable<unknown> {
-    return combineLatest([
-      this.ipfsService.addFile(this.uploadForm.get('logo')!.value[0]),
-    ]).pipe(
-      switchMap(([logo]) => this.ipfsService.addObject<IPFSIssuer>({
-        name: this.uploadForm.get('name')!.value,
-        logo: logo.path,
-      })),
-      tap(res => {
-        console.log(res)
-        this.contentSub.next(res)
-      }),
-    )
-  }
-
-  content$ = this.contentSub.asObservable().pipe(
-    switchMap(contentPath => withStatus(this.ipfsService.get<IPFSIssuer>(contentPath.path))),
-  )
 
   signMessage(): Observable<unknown> {
     const message = 'YOLO'

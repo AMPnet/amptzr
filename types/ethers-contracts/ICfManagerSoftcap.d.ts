@@ -19,29 +19,16 @@ import { Listener, Provider } from "@ethersproject/providers";
 import { FunctionFragment, EventFragment, Result } from "@ethersproject/abi";
 import { TypedEventFilter, TypedEvent, TypedListener } from "./commons";
 
-interface IIssuerInterface extends ethers.utils.Interface {
+interface ICfManagerSoftcapInterface extends ethers.utils.Interface {
   functions: {
-    "approveWallet(address)": FunctionFragment;
     "changeOwnership(address)": FunctionFragment;
-    "changeWalletApprover(address)": FunctionFragment;
     "getInfoHistory()": FunctionFragment;
     "getState()": FunctionFragment;
-    "getWalletRecords()": FunctionFragment;
-    "isWalletApproved(address)": FunctionFragment;
     "setInfo(string)": FunctionFragment;
-    "suspendWallet(address)": FunctionFragment;
   };
 
   encodeFunctionData(
-    functionFragment: "approveWallet",
-    values: [string]
-  ): string;
-  encodeFunctionData(
     functionFragment: "changeOwnership",
-    values: [string]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "changeWalletApprover",
     values: [string]
   ): string;
   encodeFunctionData(
@@ -49,30 +36,10 @@ interface IIssuerInterface extends ethers.utils.Interface {
     values?: undefined
   ): string;
   encodeFunctionData(functionFragment: "getState", values?: undefined): string;
-  encodeFunctionData(
-    functionFragment: "getWalletRecords",
-    values?: undefined
-  ): string;
-  encodeFunctionData(
-    functionFragment: "isWalletApproved",
-    values: [string]
-  ): string;
   encodeFunctionData(functionFragment: "setInfo", values: [string]): string;
-  encodeFunctionData(
-    functionFragment: "suspendWallet",
-    values: [string]
-  ): string;
 
   decodeFunctionResult(
-    functionFragment: "approveWallet",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
     functionFragment: "changeOwnership",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "changeWalletApprover",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -80,24 +47,12 @@ interface IIssuerInterface extends ethers.utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "getState", data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: "getWalletRecords",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "isWalletApproved",
-    data: BytesLike
-  ): Result;
   decodeFunctionResult(functionFragment: "setInfo", data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: "suspendWallet",
-    data: BytesLike
-  ): Result;
 
   events: {};
 }
 
-export class IIssuer extends BaseContract {
+export class ICfManagerSoftcap extends BaseContract {
   connect(signerOrProvider: Signer | Provider | string): this;
   attach(addressOrName: string): this;
   deployed(): Promise<this>;
@@ -138,21 +93,11 @@ export class IIssuer extends BaseContract {
     toBlock?: string | number | undefined
   ): Promise<Array<TypedEvent<EventArgsArray & EventArgsObject>>>;
 
-  interface: IIssuerInterface;
+  interface: ICfManagerSoftcapInterface;
 
   functions: {
-    approveWallet(
-      wallet: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
-
     changeOwnership(
       newOwner: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
-
-    changeWalletApprover(
-      newWalletApprover: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
@@ -166,50 +111,46 @@ export class IIssuer extends BaseContract {
       overrides?: CallOverrides
     ): Promise<
       [
-        [BigNumber, string, string, string, string] & {
+        [
+          BigNumber,
+          string,
+          string,
+          BigNumber,
+          BigNumber,
+          boolean,
+          boolean,
+          boolean,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          string
+        ] & {
           id: BigNumber;
           owner: string;
-          stablecoin: string;
-          walletApprover: string;
+          asset: string;
+          tokenPrice: BigNumber;
+          softCap: BigNumber;
+          whitelistRequired: boolean;
+          finalized: boolean;
+          cancelled: boolean;
+          totalClaimableTokens: BigNumber;
+          totalInvestorsCount: BigNumber;
+          totalClaimsCount: BigNumber;
+          totalFundsRaised: BigNumber;
           info: string;
         }
       ]
     >;
 
-    getWalletRecords(
-      overrides?: CallOverrides
-    ): Promise<
-      [([string, boolean] & { wallet: string; whitelisted: boolean })[]]
-    >;
-
-    isWalletApproved(
-      _wallet: string,
-      overrides?: CallOverrides
-    ): Promise<[boolean]>;
-
     setInfo(
       info: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
-
-    suspendWallet(
-      wallet: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
   };
-
-  approveWallet(
-    wallet: string,
-    overrides?: Overrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
 
   changeOwnership(
     newOwner: string,
-    overrides?: Overrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
-
-  changeWalletApprover(
-    newWalletApprover: string,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
@@ -220,43 +161,44 @@ export class IIssuer extends BaseContract {
   getState(
     overrides?: CallOverrides
   ): Promise<
-    [BigNumber, string, string, string, string] & {
+    [
+      BigNumber,
+      string,
+      string,
+      BigNumber,
+      BigNumber,
+      boolean,
+      boolean,
+      boolean,
+      BigNumber,
+      BigNumber,
+      BigNumber,
+      BigNumber,
+      string
+    ] & {
       id: BigNumber;
       owner: string;
-      stablecoin: string;
-      walletApprover: string;
+      asset: string;
+      tokenPrice: BigNumber;
+      softCap: BigNumber;
+      whitelistRequired: boolean;
+      finalized: boolean;
+      cancelled: boolean;
+      totalClaimableTokens: BigNumber;
+      totalInvestorsCount: BigNumber;
+      totalClaimsCount: BigNumber;
+      totalFundsRaised: BigNumber;
       info: string;
     }
   >;
-
-  getWalletRecords(
-    overrides?: CallOverrides
-  ): Promise<([string, boolean] & { wallet: string; whitelisted: boolean })[]>;
-
-  isWalletApproved(
-    _wallet: string,
-    overrides?: CallOverrides
-  ): Promise<boolean>;
 
   setInfo(
     info: string,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
-  suspendWallet(
-    wallet: string,
-    overrides?: Overrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
-
   callStatic: {
-    approveWallet(wallet: string, overrides?: CallOverrides): Promise<void>;
-
     changeOwnership(newOwner: string, overrides?: CallOverrides): Promise<void>;
-
-    changeWalletApprover(
-      newWalletApprover: string,
-      overrides?: CallOverrides
-    ): Promise<void>;
 
     getInfoHistory(
       overrides?: CallOverrides
@@ -267,46 +209,45 @@ export class IIssuer extends BaseContract {
     getState(
       overrides?: CallOverrides
     ): Promise<
-      [BigNumber, string, string, string, string] & {
+      [
+        BigNumber,
+        string,
+        string,
+        BigNumber,
+        BigNumber,
+        boolean,
+        boolean,
+        boolean,
+        BigNumber,
+        BigNumber,
+        BigNumber,
+        BigNumber,
+        string
+      ] & {
         id: BigNumber;
         owner: string;
-        stablecoin: string;
-        walletApprover: string;
+        asset: string;
+        tokenPrice: BigNumber;
+        softCap: BigNumber;
+        whitelistRequired: boolean;
+        finalized: boolean;
+        cancelled: boolean;
+        totalClaimableTokens: BigNumber;
+        totalInvestorsCount: BigNumber;
+        totalClaimsCount: BigNumber;
+        totalFundsRaised: BigNumber;
         info: string;
       }
     >;
 
-    getWalletRecords(
-      overrides?: CallOverrides
-    ): Promise<
-      ([string, boolean] & { wallet: string; whitelisted: boolean })[]
-    >;
-
-    isWalletApproved(
-      _wallet: string,
-      overrides?: CallOverrides
-    ): Promise<boolean>;
-
     setInfo(info: string, overrides?: CallOverrides): Promise<void>;
-
-    suspendWallet(wallet: string, overrides?: CallOverrides): Promise<void>;
   };
 
   filters: {};
 
   estimateGas: {
-    approveWallet(
-      wallet: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<BigNumber>;
-
     changeOwnership(
       newOwner: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<BigNumber>;
-
-    changeWalletApprover(
-      newWalletApprover: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
@@ -314,37 +255,15 @@ export class IIssuer extends BaseContract {
 
     getState(overrides?: CallOverrides): Promise<BigNumber>;
 
-    getWalletRecords(overrides?: CallOverrides): Promise<BigNumber>;
-
-    isWalletApproved(
-      _wallet: string,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
     setInfo(
       info: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<BigNumber>;
-
-    suspendWallet(
-      wallet: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
   };
 
   populateTransaction: {
-    approveWallet(
-      wallet: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<PopulatedTransaction>;
-
     changeOwnership(
       newOwner: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<PopulatedTransaction>;
-
-    changeWalletApprover(
-      newWalletApprover: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
@@ -352,20 +271,8 @@ export class IIssuer extends BaseContract {
 
     getState(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
-    getWalletRecords(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    isWalletApproved(
-      _wallet: string,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
     setInfo(
       info: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<PopulatedTransaction>;
-
-    suspendWallet(
-      wallet: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
   };

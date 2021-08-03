@@ -21,26 +21,23 @@ import { TypedEventFilter, TypedEvent, TypedListener } from "./commons";
 
 interface AssetFactoryInterface extends ethers.utils.Interface {
   functions: {
-    "create(address,address,uint8,uint256,uint256,string,string)": FunctionFragment;
+    "create(address,address,uint256,bool,string,string,string)": FunctionFragment;
     "getInstances()": FunctionFragment;
+    "getInstancesForIssuer(address)": FunctionFragment;
     "instances(uint256)": FunctionFragment;
   };
 
   encodeFunctionData(
     functionFragment: "create",
-    values: [
-      string,
-      string,
-      BigNumberish,
-      BigNumberish,
-      BigNumberish,
-      string,
-      string
-    ]
+    values: [string, string, BigNumberish, boolean, string, string, string]
   ): string;
   encodeFunctionData(
     functionFragment: "getInstances",
     values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getInstancesForIssuer",
+    values: [string]
   ): string;
   encodeFunctionData(
     functionFragment: "instances",
@@ -52,10 +49,14 @@ interface AssetFactoryInterface extends ethers.utils.Interface {
     functionFragment: "getInstances",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(
+    functionFragment: "getInstancesForIssuer",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "instances", data: BytesLike): Result;
 
   events: {
-    "AssetCreated(address)": EventFragment;
+    "AssetCreated(address,address,uint256,uint256)": EventFragment;
   };
 
   getEvent(nameOrSignatureOrTopic: "AssetCreated"): EventFragment;
@@ -106,70 +107,98 @@ export class AssetFactory extends BaseContract {
 
   functions: {
     create(
-      _creator: string,
-      _issuer: string,
-      _state: BigNumberish,
-      _categoryId: BigNumberish,
-      _totalShares: BigNumberish,
-      _name: string,
-      _symbol: string,
+      creator: string,
+      issuer: string,
+      initialTokenSupply: BigNumberish,
+      whitelistRequiredForTransfer: boolean,
+      name: string,
+      symbol: string,
+      info: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
     getInstances(overrides?: CallOverrides): Promise<[string[]]>;
 
+    getInstancesForIssuer(
+      issuer: string,
+      overrides?: CallOverrides
+    ): Promise<[string[]]>;
+
     instances(arg0: BigNumberish, overrides?: CallOverrides): Promise<[string]>;
   };
 
   create(
-    _creator: string,
-    _issuer: string,
-    _state: BigNumberish,
-    _categoryId: BigNumberish,
-    _totalShares: BigNumberish,
-    _name: string,
-    _symbol: string,
+    creator: string,
+    issuer: string,
+    initialTokenSupply: BigNumberish,
+    whitelistRequiredForTransfer: boolean,
+    name: string,
+    symbol: string,
+    info: string,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
   getInstances(overrides?: CallOverrides): Promise<string[]>;
 
+  getInstancesForIssuer(
+    issuer: string,
+    overrides?: CallOverrides
+  ): Promise<string[]>;
+
   instances(arg0: BigNumberish, overrides?: CallOverrides): Promise<string>;
 
   callStatic: {
     create(
-      _creator: string,
-      _issuer: string,
-      _state: BigNumberish,
-      _categoryId: BigNumberish,
-      _totalShares: BigNumberish,
-      _name: string,
-      _symbol: string,
+      creator: string,
+      issuer: string,
+      initialTokenSupply: BigNumberish,
+      whitelistRequiredForTransfer: boolean,
+      name: string,
+      symbol: string,
+      info: string,
       overrides?: CallOverrides
     ): Promise<string>;
 
     getInstances(overrides?: CallOverrides): Promise<string[]>;
 
+    getInstancesForIssuer(
+      issuer: string,
+      overrides?: CallOverrides
+    ): Promise<string[]>;
+
     instances(arg0: BigNumberish, overrides?: CallOverrides): Promise<string>;
   };
 
   filters: {
-    AssetCreated(_asset?: null): TypedEventFilter<[string], { _asset: string }>;
+    AssetCreated(
+      creator?: string | null,
+      asset?: null,
+      id?: null,
+      timestamp?: null
+    ): TypedEventFilter<
+      [string, string, BigNumber, BigNumber],
+      { creator: string; asset: string; id: BigNumber; timestamp: BigNumber }
+    >;
   };
 
   estimateGas: {
     create(
-      _creator: string,
-      _issuer: string,
-      _state: BigNumberish,
-      _categoryId: BigNumberish,
-      _totalShares: BigNumberish,
-      _name: string,
-      _symbol: string,
+      creator: string,
+      issuer: string,
+      initialTokenSupply: BigNumberish,
+      whitelistRequiredForTransfer: boolean,
+      name: string,
+      symbol: string,
+      info: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
     getInstances(overrides?: CallOverrides): Promise<BigNumber>;
+
+    getInstancesForIssuer(
+      issuer: string,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
 
     instances(
       arg0: BigNumberish,
@@ -179,17 +208,22 @@ export class AssetFactory extends BaseContract {
 
   populateTransaction: {
     create(
-      _creator: string,
-      _issuer: string,
-      _state: BigNumberish,
-      _categoryId: BigNumberish,
-      _totalShares: BigNumberish,
-      _name: string,
-      _symbol: string,
+      creator: string,
+      issuer: string,
+      initialTokenSupply: BigNumberish,
+      whitelistRequiredForTransfer: boolean,
+      name: string,
+      symbol: string,
+      info: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
     getInstances(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    getInstancesForIssuer(
+      issuer: string,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
 
     instances(
       arg0: BigNumberish,

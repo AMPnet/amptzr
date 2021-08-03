@@ -7,6 +7,7 @@ import {IpfsPinataApiService} from './ipfs-pinata-api.service'
 import {IPFSCampaign} from '../../../../../types/ipfs/campaign'
 import {IPFSIssuer} from '../../../../../types/ipfs/issuer'
 import {IPFSAsset} from '../../../../../types/ipfs/asset'
+import {CID} from 'ipfs-http-client'
 
 @Injectable({
   providedIn: 'root',
@@ -19,6 +20,19 @@ export class IpfsService {
 
     // Example of using the default IPFS HTTP Service
     // this.IPFSApiService = new IpfsHttpApiService()
+  }
+
+  toCID(value: any): CID | undefined {
+    try {
+      const cid = new CID(value)
+      if (CID.isCID(cid)) {
+        return cid
+      }
+    } catch (_e) {
+      return undefined
+    }
+
+    return undefined
   }
 
   get<T>(cid: string): Observable<T> {

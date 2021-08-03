@@ -1,5 +1,4 @@
 import {Injectable, Pipe, PipeTransform} from '@angular/core'
-import {CID} from 'ipfs-http-client'
 import {IpfsService} from '../services/ipfs/ipfs.service'
 
 @Injectable({
@@ -13,15 +12,8 @@ export class ToImageUrlPipe implements PipeTransform {
   }
 
   transform(value: any): any {
-    try {
-      const cid = new CID(value)
-      if (CID.isCID(cid)) {
-        return this.ipfsService.getURL(cid.toString())
-      }
-    } catch (_e) {
-      return value
-    }
+    const cid = this.ipfsService.toCID(value)
 
-    return value
+    return cid ? this.ipfsService.getURL(cid.toString()) : value
   }
 }

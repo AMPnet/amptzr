@@ -11,6 +11,66 @@ import type {
 
 const _abi = [
   {
+    inputs: [],
+    name: "getInfoHistory",
+    outputs: [
+      {
+        components: [
+          {
+            internalType: "string",
+            name: "info",
+            type: "string",
+          },
+          {
+            internalType: "uint256",
+            name: "timestamp",
+            type: "uint256",
+          },
+        ],
+        internalType: "struct Structs.InfoEntry[]",
+        name: "",
+        type: "tuple[]",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "getState",
+    outputs: [
+      {
+        components: [
+          {
+            internalType: "uint256",
+            name: "id",
+            type: "uint256",
+          },
+          {
+            internalType: "address",
+            name: "owner",
+            type: "address",
+          },
+          {
+            internalType: "address",
+            name: "asset",
+            type: "address",
+          },
+          {
+            internalType: "string",
+            name: "info",
+            type: "string",
+          },
+        ],
+        internalType: "struct Structs.PayoutManagerState",
+        name: "",
+        type: "tuple",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
     inputs: [
       {
         internalType: "address",
@@ -50,6 +110,19 @@ const _abi = [
       },
     ],
     stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "string",
+        name: "info",
+        type: "string",
+      },
+    ],
+    name: "setInfo",
+    outputs: [],
+    stateMutability: "nonpayable",
     type: "function",
   },
   {

@@ -19,19 +19,29 @@ import { Listener, Provider } from "@ethersproject/providers";
 import { FunctionFragment, EventFragment, Result } from "@ethersproject/abi";
 import { TypedEventFilter, TypedEvent, TypedListener } from "./commons";
 
-interface IIssuerFactoryInterface extends ethers.utils.Interface {
+interface ICfManagerSoftcapFactoryInterface extends ethers.utils.Interface {
   functions: {
-    "create(address,address,address,string)": FunctionFragment;
+    "create(address,address,uint256,uint256,bool,string)": FunctionFragment;
     "getInstances()": FunctionFragment;
+    "getInstancesForAsset(address)": FunctionFragment;
+    "getInstancesForIssuer(address)": FunctionFragment;
   };
 
   encodeFunctionData(
     functionFragment: "create",
-    values: [string, string, string, string]
+    values: [string, string, BigNumberish, BigNumberish, boolean, string]
   ): string;
   encodeFunctionData(
     functionFragment: "getInstances",
     values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getInstancesForAsset",
+    values: [string]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getInstancesForIssuer",
+    values: [string]
   ): string;
 
   decodeFunctionResult(functionFragment: "create", data: BytesLike): Result;
@@ -39,11 +49,19 @@ interface IIssuerFactoryInterface extends ethers.utils.Interface {
     functionFragment: "getInstances",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(
+    functionFragment: "getInstancesForAsset",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "getInstancesForIssuer",
+    data: BytesLike
+  ): Result;
 
   events: {};
 }
 
-export class IIssuerFactory extends BaseContract {
+export class ICfManagerSoftcapFactory extends BaseContract {
   connect(signerOrProvider: Signer | Provider | string): this;
   attach(addressOrName: string): this;
   deployed(): Promise<this>;
@@ -84,65 +102,125 @@ export class IIssuerFactory extends BaseContract {
     toBlock?: string | number | undefined
   ): Promise<Array<TypedEvent<EventArgsArray & EventArgsObject>>>;
 
-  interface: IIssuerFactoryInterface;
+  interface: ICfManagerSoftcapFactoryInterface;
 
   functions: {
     create(
-      _owner: string,
-      _stablecoin: string,
-      _walletApprover: string,
-      _info: string,
+      owner: string,
+      assetAddress: string,
+      initialPricePerToken: BigNumberish,
+      softCap: BigNumberish,
+      whitelistRequired: boolean,
+      info: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
     getInstances(overrides?: CallOverrides): Promise<[string[]]>;
+
+    getInstancesForAsset(
+      asset: string,
+      overrides?: CallOverrides
+    ): Promise<[string[]]>;
+
+    getInstancesForIssuer(
+      issuer: string,
+      overrides?: CallOverrides
+    ): Promise<[string[]]>;
   };
 
   create(
-    _owner: string,
-    _stablecoin: string,
-    _walletApprover: string,
-    _info: string,
+    owner: string,
+    assetAddress: string,
+    initialPricePerToken: BigNumberish,
+    softCap: BigNumberish,
+    whitelistRequired: boolean,
+    info: string,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
   getInstances(overrides?: CallOverrides): Promise<string[]>;
 
+  getInstancesForAsset(
+    asset: string,
+    overrides?: CallOverrides
+  ): Promise<string[]>;
+
+  getInstancesForIssuer(
+    issuer: string,
+    overrides?: CallOverrides
+  ): Promise<string[]>;
+
   callStatic: {
     create(
-      _owner: string,
-      _stablecoin: string,
-      _walletApprover: string,
-      _info: string,
+      owner: string,
+      assetAddress: string,
+      initialPricePerToken: BigNumberish,
+      softCap: BigNumberish,
+      whitelistRequired: boolean,
+      info: string,
       overrides?: CallOverrides
     ): Promise<string>;
 
     getInstances(overrides?: CallOverrides): Promise<string[]>;
+
+    getInstancesForAsset(
+      asset: string,
+      overrides?: CallOverrides
+    ): Promise<string[]>;
+
+    getInstancesForIssuer(
+      issuer: string,
+      overrides?: CallOverrides
+    ): Promise<string[]>;
   };
 
   filters: {};
 
   estimateGas: {
     create(
-      _owner: string,
-      _stablecoin: string,
-      _walletApprover: string,
-      _info: string,
+      owner: string,
+      assetAddress: string,
+      initialPricePerToken: BigNumberish,
+      softCap: BigNumberish,
+      whitelistRequired: boolean,
+      info: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
     getInstances(overrides?: CallOverrides): Promise<BigNumber>;
+
+    getInstancesForAsset(
+      asset: string,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    getInstancesForIssuer(
+      issuer: string,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
   };
 
   populateTransaction: {
     create(
-      _owner: string,
-      _stablecoin: string,
-      _walletApprover: string,
-      _info: string,
+      owner: string,
+      assetAddress: string,
+      initialPricePerToken: BigNumberish,
+      softCap: BigNumberish,
+      whitelistRequired: boolean,
+      info: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
     getInstances(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    getInstancesForAsset(
+      asset: string,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    getInstancesForIssuer(
+      issuer: string,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
   };
 }

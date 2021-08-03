@@ -21,25 +21,26 @@ import { TypedEventFilter, TypedEvent, TypedListener } from "./commons";
 
 interface AssetInterface extends ethers.utils.Interface {
   functions: {
-    "addShareholder(address,uint256)": FunctionFragment;
     "allowance(address,address)": FunctionFragment;
     "approve(address,uint256)": FunctionFragment;
+    "approveCampaign(address)": FunctionFragment;
+    "approvedCampaigns(uint256)": FunctionFragment;
     "balanceOf(address)": FunctionFragment;
     "balanceOfAt(address,uint256)": FunctionFragment;
-    "categoryId()": FunctionFragment;
-    "creator()": FunctionFragment;
+    "changeOwnership(address)": FunctionFragment;
     "decimals()": FunctionFragment;
     "decreaseAllowance(address,uint256)": FunctionFragment;
-    "finalize()": FunctionFragment;
+    "getCampaignRecords()": FunctionFragment;
+    "getDecimals()": FunctionFragment;
+    "getInfoHistory()": FunctionFragment;
+    "getState()": FunctionFragment;
     "increaseAllowance(address,uint256)": FunctionFragment;
-    "info()": FunctionFragment;
-    "issuer()": FunctionFragment;
     "name()": FunctionFragment;
-    "removeShareholder(address,uint256)": FunctionFragment;
-    "setCreator(address)": FunctionFragment;
     "setInfo(string)": FunctionFragment;
+    "setIssuerStatus(bool)": FunctionFragment;
+    "setWhitelistRequiredForTransfer(bool)": FunctionFragment;
     "snapshot()": FunctionFragment;
-    "state()": FunctionFragment;
+    "suspendCampaign(address)": FunctionFragment;
     "symbol()": FunctionFragment;
     "totalShares()": FunctionFragment;
     "totalSupply()": FunctionFragment;
@@ -49,10 +50,6 @@ interface AssetInterface extends ethers.utils.Interface {
   };
 
   encodeFunctionData(
-    functionFragment: "addShareholder",
-    values: [string, BigNumberish]
-  ): string;
-  encodeFunctionData(
     functionFragment: "allowance",
     values: [string, string]
   ): string;
@@ -60,37 +57,60 @@ interface AssetInterface extends ethers.utils.Interface {
     functionFragment: "approve",
     values: [string, BigNumberish]
   ): string;
+  encodeFunctionData(
+    functionFragment: "approveCampaign",
+    values: [string]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "approvedCampaigns",
+    values: [BigNumberish]
+  ): string;
   encodeFunctionData(functionFragment: "balanceOf", values: [string]): string;
   encodeFunctionData(
     functionFragment: "balanceOfAt",
     values: [string, BigNumberish]
   ): string;
   encodeFunctionData(
-    functionFragment: "categoryId",
-    values?: undefined
+    functionFragment: "changeOwnership",
+    values: [string]
   ): string;
-  encodeFunctionData(functionFragment: "creator", values?: undefined): string;
   encodeFunctionData(functionFragment: "decimals", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "decreaseAllowance",
     values: [string, BigNumberish]
   ): string;
-  encodeFunctionData(functionFragment: "finalize", values?: undefined): string;
+  encodeFunctionData(
+    functionFragment: "getCampaignRecords",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getDecimals",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getInfoHistory",
+    values?: undefined
+  ): string;
+  encodeFunctionData(functionFragment: "getState", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "increaseAllowance",
     values: [string, BigNumberish]
   ): string;
-  encodeFunctionData(functionFragment: "info", values?: undefined): string;
-  encodeFunctionData(functionFragment: "issuer", values?: undefined): string;
   encodeFunctionData(functionFragment: "name", values?: undefined): string;
-  encodeFunctionData(
-    functionFragment: "removeShareholder",
-    values: [string, BigNumberish]
-  ): string;
-  encodeFunctionData(functionFragment: "setCreator", values: [string]): string;
   encodeFunctionData(functionFragment: "setInfo", values: [string]): string;
+  encodeFunctionData(
+    functionFragment: "setIssuerStatus",
+    values: [boolean]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "setWhitelistRequiredForTransfer",
+    values: [boolean]
+  ): string;
   encodeFunctionData(functionFragment: "snapshot", values?: undefined): string;
-  encodeFunctionData(functionFragment: "state", values?: undefined): string;
+  encodeFunctionData(
+    functionFragment: "suspendCampaign",
+    values: [string]
+  ): string;
   encodeFunctionData(functionFragment: "symbol", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "totalShares",
@@ -113,40 +133,62 @@ interface AssetInterface extends ethers.utils.Interface {
     values: [string, string, BigNumberish]
   ): string;
 
-  decodeFunctionResult(
-    functionFragment: "addShareholder",
-    data: BytesLike
-  ): Result;
   decodeFunctionResult(functionFragment: "allowance", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "approve", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "approveCampaign",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "approvedCampaigns",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "balanceOf", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "balanceOfAt",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(functionFragment: "categoryId", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "creator", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "changeOwnership",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "decimals", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "decreaseAllowance",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(functionFragment: "finalize", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "getCampaignRecords",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "getDecimals",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "getInfoHistory",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(functionFragment: "getState", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "increaseAllowance",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(functionFragment: "info", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "issuer", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "name", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "setInfo", data: BytesLike): Result;
   decodeFunctionResult(
-    functionFragment: "removeShareholder",
+    functionFragment: "setIssuerStatus",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(functionFragment: "setCreator", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "setInfo", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "setWhitelistRequiredForTransfer",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "snapshot", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "state", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "suspendCampaign",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "symbol", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "totalShares",
@@ -168,11 +210,25 @@ interface AssetInterface extends ethers.utils.Interface {
 
   events: {
     "Approval(address,address,uint256)": EventFragment;
+    "CampaignWhitelist(address,address,bool,uint256)": EventFragment;
+    "ChangeOwnership(address,address,uint256)": EventFragment;
+    "SetApprovedByIssuer(address,bool,uint256)": EventFragment;
+    "SetInfo(string,address,uint256)": EventFragment;
+    "SetIssuerStatus(address,bool,uint256)": EventFragment;
+    "SetWhitelistRequiredForTransfer(address,bool,uint256)": EventFragment;
     "Snapshot(uint256)": EventFragment;
     "Transfer(address,address,uint256)": EventFragment;
   };
 
   getEvent(nameOrSignatureOrTopic: "Approval"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "CampaignWhitelist"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "ChangeOwnership"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "SetApprovedByIssuer"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "SetInfo"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "SetIssuerStatus"): EventFragment;
+  getEvent(
+    nameOrSignatureOrTopic: "SetWhitelistRequiredForTransfer"
+  ): EventFragment;
   getEvent(nameOrSignatureOrTopic: "Snapshot"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "Transfer"): EventFragment;
 }
@@ -221,12 +277,6 @@ export class Asset extends BaseContract {
   interface: AssetInterface;
 
   functions: {
-    addShareholder(
-      shareholder: string,
-      amount: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
-
     allowance(
       owner: string,
       spender: string,
@@ -239,6 +289,16 @@ export class Asset extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
+    approveCampaign(
+      campaign: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
+    approvedCampaigns(
+      arg0: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<[string, boolean] & { wallet: string; whitelisted: boolean }>;
+
     balanceOf(account: string, overrides?: CallOverrides): Promise<[BigNumber]>;
 
     balanceOfAt(
@@ -247,9 +307,10 @@ export class Asset extends BaseContract {
       overrides?: CallOverrides
     ): Promise<[BigNumber]>;
 
-    categoryId(overrides?: CallOverrides): Promise<[BigNumber]>;
-
-    creator(overrides?: CallOverrides): Promise<[string]>;
+    changeOwnership(
+      newOwner: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
 
     decimals(overrides?: CallOverrides): Promise<[number]>;
 
@@ -259,9 +320,49 @@ export class Asset extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
-    finalize(
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
+    getCampaignRecords(
+      overrides?: CallOverrides
+    ): Promise<
+      [([string, boolean] & { wallet: string; whitelisted: boolean })[]]
+    >;
+
+    getDecimals(overrides?: CallOverrides): Promise<[BigNumber]>;
+
+    getInfoHistory(
+      overrides?: CallOverrides
+    ): Promise<
+      [([string, BigNumber] & { info: string; timestamp: BigNumber })[]]
+    >;
+
+    getState(
+      overrides?: CallOverrides
+    ): Promise<
+      [
+        [
+          BigNumber,
+          string,
+          string,
+          BigNumber,
+          boolean,
+          boolean,
+          string,
+          string,
+          string,
+          string
+        ] & {
+          id: BigNumber;
+          owner: string;
+          mirroredToken: string;
+          initialTokenSupply: BigNumber;
+          whitelistRequiredForTransfer: boolean;
+          assetApprovedByIssuer: boolean;
+          issuer: string;
+          info: string;
+          name: string;
+          symbol: string;
+        }
+      ]
+    >;
 
     increaseAllowance(
       spender: string,
@@ -269,25 +370,20 @@ export class Asset extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
-    info(overrides?: CallOverrides): Promise<[string]>;
-
-    issuer(overrides?: CallOverrides): Promise<[string]>;
-
     name(overrides?: CallOverrides): Promise<[string]>;
 
-    removeShareholder(
-      shareholder: string,
-      amount: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
-
-    setCreator(
-      _creator: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
-
     setInfo(
-      _info: string,
+      info: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
+    setIssuerStatus(
+      status: boolean,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
+    setWhitelistRequiredForTransfer(
+      whitelistRequiredForTransfer: boolean,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
@@ -295,7 +391,10 @@ export class Asset extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
-    state(overrides?: CallOverrides): Promise<[number]>;
+    suspendCampaign(
+      campaign: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
 
     symbol(overrides?: CallOverrides): Promise<[string]>;
 
@@ -322,12 +421,6 @@ export class Asset extends BaseContract {
     ): Promise<ContractTransaction>;
   };
 
-  addShareholder(
-    shareholder: string,
-    amount: BigNumberish,
-    overrides?: Overrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
-
   allowance(
     owner: string,
     spender: string,
@@ -340,6 +433,16 @@ export class Asset extends BaseContract {
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
+  approveCampaign(
+    campaign: string,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
+  approvedCampaigns(
+    arg0: BigNumberish,
+    overrides?: CallOverrides
+  ): Promise<[string, boolean] & { wallet: string; whitelisted: boolean }>;
+
   balanceOf(account: string, overrides?: CallOverrides): Promise<BigNumber>;
 
   balanceOfAt(
@@ -348,9 +451,10 @@ export class Asset extends BaseContract {
     overrides?: CallOverrides
   ): Promise<BigNumber>;
 
-  categoryId(overrides?: CallOverrides): Promise<BigNumber>;
-
-  creator(overrides?: CallOverrides): Promise<string>;
+  changeOwnership(
+    newOwner: string,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
 
   decimals(overrides?: CallOverrides): Promise<number>;
 
@@ -360,9 +464,43 @@ export class Asset extends BaseContract {
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
-  finalize(
-    overrides?: Overrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
+  getCampaignRecords(
+    overrides?: CallOverrides
+  ): Promise<([string, boolean] & { wallet: string; whitelisted: boolean })[]>;
+
+  getDecimals(overrides?: CallOverrides): Promise<BigNumber>;
+
+  getInfoHistory(
+    overrides?: CallOverrides
+  ): Promise<([string, BigNumber] & { info: string; timestamp: BigNumber })[]>;
+
+  getState(
+    overrides?: CallOverrides
+  ): Promise<
+    [
+      BigNumber,
+      string,
+      string,
+      BigNumber,
+      boolean,
+      boolean,
+      string,
+      string,
+      string,
+      string
+    ] & {
+      id: BigNumber;
+      owner: string;
+      mirroredToken: string;
+      initialTokenSupply: BigNumber;
+      whitelistRequiredForTransfer: boolean;
+      assetApprovedByIssuer: boolean;
+      issuer: string;
+      info: string;
+      name: string;
+      symbol: string;
+    }
+  >;
 
   increaseAllowance(
     spender: string,
@@ -370,25 +508,20 @@ export class Asset extends BaseContract {
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
-  info(overrides?: CallOverrides): Promise<string>;
-
-  issuer(overrides?: CallOverrides): Promise<string>;
-
   name(overrides?: CallOverrides): Promise<string>;
 
-  removeShareholder(
-    shareholder: string,
-    amount: BigNumberish,
-    overrides?: Overrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
-
-  setCreator(
-    _creator: string,
-    overrides?: Overrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
-
   setInfo(
-    _info: string,
+    info: string,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
+  setIssuerStatus(
+    status: boolean,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
+  setWhitelistRequiredForTransfer(
+    whitelistRequiredForTransfer: boolean,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
@@ -396,7 +529,10 @@ export class Asset extends BaseContract {
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
-  state(overrides?: CallOverrides): Promise<number>;
+  suspendCampaign(
+    campaign: string,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
 
   symbol(overrides?: CallOverrides): Promise<string>;
 
@@ -423,12 +559,6 @@ export class Asset extends BaseContract {
   ): Promise<ContractTransaction>;
 
   callStatic: {
-    addShareholder(
-      shareholder: string,
-      amount: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
     allowance(
       owner: string,
       spender: string,
@@ -441,6 +571,13 @@ export class Asset extends BaseContract {
       overrides?: CallOverrides
     ): Promise<boolean>;
 
+    approveCampaign(campaign: string, overrides?: CallOverrides): Promise<void>;
+
+    approvedCampaigns(
+      arg0: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<[string, boolean] & { wallet: string; whitelisted: boolean }>;
+
     balanceOf(account: string, overrides?: CallOverrides): Promise<BigNumber>;
 
     balanceOfAt(
@@ -449,9 +586,7 @@ export class Asset extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    categoryId(overrides?: CallOverrides): Promise<BigNumber>;
-
-    creator(overrides?: CallOverrides): Promise<string>;
+    changeOwnership(newOwner: string, overrides?: CallOverrides): Promise<void>;
 
     decimals(overrides?: CallOverrides): Promise<number>;
 
@@ -461,7 +596,47 @@ export class Asset extends BaseContract {
       overrides?: CallOverrides
     ): Promise<boolean>;
 
-    finalize(overrides?: CallOverrides): Promise<void>;
+    getCampaignRecords(
+      overrides?: CallOverrides
+    ): Promise<
+      ([string, boolean] & { wallet: string; whitelisted: boolean })[]
+    >;
+
+    getDecimals(overrides?: CallOverrides): Promise<BigNumber>;
+
+    getInfoHistory(
+      overrides?: CallOverrides
+    ): Promise<
+      ([string, BigNumber] & { info: string; timestamp: BigNumber })[]
+    >;
+
+    getState(
+      overrides?: CallOverrides
+    ): Promise<
+      [
+        BigNumber,
+        string,
+        string,
+        BigNumber,
+        boolean,
+        boolean,
+        string,
+        string,
+        string,
+        string
+      ] & {
+        id: BigNumber;
+        owner: string;
+        mirroredToken: string;
+        initialTokenSupply: BigNumber;
+        whitelistRequiredForTransfer: boolean;
+        assetApprovedByIssuer: boolean;
+        issuer: string;
+        info: string;
+        name: string;
+        symbol: string;
+      }
+    >;
 
     increaseAllowance(
       spender: string,
@@ -469,25 +644,20 @@ export class Asset extends BaseContract {
       overrides?: CallOverrides
     ): Promise<boolean>;
 
-    info(overrides?: CallOverrides): Promise<string>;
-
-    issuer(overrides?: CallOverrides): Promise<string>;
-
     name(overrides?: CallOverrides): Promise<string>;
 
-    removeShareholder(
-      shareholder: string,
-      amount: BigNumberish,
+    setInfo(info: string, overrides?: CallOverrides): Promise<void>;
+
+    setIssuerStatus(status: boolean, overrides?: CallOverrides): Promise<void>;
+
+    setWhitelistRequiredForTransfer(
+      whitelistRequiredForTransfer: boolean,
       overrides?: CallOverrides
     ): Promise<void>;
 
-    setCreator(_creator: string, overrides?: CallOverrides): Promise<void>;
-
-    setInfo(_info: string, overrides?: CallOverrides): Promise<void>;
-
     snapshot(overrides?: CallOverrides): Promise<BigNumber>;
 
-    state(overrides?: CallOverrides): Promise<number>;
+    suspendCampaign(campaign: string, overrides?: CallOverrides): Promise<void>;
 
     symbol(overrides?: CallOverrides): Promise<string>;
 
@@ -524,6 +694,70 @@ export class Asset extends BaseContract {
       { owner: string; spender: string; value: BigNumber }
     >;
 
+    CampaignWhitelist(
+      approver?: null,
+      wallet?: null,
+      whitelisted?: null,
+      timestamp?: null
+    ): TypedEventFilter<
+      [string, string, boolean, BigNumber],
+      {
+        approver: string;
+        wallet: string;
+        whitelisted: boolean;
+        timestamp: BigNumber;
+      }
+    >;
+
+    ChangeOwnership(
+      caller?: null,
+      newOwner?: null,
+      timestamp?: null
+    ): TypedEventFilter<
+      [string, string, BigNumber],
+      { caller: string; newOwner: string; timestamp: BigNumber }
+    >;
+
+    SetApprovedByIssuer(
+      caller?: null,
+      approvedByIssuer?: null,
+      timestamp?: null
+    ): TypedEventFilter<
+      [string, boolean, BigNumber],
+      { caller: string; approvedByIssuer: boolean; timestamp: BigNumber }
+    >;
+
+    SetInfo(
+      info?: null,
+      setter?: null,
+      timestamp?: null
+    ): TypedEventFilter<
+      [string, string, BigNumber],
+      { info: string; setter: string; timestamp: BigNumber }
+    >;
+
+    SetIssuerStatus(
+      approver?: null,
+      status?: null,
+      timestamp?: null
+    ): TypedEventFilter<
+      [string, boolean, BigNumber],
+      { approver: string; status: boolean; timestamp: BigNumber }
+    >;
+
+    SetWhitelistRequiredForTransfer(
+      caller?: null,
+      whitelistRequiredForTransfer?: null,
+      timestamp?: null
+    ): TypedEventFilter<
+      [string, boolean, BigNumber],
+      {
+        caller: string;
+        whitelistRequiredForTransfer: boolean;
+        timestamp: BigNumber;
+      }
+    >;
+
     Snapshot(id?: null): TypedEventFilter<[BigNumber], { id: BigNumber }>;
 
     Transfer(
@@ -537,12 +771,6 @@ export class Asset extends BaseContract {
   };
 
   estimateGas: {
-    addShareholder(
-      shareholder: string,
-      amount: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<BigNumber>;
-
     allowance(
       owner: string,
       spender: string,
@@ -555,6 +783,16 @@ export class Asset extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
+    approveCampaign(
+      campaign: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
+    approvedCampaigns(
+      arg0: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
     balanceOf(account: string, overrides?: CallOverrides): Promise<BigNumber>;
 
     balanceOfAt(
@@ -563,9 +801,10 @@ export class Asset extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    categoryId(overrides?: CallOverrides): Promise<BigNumber>;
-
-    creator(overrides?: CallOverrides): Promise<BigNumber>;
+    changeOwnership(
+      newOwner: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
 
     decimals(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -575,9 +814,13 @@ export class Asset extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
-    finalize(
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<BigNumber>;
+    getCampaignRecords(overrides?: CallOverrides): Promise<BigNumber>;
+
+    getDecimals(overrides?: CallOverrides): Promise<BigNumber>;
+
+    getInfoHistory(overrides?: CallOverrides): Promise<BigNumber>;
+
+    getState(overrides?: CallOverrides): Promise<BigNumber>;
 
     increaseAllowance(
       spender: string,
@@ -585,25 +828,20 @@ export class Asset extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
-    info(overrides?: CallOverrides): Promise<BigNumber>;
-
-    issuer(overrides?: CallOverrides): Promise<BigNumber>;
-
     name(overrides?: CallOverrides): Promise<BigNumber>;
 
-    removeShareholder(
-      shareholder: string,
-      amount: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<BigNumber>;
-
-    setCreator(
-      _creator: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<BigNumber>;
-
     setInfo(
-      _info: string,
+      info: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
+    setIssuerStatus(
+      status: boolean,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
+    setWhitelistRequiredForTransfer(
+      whitelistRequiredForTransfer: boolean,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
@@ -611,7 +849,10 @@ export class Asset extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
-    state(overrides?: CallOverrides): Promise<BigNumber>;
+    suspendCampaign(
+      campaign: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
 
     symbol(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -639,12 +880,6 @@ export class Asset extends BaseContract {
   };
 
   populateTransaction: {
-    addShareholder(
-      shareholder: string,
-      amount: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<PopulatedTransaction>;
-
     allowance(
       owner: string,
       spender: string,
@@ -655,6 +890,16 @@ export class Asset extends BaseContract {
       spender: string,
       amount: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    approveCampaign(
+      campaign: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    approvedCampaigns(
+      arg0: BigNumberish,
+      overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
     balanceOf(
@@ -668,9 +913,10 @@ export class Asset extends BaseContract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    categoryId(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    creator(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+    changeOwnership(
+      newOwner: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
 
     decimals(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
@@ -680,9 +926,15 @@ export class Asset extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
-    finalize(
-      overrides?: Overrides & { from?: string | Promise<string> }
+    getCampaignRecords(
+      overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
+
+    getDecimals(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    getInfoHistory(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    getState(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     increaseAllowance(
       spender: string,
@@ -690,25 +942,20 @@ export class Asset extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
-    info(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    issuer(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
     name(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
-    removeShareholder(
-      shareholder: string,
-      amount: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<PopulatedTransaction>;
-
-    setCreator(
-      _creator: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<PopulatedTransaction>;
-
     setInfo(
-      _info: string,
+      info: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    setIssuerStatus(
+      status: boolean,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    setWhitelistRequiredForTransfer(
+      whitelistRequiredForTransfer: boolean,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
@@ -716,7 +963,10 @@ export class Asset extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
-    state(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+    suspendCampaign(
+      campaign: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
 
     symbol(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 

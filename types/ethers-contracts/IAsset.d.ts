@@ -21,53 +21,86 @@ import { TypedEventFilter, TypedEvent, TypedListener } from "./commons";
 
 interface IAssetInterface extends ethers.utils.Interface {
   functions: {
-    "addShareholder(address,uint256)": FunctionFragment;
-    "creator()": FunctionFragment;
-    "finalize()": FunctionFragment;
-    "info()": FunctionFragment;
-    "issuer()": FunctionFragment;
-    "removeShareholder(address,uint256)": FunctionFragment;
-    "setCreator(address)": FunctionFragment;
+    "approveCampaign(address)": FunctionFragment;
+    "changeOwnership(address)": FunctionFragment;
+    "getCampaignRecords()": FunctionFragment;
+    "getDecimals()": FunctionFragment;
+    "getInfoHistory()": FunctionFragment;
+    "getState()": FunctionFragment;
+    "setInfo(string)": FunctionFragment;
+    "setIssuerStatus(bool)": FunctionFragment;
     "snapshot()": FunctionFragment;
-    "state()": FunctionFragment;
+    "suspendCampaign(address)": FunctionFragment;
     "totalShares()": FunctionFragment;
   };
 
   encodeFunctionData(
-    functionFragment: "addShareholder",
-    values: [string, BigNumberish]
+    functionFragment: "approveCampaign",
+    values: [string]
   ): string;
-  encodeFunctionData(functionFragment: "creator", values?: undefined): string;
-  encodeFunctionData(functionFragment: "finalize", values?: undefined): string;
-  encodeFunctionData(functionFragment: "info", values?: undefined): string;
-  encodeFunctionData(functionFragment: "issuer", values?: undefined): string;
   encodeFunctionData(
-    functionFragment: "removeShareholder",
-    values: [string, BigNumberish]
+    functionFragment: "changeOwnership",
+    values: [string]
   ): string;
-  encodeFunctionData(functionFragment: "setCreator", values: [string]): string;
+  encodeFunctionData(
+    functionFragment: "getCampaignRecords",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getDecimals",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getInfoHistory",
+    values?: undefined
+  ): string;
+  encodeFunctionData(functionFragment: "getState", values?: undefined): string;
+  encodeFunctionData(functionFragment: "setInfo", values: [string]): string;
+  encodeFunctionData(
+    functionFragment: "setIssuerStatus",
+    values: [boolean]
+  ): string;
   encodeFunctionData(functionFragment: "snapshot", values?: undefined): string;
-  encodeFunctionData(functionFragment: "state", values?: undefined): string;
+  encodeFunctionData(
+    functionFragment: "suspendCampaign",
+    values: [string]
+  ): string;
   encodeFunctionData(
     functionFragment: "totalShares",
     values?: undefined
   ): string;
 
   decodeFunctionResult(
-    functionFragment: "addShareholder",
+    functionFragment: "approveCampaign",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(functionFragment: "creator", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "finalize", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "info", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "issuer", data: BytesLike): Result;
   decodeFunctionResult(
-    functionFragment: "removeShareholder",
+    functionFragment: "changeOwnership",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(functionFragment: "setCreator", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "getCampaignRecords",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "getDecimals",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "getInfoHistory",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(functionFragment: "getState", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "setInfo", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "setIssuerStatus",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "snapshot", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "state", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "suspendCampaign",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(
     functionFragment: "totalShares",
     data: BytesLike
@@ -120,32 +153,67 @@ export class IAsset extends BaseContract {
   interface: IAssetInterface;
 
   functions: {
-    addShareholder(
-      shareholder: string,
-      amount: BigNumberish,
+    approveCampaign(
+      campaign: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
-    creator(overrides?: CallOverrides): Promise<[string]>;
-
-    finalize(
+    changeOwnership(
+      newOwner: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
-    info(
+    getCampaignRecords(
+      overrides?: CallOverrides
+    ): Promise<
+      [([string, boolean] & { wallet: string; whitelisted: boolean })[]]
+    >;
+
+    getDecimals(overrides?: CallOverrides): Promise<[BigNumber]>;
+
+    getInfoHistory(
+      overrides?: CallOverrides
+    ): Promise<
+      [([string, BigNumber] & { info: string; timestamp: BigNumber })[]]
+    >;
+
+    getState(
+      overrides?: CallOverrides
+    ): Promise<
+      [
+        [
+          BigNumber,
+          string,
+          string,
+          BigNumber,
+          boolean,
+          boolean,
+          string,
+          string,
+          string,
+          string
+        ] & {
+          id: BigNumber;
+          owner: string;
+          mirroredToken: string;
+          initialTokenSupply: BigNumber;
+          whitelistRequiredForTransfer: boolean;
+          assetApprovedByIssuer: boolean;
+          issuer: string;
+          info: string;
+          name: string;
+          symbol: string;
+        }
+      ]
+    >;
+
+    setInfo(
+      info: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
-    issuer(overrides?: CallOverrides): Promise<[string]>;
-
-    removeShareholder(
-      shareholder: string,
-      amount: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
-
-    setCreator(
-      newCreator: string,
+    setIssuerStatus(
+      status: boolean,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
@@ -153,39 +221,69 @@ export class IAsset extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
-    state(
+    suspendCampaign(
+      campaign: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
     totalShares(overrides?: CallOverrides): Promise<[BigNumber]>;
   };
 
-  addShareholder(
-    shareholder: string,
-    amount: BigNumberish,
+  approveCampaign(
+    campaign: string,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
-  creator(overrides?: CallOverrides): Promise<string>;
-
-  finalize(
+  changeOwnership(
+    newOwner: string,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
-  info(
+  getCampaignRecords(
+    overrides?: CallOverrides
+  ): Promise<([string, boolean] & { wallet: string; whitelisted: boolean })[]>;
+
+  getDecimals(overrides?: CallOverrides): Promise<BigNumber>;
+
+  getInfoHistory(
+    overrides?: CallOverrides
+  ): Promise<([string, BigNumber] & { info: string; timestamp: BigNumber })[]>;
+
+  getState(
+    overrides?: CallOverrides
+  ): Promise<
+    [
+      BigNumber,
+      string,
+      string,
+      BigNumber,
+      boolean,
+      boolean,
+      string,
+      string,
+      string,
+      string
+    ] & {
+      id: BigNumber;
+      owner: string;
+      mirroredToken: string;
+      initialTokenSupply: BigNumber;
+      whitelistRequiredForTransfer: boolean;
+      assetApprovedByIssuer: boolean;
+      issuer: string;
+      info: string;
+      name: string;
+      symbol: string;
+    }
+  >;
+
+  setInfo(
+    info: string,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
-  issuer(overrides?: CallOverrides): Promise<string>;
-
-  removeShareholder(
-    shareholder: string,
-    amount: BigNumberish,
-    overrides?: Overrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
-
-  setCreator(
-    newCreator: string,
+  setIssuerStatus(
+    status: boolean,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
@@ -193,38 +291,67 @@ export class IAsset extends BaseContract {
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
-  state(
+  suspendCampaign(
+    campaign: string,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
   totalShares(overrides?: CallOverrides): Promise<BigNumber>;
 
   callStatic: {
-    addShareholder(
-      shareholder: string,
-      amount: BigNumberish,
+    approveCampaign(campaign: string, overrides?: CallOverrides): Promise<void>;
+
+    changeOwnership(newOwner: string, overrides?: CallOverrides): Promise<void>;
+
+    getCampaignRecords(
       overrides?: CallOverrides
-    ): Promise<void>;
+    ): Promise<
+      ([string, boolean] & { wallet: string; whitelisted: boolean })[]
+    >;
 
-    creator(overrides?: CallOverrides): Promise<string>;
+    getDecimals(overrides?: CallOverrides): Promise<BigNumber>;
 
-    finalize(overrides?: CallOverrides): Promise<void>;
-
-    info(overrides?: CallOverrides): Promise<string>;
-
-    issuer(overrides?: CallOverrides): Promise<string>;
-
-    removeShareholder(
-      shareholder: string,
-      amount: BigNumberish,
+    getInfoHistory(
       overrides?: CallOverrides
-    ): Promise<void>;
+    ): Promise<
+      ([string, BigNumber] & { info: string; timestamp: BigNumber })[]
+    >;
 
-    setCreator(newCreator: string, overrides?: CallOverrides): Promise<void>;
+    getState(
+      overrides?: CallOverrides
+    ): Promise<
+      [
+        BigNumber,
+        string,
+        string,
+        BigNumber,
+        boolean,
+        boolean,
+        string,
+        string,
+        string,
+        string
+      ] & {
+        id: BigNumber;
+        owner: string;
+        mirroredToken: string;
+        initialTokenSupply: BigNumber;
+        whitelistRequiredForTransfer: boolean;
+        assetApprovedByIssuer: boolean;
+        issuer: string;
+        info: string;
+        name: string;
+        symbol: string;
+      }
+    >;
+
+    setInfo(info: string, overrides?: CallOverrides): Promise<void>;
+
+    setIssuerStatus(status: boolean, overrides?: CallOverrides): Promise<void>;
 
     snapshot(overrides?: CallOverrides): Promise<BigNumber>;
 
-    state(overrides?: CallOverrides): Promise<number>;
+    suspendCampaign(campaign: string, overrides?: CallOverrides): Promise<void>;
 
     totalShares(overrides?: CallOverrides): Promise<BigNumber>;
   };
@@ -232,32 +359,31 @@ export class IAsset extends BaseContract {
   filters: {};
 
   estimateGas: {
-    addShareholder(
-      shareholder: string,
-      amount: BigNumberish,
+    approveCampaign(
+      campaign: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
-    creator(overrides?: CallOverrides): Promise<BigNumber>;
-
-    finalize(
+    changeOwnership(
+      newOwner: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
-    info(
+    getCampaignRecords(overrides?: CallOverrides): Promise<BigNumber>;
+
+    getDecimals(overrides?: CallOverrides): Promise<BigNumber>;
+
+    getInfoHistory(overrides?: CallOverrides): Promise<BigNumber>;
+
+    getState(overrides?: CallOverrides): Promise<BigNumber>;
+
+    setInfo(
+      info: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
-    issuer(overrides?: CallOverrides): Promise<BigNumber>;
-
-    removeShareholder(
-      shareholder: string,
-      amount: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<BigNumber>;
-
-    setCreator(
-      newCreator: string,
+    setIssuerStatus(
+      status: boolean,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
@@ -265,7 +391,8 @@ export class IAsset extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
-    state(
+    suspendCampaign(
+      campaign: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
@@ -273,32 +400,33 @@ export class IAsset extends BaseContract {
   };
 
   populateTransaction: {
-    addShareholder(
-      shareholder: string,
-      amount: BigNumberish,
+    approveCampaign(
+      campaign: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
-    creator(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    finalize(
+    changeOwnership(
+      newOwner: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
-    info(
+    getCampaignRecords(
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    getDecimals(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    getInfoHistory(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    getState(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    setInfo(
+      info: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
-    issuer(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    removeShareholder(
-      shareholder: string,
-      amount: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<PopulatedTransaction>;
-
-    setCreator(
-      newCreator: string,
+    setIssuerStatus(
+      status: boolean,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
@@ -306,7 +434,8 @@ export class IAsset extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
-    state(
+    suspendCampaign(
+      campaign: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 

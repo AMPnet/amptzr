@@ -21,30 +21,31 @@ import { TypedEventFilter, TypedEvent, TypedListener } from "./commons";
 
 interface IAssetFactoryInterface extends ethers.utils.Interface {
   functions: {
-    "create(address,address,uint8,uint256,uint256,string,string)": FunctionFragment;
+    "create(address,address,uint256,bool,string,string,string)": FunctionFragment;
     "getInstances()": FunctionFragment;
+    "getInstancesForIssuer(address)": FunctionFragment;
   };
 
   encodeFunctionData(
     functionFragment: "create",
-    values: [
-      string,
-      string,
-      BigNumberish,
-      BigNumberish,
-      BigNumberish,
-      string,
-      string
-    ]
+    values: [string, string, BigNumberish, boolean, string, string, string]
   ): string;
   encodeFunctionData(
     functionFragment: "getInstances",
     values?: undefined
   ): string;
+  encodeFunctionData(
+    functionFragment: "getInstancesForIssuer",
+    values: [string]
+  ): string;
 
   decodeFunctionResult(functionFragment: "create", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "getInstances",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "getInstancesForIssuer",
     data: BytesLike
   ): Result;
 
@@ -96,76 +97,101 @@ export class IAssetFactory extends BaseContract {
 
   functions: {
     create(
-      _creator: string,
-      _issuer: string,
-      _state: BigNumberish,
-      _categoryId: BigNumberish,
-      _totalShares: BigNumberish,
-      _name: string,
-      _symbol: string,
+      creator: string,
+      issuer: string,
+      initialTokenSupply: BigNumberish,
+      whitelistRequiredForTransfer: boolean,
+      name: string,
+      symbol: string,
+      info: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
     getInstances(overrides?: CallOverrides): Promise<[string[]]>;
+
+    getInstancesForIssuer(
+      issuer: string,
+      overrides?: CallOverrides
+    ): Promise<[string[]]>;
   };
 
   create(
-    _creator: string,
-    _issuer: string,
-    _state: BigNumberish,
-    _categoryId: BigNumberish,
-    _totalShares: BigNumberish,
-    _name: string,
-    _symbol: string,
+    creator: string,
+    issuer: string,
+    initialTokenSupply: BigNumberish,
+    whitelistRequiredForTransfer: boolean,
+    name: string,
+    symbol: string,
+    info: string,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
   getInstances(overrides?: CallOverrides): Promise<string[]>;
 
+  getInstancesForIssuer(
+    issuer: string,
+    overrides?: CallOverrides
+  ): Promise<string[]>;
+
   callStatic: {
     create(
-      _creator: string,
-      _issuer: string,
-      _state: BigNumberish,
-      _categoryId: BigNumberish,
-      _totalShares: BigNumberish,
-      _name: string,
-      _symbol: string,
+      creator: string,
+      issuer: string,
+      initialTokenSupply: BigNumberish,
+      whitelistRequiredForTransfer: boolean,
+      name: string,
+      symbol: string,
+      info: string,
       overrides?: CallOverrides
     ): Promise<string>;
 
     getInstances(overrides?: CallOverrides): Promise<string[]>;
+
+    getInstancesForIssuer(
+      issuer: string,
+      overrides?: CallOverrides
+    ): Promise<string[]>;
   };
 
   filters: {};
 
   estimateGas: {
     create(
-      _creator: string,
-      _issuer: string,
-      _state: BigNumberish,
-      _categoryId: BigNumberish,
-      _totalShares: BigNumberish,
-      _name: string,
-      _symbol: string,
+      creator: string,
+      issuer: string,
+      initialTokenSupply: BigNumberish,
+      whitelistRequiredForTransfer: boolean,
+      name: string,
+      symbol: string,
+      info: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
     getInstances(overrides?: CallOverrides): Promise<BigNumber>;
+
+    getInstancesForIssuer(
+      issuer: string,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
   };
 
   populateTransaction: {
     create(
-      _creator: string,
-      _issuer: string,
-      _state: BigNumberish,
-      _categoryId: BigNumberish,
-      _totalShares: BigNumberish,
-      _name: string,
-      _symbol: string,
+      creator: string,
+      issuer: string,
+      initialTokenSupply: BigNumberish,
+      whitelistRequiredForTransfer: boolean,
+      name: string,
+      symbol: string,
+      info: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
     getInstances(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    getInstancesForIssuer(
+      issuer: string,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
   };
 }

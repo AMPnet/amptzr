@@ -21,24 +21,28 @@ import { TypedEventFilter, TypedEvent, TypedListener } from "./commons";
 
 interface PayoutManagerInterface extends ethers.utils.Interface {
   functions: {
-    "asset()": FunctionFragment;
     "createPayout(string,uint256)": FunctionFragment;
-    "owner()": FunctionFragment;
+    "getInfoHistory()": FunctionFragment;
+    "getState()": FunctionFragment;
     "payouts(uint256)": FunctionFragment;
     "release(address,uint256)": FunctionFragment;
     "released(address,uint256)": FunctionFragment;
+    "setInfo(string)": FunctionFragment;
     "shares(address,uint256)": FunctionFragment;
     "snapshotToPayout(uint256)": FunctionFragment;
     "totalReleased(uint256)": FunctionFragment;
     "totalShares()": FunctionFragment;
   };
 
-  encodeFunctionData(functionFragment: "asset", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "createPayout",
     values: [string, BigNumberish]
   ): string;
-  encodeFunctionData(functionFragment: "owner", values?: undefined): string;
+  encodeFunctionData(
+    functionFragment: "getInfoHistory",
+    values?: undefined
+  ): string;
+  encodeFunctionData(functionFragment: "getState", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "payouts",
     values: [BigNumberish]
@@ -51,6 +55,7 @@ interface PayoutManagerInterface extends ethers.utils.Interface {
     functionFragment: "released",
     values: [string, BigNumberish]
   ): string;
+  encodeFunctionData(functionFragment: "setInfo", values: [string]): string;
   encodeFunctionData(
     functionFragment: "shares",
     values: [string, BigNumberish]
@@ -68,15 +73,19 @@ interface PayoutManagerInterface extends ethers.utils.Interface {
     values?: undefined
   ): string;
 
-  decodeFunctionResult(functionFragment: "asset", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "createPayout",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(functionFragment: "owner", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "getInfoHistory",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(functionFragment: "getState", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "payouts", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "release", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "released", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "setInfo", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "shares", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "snapshotToPayout",
@@ -91,7 +100,15 @@ interface PayoutManagerInterface extends ethers.utils.Interface {
     data: BytesLike
   ): Result;
 
-  events: {};
+  events: {
+    "CreatePayout(address,uint256,uint256,uint256)": EventFragment;
+    "Release(address,address,uint256,uint256,uint256)": EventFragment;
+    "SetInfo(string,address,uint256)": EventFragment;
+  };
+
+  getEvent(nameOrSignatureOrTopic: "CreatePayout"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "Release"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "SetInfo"): EventFragment;
 }
 
 export class PayoutManager extends BaseContract {
@@ -138,15 +155,30 @@ export class PayoutManager extends BaseContract {
   interface: PayoutManagerInterface;
 
   functions: {
-    asset(overrides?: CallOverrides): Promise<[string]>;
-
     createPayout(
       description: string,
       amount: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
-    owner(overrides?: CallOverrides): Promise<[string]>;
+    getInfoHistory(
+      overrides?: CallOverrides
+    ): Promise<
+      [([string, BigNumber] & { info: string; timestamp: BigNumber })[]]
+    >;
+
+    getState(
+      overrides?: CallOverrides
+    ): Promise<
+      [
+        [BigNumber, string, string, string] & {
+          id: BigNumber;
+          owner: string;
+          asset: string;
+          info: string;
+        }
+      ]
+    >;
 
     payouts(
       arg0: BigNumberish,
@@ -172,6 +204,11 @@ export class PayoutManager extends BaseContract {
       overrides?: CallOverrides
     ): Promise<[BigNumber]>;
 
+    setInfo(
+      info: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
     shares(
       account: string,
       snapshotId: BigNumberish,
@@ -191,15 +228,26 @@ export class PayoutManager extends BaseContract {
     totalShares(overrides?: CallOverrides): Promise<[BigNumber]>;
   };
 
-  asset(overrides?: CallOverrides): Promise<string>;
-
   createPayout(
     description: string,
     amount: BigNumberish,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
-  owner(overrides?: CallOverrides): Promise<string>;
+  getInfoHistory(
+    overrides?: CallOverrides
+  ): Promise<([string, BigNumber] & { info: string; timestamp: BigNumber })[]>;
+
+  getState(
+    overrides?: CallOverrides
+  ): Promise<
+    [BigNumber, string, string, string] & {
+      id: BigNumber;
+      owner: string;
+      asset: string;
+      info: string;
+    }
+  >;
 
   payouts(
     arg0: BigNumberish,
@@ -225,6 +273,11 @@ export class PayoutManager extends BaseContract {
     overrides?: CallOverrides
   ): Promise<BigNumber>;
 
+  setInfo(
+    info: string,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
   shares(
     account: string,
     snapshotId: BigNumberish,
@@ -244,15 +297,28 @@ export class PayoutManager extends BaseContract {
   totalShares(overrides?: CallOverrides): Promise<BigNumber>;
 
   callStatic: {
-    asset(overrides?: CallOverrides): Promise<string>;
-
     createPayout(
       description: string,
       amount: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
 
-    owner(overrides?: CallOverrides): Promise<string>;
+    getInfoHistory(
+      overrides?: CallOverrides
+    ): Promise<
+      ([string, BigNumber] & { info: string; timestamp: BigNumber })[]
+    >;
+
+    getState(
+      overrides?: CallOverrides
+    ): Promise<
+      [BigNumber, string, string, string] & {
+        id: BigNumber;
+        owner: string;
+        asset: string;
+        info: string;
+      }
+    >;
 
     payouts(
       arg0: BigNumberish,
@@ -278,6 +344,8 @@ export class PayoutManager extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
+    setInfo(info: string, overrides?: CallOverrides): Promise<void>;
+
     shares(
       account: string,
       snapshotId: BigNumberish,
@@ -297,18 +365,59 @@ export class PayoutManager extends BaseContract {
     totalShares(overrides?: CallOverrides): Promise<BigNumber>;
   };
 
-  filters: {};
+  filters: {
+    CreatePayout(
+      creator?: null,
+      payoutId?: null,
+      amount?: null,
+      timestamp?: null
+    ): TypedEventFilter<
+      [string, BigNumber, BigNumber, BigNumber],
+      {
+        creator: string;
+        payoutId: BigNumber;
+        amount: BigNumber;
+        timestamp: BigNumber;
+      }
+    >;
+
+    Release(
+      investor?: string | null,
+      asset?: null,
+      payoutId?: null,
+      amount?: null,
+      timestamp?: null
+    ): TypedEventFilter<
+      [string, string, BigNumber, BigNumber, BigNumber],
+      {
+        investor: string;
+        asset: string;
+        payoutId: BigNumber;
+        amount: BigNumber;
+        timestamp: BigNumber;
+      }
+    >;
+
+    SetInfo(
+      info?: null,
+      setter?: null,
+      timestamp?: null
+    ): TypedEventFilter<
+      [string, string, BigNumber],
+      { info: string; setter: string; timestamp: BigNumber }
+    >;
+  };
 
   estimateGas: {
-    asset(overrides?: CallOverrides): Promise<BigNumber>;
-
     createPayout(
       description: string,
       amount: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
-    owner(overrides?: CallOverrides): Promise<BigNumber>;
+    getInfoHistory(overrides?: CallOverrides): Promise<BigNumber>;
+
+    getState(overrides?: CallOverrides): Promise<BigNumber>;
 
     payouts(arg0: BigNumberish, overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -322,6 +431,11 @@ export class PayoutManager extends BaseContract {
       account: string,
       snapshotId: BigNumberish,
       overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    setInfo(
+      info: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
     shares(
@@ -344,15 +458,15 @@ export class PayoutManager extends BaseContract {
   };
 
   populateTransaction: {
-    asset(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
     createPayout(
       description: string,
       amount: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
-    owner(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+    getInfoHistory(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    getState(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     payouts(
       arg0: BigNumberish,
@@ -369,6 +483,11 @@ export class PayoutManager extends BaseContract {
       account: string,
       snapshotId: BigNumberish,
       overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    setInfo(
+      info: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
     shares(

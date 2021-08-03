@@ -5,9 +5,9 @@
 import { Contract, Signer, utils } from "ethers";
 import { Provider } from "@ethersproject/providers";
 import type {
-  IPayoutManagerFactory,
-  IPayoutManagerFactoryInterface,
-} from "../IPayoutManagerFactory";
+  ICfManagerSoftcapFactory,
+  ICfManagerSoftcapFactoryInterface,
+} from "../ICfManagerSoftcapFactory";
 
 const _abi = [
   {
@@ -21,6 +21,21 @@ const _abi = [
         internalType: "address",
         name: "assetAddress",
         type: "address",
+      },
+      {
+        internalType: "uint256",
+        name: "initialPricePerToken",
+        type: "uint256",
+      },
+      {
+        internalType: "uint256",
+        name: "softCap",
+        type: "uint256",
+      },
+      {
+        internalType: "bool",
+        name: "whitelistRequired",
+        type: "bool",
       },
       {
         internalType: "string",
@@ -56,7 +71,7 @@ const _abi = [
     inputs: [
       {
         internalType: "address",
-        name: "assset",
+        name: "asset",
         type: "address",
       },
     ],
@@ -92,19 +107,19 @@ const _abi = [
   },
 ];
 
-export class IPayoutManagerFactory__factory {
+export class ICfManagerSoftcapFactory__factory {
   static readonly abi = _abi;
-  static createInterface(): IPayoutManagerFactoryInterface {
-    return new utils.Interface(_abi) as IPayoutManagerFactoryInterface;
+  static createInterface(): ICfManagerSoftcapFactoryInterface {
+    return new utils.Interface(_abi) as ICfManagerSoftcapFactoryInterface;
   }
   static connect(
     address: string,
     signerOrProvider: Signer | Provider
-  ): IPayoutManagerFactory {
+  ): ICfManagerSoftcapFactory {
     return new Contract(
       address,
       _abi,
       signerOrProvider
-    ) as IPayoutManagerFactory;
+    ) as ICfManagerSoftcapFactory;
   }
 }

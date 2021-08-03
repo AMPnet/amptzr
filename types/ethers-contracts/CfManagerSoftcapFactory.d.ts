@@ -19,17 +19,18 @@ import { Listener, Provider } from "@ethersproject/providers";
 import { FunctionFragment, EventFragment, Result } from "@ethersproject/abi";
 import { TypedEventFilter, TypedEvent, TypedListener } from "./commons";
 
-interface IPayoutManagerFactoryInterface extends ethers.utils.Interface {
+interface CfManagerSoftcapFactoryInterface extends ethers.utils.Interface {
   functions: {
-    "create(address,address,string)": FunctionFragment;
+    "create(address,address,uint256,uint256,bool,string)": FunctionFragment;
     "getInstances()": FunctionFragment;
     "getInstancesForAsset(address)": FunctionFragment;
     "getInstancesForIssuer(address)": FunctionFragment;
+    "instances(uint256)": FunctionFragment;
   };
 
   encodeFunctionData(
     functionFragment: "create",
-    values: [string, string, string]
+    values: [string, string, BigNumberish, BigNumberish, boolean, string]
   ): string;
   encodeFunctionData(
     functionFragment: "getInstances",
@@ -42,6 +43,10 @@ interface IPayoutManagerFactoryInterface extends ethers.utils.Interface {
   encodeFunctionData(
     functionFragment: "getInstancesForIssuer",
     values: [string]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "instances",
+    values: [BigNumberish]
   ): string;
 
   decodeFunctionResult(functionFragment: "create", data: BytesLike): Result;
@@ -57,11 +62,16 @@ interface IPayoutManagerFactoryInterface extends ethers.utils.Interface {
     functionFragment: "getInstancesForIssuer",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(functionFragment: "instances", data: BytesLike): Result;
 
-  events: {};
+  events: {
+    "CfManagerSoftcapCreated(address,address,uint256,address,uint256)": EventFragment;
+  };
+
+  getEvent(nameOrSignatureOrTopic: "CfManagerSoftcapCreated"): EventFragment;
 }
 
-export class IPayoutManagerFactory extends BaseContract {
+export class CfManagerSoftcapFactory extends BaseContract {
   connect(signerOrProvider: Signer | Provider | string): this;
   attach(addressOrName: string): this;
   deployed(): Promise<this>;
@@ -102,12 +112,15 @@ export class IPayoutManagerFactory extends BaseContract {
     toBlock?: string | number | undefined
   ): Promise<Array<TypedEvent<EventArgsArray & EventArgsObject>>>;
 
-  interface: IPayoutManagerFactoryInterface;
+  interface: CfManagerSoftcapFactoryInterface;
 
   functions: {
     create(
       owner: string,
       assetAddress: string,
+      initialPricePerToken: BigNumberish,
+      softCap: BigNumberish,
+      whitelistRequired: boolean,
       info: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
@@ -115,7 +128,7 @@ export class IPayoutManagerFactory extends BaseContract {
     getInstances(overrides?: CallOverrides): Promise<[string[]]>;
 
     getInstancesForAsset(
-      assset: string,
+      asset: string,
       overrides?: CallOverrides
     ): Promise<[string[]]>;
 
@@ -123,11 +136,16 @@ export class IPayoutManagerFactory extends BaseContract {
       issuer: string,
       overrides?: CallOverrides
     ): Promise<[string[]]>;
+
+    instances(arg0: BigNumberish, overrides?: CallOverrides): Promise<[string]>;
   };
 
   create(
     owner: string,
     assetAddress: string,
+    initialPricePerToken: BigNumberish,
+    softCap: BigNumberish,
+    whitelistRequired: boolean,
     info: string,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
@@ -135,7 +153,7 @@ export class IPayoutManagerFactory extends BaseContract {
   getInstances(overrides?: CallOverrides): Promise<string[]>;
 
   getInstancesForAsset(
-    assset: string,
+    asset: string,
     overrides?: CallOverrides
   ): Promise<string[]>;
 
@@ -144,10 +162,15 @@ export class IPayoutManagerFactory extends BaseContract {
     overrides?: CallOverrides
   ): Promise<string[]>;
 
+  instances(arg0: BigNumberish, overrides?: CallOverrides): Promise<string>;
+
   callStatic: {
     create(
       owner: string,
       assetAddress: string,
+      initialPricePerToken: BigNumberish,
+      softCap: BigNumberish,
+      whitelistRequired: boolean,
       info: string,
       overrides?: CallOverrides
     ): Promise<string>;
@@ -155,7 +178,7 @@ export class IPayoutManagerFactory extends BaseContract {
     getInstances(overrides?: CallOverrides): Promise<string[]>;
 
     getInstancesForAsset(
-      assset: string,
+      asset: string,
       overrides?: CallOverrides
     ): Promise<string[]>;
 
@@ -163,14 +186,36 @@ export class IPayoutManagerFactory extends BaseContract {
       issuer: string,
       overrides?: CallOverrides
     ): Promise<string[]>;
+
+    instances(arg0: BigNumberish, overrides?: CallOverrides): Promise<string>;
   };
 
-  filters: {};
+  filters: {
+    CfManagerSoftcapCreated(
+      creator?: string | null,
+      cfManager?: null,
+      id?: null,
+      asset?: null,
+      timestamp?: null
+    ): TypedEventFilter<
+      [string, string, BigNumber, string, BigNumber],
+      {
+        creator: string;
+        cfManager: string;
+        id: BigNumber;
+        asset: string;
+        timestamp: BigNumber;
+      }
+    >;
+  };
 
   estimateGas: {
     create(
       owner: string,
       assetAddress: string,
+      initialPricePerToken: BigNumberish,
+      softCap: BigNumberish,
+      whitelistRequired: boolean,
       info: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
@@ -178,12 +223,17 @@ export class IPayoutManagerFactory extends BaseContract {
     getInstances(overrides?: CallOverrides): Promise<BigNumber>;
 
     getInstancesForAsset(
-      assset: string,
+      asset: string,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
     getInstancesForIssuer(
       issuer: string,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    instances(
+      arg0: BigNumberish,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
   };
@@ -192,6 +242,9 @@ export class IPayoutManagerFactory extends BaseContract {
     create(
       owner: string,
       assetAddress: string,
+      initialPricePerToken: BigNumberish,
+      softCap: BigNumberish,
+      whitelistRequired: boolean,
       info: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
@@ -199,12 +252,17 @@ export class IPayoutManagerFactory extends BaseContract {
     getInstances(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     getInstancesForAsset(
-      assset: string,
+      asset: string,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
     getInstancesForIssuer(
       issuer: string,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    instances(
+      arg0: BigNumberish,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
   };

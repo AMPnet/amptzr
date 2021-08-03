@@ -1,0 +1,35 @@
+<div class="px-4 py-2 max-w-screen-lg mx-auto">
+  <ng-container *ngIf="(issuer$ | async) as issuerRes">
+    <ng-container *ngIf="issuerRes.value as issuer">
+      <form [formGroup]="updateForm">
+        <label class="block">
+          <span>Name</span>
+          <input type="text" formControlName="name">
+        </label>
+
+        <div>
+          <label class="mt-2" for="logo">Logo</label>
+          <img class="p-4 max-w-xs max-h-xs"
+               [src]="((updateForm.get('logo')?.value?.[0] | safe:'fileUrl') || issuer.logo) | toImageURL"
+               alt="Issuer Logo">
+          <input id="logo" type="file" formControlName="logo" multiple>
+        </div>
+
+        <button app-action-button
+                class="bg-blue-500 disabled:bg-gray-400 text-white p-2 rounded-md mt-2"
+                text="Update"
+                [disabled]="!updateForm.valid"
+                [onClick]="update(issuer).bind(this)">
+        </button>
+      </form>
+    </ng-container>
+
+    <ng-container *ngIf="issuerRes.error">
+      Cannot fetch issuer: {{ issuerRes.error }}
+    </ng-container>
+
+    <ng-container *ngIf="issuerRes.loading">
+      Fetching Issuer...
+    </ng-container>
+  </ng-container>
+</div>

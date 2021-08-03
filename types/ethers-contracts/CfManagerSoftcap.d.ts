@@ -19,113 +19,86 @@ import { Listener, Provider } from "@ethersproject/providers";
 import { FunctionFragment, EventFragment, Result } from "@ethersproject/abi";
 import { TypedEventFilter, TypedEvent, TypedListener } from "./commons";
 
-interface IssuerInterface extends ethers.utils.Interface {
+interface CfManagerSoftcapInterface extends ethers.utils.Interface {
   functions: {
-    "approveWallet(address)": FunctionFragment;
-    "approvedWallets(uint256)": FunctionFragment;
-    "approvedWalletsMap(address)": FunctionFragment;
+    "cancelCampaign()": FunctionFragment;
+    "cancelInvestment()": FunctionFragment;
     "changeOwnership(address)": FunctionFragment;
-    "changeWalletApprover(address)": FunctionFragment;
+    "claim(address)": FunctionFragment;
+    "finalize()": FunctionFragment;
     "getInfoHistory()": FunctionFragment;
     "getState()": FunctionFragment;
-    "getWalletRecords()": FunctionFragment;
-    "isWalletApproved(address)": FunctionFragment;
+    "invest(uint256)": FunctionFragment;
     "setInfo(string)": FunctionFragment;
-    "suspendWallet(address)": FunctionFragment;
   };
 
   encodeFunctionData(
-    functionFragment: "approveWallet",
-    values: [string]
+    functionFragment: "cancelCampaign",
+    values?: undefined
   ): string;
   encodeFunctionData(
-    functionFragment: "approvedWallets",
-    values: [BigNumberish]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "approvedWalletsMap",
-    values: [string]
+    functionFragment: "cancelInvestment",
+    values?: undefined
   ): string;
   encodeFunctionData(
     functionFragment: "changeOwnership",
     values: [string]
   ): string;
-  encodeFunctionData(
-    functionFragment: "changeWalletApprover",
-    values: [string]
-  ): string;
+  encodeFunctionData(functionFragment: "claim", values: [string]): string;
+  encodeFunctionData(functionFragment: "finalize", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "getInfoHistory",
     values?: undefined
   ): string;
   encodeFunctionData(functionFragment: "getState", values?: undefined): string;
   encodeFunctionData(
-    functionFragment: "getWalletRecords",
-    values?: undefined
-  ): string;
-  encodeFunctionData(
-    functionFragment: "isWalletApproved",
-    values: [string]
+    functionFragment: "invest",
+    values: [BigNumberish]
   ): string;
   encodeFunctionData(functionFragment: "setInfo", values: [string]): string;
-  encodeFunctionData(
-    functionFragment: "suspendWallet",
-    values: [string]
-  ): string;
 
   decodeFunctionResult(
-    functionFragment: "approveWallet",
+    functionFragment: "cancelCampaign",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "approvedWallets",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "approvedWalletsMap",
+    functionFragment: "cancelInvestment",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
     functionFragment: "changeOwnership",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(
-    functionFragment: "changeWalletApprover",
-    data: BytesLike
-  ): Result;
+  decodeFunctionResult(functionFragment: "claim", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "finalize", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "getInfoHistory",
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "getState", data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: "getWalletRecords",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "isWalletApproved",
-    data: BytesLike
-  ): Result;
+  decodeFunctionResult(functionFragment: "invest", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "setInfo", data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: "suspendWallet",
-    data: BytesLike
-  ): Result;
 
   events: {
+    "CancelCampaign(address,uint256,uint256)": EventFragment;
+    "CancelInvestment(address,uint256,uint256,uint256)": EventFragment;
     "ChangeOwnership(address,address,uint256)": EventFragment;
-    "ChangeWalletApprover(address,address,uint256)": EventFragment;
+    "Claim(address,uint256,uint256,uint256)": EventFragment;
+    "Finalize(address,uint256,uint256,uint256)": EventFragment;
+    "Invest(address,uint256,uint256,uint256)": EventFragment;
     "SetInfo(string,address,uint256)": EventFragment;
-    "WalletWhitelist(address,address,bool,uint256)": EventFragment;
   };
 
+  getEvent(nameOrSignatureOrTopic: "CancelCampaign"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "CancelInvestment"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "ChangeOwnership"): EventFragment;
-  getEvent(nameOrSignatureOrTopic: "ChangeWalletApprover"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "Claim"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "Finalize"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "Invest"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "SetInfo"): EventFragment;
-  getEvent(nameOrSignatureOrTopic: "WalletWhitelist"): EventFragment;
 }
 
-export class Issuer extends BaseContract {
+export class CfManagerSoftcap extends BaseContract {
   connect(signerOrProvider: Signer | Provider | string): this;
   attach(addressOrName: string): this;
   deployed(): Promise<this>;
@@ -166,31 +139,28 @@ export class Issuer extends BaseContract {
     toBlock?: string | number | undefined
   ): Promise<Array<TypedEvent<EventArgsArray & EventArgsObject>>>;
 
-  interface: IssuerInterface;
+  interface: CfManagerSoftcapInterface;
 
   functions: {
-    approveWallet(
-      wallet: string,
+    cancelCampaign(
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
-    approvedWallets(
-      arg0: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<[string, boolean] & { wallet: string; whitelisted: boolean }>;
-
-    approvedWalletsMap(
-      arg0: string,
-      overrides?: CallOverrides
-    ): Promise<[BigNumber]>;
+    cancelInvestment(
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
 
     changeOwnership(
       newOwner: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
-    changeWalletApprover(
-      newWalletApprover: string,
+    claim(
+      investor: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
+    finalize(
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
@@ -204,60 +174,68 @@ export class Issuer extends BaseContract {
       overrides?: CallOverrides
     ): Promise<
       [
-        [BigNumber, string, string, string, string] & {
+        [
+          BigNumber,
+          string,
+          string,
+          BigNumber,
+          BigNumber,
+          boolean,
+          boolean,
+          boolean,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          string
+        ] & {
           id: BigNumber;
           owner: string;
-          stablecoin: string;
-          walletApprover: string;
+          asset: string;
+          tokenPrice: BigNumber;
+          softCap: BigNumber;
+          whitelistRequired: boolean;
+          finalized: boolean;
+          cancelled: boolean;
+          totalClaimableTokens: BigNumber;
+          totalInvestorsCount: BigNumber;
+          totalClaimsCount: BigNumber;
+          totalFundsRaised: BigNumber;
           info: string;
         }
       ]
     >;
 
-    getWalletRecords(
-      overrides?: CallOverrides
-    ): Promise<
-      [([string, boolean] & { wallet: string; whitelisted: boolean })[]]
-    >;
-
-    isWalletApproved(
-      wallet: string,
-      overrides?: CallOverrides
-    ): Promise<[boolean]>;
+    invest(
+      amount: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
 
     setInfo(
       info: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
-
-    suspendWallet(
-      wallet: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
   };
 
-  approveWallet(
-    wallet: string,
+  cancelCampaign(
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
-  approvedWallets(
-    arg0: BigNumberish,
-    overrides?: CallOverrides
-  ): Promise<[string, boolean] & { wallet: string; whitelisted: boolean }>;
-
-  approvedWalletsMap(
-    arg0: string,
-    overrides?: CallOverrides
-  ): Promise<BigNumber>;
+  cancelInvestment(
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
 
   changeOwnership(
     newOwner: string,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
-  changeWalletApprover(
-    newWalletApprover: string,
+  claim(
+    investor: string,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
+  finalize(
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
@@ -268,50 +246,57 @@ export class Issuer extends BaseContract {
   getState(
     overrides?: CallOverrides
   ): Promise<
-    [BigNumber, string, string, string, string] & {
+    [
+      BigNumber,
+      string,
+      string,
+      BigNumber,
+      BigNumber,
+      boolean,
+      boolean,
+      boolean,
+      BigNumber,
+      BigNumber,
+      BigNumber,
+      BigNumber,
+      string
+    ] & {
       id: BigNumber;
       owner: string;
-      stablecoin: string;
-      walletApprover: string;
+      asset: string;
+      tokenPrice: BigNumber;
+      softCap: BigNumber;
+      whitelistRequired: boolean;
+      finalized: boolean;
+      cancelled: boolean;
+      totalClaimableTokens: BigNumber;
+      totalInvestorsCount: BigNumber;
+      totalClaimsCount: BigNumber;
+      totalFundsRaised: BigNumber;
       info: string;
     }
   >;
 
-  getWalletRecords(
-    overrides?: CallOverrides
-  ): Promise<([string, boolean] & { wallet: string; whitelisted: boolean })[]>;
-
-  isWalletApproved(wallet: string, overrides?: CallOverrides): Promise<boolean>;
+  invest(
+    amount: BigNumberish,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
 
   setInfo(
     info: string,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
-  suspendWallet(
-    wallet: string,
-    overrides?: Overrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
-
   callStatic: {
-    approveWallet(wallet: string, overrides?: CallOverrides): Promise<void>;
+    cancelCampaign(overrides?: CallOverrides): Promise<void>;
 
-    approvedWallets(
-      arg0: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<[string, boolean] & { wallet: string; whitelisted: boolean }>;
-
-    approvedWalletsMap(
-      arg0: string,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
+    cancelInvestment(overrides?: CallOverrides): Promise<void>;
 
     changeOwnership(newOwner: string, overrides?: CallOverrides): Promise<void>;
 
-    changeWalletApprover(
-      newWalletApprover: string,
-      overrides?: CallOverrides
-    ): Promise<void>;
+    claim(investor: string, overrides?: CallOverrides): Promise<void>;
+
+    finalize(overrides?: CallOverrides): Promise<void>;
 
     getInfoHistory(
       overrides?: CallOverrides
@@ -322,32 +307,67 @@ export class Issuer extends BaseContract {
     getState(
       overrides?: CallOverrides
     ): Promise<
-      [BigNumber, string, string, string, string] & {
+      [
+        BigNumber,
+        string,
+        string,
+        BigNumber,
+        BigNumber,
+        boolean,
+        boolean,
+        boolean,
+        BigNumber,
+        BigNumber,
+        BigNumber,
+        BigNumber,
+        string
+      ] & {
         id: BigNumber;
         owner: string;
-        stablecoin: string;
-        walletApprover: string;
+        asset: string;
+        tokenPrice: BigNumber;
+        softCap: BigNumber;
+        whitelistRequired: boolean;
+        finalized: boolean;
+        cancelled: boolean;
+        totalClaimableTokens: BigNumber;
+        totalInvestorsCount: BigNumber;
+        totalClaimsCount: BigNumber;
+        totalFundsRaised: BigNumber;
         info: string;
       }
     >;
 
-    getWalletRecords(
-      overrides?: CallOverrides
-    ): Promise<
-      ([string, boolean] & { wallet: string; whitelisted: boolean })[]
-    >;
-
-    isWalletApproved(
-      wallet: string,
-      overrides?: CallOverrides
-    ): Promise<boolean>;
+    invest(amount: BigNumberish, overrides?: CallOverrides): Promise<void>;
 
     setInfo(info: string, overrides?: CallOverrides): Promise<void>;
-
-    suspendWallet(wallet: string, overrides?: CallOverrides): Promise<void>;
   };
 
   filters: {
+    CancelCampaign(
+      owner?: null,
+      tokensReturned?: null,
+      timestamp?: null
+    ): TypedEventFilter<
+      [string, BigNumber, BigNumber],
+      { owner: string; tokensReturned: BigNumber; timestamp: BigNumber }
+    >;
+
+    CancelInvestment(
+      investor?: string | null,
+      tokenAmount?: null,
+      tokenValue?: null,
+      timestamp?: null
+    ): TypedEventFilter<
+      [string, BigNumber, BigNumber, BigNumber],
+      {
+        investor: string;
+        tokenAmount: BigNumber;
+        tokenValue: BigNumber;
+        timestamp: BigNumber;
+      }
+    >;
+
     ChangeOwnership(
       caller?: null,
       newOwner?: null,
@@ -357,15 +377,47 @@ export class Issuer extends BaseContract {
       { caller: string; newOwner: string; timestamp: BigNumber }
     >;
 
-    ChangeWalletApprover(
-      oldWalletApprover?: null,
-      newWalletApprover?: null,
+    Claim(
+      investor?: string | null,
+      tokenAmount?: null,
+      tokenValue?: null,
       timestamp?: null
     ): TypedEventFilter<
-      [string, string, BigNumber],
+      [string, BigNumber, BigNumber, BigNumber],
       {
-        oldWalletApprover: string;
-        newWalletApprover: string;
+        investor: string;
+        tokenAmount: BigNumber;
+        tokenValue: BigNumber;
+        timestamp: BigNumber;
+      }
+    >;
+
+    Finalize(
+      owner?: null,
+      totalFundsRaised?: null,
+      totalTokensSold?: null,
+      timestamp?: null
+    ): TypedEventFilter<
+      [string, BigNumber, BigNumber, BigNumber],
+      {
+        owner: string;
+        totalFundsRaised: BigNumber;
+        totalTokensSold: BigNumber;
+        timestamp: BigNumber;
+      }
+    >;
+
+    Invest(
+      investor?: string | null,
+      tokenAmount?: null,
+      tokenValue?: null,
+      timestamp?: null
+    ): TypedEventFilter<
+      [string, BigNumber, BigNumber, BigNumber],
+      {
+        investor: string;
+        tokenAmount: BigNumber;
+        tokenValue: BigNumber;
         timestamp: BigNumber;
       }
     >;
@@ -378,37 +430,15 @@ export class Issuer extends BaseContract {
       [string, string, BigNumber],
       { info: string; setter: string; timestamp: BigNumber }
     >;
-
-    WalletWhitelist(
-      approver?: null,
-      wallet?: null,
-      whitelisted?: null,
-      timestamp?: null
-    ): TypedEventFilter<
-      [string, string, boolean, BigNumber],
-      {
-        approver: string;
-        wallet: string;
-        whitelisted: boolean;
-        timestamp: BigNumber;
-      }
-    >;
   };
 
   estimateGas: {
-    approveWallet(
-      wallet: string,
+    cancelCampaign(
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
-    approvedWallets(
-      arg0: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    approvedWalletsMap(
-      arg0: string,
-      overrides?: CallOverrides
+    cancelInvestment(
+      overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
     changeOwnership(
@@ -416,8 +446,12 @@ export class Issuer extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
-    changeWalletApprover(
-      newWalletApprover: string,
+    claim(
+      investor: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
+    finalize(
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
@@ -425,38 +459,24 @@ export class Issuer extends BaseContract {
 
     getState(overrides?: CallOverrides): Promise<BigNumber>;
 
-    getWalletRecords(overrides?: CallOverrides): Promise<BigNumber>;
-
-    isWalletApproved(
-      wallet: string,
-      overrides?: CallOverrides
+    invest(
+      amount: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
     setInfo(
       info: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
-
-    suspendWallet(
-      wallet: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<BigNumber>;
   };
 
   populateTransaction: {
-    approveWallet(
-      wallet: string,
+    cancelCampaign(
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
-    approvedWallets(
-      arg0: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    approvedWalletsMap(
-      arg0: string,
-      overrides?: CallOverrides
+    cancelInvestment(
+      overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
     changeOwnership(
@@ -464,8 +484,12 @@ export class Issuer extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
-    changeWalletApprover(
-      newWalletApprover: string,
+    claim(
+      investor: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    finalize(
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
@@ -473,20 +497,13 @@ export class Issuer extends BaseContract {
 
     getState(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
-    getWalletRecords(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    isWalletApproved(
-      wallet: string,
-      overrides?: CallOverrides
+    invest(
+      amount: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
     setInfo(
       info: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<PopulatedTransaction>;
-
-    suspendWallet(
-      wallet: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
   };

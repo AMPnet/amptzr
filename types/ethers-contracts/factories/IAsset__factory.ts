@@ -11,28 +11,48 @@ const _abi = [
     inputs: [
       {
         internalType: "address",
-        name: "shareholder",
+        name: "campaign",
         type: "address",
       },
+    ],
+    name: "approveCampaign",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
       {
-        internalType: "uint256",
-        name: "amount",
-        type: "uint256",
+        internalType: "address",
+        name: "newOwner",
+        type: "address",
       },
     ],
-    name: "addShareholder",
+    name: "changeOwnership",
     outputs: [],
     stateMutability: "nonpayable",
     type: "function",
   },
   {
     inputs: [],
-    name: "creator",
+    name: "getCampaignRecords",
     outputs: [
       {
-        internalType: "address",
+        components: [
+          {
+            internalType: "address",
+            name: "wallet",
+            type: "address",
+          },
+          {
+            internalType: "bool",
+            name: "whitelisted",
+            type: "bool",
+          },
+        ],
+        internalType: "struct Structs.WalletRecord[]",
         name: "",
-        type: "address",
+        type: "tuple[]",
       },
     ],
     stateMutability: "view",
@@ -40,51 +60,116 @@ const _abi = [
   },
   {
     inputs: [],
-    name: "finalize",
-    outputs: [],
-    stateMutability: "nonpayable",
+    name: "getDecimals",
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
+    ],
+    stateMutability: "view",
     type: "function",
   },
   {
     inputs: [],
-    name: "info",
+    name: "getInfoHistory",
     outputs: [
       {
-        internalType: "string",
+        components: [
+          {
+            internalType: "string",
+            name: "info",
+            type: "string",
+          },
+          {
+            internalType: "uint256",
+            name: "timestamp",
+            type: "uint256",
+          },
+        ],
+        internalType: "struct Structs.InfoEntry[]",
         name: "",
+        type: "tuple[]",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "getState",
+    outputs: [
+      {
+        components: [
+          {
+            internalType: "uint256",
+            name: "id",
+            type: "uint256",
+          },
+          {
+            internalType: "address",
+            name: "owner",
+            type: "address",
+          },
+          {
+            internalType: "address",
+            name: "mirroredToken",
+            type: "address",
+          },
+          {
+            internalType: "uint256",
+            name: "initialTokenSupply",
+            type: "uint256",
+          },
+          {
+            internalType: "bool",
+            name: "whitelistRequiredForTransfer",
+            type: "bool",
+          },
+          {
+            internalType: "bool",
+            name: "assetApprovedByIssuer",
+            type: "bool",
+          },
+          {
+            internalType: "address",
+            name: "issuer",
+            type: "address",
+          },
+          {
+            internalType: "string",
+            name: "info",
+            type: "string",
+          },
+          {
+            internalType: "string",
+            name: "name",
+            type: "string",
+          },
+          {
+            internalType: "string",
+            name: "symbol",
+            type: "string",
+          },
+        ],
+        internalType: "struct Structs.AssetState",
+        name: "",
+        type: "tuple",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "string",
+        name: "info",
         type: "string",
       },
     ],
-    stateMutability: "nonpayable",
-    type: "function",
-  },
-  {
-    inputs: [],
-    name: "issuer",
-    outputs: [
-      {
-        internalType: "contract IIssuer",
-        name: "",
-        type: "address",
-      },
-    ],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [
-      {
-        internalType: "address",
-        name: "shareholder",
-        type: "address",
-      },
-      {
-        internalType: "uint256",
-        name: "amount",
-        type: "uint256",
-      },
-    ],
-    name: "removeShareholder",
+    name: "setInfo",
     outputs: [],
     stateMutability: "nonpayable",
     type: "function",
@@ -92,12 +177,12 @@ const _abi = [
   {
     inputs: [
       {
-        internalType: "address",
-        name: "newCreator",
-        type: "address",
+        internalType: "bool",
+        name: "status",
+        type: "bool",
       },
     ],
-    name: "setCreator",
+    name: "setIssuerStatus",
     outputs: [],
     stateMutability: "nonpayable",
     type: "function",
@@ -116,15 +201,15 @@ const _abi = [
     type: "function",
   },
   {
-    inputs: [],
-    name: "state",
-    outputs: [
+    inputs: [
       {
-        internalType: "enum AssetState",
-        name: "",
-        type: "uint8",
+        internalType: "address",
+        name: "campaign",
+        type: "address",
       },
     ],
+    name: "suspendCampaign",
+    outputs: [],
     stateMutability: "nonpayable",
     type: "function",
   },
