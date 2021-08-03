@@ -1,0 +1,43 @@
+<div class="px-4 py-2 max-w-screen-lg mx-auto">
+  <ng-container *ngIf="(issuer$ | async) as issuerRes">
+    <ng-container *ngIf="issuerRes.value as issuer">
+      <ng-container *ngIf="(address$ | async) as address">
+        <div>
+          Name: {{ issuer.name }}
+        </div>
+
+        <div>
+          Logo:
+          <img class="p-4 max-w-xs max-h-xs"
+               [src]="issuer.logo | toImageURL" alt="Issuer Logo">
+        </div>
+
+        <div>
+          Address: {{ issuer.address }}
+        </div>
+
+        <div>
+          Stablecoin address: {{ issuer.stablecoin }}
+        </div>
+
+        <div>
+          Wallet approver address: {{ issuer.walletApprover }}
+        </div>
+
+        <button class="bg-blue-500 disabled:bg-gray-400 text-white p-2 rounded-md mt-2"
+                *ngIf="issuer.owner === address"
+                routerLink="edit">
+          Edit
+        </button>
+      </ng-container>
+    </ng-container>
+
+    <ng-container *ngIf="issuerRes.error">
+      Cannot fetch issuer: {{ issuerRes.error }}
+    </ng-container>
+
+    <ng-container *ngIf="issuerRes.loading">
+      Fetching Issuer...
+    </ng-container>
+  </ng-container>
+</div>

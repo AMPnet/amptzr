@@ -18,15 +18,18 @@ export interface Network {
   },
   rpcURLs: string[],
   explorerURLs: string[],
-  factoryConfig: FactoryConfig,
+  tokenizerConfig: TokenizerConfig,
   venlyConfig: VenlyConfig
 }
 
-interface FactoryConfig {
-  issuer: string,
-  asset: string,
-  cfManager: string,
-  payoutManager: string,
+interface TokenizerConfig {
+  issuerFactory: string,
+  assetFactory: string,
+  cfManagerFactory: string,
+  payoutManagerFactory: string,
+  defaultWalletApprover: string,
+  defaultIssuer: string,
+  defaultStableCoin: string,
 }
 
 interface VenlyConfig {
@@ -44,11 +47,14 @@ export const MaticNetwork: Network = {
   },
   rpcURLs: ['https://rpc-mainnet.maticvigil.com'],
   explorerURLs: ['https://explorer-mainnet.maticvigil.com/'],
-  factoryConfig: {
-    issuer: '0x089b0e790830B0B3CBaF12c5139C7FFd771086a0',
-    asset: '0x1055A19E99eD45114eFBBE0fD2B59B21103A21C9',
-    cfManager: '0xEB354529e80031C287cAE6e33432826Df4Ed9104',
-    payoutManager: '0x39d13eA4781F4FA57a347F5C49dD716048822F16',
+  tokenizerConfig: {
+    issuerFactory: '0x0959b4eBf0Fe2D708C3DB22dc245a32a135Ef818',
+    assetFactory: '0x46B01A62d03E2067bBfC6c88D2f2EEDC31cB75a9',
+    cfManagerFactory: '0xA167Ac0C34C52a4a91a9c93618150b9ef508152C',
+    payoutManagerFactory: '0x39d13eA4781F4FA57a347F5C49dD716048822F16',
+    defaultWalletApprover: '0x23B00A11F6DBbD3a850a0AE72668109133779575',
+    defaultIssuer: '0xD17574450885C1b898bc835Ff9CB5b44A3601c24',
+    defaultStableCoin: '0x18D71D80087084df631f95EF29C8a11904DC47F3'
   },
   venlyConfig: {
     secretType: SecretType.MATIC,
@@ -66,11 +72,14 @@ export const MumbaiNetwork: Network = {
   },
   rpcURLs: ['https://matic-mumbai.chainstacklabs.com'],
   explorerURLs: ['https://explorer-mumbai.maticvigil.com/'],
-  factoryConfig: {
-    issuer: '0x089b0e790830B0B3CBaF12c5139C7FFd771086a0',
-    asset: '0x1055A19E99eD45114eFBBE0fD2B59B21103A21C9',
-    cfManager: '0xEB354529e80031C287cAE6e33432826Df4Ed9104',
-    payoutManager: '0x39d13eA4781F4FA57a347F5C49dD716048822F16',
+  tokenizerConfig: {
+    issuerFactory: '0x0959b4eBf0Fe2D708C3DB22dc245a32a135Ef818',
+    assetFactory: '0x46B01A62d03E2067bBfC6c88D2f2EEDC31cB75a9',
+    cfManagerFactory: '0xA167Ac0C34C52a4a91a9c93618150b9ef508152C',
+    payoutManagerFactory: '0x39d13eA4781F4FA57a347F5C49dD716048822F16',
+    defaultWalletApprover: '0x23B00A11F6DBbD3a850a0AE72668109133779575',
+    defaultIssuer: '0xD17574450885C1b898bc835Ff9CB5b44A3601c24',
+    defaultStableCoin: '0x18D71D80087084df631f95EF29C8a11904DC47F3'
   },
   venlyConfig: {
     secretType: SecretType.MATIC,

@@ -10,8 +10,10 @@ import {InvestComponent} from './invest/invest.component'
 import {DepositComponent} from './deposit/deposit.component'
 import {AuthGuard} from './shared/guards/auth.guard'
 import {FaqComponent} from './faq/faq.component'
-import {IssuersComponent} from './issuers/issuers.component'
-import {IssuersEditComponent} from './issuers/issuers-edit/issuers-edit.component'
+import {IssuerEditComponent} from './issuers/issuer-edit/issuer-edit.component'
+import {IssuerNewComponent} from './issuers/issuer-new/issuer-new.component'
+import {IssuerListComponent} from './issuers/issuer-list/issuer-list.component'
+import {IssuerDetailComponent} from './issuers/issuer-detail/issuer-detail.component'
 
 const routes: Routes = [
   {
@@ -27,9 +29,11 @@ const routes: Routes = [
           {path: 'portfolio', component: PortfolioComponent},
         ],
       },
+      {path: 'issuers', component: IssuerListComponent},
+      {path: 'issuers/new', component: IssuerNewComponent},
+      {path: 'issuers/:id', component: IssuerDetailComponent},
+      {path: 'issuers/:id/edit', component: IssuerEditComponent},
       {path: 'faq', component: FaqComponent},
-      {path: 'issuers', component: IssuersComponent},
-      {path: 'issuers/:id/edit', component: IssuersEditComponent},
       {path: 'dev_playground', component: DevPlaygroundComponent},
     ],
   },

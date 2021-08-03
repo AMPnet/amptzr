@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core'
-import {Observable} from 'rxjs'
+import {Observable, of} from 'rxjs'
 import {HttpClient} from '@angular/common/http'
 import {environment} from '../../../../environments/environment'
 import {IPFSAddResult, IPFSApi} from './ipfs.service.types'
@@ -35,12 +35,14 @@ export class IpfsService {
     return undefined
   }
 
-  get<T>(cid: string): Observable<T> {
-    return this.http.get<T>(this.getURL(cid))
+  get<T>(hash: string): Observable<T> {
+    const cid = this.toCID(hash)
+
+    return cid ? this.http.get<T>(this.getURL(cid.toString())) : of(<T>{})
   }
 
-  getURL(cid: string): string {
-    return `${environment.ipfs.gatewayURL}/ipfs/${cid}`
+  getURL(hash: string): string {
+    return `${environment.ipfs.gatewayURL}/ipfs/${hash}`
   }
 
   addFile(file: File): Observable<IPFSAddResult> {

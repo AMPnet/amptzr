@@ -18,9 +18,10 @@ export interface Window {
 interface PostBuildEnv {
   ARKANE_ID: string
   ARKANE_ENV: string
-  FIXED_CHAIN_ID: string
   IPFS_API_URL: string
   IPFS_GATEWAY_URL: string
   IPFS_PINATA_API_URL: string
   BACKEND_URL: string
+  FIXED_CHAIN_ID: string
+  FIXED_ISSUER: string
 }

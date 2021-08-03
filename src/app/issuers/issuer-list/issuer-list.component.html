@@ -5,18 +5,25 @@
         <div>
           Select issuer:
         </div>
-        <div class="flex flex-wrap space-x-2 mt-2">
+        <div class="grid lg:grid-cols-5 w-full gap-1 mt-2">
           <ng-container *ngFor="let issuer of issuers.value">
-            <div class="p-2 bg-blue-400 rounded-lg relative min-w-[12rem]">
+            <div class="p-2 bg-blue-400 rounded-lg relative">
               <span>{{ issuer.name }}</span>
               <img class="max-w-30 max-h-20" src="{{ issuer.logo | toImageURL }}" alt="Issuer logo">
-              <!-- Edit button -->
-              <div class="absolute p-2 top-0 right-0"
-                   *ngIf="address === issuer.owner">
+
+              <!-- action buttons -->
+              <div class="flex flex-col absolute p-2 top-0 right-0">
                 <button class="bg-gray-300 shadow-md rounded-md p-1"
-                        routerLink="{{ '0x753521D4B6eB57B4CF1EF3e56f9Ff49402f4aFcD' }}/edit">
-                  <!--                        TODO: set to issuer.address when ready -->
-                  <!--                        routerLink="{{ issuer.id }}/edit">-->
+                        routerLink="{{ issuer.address }}">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none" viewBox="0 0 24 24"
+                       stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                          d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                  </svg>
+                </button>
+                <button class="bg-gray-300 shadow-md rounded-md p-1 mt-1"
+                        *ngIf="address === issuer.owner"
+                        routerLink="{{ issuer.address }}/edit">
                   <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none" viewBox="0 0 24 24"
                        stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"

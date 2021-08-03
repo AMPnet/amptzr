@@ -43,11 +43,13 @@ import {ProfileAddMandatoryComponent} from './profile/profile-add-mandatory/prof
 import {ReactiveFormsModule} from '@angular/forms'
 import {CurrencyMaskDirective} from './shared/directives/currency-mask.directive'
 import {ValueCopyComponent} from './shared/components/value-copy/value-copy.component'
-import {IssuersComponent} from './issuers/issuers.component'
 import {ToImageUrlPipe} from './shared/pipes/to-image-url.pipe'
 import {FileInputAccessorDirective} from './shared/directives/file-input-accessor.directive'
-import {IssuersEditComponent} from './issuers/issuers-edit/issuers-edit.component'
+import {IssuerEditComponent} from './issuers/issuer-edit/issuer-edit.component'
 import {SafePipe} from './shared/pipes/safe.pipe'
+import {IssuerNewComponent} from './issuers/issuer-new/issuer-new.component'
+import {IssuerListComponent} from './issuers/issuer-list/issuer-list.component'
+import {IssuerDetailComponent} from './issuers/issuer-detail/issuer-detail.component'
 
 @NgModule({
   declarations: [
@@ -82,9 +84,12 @@ import {SafePipe} from './shared/pipes/safe.pipe'
     ProfileAddMandatoryComponent,
     CurrencyMaskDirective,
     ValueCopyComponent,
-    IssuersComponent,
     FileInputAccessorDirective,
-    IssuersEditComponent,
+    IssuerEditComponent,
+    IssuerDetailComponent,
+    IssuerListComponent,
+    IssuerNewComponent,
+    IssuerListComponent,
   ],
   imports: [
     BrowserModule,

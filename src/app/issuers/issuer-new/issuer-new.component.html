@@ -1,0 +1,24 @@
+<div class="px-4 py-2 max-w-screen-lg mx-auto">
+  <form [formGroup]="createForm">
+    <label class="block mt-2">
+      <span>Name</span>
+      <input type="text" formControlName="name">
+    </label>
+
+    <div class="mt-2">
+      <label for="logo">Logo</label>
+      <img class="p-4 max-w-xs max-h-xs"
+           *ngIf="createForm.get('logo')?.value?.[0]"
+           [src]="(createForm.get('logo')?.value?.[0] | safe:'fileUrl') | toImageURL"
+           alt="Issuer Logo">
+      <input id="logo" type="file" formControlName="logo" multiple>
+    </div>
+
+    <button app-action-button
+            class="bg-blue-500 disabled:bg-gray-400 text-white p-2 rounded-md mt-2"
+            text="Create"
+            [disabled]="!createForm.valid"
+            [onClick]="create.bind(this)">
+    </button>
+  </form>
+</div>

@@ -1,7 +1,7 @@
 import {ChangeDetectionStrategy, Component} from '@angular/core'
 import {from, Observable} from 'rxjs'
 import {withStatus, WithStatus} from '../../shared/utils/observables'
-import {IssuerService, IssuerState, IssuerWithInfo} from '../../shared/services/blockchain/issuer.service'
+import {IssuerService, IssuerWithInfo} from '../../shared/services/blockchain/issuer.service'
 import {ActivatedRoute} from '@angular/router'
 import {SessionQuery} from '../../session/state/session.query'
 import {switchMap, tap} from 'rxjs/operators'
@@ -10,12 +10,12 @@ import {IpfsService} from '../../shared/services/ipfs/ipfs.service'
 import {SignerService} from '../../shared/services/signer.service'
 
 @Component({
-  selector: 'app-issuers-edit',
-  templateUrl: './issuers-edit.component.html',
-  styleUrls: ['./issuers-edit.component.css'],
+  selector: 'app-issuer-edit',
+  templateUrl: './issuer-edit.component.html',
+  styleUrls: ['./issuer-edit.component.css'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class IssuersEditComponent {
+export class IssuerEditComponent {
   issuerAddress = this.route.snapshot.params.id
   issuer$: Observable<WithStatus<IssuerWithInfo>>
   updateForm: FormGroup
@@ -47,11 +47,9 @@ export class IssuersEditComponent {
       return this.issuerService.uploadInfo(
         this.updateForm.get('name')!.value,
         this.updateForm.get('logo')!.value?.[0],
-        issuer
+        issuer,
       ).pipe(
-        switchMap(uploadRes => this.signerService.ensureAuth.pipe(
-          switchMap(signer => this.issuerService.updateInfo(this.issuerAddress, uploadRes.path, signer)),
-        )),
+        switchMap(uploadRes => this.issuerService.updateInfo(this.issuerAddress, uploadRes.path))
       )
     }
   }
