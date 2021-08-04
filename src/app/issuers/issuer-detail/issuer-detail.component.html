@@ -3,12 +3,12 @@
     <ng-container *ngIf="issuerRes.value as issuer">
       <ng-container *ngIf="(address$ | async) as address">
         <div>
-          Name: {{ issuer.name }}
+          Name: {{ issuer.name ?? 'Unknown' }}
         </div>
 
         <div>
           Logo:
-          <img class="p-4 max-w-xs max-h-xs"
+          <img class="p-4 max-w-xs max-h-xs" *ngIf="issuer.logo"
                [src]="issuer.logo | toImageURL" alt="Issuer Logo">
         </div>
 
