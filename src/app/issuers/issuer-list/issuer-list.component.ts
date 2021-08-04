@@ -1,4 +1,4 @@
-import {Component, OnInit, ChangeDetectionStrategy, ɵmarkDirty} from '@angular/core'
+import {ChangeDetectionStrategy, Component, ɵmarkDirty} from '@angular/core'
 import {Observable} from 'rxjs'
 import {WithStatus} from '../../shared/utils/observables'
 import {IssuerService, IssuerWithInfo} from '../../shared/services/blockchain/issuer.service'
@@ -9,7 +9,7 @@ import {SessionQuery} from '../../session/state/session.query'
   selector: 'app-issuer-list',
   templateUrl: './issuer-list.component.html',
   styleUrls: ['./issuer-list.component.css'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class IssuerListComponent {
   issuers$: Observable<WithStatus<IssuerWithInfo[]>> = this.issuerService.issuers$

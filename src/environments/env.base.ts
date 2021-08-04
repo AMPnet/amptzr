@@ -11,7 +11,7 @@ export const environment = {
   },
   ipfs: {
     apiURL: postBuildEnv?.IPFS_API_URL || 'https://ipfs.infura.io:5001',
-    gatewayURL: postBuildEnv?.IPFS_API_URL || 'https://dweb.link',
+    gatewayURL: postBuildEnv?.IPFS_API_URL || 'https://ipfs.io',
     pinataApiURL: postBuildEnv?.IPFS_PINATA_API_URL || 'https://api.pinata.cloud',
   },
   backendURL: postBuildEnv?.BACKEND_URL || 'https://eth-staging.ampnet.io',
