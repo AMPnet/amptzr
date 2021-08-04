@@ -21,7 +21,7 @@ import { TypedEventFilter, TypedEvent, TypedListener } from "./commons";
 
 interface ICfManagerSoftcapFactoryInterface extends ethers.utils.Interface {
   functions: {
-    "create(address,address,uint256,uint256,bool,string)": FunctionFragment;
+    "create(address,address,uint256,uint256,uint256,uint256,bool,string)": FunctionFragment;
     "getInstances()": FunctionFragment;
     "getInstancesForAsset(address)": FunctionFragment;
     "getInstancesForIssuer(address)": FunctionFragment;
@@ -29,7 +29,16 @@ interface ICfManagerSoftcapFactoryInterface extends ethers.utils.Interface {
 
   encodeFunctionData(
     functionFragment: "create",
-    values: [string, string, BigNumberish, BigNumberish, boolean, string]
+    values: [
+      string,
+      string,
+      BigNumberish,
+      BigNumberish,
+      BigNumberish,
+      BigNumberish,
+      boolean,
+      string
+    ]
   ): string;
   encodeFunctionData(
     functionFragment: "getInstances",
@@ -110,6 +119,8 @@ export class ICfManagerSoftcapFactory extends BaseContract {
       assetAddress: string,
       initialPricePerToken: BigNumberish,
       softCap: BigNumberish,
+      minInvestment: BigNumberish,
+      maxInvestment: BigNumberish,
       whitelistRequired: boolean,
       info: string,
       overrides?: Overrides & { from?: string | Promise<string> }
@@ -133,6 +144,8 @@ export class ICfManagerSoftcapFactory extends BaseContract {
     assetAddress: string,
     initialPricePerToken: BigNumberish,
     softCap: BigNumberish,
+    minInvestment: BigNumberish,
+    maxInvestment: BigNumberish,
     whitelistRequired: boolean,
     info: string,
     overrides?: Overrides & { from?: string | Promise<string> }
@@ -156,6 +169,8 @@ export class ICfManagerSoftcapFactory extends BaseContract {
       assetAddress: string,
       initialPricePerToken: BigNumberish,
       softCap: BigNumberish,
+      minInvestment: BigNumberish,
+      maxInvestment: BigNumberish,
       whitelistRequired: boolean,
       info: string,
       overrides?: CallOverrides
@@ -182,6 +197,8 @@ export class ICfManagerSoftcapFactory extends BaseContract {
       assetAddress: string,
       initialPricePerToken: BigNumberish,
       softCap: BigNumberish,
+      minInvestment: BigNumberish,
+      maxInvestment: BigNumberish,
       whitelistRequired: boolean,
       info: string,
       overrides?: Overrides & { from?: string | Promise<string> }
@@ -206,6 +223,8 @@ export class ICfManagerSoftcapFactory extends BaseContract {
       assetAddress: string,
       initialPricePerToken: BigNumberish,
       softCap: BigNumberish,
+      minInvestment: BigNumberish,
+      maxInvestment: BigNumberish,
       whitelistRequired: boolean,
       info: string,
       overrides?: Overrides & { from?: string | Promise<string> }

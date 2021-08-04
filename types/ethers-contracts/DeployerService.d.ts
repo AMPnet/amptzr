@@ -21,18 +21,33 @@ import { TypedEventFilter, TypedEvent, TypedListener } from "./commons";
 
 interface DeployerServiceInterface extends ethers.utils.Interface {
   functions: {
-    "deployAssetCampaign()": FunctionFragment;
-    "deployCampaign()": FunctionFragment;
+    "deployAssetCampaign(tuple)": FunctionFragment;
     "deployIssuerAssetCampaign(tuple)": FunctionFragment;
   };
 
   encodeFunctionData(
     functionFragment: "deployAssetCampaign",
-    values?: undefined
-  ): string;
-  encodeFunctionData(
-    functionFragment: "deployCampaign",
-    values?: undefined
+    values: [
+      {
+        assetFactory: string;
+        cfManagerSoftcapFactory: string;
+        issuer: string;
+        assetOwner: string;
+        assetInitialTokenSupply: BigNumberish;
+        assetWhitelistRequired: boolean;
+        assetName: string;
+        assetSymbol: string;
+        assetInfo: string;
+        cfManagerOwner: string;
+        cfManagerPricePerToken: BigNumberish;
+        cfManagerSoftcap: BigNumberish;
+        cfManagerSoftcapMinInvestment: BigNumberish;
+        cfManagerSoftcapMaxInvestment: BigNumberish;
+        cfManagerTokensToSellAmount: BigNumberish;
+        cfManagerWhitelistRequired: boolean;
+        cfManagerInfo: string;
+      }
+    ]
   ): string;
   encodeFunctionData(
     functionFragment: "deployIssuerAssetCampaign",
@@ -54,6 +69,8 @@ interface DeployerServiceInterface extends ethers.utils.Interface {
         cfManagerOwner: string;
         cfManagerPricePerToken: BigNumberish;
         cfManagerSoftcap: BigNumberish;
+        cfManagerSoftcapMinInvestment: BigNumberish;
+        cfManagerSoftcapMaxInvestment: BigNumberish;
         cfManagerTokensToSellAmount: BigNumberish;
         cfManagerWhitelistRequired: boolean;
         cfManagerInfo: string;
@@ -66,15 +83,17 @@ interface DeployerServiceInterface extends ethers.utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "deployCampaign",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
     functionFragment: "deployIssuerAssetCampaign",
     data: BytesLike
   ): Result;
 
-  events: {};
+  events: {
+    "DeployAssetCampaign(address,address,address,uint256)": EventFragment;
+    "DeployIssuerAssetCampaign(address,address,address,address,uint256)": EventFragment;
+  };
+
+  getEvent(nameOrSignatureOrTopic: "DeployAssetCampaign"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "DeployIssuerAssetCampaign"): EventFragment;
 }
 
 export class DeployerService extends BaseContract {
@@ -122,10 +141,25 @@ export class DeployerService extends BaseContract {
 
   functions: {
     deployAssetCampaign(
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
-
-    deployCampaign(
+      request: {
+        assetFactory: string;
+        cfManagerSoftcapFactory: string;
+        issuer: string;
+        assetOwner: string;
+        assetInitialTokenSupply: BigNumberish;
+        assetWhitelistRequired: boolean;
+        assetName: string;
+        assetSymbol: string;
+        assetInfo: string;
+        cfManagerOwner: string;
+        cfManagerPricePerToken: BigNumberish;
+        cfManagerSoftcap: BigNumberish;
+        cfManagerSoftcapMinInvestment: BigNumberish;
+        cfManagerSoftcapMaxInvestment: BigNumberish;
+        cfManagerTokensToSellAmount: BigNumberish;
+        cfManagerWhitelistRequired: boolean;
+        cfManagerInfo: string;
+      },
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
@@ -147,6 +181,8 @@ export class DeployerService extends BaseContract {
         cfManagerOwner: string;
         cfManagerPricePerToken: BigNumberish;
         cfManagerSoftcap: BigNumberish;
+        cfManagerSoftcapMinInvestment: BigNumberish;
+        cfManagerSoftcapMaxInvestment: BigNumberish;
         cfManagerTokensToSellAmount: BigNumberish;
         cfManagerWhitelistRequired: boolean;
         cfManagerInfo: string;
@@ -156,10 +192,25 @@ export class DeployerService extends BaseContract {
   };
 
   deployAssetCampaign(
-    overrides?: Overrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
-
-  deployCampaign(
+    request: {
+      assetFactory: string;
+      cfManagerSoftcapFactory: string;
+      issuer: string;
+      assetOwner: string;
+      assetInitialTokenSupply: BigNumberish;
+      assetWhitelistRequired: boolean;
+      assetName: string;
+      assetSymbol: string;
+      assetInfo: string;
+      cfManagerOwner: string;
+      cfManagerPricePerToken: BigNumberish;
+      cfManagerSoftcap: BigNumberish;
+      cfManagerSoftcapMinInvestment: BigNumberish;
+      cfManagerSoftcapMaxInvestment: BigNumberish;
+      cfManagerTokensToSellAmount: BigNumberish;
+      cfManagerWhitelistRequired: boolean;
+      cfManagerInfo: string;
+    },
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
@@ -181,6 +232,8 @@ export class DeployerService extends BaseContract {
       cfManagerOwner: string;
       cfManagerPricePerToken: BigNumberish;
       cfManagerSoftcap: BigNumberish;
+      cfManagerSoftcapMinInvestment: BigNumberish;
+      cfManagerSoftcapMaxInvestment: BigNumberish;
       cfManagerTokensToSellAmount: BigNumberish;
       cfManagerWhitelistRequired: boolean;
       cfManagerInfo: string;
@@ -189,9 +242,28 @@ export class DeployerService extends BaseContract {
   ): Promise<ContractTransaction>;
 
   callStatic: {
-    deployAssetCampaign(overrides?: CallOverrides): Promise<void>;
-
-    deployCampaign(overrides?: CallOverrides): Promise<void>;
+    deployAssetCampaign(
+      request: {
+        assetFactory: string;
+        cfManagerSoftcapFactory: string;
+        issuer: string;
+        assetOwner: string;
+        assetInitialTokenSupply: BigNumberish;
+        assetWhitelistRequired: boolean;
+        assetName: string;
+        assetSymbol: string;
+        assetInfo: string;
+        cfManagerOwner: string;
+        cfManagerPricePerToken: BigNumberish;
+        cfManagerSoftcap: BigNumberish;
+        cfManagerSoftcapMinInvestment: BigNumberish;
+        cfManagerSoftcapMaxInvestment: BigNumberish;
+        cfManagerTokensToSellAmount: BigNumberish;
+        cfManagerWhitelistRequired: boolean;
+        cfManagerInfo: string;
+      },
+      overrides?: CallOverrides
+    ): Promise<void>;
 
     deployIssuerAssetCampaign(
       request: {
@@ -211,6 +283,8 @@ export class DeployerService extends BaseContract {
         cfManagerOwner: string;
         cfManagerPricePerToken: BigNumberish;
         cfManagerSoftcap: BigNumberish;
+        cfManagerSoftcapMinInvestment: BigNumberish;
+        cfManagerSoftcapMaxInvestment: BigNumberish;
         cfManagerTokensToSellAmount: BigNumberish;
         cfManagerWhitelistRequired: boolean;
         cfManagerInfo: string;
@@ -219,14 +293,56 @@ export class DeployerService extends BaseContract {
     ): Promise<void>;
   };
 
-  filters: {};
+  filters: {
+    DeployAssetCampaign(
+      caller?: null,
+      asset?: null,
+      campaign?: null,
+      timestamp?: null
+    ): TypedEventFilter<
+      [string, string, string, BigNumber],
+      { caller: string; asset: string; campaign: string; timestamp: BigNumber }
+    >;
+
+    DeployIssuerAssetCampaign(
+      caller?: null,
+      issuer?: null,
+      asset?: null,
+      campaign?: null,
+      timestamp?: null
+    ): TypedEventFilter<
+      [string, string, string, string, BigNumber],
+      {
+        caller: string;
+        issuer: string;
+        asset: string;
+        campaign: string;
+        timestamp: BigNumber;
+      }
+    >;
+  };
 
   estimateGas: {
     deployAssetCampaign(
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<BigNumber>;
-
-    deployCampaign(
+      request: {
+        assetFactory: string;
+        cfManagerSoftcapFactory: string;
+        issuer: string;
+        assetOwner: string;
+        assetInitialTokenSupply: BigNumberish;
+        assetWhitelistRequired: boolean;
+        assetName: string;
+        assetSymbol: string;
+        assetInfo: string;
+        cfManagerOwner: string;
+        cfManagerPricePerToken: BigNumberish;
+        cfManagerSoftcap: BigNumberish;
+        cfManagerSoftcapMinInvestment: BigNumberish;
+        cfManagerSoftcapMaxInvestment: BigNumberish;
+        cfManagerTokensToSellAmount: BigNumberish;
+        cfManagerWhitelistRequired: boolean;
+        cfManagerInfo: string;
+      },
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
@@ -248,6 +364,8 @@ export class DeployerService extends BaseContract {
         cfManagerOwner: string;
         cfManagerPricePerToken: BigNumberish;
         cfManagerSoftcap: BigNumberish;
+        cfManagerSoftcapMinInvestment: BigNumberish;
+        cfManagerSoftcapMaxInvestment: BigNumberish;
         cfManagerTokensToSellAmount: BigNumberish;
         cfManagerWhitelistRequired: boolean;
         cfManagerInfo: string;
@@ -258,10 +376,25 @@ export class DeployerService extends BaseContract {
 
   populateTransaction: {
     deployAssetCampaign(
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<PopulatedTransaction>;
-
-    deployCampaign(
+      request: {
+        assetFactory: string;
+        cfManagerSoftcapFactory: string;
+        issuer: string;
+        assetOwner: string;
+        assetInitialTokenSupply: BigNumberish;
+        assetWhitelistRequired: boolean;
+        assetName: string;
+        assetSymbol: string;
+        assetInfo: string;
+        cfManagerOwner: string;
+        cfManagerPricePerToken: BigNumberish;
+        cfManagerSoftcap: BigNumberish;
+        cfManagerSoftcapMinInvestment: BigNumberish;
+        cfManagerSoftcapMaxInvestment: BigNumberish;
+        cfManagerTokensToSellAmount: BigNumberish;
+        cfManagerWhitelistRequired: boolean;
+        cfManagerInfo: string;
+      },
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
@@ -283,6 +416,8 @@ export class DeployerService extends BaseContract {
         cfManagerOwner: string;
         cfManagerPricePerToken: BigNumberish;
         cfManagerSoftcap: BigNumberish;
+        cfManagerSoftcapMinInvestment: BigNumberish;
+        cfManagerSoftcapMaxInvestment: BigNumberish;
         cfManagerTokensToSellAmount: BigNumberish;
         cfManagerWhitelistRequired: boolean;
         cfManagerInfo: string;

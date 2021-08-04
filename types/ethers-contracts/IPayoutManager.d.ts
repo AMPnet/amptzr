@@ -133,8 +133,10 @@ export class IPayoutManager extends BaseContract {
       overrides?: CallOverrides
     ): Promise<
       [
-        [BigNumber, string, string, string] & {
+        [BigNumber, string, string, string, string, string] & {
           id: BigNumber;
+          contractAddress: string;
+          createdBy: string;
           owner: string;
           asset: string;
           info: string;
@@ -180,8 +182,10 @@ export class IPayoutManager extends BaseContract {
   getState(
     overrides?: CallOverrides
   ): Promise<
-    [BigNumber, string, string, string] & {
+    [BigNumber, string, string, string, string, string] & {
       id: BigNumber;
+      contractAddress: string;
+      createdBy: string;
       owner: string;
       asset: string;
       info: string;
@@ -228,8 +232,10 @@ export class IPayoutManager extends BaseContract {
     getState(
       overrides?: CallOverrides
     ): Promise<
-      [BigNumber, string, string, string] & {
+      [BigNumber, string, string, string, string, string] & {
         id: BigNumber;
+        contractAddress: string;
+        createdBy: string;
         owner: string;
         asset: string;
         info: string;

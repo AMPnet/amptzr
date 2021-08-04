@@ -22,7 +22,6 @@ import { TypedEventFilter, TypedEvent, TypedListener } from "./commons";
 interface IssuerInterface extends ethers.utils.Interface {
   functions: {
     "approveWallet(address)": FunctionFragment;
-    "approvedWallets(uint256)": FunctionFragment;
     "approvedWalletsMap(address)": FunctionFragment;
     "changeOwnership(address)": FunctionFragment;
     "changeWalletApprover(address)": FunctionFragment;
@@ -37,10 +36,6 @@ interface IssuerInterface extends ethers.utils.Interface {
   encodeFunctionData(
     functionFragment: "approveWallet",
     values: [string]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "approvedWallets",
-    values: [BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: "approvedWalletsMap",
@@ -78,10 +73,6 @@ interface IssuerInterface extends ethers.utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "approvedWallets",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
     functionFragment: "approvedWalletsMap",
     data: BytesLike
   ): Result;
@@ -114,7 +105,7 @@ interface IssuerInterface extends ethers.utils.Interface {
 
   events: {
     "ChangeOwnership(address,address,uint256)": EventFragment;
-    "ChangeWalletApprover(address,address,uint256)": EventFragment;
+    "ChangeWalletApprover(address,address,address,uint256)": EventFragment;
     "SetInfo(string,address,uint256)": EventFragment;
     "WalletWhitelist(address,address,bool,uint256)": EventFragment;
   };
@@ -174,11 +165,6 @@ export class Issuer extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
-    approvedWallets(
-      arg0: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<[string, boolean] & { wallet: string; whitelisted: boolean }>;
-
     approvedWalletsMap(
       arg0: string,
       overrides?: CallOverrides
@@ -204,8 +190,10 @@ export class Issuer extends BaseContract {
       overrides?: CallOverrides
     ): Promise<
       [
-        [BigNumber, string, string, string, string] & {
+        [BigNumber, string, string, string, string, string, string] & {
           id: BigNumber;
+          contractAddress: string;
+          createdBy: string;
           owner: string;
           stablecoin: string;
           walletApprover: string;
@@ -241,11 +229,6 @@ export class Issuer extends BaseContract {
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
-  approvedWallets(
-    arg0: BigNumberish,
-    overrides?: CallOverrides
-  ): Promise<[string, boolean] & { wallet: string; whitelisted: boolean }>;
-
   approvedWalletsMap(
     arg0: string,
     overrides?: CallOverrides
@@ -268,8 +251,10 @@ export class Issuer extends BaseContract {
   getState(
     overrides?: CallOverrides
   ): Promise<
-    [BigNumber, string, string, string, string] & {
+    [BigNumber, string, string, string, string, string, string] & {
       id: BigNumber;
+      contractAddress: string;
+      createdBy: string;
       owner: string;
       stablecoin: string;
       walletApprover: string;
@@ -296,11 +281,6 @@ export class Issuer extends BaseContract {
   callStatic: {
     approveWallet(wallet: string, overrides?: CallOverrides): Promise<void>;
 
-    approvedWallets(
-      arg0: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<[string, boolean] & { wallet: string; whitelisted: boolean }>;
-
     approvedWalletsMap(
       arg0: string,
       overrides?: CallOverrides
@@ -322,8 +302,10 @@ export class Issuer extends BaseContract {
     getState(
       overrides?: CallOverrides
     ): Promise<
-      [BigNumber, string, string, string, string] & {
+      [BigNumber, string, string, string, string, string, string] & {
         id: BigNumber;
+        contractAddress: string;
+        createdBy: string;
         owner: string;
         stablecoin: string;
         walletApprover: string;
@@ -358,12 +340,14 @@ export class Issuer extends BaseContract {
     >;
 
     ChangeWalletApprover(
+      caller?: null,
       oldWalletApprover?: null,
       newWalletApprover?: null,
       timestamp?: null
     ): TypedEventFilter<
-      [string, string, BigNumber],
+      [string, string, string, BigNumber],
       {
+        caller: string;
         oldWalletApprover: string;
         newWalletApprover: string;
         timestamp: BigNumber;
@@ -380,7 +364,7 @@ export class Issuer extends BaseContract {
     >;
 
     WalletWhitelist(
-      approver?: null,
+      approver?: string | null,
       wallet?: null,
       whitelisted?: null,
       timestamp?: null
@@ -399,11 +383,6 @@ export class Issuer extends BaseContract {
     approveWallet(
       wallet: string,
       overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<BigNumber>;
-
-    approvedWallets(
-      arg0: BigNumberish,
-      overrides?: CallOverrides
     ): Promise<BigNumber>;
 
     approvedWalletsMap(
@@ -447,11 +426,6 @@ export class Issuer extends BaseContract {
     approveWallet(
       wallet: string,
       overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<PopulatedTransaction>;
-
-    approvedWallets(
-      arg0: BigNumberish,
-      overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
     approvedWalletsMap(

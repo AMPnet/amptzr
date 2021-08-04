@@ -24,6 +24,25 @@ const _abi = [
     type: "function",
   },
   {
+    inputs: [
+      {
+        internalType: "address",
+        name: "investor",
+        type: "address",
+      },
+    ],
+    name: "claims",
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
     inputs: [],
     name: "getInfoHistory",
     outputs: [
@@ -61,12 +80,27 @@ const _abi = [
           },
           {
             internalType: "address",
+            name: "contractAddress",
+            type: "address",
+          },
+          {
+            internalType: "address",
+            name: "createdBy",
+            type: "address",
+          },
+          {
+            internalType: "address",
             name: "owner",
             type: "address",
           },
           {
             internalType: "address",
             name: "asset",
+            type: "address",
+          },
+          {
+            internalType: "address",
+            name: "issuer",
             type: "address",
           },
           {
@@ -77,6 +111,16 @@ const _abi = [
           {
             internalType: "uint256",
             name: "softCap",
+            type: "uint256",
+          },
+          {
+            internalType: "uint256",
+            name: "minInvestment",
+            type: "uint256",
+          },
+          {
+            internalType: "uint256",
+            name: "maxInvestment",
             type: "uint256",
           },
           {
@@ -123,6 +167,25 @@ const _abi = [
         internalType: "struct Structs.CfManagerSoftcapState",
         name: "",
         type: "tuple",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "investor",
+        type: "address",
+      },
+    ],
+    name: "investments",
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
       },
     ],
     stateMutability: "view",

@@ -20,6 +20,8 @@ export type { PayoutManager } from "./PayoutManager";
 export type { PayoutManagerFactory } from "./PayoutManagerFactory";
 export type { DeployerService } from "./DeployerService";
 export type { WalletApproverService } from "./WalletApproverService";
+export type { IMirroredToken } from "./IMirroredToken";
+export type { MirroredToken } from "./MirroredToken";
 export type { USDC } from "./USDC";
 
 export { Asset__factory } from "./factories/Asset__factory";
@@ -41,4 +43,6 @@ export { PayoutManager__factory } from "./factories/PayoutManager__factory";
 export { PayoutManagerFactory__factory } from "./factories/PayoutManagerFactory__factory";
 export { DeployerService__factory } from "./factories/DeployerService__factory";
 export { WalletApproverService__factory } from "./factories/WalletApproverService__factory";
+export { IMirroredToken__factory } from "./factories/IMirroredToken__factory";
+export { MirroredToken__factory } from "./factories/MirroredToken__factory";
 export { USDC__factory } from "./factories/USDC__factory";

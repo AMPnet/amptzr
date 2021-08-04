@@ -14,6 +14,10 @@ import {IssuerEditComponent} from './issuers/issuer-edit/issuer-edit.component'
 import {IssuerNewComponent} from './issuers/issuer-new/issuer-new.component'
 import {IssuerListComponent} from './issuers/issuer-list/issuer-list.component'
 import {IssuerDetailComponent} from './issuers/issuer-detail/issuer-detail.component'
+import {AssetNewComponent} from './assets/asset-new/asset-new.component'
+import {AssetDetailComponent} from './assets/asset-detail/asset-detail.component'
+import {AssetEditComponent} from './assets/asset-edit/asset-edit.component'
+import {AssetCampaignNewComponent} from './assets/asset-campaign-new/asset-campaign-new.component'
 
 const routes: Routes = [
   {
@@ -33,6 +37,10 @@ const routes: Routes = [
       {path: 'issuers/new', component: IssuerNewComponent},
       {path: 'issuers/:id', component: IssuerDetailComponent},
       {path: 'issuers/:id/edit', component: IssuerEditComponent},
+      {path: 'issuers/:id/assets/new', component: AssetNewComponent},
+      {path: 'issuers/:id/assets/new-with-campaign', component: AssetCampaignNewComponent},
+      {path: 'assets/:id', component: AssetDetailComponent},
+      {path: 'assets/:id/edit', component: AssetEditComponent},
       {path: 'faq', component: FaqComponent},
       {path: 'dev_playground', component: DevPlaygroundComponent},
     ],

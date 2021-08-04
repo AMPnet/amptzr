@@ -50,6 +50,10 @@ import {SafePipe} from './shared/pipes/safe.pipe'
 import {IssuerNewComponent} from './issuers/issuer-new/issuer-new.component'
 import {IssuerListComponent} from './issuers/issuer-list/issuer-list.component'
 import {IssuerDetailComponent} from './issuers/issuer-detail/issuer-detail.component'
+import { AssetNewComponent } from './assets/asset-new/asset-new.component'
+import { AssetEditComponent } from './assets/asset-edit/asset-edit.component'
+import { AssetDetailComponent } from './assets/asset-detail/asset-detail.component'
+import { AssetCampaignNewComponent } from './assets/asset-campaign-new/asset-campaign-new.component'
 
 @NgModule({
   declarations: [
@@ -90,6 +94,10 @@ import {IssuerDetailComponent} from './issuers/issuer-detail/issuer-detail.compo
     IssuerListComponent,
     IssuerNewComponent,
     IssuerListComponent,
+    AssetNewComponent,
+    AssetEditComponent,
+    AssetDetailComponent,
+    AssetCampaignNewComponent,
   ],
   imports: [
     BrowserModule,

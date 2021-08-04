@@ -25,10 +25,12 @@ interface CfManagerSoftcapInterface extends ethers.utils.Interface {
     "cancelInvestment()": FunctionFragment;
     "changeOwnership(address)": FunctionFragment;
     "claim(address)": FunctionFragment;
+    "claims(address)": FunctionFragment;
     "finalize()": FunctionFragment;
     "getInfoHistory()": FunctionFragment;
     "getState()": FunctionFragment;
     "invest(uint256)": FunctionFragment;
+    "investments(address)": FunctionFragment;
     "setInfo(string)": FunctionFragment;
   };
 
@@ -45,6 +47,7 @@ interface CfManagerSoftcapInterface extends ethers.utils.Interface {
     values: [string]
   ): string;
   encodeFunctionData(functionFragment: "claim", values: [string]): string;
+  encodeFunctionData(functionFragment: "claims", values: [string]): string;
   encodeFunctionData(functionFragment: "finalize", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "getInfoHistory",
@@ -55,6 +58,7 @@ interface CfManagerSoftcapInterface extends ethers.utils.Interface {
     functionFragment: "invest",
     values: [BigNumberish]
   ): string;
+  encodeFunctionData(functionFragment: "investments", values: [string]): string;
   encodeFunctionData(functionFragment: "setInfo", values: [string]): string;
 
   decodeFunctionResult(
@@ -70,6 +74,7 @@ interface CfManagerSoftcapInterface extends ethers.utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "claim", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "claims", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "finalize", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "getInfoHistory",
@@ -77,6 +82,10 @@ interface CfManagerSoftcapInterface extends ethers.utils.Interface {
   ): Result;
   decodeFunctionResult(functionFragment: "getState", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "invest", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "investments",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "setInfo", data: BytesLike): Result;
 
   events: {
@@ -160,6 +169,8 @@ export class CfManagerSoftcap extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
+    claims(arg0: string, overrides?: CallOverrides): Promise<[BigNumber]>;
+
     finalize(
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
@@ -178,6 +189,11 @@ export class CfManagerSoftcap extends BaseContract {
           BigNumber,
           string,
           string,
+          string,
+          string,
+          string,
+          BigNumber,
+          BigNumber,
           BigNumber,
           BigNumber,
           boolean,
@@ -190,10 +206,15 @@ export class CfManagerSoftcap extends BaseContract {
           string
         ] & {
           id: BigNumber;
+          contractAddress: string;
+          createdBy: string;
           owner: string;
           asset: string;
+          issuer: string;
           tokenPrice: BigNumber;
           softCap: BigNumber;
+          minInvestment: BigNumber;
+          maxInvestment: BigNumber;
           whitelistRequired: boolean;
           finalized: boolean;
           cancelled: boolean;
@@ -210,6 +231,8 @@ export class CfManagerSoftcap extends BaseContract {
       amount: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
+
+    investments(arg0: string, overrides?: CallOverrides): Promise<[BigNumber]>;
 
     setInfo(
       info: string,
@@ -235,6 +258,8 @@ export class CfManagerSoftcap extends BaseContract {
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
+  claims(arg0: string, overrides?: CallOverrides): Promise<BigNumber>;
+
   finalize(
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
@@ -250,6 +275,11 @@ export class CfManagerSoftcap extends BaseContract {
       BigNumber,
       string,
       string,
+      string,
+      string,
+      string,
+      BigNumber,
+      BigNumber,
       BigNumber,
       BigNumber,
       boolean,
@@ -262,10 +292,15 @@ export class CfManagerSoftcap extends BaseContract {
       string
     ] & {
       id: BigNumber;
+      contractAddress: string;
+      createdBy: string;
       owner: string;
       asset: string;
+      issuer: string;
       tokenPrice: BigNumber;
       softCap: BigNumber;
+      minInvestment: BigNumber;
+      maxInvestment: BigNumber;
       whitelistRequired: boolean;
       finalized: boolean;
       cancelled: boolean;
@@ -282,6 +317,8 @@ export class CfManagerSoftcap extends BaseContract {
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
+  investments(arg0: string, overrides?: CallOverrides): Promise<BigNumber>;
+
   setInfo(
     info: string,
     overrides?: Overrides & { from?: string | Promise<string> }
@@ -295,6 +332,8 @@ export class CfManagerSoftcap extends BaseContract {
     changeOwnership(newOwner: string, overrides?: CallOverrides): Promise<void>;
 
     claim(investor: string, overrides?: CallOverrides): Promise<void>;
+
+    claims(arg0: string, overrides?: CallOverrides): Promise<BigNumber>;
 
     finalize(overrides?: CallOverrides): Promise<void>;
 
@@ -311,6 +350,11 @@ export class CfManagerSoftcap extends BaseContract {
         BigNumber,
         string,
         string,
+        string,
+        string,
+        string,
+        BigNumber,
+        BigNumber,
         BigNumber,
         BigNumber,
         boolean,
@@ -323,10 +367,15 @@ export class CfManagerSoftcap extends BaseContract {
         string
       ] & {
         id: BigNumber;
+        contractAddress: string;
+        createdBy: string;
         owner: string;
         asset: string;
+        issuer: string;
         tokenPrice: BigNumber;
         softCap: BigNumber;
+        minInvestment: BigNumber;
+        maxInvestment: BigNumber;
         whitelistRequired: boolean;
         finalized: boolean;
         cancelled: boolean;
@@ -340,12 +389,14 @@ export class CfManagerSoftcap extends BaseContract {
 
     invest(amount: BigNumberish, overrides?: CallOverrides): Promise<void>;
 
+    investments(arg0: string, overrides?: CallOverrides): Promise<BigNumber>;
+
     setInfo(info: string, overrides?: CallOverrides): Promise<void>;
   };
 
   filters: {
     CancelCampaign(
-      owner?: null,
+      owner?: string | null,
       tokensReturned?: null,
       timestamp?: null
     ): TypedEventFilter<
@@ -393,7 +444,7 @@ export class CfManagerSoftcap extends BaseContract {
     >;
 
     Finalize(
-      owner?: null,
+      owner?: string | null,
       totalFundsRaised?: null,
       totalTokensSold?: null,
       timestamp?: null
@@ -451,6 +502,8 @@ export class CfManagerSoftcap extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
+    claims(arg0: string, overrides?: CallOverrides): Promise<BigNumber>;
+
     finalize(
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
@@ -463,6 +516,8 @@ export class CfManagerSoftcap extends BaseContract {
       amount: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
+
+    investments(arg0: string, overrides?: CallOverrides): Promise<BigNumber>;
 
     setInfo(
       info: string,
@@ -489,6 +544,11 @@ export class CfManagerSoftcap extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
+    claims(
+      arg0: string,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
     finalize(
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
@@ -500,6 +560,11 @@ export class CfManagerSoftcap extends BaseContract {
     invest(
       amount: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    investments(
+      arg0: string,
+      overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
     setInfo(

@@ -24,12 +24,14 @@ interface PayoutManagerInterface extends ethers.utils.Interface {
     "createPayout(string,uint256)": FunctionFragment;
     "getInfoHistory()": FunctionFragment;
     "getState()": FunctionFragment;
+    "infoHistory(uint256)": FunctionFragment;
     "payouts(uint256)": FunctionFragment;
     "release(address,uint256)": FunctionFragment;
     "released(address,uint256)": FunctionFragment;
     "setInfo(string)": FunctionFragment;
     "shares(address,uint256)": FunctionFragment;
     "snapshotToPayout(uint256)": FunctionFragment;
+    "state()": FunctionFragment;
     "totalReleased(uint256)": FunctionFragment;
     "totalShares()": FunctionFragment;
   };
@@ -43,6 +45,10 @@ interface PayoutManagerInterface extends ethers.utils.Interface {
     values?: undefined
   ): string;
   encodeFunctionData(functionFragment: "getState", values?: undefined): string;
+  encodeFunctionData(
+    functionFragment: "infoHistory",
+    values: [BigNumberish]
+  ): string;
   encodeFunctionData(
     functionFragment: "payouts",
     values: [BigNumberish]
@@ -64,6 +70,7 @@ interface PayoutManagerInterface extends ethers.utils.Interface {
     functionFragment: "snapshotToPayout",
     values: [BigNumberish]
   ): string;
+  encodeFunctionData(functionFragment: "state", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "totalReleased",
     values: [BigNumberish]
@@ -82,6 +89,10 @@ interface PayoutManagerInterface extends ethers.utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "getState", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "infoHistory",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "payouts", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "release", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "released", data: BytesLike): Result;
@@ -91,6 +102,7 @@ interface PayoutManagerInterface extends ethers.utils.Interface {
     functionFragment: "snapshotToPayout",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(functionFragment: "state", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "totalReleased",
     data: BytesLike
@@ -171,14 +183,21 @@ export class PayoutManager extends BaseContract {
       overrides?: CallOverrides
     ): Promise<
       [
-        [BigNumber, string, string, string] & {
+        [BigNumber, string, string, string, string, string] & {
           id: BigNumber;
+          contractAddress: string;
+          createdBy: string;
           owner: string;
           asset: string;
           info: string;
         }
       ]
     >;
+
+    infoHistory(
+      arg0: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<[string, BigNumber] & { info: string; timestamp: BigNumber }>;
 
     payouts(
       arg0: BigNumberish,
@@ -220,6 +239,19 @@ export class PayoutManager extends BaseContract {
       overrides?: CallOverrides
     ): Promise<[BigNumber]>;
 
+    state(
+      overrides?: CallOverrides
+    ): Promise<
+      [BigNumber, string, string, string, string, string] & {
+        id: BigNumber;
+        contractAddress: string;
+        createdBy: string;
+        owner: string;
+        asset: string;
+        info: string;
+      }
+    >;
+
     totalReleased(
       snapshotId: BigNumberish,
       overrides?: CallOverrides
@@ -241,13 +273,20 @@ export class PayoutManager extends BaseContract {
   getState(
     overrides?: CallOverrides
   ): Promise<
-    [BigNumber, string, string, string] & {
+    [BigNumber, string, string, string, string, string] & {
       id: BigNumber;
+      contractAddress: string;
+      createdBy: string;
       owner: string;
       asset: string;
       info: string;
     }
   >;
+
+  infoHistory(
+    arg0: BigNumberish,
+    overrides?: CallOverrides
+  ): Promise<[string, BigNumber] & { info: string; timestamp: BigNumber }>;
 
   payouts(
     arg0: BigNumberish,
@@ -289,6 +328,19 @@ export class PayoutManager extends BaseContract {
     overrides?: CallOverrides
   ): Promise<BigNumber>;
 
+  state(
+    overrides?: CallOverrides
+  ): Promise<
+    [BigNumber, string, string, string, string, string] & {
+      id: BigNumber;
+      contractAddress: string;
+      createdBy: string;
+      owner: string;
+      asset: string;
+      info: string;
+    }
+  >;
+
   totalReleased(
     snapshotId: BigNumberish,
     overrides?: CallOverrides
@@ -312,13 +364,20 @@ export class PayoutManager extends BaseContract {
     getState(
       overrides?: CallOverrides
     ): Promise<
-      [BigNumber, string, string, string] & {
+      [BigNumber, string, string, string, string, string] & {
         id: BigNumber;
+        contractAddress: string;
+        createdBy: string;
         owner: string;
         asset: string;
         info: string;
       }
     >;
+
+    infoHistory(
+      arg0: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<[string, BigNumber] & { info: string; timestamp: BigNumber }>;
 
     payouts(
       arg0: BigNumberish,
@@ -356,6 +415,19 @@ export class PayoutManager extends BaseContract {
       arg0: BigNumberish,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
+
+    state(
+      overrides?: CallOverrides
+    ): Promise<
+      [BigNumber, string, string, string, string, string] & {
+        id: BigNumber;
+        contractAddress: string;
+        createdBy: string;
+        owner: string;
+        asset: string;
+        info: string;
+      }
+    >;
 
     totalReleased(
       snapshotId: BigNumberish,
@@ -419,6 +491,11 @@ export class PayoutManager extends BaseContract {
 
     getState(overrides?: CallOverrides): Promise<BigNumber>;
 
+    infoHistory(
+      arg0: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
     payouts(arg0: BigNumberish, overrides?: CallOverrides): Promise<BigNumber>;
 
     release(
@@ -449,6 +526,8 @@ export class PayoutManager extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
+    state(overrides?: CallOverrides): Promise<BigNumber>;
+
     totalReleased(
       snapshotId: BigNumberish,
       overrides?: CallOverrides
@@ -467,6 +546,11 @@ export class PayoutManager extends BaseContract {
     getInfoHistory(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     getState(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    infoHistory(
+      arg0: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
 
     payouts(
       arg0: BigNumberish,
@@ -500,6 +584,8 @@ export class PayoutManager extends BaseContract {
       arg0: BigNumberish,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
+
+    state(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     totalReleased(
       snapshotId: BigNumberish,

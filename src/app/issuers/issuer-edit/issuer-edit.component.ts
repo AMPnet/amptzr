@@ -1,5 +1,5 @@
 import {ChangeDetectionStrategy, Component} from '@angular/core'
-import {BehaviorSubject, combineLatest, from, Observable} from 'rxjs'
+import {BehaviorSubject, from, Observable} from 'rxjs'
 import {withStatus, WithStatus} from '../../shared/utils/observables'
 import {IssuerService, IssuerWithInfo} from '../../shared/services/blockchain/issuer.service'
 import {ActivatedRoute} from '@angular/router'
@@ -36,13 +36,10 @@ export class IssuerEditComponent {
       logo: [undefined],
     })
 
-    this.issuer$ = combineLatest([
-      this.issuerRefreshSub.asObservable(),
-      this.sessionQuery.provider$,
-    ]).pipe(
-      switchMap(([refresh, provider]) =>
+    this.issuer$ = this.issuerRefreshSub.asObservable().pipe(
+      switchMap(refresh =>
         withStatus(
-          from(this.issuerService.getIssuerWithInfo(this.issuerAddress, provider)),
+          from(this.issuerService.getIssuerWithInfo(this.issuerAddress)),
           {hideLoading: refresh.isLazy},
         ),
       ),
@@ -51,7 +48,7 @@ export class IssuerEditComponent {
           this.updateForm.reset()
           this.updateForm.setValue({
             ...this.updateForm.value,
-            name: issuer.value.name || '' ,
+            name: issuer.value.name || '',
           })
         }
       }),

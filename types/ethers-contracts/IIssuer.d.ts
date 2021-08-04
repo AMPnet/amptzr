@@ -166,8 +166,10 @@ export class IIssuer extends BaseContract {
       overrides?: CallOverrides
     ): Promise<
       [
-        [BigNumber, string, string, string, string] & {
+        [BigNumber, string, string, string, string, string, string] & {
           id: BigNumber;
+          contractAddress: string;
+          createdBy: string;
           owner: string;
           stablecoin: string;
           walletApprover: string;
@@ -220,8 +222,10 @@ export class IIssuer extends BaseContract {
   getState(
     overrides?: CallOverrides
   ): Promise<
-    [BigNumber, string, string, string, string] & {
+    [BigNumber, string, string, string, string, string, string] & {
       id: BigNumber;
+      contractAddress: string;
+      createdBy: string;
       owner: string;
       stablecoin: string;
       walletApprover: string;
@@ -267,8 +271,10 @@ export class IIssuer extends BaseContract {
     getState(
       overrides?: CallOverrides
     ): Promise<
-      [BigNumber, string, string, string, string] & {
+      [BigNumber, string, string, string, string, string, string] & {
         id: BigNumber;
+        contractAddress: string;
+        createdBy: string;
         owner: string;
         stablecoin: string;
         walletApprover: string;

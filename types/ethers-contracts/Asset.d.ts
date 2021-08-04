@@ -24,22 +24,30 @@ interface AssetInterface extends ethers.utils.Interface {
     "allowance(address,address)": FunctionFragment;
     "approve(address,uint256)": FunctionFragment;
     "approveCampaign(address)": FunctionFragment;
-    "approvedCampaigns(uint256)": FunctionFragment;
+    "approvedCampaignsMap(address)": FunctionFragment;
     "balanceOf(address)": FunctionFragment;
     "balanceOfAt(address,uint256)": FunctionFragment;
     "changeOwnership(address)": FunctionFragment;
+    "claimLiquidationShare(address,address)": FunctionFragment;
+    "convertFromMirrored()": FunctionFragment;
     "decimals()": FunctionFragment;
     "decreaseAllowance(address,uint256)": FunctionFragment;
+    "finalizeSale(uint256,uint256)": FunctionFragment;
     "getCampaignRecords()": FunctionFragment;
     "getDecimals()": FunctionFragment;
     "getInfoHistory()": FunctionFragment;
+    "getSellHistory()": FunctionFragment;
     "getState()": FunctionFragment;
     "increaseAllowance(address,uint256)": FunctionFragment;
+    "liquidate()": FunctionFragment;
+    "liquidationClaimsMap(address,address)": FunctionFragment;
     "name()": FunctionFragment;
     "setInfo(string)": FunctionFragment;
     "setIssuerStatus(bool)": FunctionFragment;
+    "setMirroredToken(address)": FunctionFragment;
     "setWhitelistRequiredForTransfer(bool)": FunctionFragment;
     "snapshot()": FunctionFragment;
+    "successfulTokenSalesMap(address)": FunctionFragment;
     "suspendCampaign(address)": FunctionFragment;
     "symbol()": FunctionFragment;
     "totalShares()": FunctionFragment;
@@ -62,8 +70,8 @@ interface AssetInterface extends ethers.utils.Interface {
     values: [string]
   ): string;
   encodeFunctionData(
-    functionFragment: "approvedCampaigns",
-    values: [BigNumberish]
+    functionFragment: "approvedCampaignsMap",
+    values: [string]
   ): string;
   encodeFunctionData(functionFragment: "balanceOf", values: [string]): string;
   encodeFunctionData(
@@ -74,10 +82,22 @@ interface AssetInterface extends ethers.utils.Interface {
     functionFragment: "changeOwnership",
     values: [string]
   ): string;
+  encodeFunctionData(
+    functionFragment: "claimLiquidationShare",
+    values: [string, string]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "convertFromMirrored",
+    values?: undefined
+  ): string;
   encodeFunctionData(functionFragment: "decimals", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "decreaseAllowance",
     values: [string, BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "finalizeSale",
+    values: [BigNumberish, BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: "getCampaignRecords",
@@ -91,10 +111,19 @@ interface AssetInterface extends ethers.utils.Interface {
     functionFragment: "getInfoHistory",
     values?: undefined
   ): string;
+  encodeFunctionData(
+    functionFragment: "getSellHistory",
+    values?: undefined
+  ): string;
   encodeFunctionData(functionFragment: "getState", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "increaseAllowance",
     values: [string, BigNumberish]
+  ): string;
+  encodeFunctionData(functionFragment: "liquidate", values?: undefined): string;
+  encodeFunctionData(
+    functionFragment: "liquidationClaimsMap",
+    values: [string, string]
   ): string;
   encodeFunctionData(functionFragment: "name", values?: undefined): string;
   encodeFunctionData(functionFragment: "setInfo", values: [string]): string;
@@ -103,10 +132,18 @@ interface AssetInterface extends ethers.utils.Interface {
     values: [boolean]
   ): string;
   encodeFunctionData(
+    functionFragment: "setMirroredToken",
+    values: [string]
+  ): string;
+  encodeFunctionData(
     functionFragment: "setWhitelistRequiredForTransfer",
     values: [boolean]
   ): string;
   encodeFunctionData(functionFragment: "snapshot", values?: undefined): string;
+  encodeFunctionData(
+    functionFragment: "successfulTokenSalesMap",
+    values: [string]
+  ): string;
   encodeFunctionData(
     functionFragment: "suspendCampaign",
     values: [string]
@@ -140,7 +177,7 @@ interface AssetInterface extends ethers.utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "approvedCampaigns",
+    functionFragment: "approvedCampaignsMap",
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "balanceOf", data: BytesLike): Result;
@@ -152,9 +189,21 @@ interface AssetInterface extends ethers.utils.Interface {
     functionFragment: "changeOwnership",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(
+    functionFragment: "claimLiquidationShare",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "convertFromMirrored",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "decimals", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "decreaseAllowance",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "finalizeSale",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -169,9 +218,18 @@ interface AssetInterface extends ethers.utils.Interface {
     functionFragment: "getInfoHistory",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(
+    functionFragment: "getSellHistory",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "getState", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "increaseAllowance",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(functionFragment: "liquidate", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "liquidationClaimsMap",
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "name", data: BytesLike): Result;
@@ -181,10 +239,18 @@ interface AssetInterface extends ethers.utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
+    functionFragment: "setMirroredToken",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
     functionFragment: "setWhitelistRequiredForTransfer",
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "snapshot", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "successfulTokenSalesMap",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(
     functionFragment: "suspendCampaign",
     data: BytesLike
@@ -212,9 +278,14 @@ interface AssetInterface extends ethers.utils.Interface {
     "Approval(address,address,uint256)": EventFragment;
     "CampaignWhitelist(address,address,bool,uint256)": EventFragment;
     "ChangeOwnership(address,address,uint256)": EventFragment;
+    "ClaimLiquidationShare(address,address,uint256,uint256)": EventFragment;
+    "ConvertFromMirrored(address,address,uint256,uint256)": EventFragment;
+    "FinalizeSale(address,uint256,uint256,uint256)": EventFragment;
+    "Liquidated(address,uint256,uint256,uint256)": EventFragment;
     "SetApprovedByIssuer(address,bool,uint256)": EventFragment;
     "SetInfo(string,address,uint256)": EventFragment;
     "SetIssuerStatus(address,bool,uint256)": EventFragment;
+    "SetMirroredToken(address,address,uint256)": EventFragment;
     "SetWhitelistRequiredForTransfer(address,bool,uint256)": EventFragment;
     "Snapshot(uint256)": EventFragment;
     "Transfer(address,address,uint256)": EventFragment;
@@ -223,9 +294,14 @@ interface AssetInterface extends ethers.utils.Interface {
   getEvent(nameOrSignatureOrTopic: "Approval"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "CampaignWhitelist"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "ChangeOwnership"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "ClaimLiquidationShare"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "ConvertFromMirrored"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "FinalizeSale"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "Liquidated"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "SetApprovedByIssuer"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "SetInfo"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "SetIssuerStatus"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "SetMirroredToken"): EventFragment;
   getEvent(
     nameOrSignatureOrTopic: "SetWhitelistRequiredForTransfer"
   ): EventFragment;
@@ -294,10 +370,10 @@ export class Asset extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
-    approvedCampaigns(
-      arg0: BigNumberish,
+    approvedCampaignsMap(
+      arg0: string,
       overrides?: CallOverrides
-    ): Promise<[string, boolean] & { wallet: string; whitelisted: boolean }>;
+    ): Promise<[BigNumber]>;
 
     balanceOf(account: string, overrides?: CallOverrides): Promise<[BigNumber]>;
 
@@ -312,11 +388,27 @@ export class Asset extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
+    claimLiquidationShare(
+      campaign: string,
+      investor: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
+    convertFromMirrored(
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
     decimals(overrides?: CallOverrides): Promise<[number]>;
 
     decreaseAllowance(
       spender: string,
       subtractedValue: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
+    finalizeSale(
+      tokenAmount: BigNumberish,
+      tokenValue: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
@@ -334,6 +426,19 @@ export class Asset extends BaseContract {
       [([string, BigNumber] & { info: string; timestamp: BigNumber })[]]
     >;
 
+    getSellHistory(
+      overrides?: CallOverrides
+    ): Promise<
+      [
+        ([string, BigNumber, BigNumber, BigNumber] & {
+          cfManager: string;
+          tokenAmount: BigNumber;
+          tokenValue: BigNumber;
+          timestamp: BigNumber;
+        })[]
+      ]
+    >;
+
     getState(
       overrides?: CallOverrides
     ): Promise<
@@ -342,15 +447,25 @@ export class Asset extends BaseContract {
           BigNumber,
           string,
           string,
+          string,
+          string,
           BigNumber,
           boolean,
           boolean,
           string,
           string,
           string,
-          string
+          string,
+          BigNumber,
+          BigNumber,
+          boolean,
+          BigNumber,
+          BigNumber,
+          BigNumber
         ] & {
           id: BigNumber;
+          contractAddress: string;
+          createdBy: string;
           owner: string;
           mirroredToken: string;
           initialTokenSupply: BigNumber;
@@ -360,6 +475,12 @@ export class Asset extends BaseContract {
           info: string;
           name: string;
           symbol: string;
+          totalAmountRaised: BigNumber;
+          totalTokensSold: BigNumber;
+          liquidated: boolean;
+          liquidationTimestamp: BigNumber;
+          liquidationSnapshotId: BigNumber;
+          liquidationFundsClaimed: BigNumber;
         }
       ]
     >;
@@ -369,6 +490,16 @@ export class Asset extends BaseContract {
       addedValue: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
+
+    liquidate(
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
+    liquidationClaimsMap(
+      arg0: string,
+      arg1: string,
+      overrides?: CallOverrides
+    ): Promise<[BigNumber]>;
 
     name(overrides?: CallOverrides): Promise<[string]>;
 
@@ -382,6 +513,11 @@ export class Asset extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
+    setMirroredToken(
+      token: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
     setWhitelistRequiredForTransfer(
       whitelistRequiredForTransfer: boolean,
       overrides?: Overrides & { from?: string | Promise<string> }
@@ -390,6 +526,18 @@ export class Asset extends BaseContract {
     snapshot(
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
+
+    successfulTokenSalesMap(
+      arg0: string,
+      overrides?: CallOverrides
+    ): Promise<
+      [string, BigNumber, BigNumber, BigNumber] & {
+        cfManager: string;
+        tokenAmount: BigNumber;
+        tokenValue: BigNumber;
+        timestamp: BigNumber;
+      }
+    >;
 
     suspendCampaign(
       campaign: string,
@@ -438,10 +586,10 @@ export class Asset extends BaseContract {
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
-  approvedCampaigns(
-    arg0: BigNumberish,
+  approvedCampaignsMap(
+    arg0: string,
     overrides?: CallOverrides
-  ): Promise<[string, boolean] & { wallet: string; whitelisted: boolean }>;
+  ): Promise<BigNumber>;
 
   balanceOf(account: string, overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -456,11 +604,27 @@ export class Asset extends BaseContract {
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
+  claimLiquidationShare(
+    campaign: string,
+    investor: string,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
+  convertFromMirrored(
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
   decimals(overrides?: CallOverrides): Promise<number>;
 
   decreaseAllowance(
     spender: string,
     subtractedValue: BigNumberish,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
+  finalizeSale(
+    tokenAmount: BigNumberish,
+    tokenValue: BigNumberish,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
@@ -474,6 +638,17 @@ export class Asset extends BaseContract {
     overrides?: CallOverrides
   ): Promise<([string, BigNumber] & { info: string; timestamp: BigNumber })[]>;
 
+  getSellHistory(
+    overrides?: CallOverrides
+  ): Promise<
+    ([string, BigNumber, BigNumber, BigNumber] & {
+      cfManager: string;
+      tokenAmount: BigNumber;
+      tokenValue: BigNumber;
+      timestamp: BigNumber;
+    })[]
+  >;
+
   getState(
     overrides?: CallOverrides
   ): Promise<
@@ -481,15 +656,25 @@ export class Asset extends BaseContract {
       BigNumber,
       string,
       string,
+      string,
+      string,
       BigNumber,
       boolean,
       boolean,
       string,
       string,
       string,
-      string
+      string,
+      BigNumber,
+      BigNumber,
+      boolean,
+      BigNumber,
+      BigNumber,
+      BigNumber
     ] & {
       id: BigNumber;
+      contractAddress: string;
+      createdBy: string;
       owner: string;
       mirroredToken: string;
       initialTokenSupply: BigNumber;
@@ -499,6 +684,12 @@ export class Asset extends BaseContract {
       info: string;
       name: string;
       symbol: string;
+      totalAmountRaised: BigNumber;
+      totalTokensSold: BigNumber;
+      liquidated: boolean;
+      liquidationTimestamp: BigNumber;
+      liquidationSnapshotId: BigNumber;
+      liquidationFundsClaimed: BigNumber;
     }
   >;
 
@@ -507,6 +698,16 @@ export class Asset extends BaseContract {
     addedValue: BigNumberish,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
+
+  liquidate(
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
+  liquidationClaimsMap(
+    arg0: string,
+    arg1: string,
+    overrides?: CallOverrides
+  ): Promise<BigNumber>;
 
   name(overrides?: CallOverrides): Promise<string>;
 
@@ -520,6 +721,11 @@ export class Asset extends BaseContract {
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
+  setMirroredToken(
+    token: string,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
   setWhitelistRequiredForTransfer(
     whitelistRequiredForTransfer: boolean,
     overrides?: Overrides & { from?: string | Promise<string> }
@@ -528,6 +734,18 @@ export class Asset extends BaseContract {
   snapshot(
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
+
+  successfulTokenSalesMap(
+    arg0: string,
+    overrides?: CallOverrides
+  ): Promise<
+    [string, BigNumber, BigNumber, BigNumber] & {
+      cfManager: string;
+      tokenAmount: BigNumber;
+      tokenValue: BigNumber;
+      timestamp: BigNumber;
+    }
+  >;
 
   suspendCampaign(
     campaign: string,
@@ -573,10 +791,10 @@ export class Asset extends BaseContract {
 
     approveCampaign(campaign: string, overrides?: CallOverrides): Promise<void>;
 
-    approvedCampaigns(
-      arg0: BigNumberish,
+    approvedCampaignsMap(
+      arg0: string,
       overrides?: CallOverrides
-    ): Promise<[string, boolean] & { wallet: string; whitelisted: boolean }>;
+    ): Promise<BigNumber>;
 
     balanceOf(account: string, overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -588,6 +806,14 @@ export class Asset extends BaseContract {
 
     changeOwnership(newOwner: string, overrides?: CallOverrides): Promise<void>;
 
+    claimLiquidationShare(
+      campaign: string,
+      investor: string,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    convertFromMirrored(overrides?: CallOverrides): Promise<void>;
+
     decimals(overrides?: CallOverrides): Promise<number>;
 
     decreaseAllowance(
@@ -595,6 +821,12 @@ export class Asset extends BaseContract {
       subtractedValue: BigNumberish,
       overrides?: CallOverrides
     ): Promise<boolean>;
+
+    finalizeSale(
+      tokenAmount: BigNumberish,
+      tokenValue: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<void>;
 
     getCampaignRecords(
       overrides?: CallOverrides
@@ -610,6 +842,17 @@ export class Asset extends BaseContract {
       ([string, BigNumber] & { info: string; timestamp: BigNumber })[]
     >;
 
+    getSellHistory(
+      overrides?: CallOverrides
+    ): Promise<
+      ([string, BigNumber, BigNumber, BigNumber] & {
+        cfManager: string;
+        tokenAmount: BigNumber;
+        tokenValue: BigNumber;
+        timestamp: BigNumber;
+      })[]
+    >;
+
     getState(
       overrides?: CallOverrides
     ): Promise<
@@ -617,15 +860,25 @@ export class Asset extends BaseContract {
         BigNumber,
         string,
         string,
+        string,
+        string,
         BigNumber,
         boolean,
         boolean,
         string,
         string,
         string,
-        string
+        string,
+        BigNumber,
+        BigNumber,
+        boolean,
+        BigNumber,
+        BigNumber,
+        BigNumber
       ] & {
         id: BigNumber;
+        contractAddress: string;
+        createdBy: string;
         owner: string;
         mirroredToken: string;
         initialTokenSupply: BigNumber;
@@ -635,6 +888,12 @@ export class Asset extends BaseContract {
         info: string;
         name: string;
         symbol: string;
+        totalAmountRaised: BigNumber;
+        totalTokensSold: BigNumber;
+        liquidated: boolean;
+        liquidationTimestamp: BigNumber;
+        liquidationSnapshotId: BigNumber;
+        liquidationFundsClaimed: BigNumber;
       }
     >;
 
@@ -644,11 +903,21 @@ export class Asset extends BaseContract {
       overrides?: CallOverrides
     ): Promise<boolean>;
 
+    liquidate(overrides?: CallOverrides): Promise<void>;
+
+    liquidationClaimsMap(
+      arg0: string,
+      arg1: string,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
     name(overrides?: CallOverrides): Promise<string>;
 
     setInfo(info: string, overrides?: CallOverrides): Promise<void>;
 
     setIssuerStatus(status: boolean, overrides?: CallOverrides): Promise<void>;
+
+    setMirroredToken(token: string, overrides?: CallOverrides): Promise<void>;
 
     setWhitelistRequiredForTransfer(
       whitelistRequiredForTransfer: boolean,
@@ -656,6 +925,18 @@ export class Asset extends BaseContract {
     ): Promise<void>;
 
     snapshot(overrides?: CallOverrides): Promise<BigNumber>;
+
+    successfulTokenSalesMap(
+      arg0: string,
+      overrides?: CallOverrides
+    ): Promise<
+      [string, BigNumber, BigNumber, BigNumber] & {
+        cfManager: string;
+        tokenAmount: BigNumber;
+        tokenValue: BigNumber;
+        timestamp: BigNumber;
+      }
+    >;
 
     suspendCampaign(campaign: string, overrides?: CallOverrides): Promise<void>;
 
@@ -718,6 +999,66 @@ export class Asset extends BaseContract {
       { caller: string; newOwner: string; timestamp: BigNumber }
     >;
 
+    ClaimLiquidationShare(
+      investor?: null,
+      campaign?: null,
+      amount?: null,
+      timestamp?: null
+    ): TypedEventFilter<
+      [string, string, BigNumber, BigNumber],
+      {
+        investor: string;
+        campaign: string;
+        amount: BigNumber;
+        timestamp: BigNumber;
+      }
+    >;
+
+    ConvertFromMirrored(
+      caller?: string | null,
+      mirroredToken?: null,
+      amount?: null,
+      timestamp?: null
+    ): TypedEventFilter<
+      [string, string, BigNumber, BigNumber],
+      {
+        caller: string;
+        mirroredToken: string;
+        amount: BigNumber;
+        timestamp: BigNumber;
+      }
+    >;
+
+    FinalizeSale(
+      campaign?: null,
+      tokenAmount?: null,
+      tokenValue?: null,
+      timestamp?: null
+    ): TypedEventFilter<
+      [string, BigNumber, BigNumber, BigNumber],
+      {
+        campaign: string;
+        tokenAmount: BigNumber;
+        tokenValue: BigNumber;
+        timestamp: BigNumber;
+      }
+    >;
+
+    Liquidated(
+      liquidator?: null,
+      fundsReceived?: null,
+      preLiquidationSnapshotId?: null,
+      timestamp?: null
+    ): TypedEventFilter<
+      [string, BigNumber, BigNumber, BigNumber],
+      {
+        liquidator: string;
+        fundsReceived: BigNumber;
+        preLiquidationSnapshotId: BigNumber;
+        timestamp: BigNumber;
+      }
+    >;
+
     SetApprovedByIssuer(
       caller?: null,
       approvedByIssuer?: null,
@@ -743,6 +1084,15 @@ export class Asset extends BaseContract {
     ): TypedEventFilter<
       [string, boolean, BigNumber],
       { approver: string; status: boolean; timestamp: BigNumber }
+    >;
+
+    SetMirroredToken(
+      caller?: null,
+      mirroredToken?: null,
+      timestamp?: null
+    ): TypedEventFilter<
+      [string, string, BigNumber],
+      { caller: string; mirroredToken: string; timestamp: BigNumber }
     >;
 
     SetWhitelistRequiredForTransfer(
@@ -788,8 +1138,8 @@ export class Asset extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
-    approvedCampaigns(
-      arg0: BigNumberish,
+    approvedCampaignsMap(
+      arg0: string,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
@@ -806,11 +1156,27 @@ export class Asset extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
+    claimLiquidationShare(
+      campaign: string,
+      investor: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
+    convertFromMirrored(
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
     decimals(overrides?: CallOverrides): Promise<BigNumber>;
 
     decreaseAllowance(
       spender: string,
       subtractedValue: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
+    finalizeSale(
+      tokenAmount: BigNumberish,
+      tokenValue: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
@@ -820,12 +1186,24 @@ export class Asset extends BaseContract {
 
     getInfoHistory(overrides?: CallOverrides): Promise<BigNumber>;
 
+    getSellHistory(overrides?: CallOverrides): Promise<BigNumber>;
+
     getState(overrides?: CallOverrides): Promise<BigNumber>;
 
     increaseAllowance(
       spender: string,
       addedValue: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
+    liquidate(
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
+    liquidationClaimsMap(
+      arg0: string,
+      arg1: string,
+      overrides?: CallOverrides
     ): Promise<BigNumber>;
 
     name(overrides?: CallOverrides): Promise<BigNumber>;
@@ -840,6 +1218,11 @@ export class Asset extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
+    setMirroredToken(
+      token: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
     setWhitelistRequiredForTransfer(
       whitelistRequiredForTransfer: boolean,
       overrides?: Overrides & { from?: string | Promise<string> }
@@ -847,6 +1230,11 @@ export class Asset extends BaseContract {
 
     snapshot(
       overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
+    successfulTokenSalesMap(
+      arg0: string,
+      overrides?: CallOverrides
     ): Promise<BigNumber>;
 
     suspendCampaign(
@@ -897,8 +1285,8 @@ export class Asset extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
-    approvedCampaigns(
-      arg0: BigNumberish,
+    approvedCampaignsMap(
+      arg0: string,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
@@ -918,11 +1306,27 @@ export class Asset extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
+    claimLiquidationShare(
+      campaign: string,
+      investor: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    convertFromMirrored(
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
     decimals(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     decreaseAllowance(
       spender: string,
       subtractedValue: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    finalizeSale(
+      tokenAmount: BigNumberish,
+      tokenValue: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
@@ -934,12 +1338,24 @@ export class Asset extends BaseContract {
 
     getInfoHistory(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
+    getSellHistory(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
     getState(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     increaseAllowance(
       spender: string,
       addedValue: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    liquidate(
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    liquidationClaimsMap(
+      arg0: string,
+      arg1: string,
+      overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
     name(overrides?: CallOverrides): Promise<PopulatedTransaction>;
@@ -954,6 +1370,11 @@ export class Asset extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
+    setMirroredToken(
+      token: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
     setWhitelistRequiredForTransfer(
       whitelistRequiredForTransfer: boolean,
       overrides?: Overrides & { from?: string | Promise<string> }
@@ -961,6 +1382,11 @@ export class Asset extends BaseContract {
 
     snapshot(
       overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    successfulTokenSalesMap(
+      arg0: string,
+      overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
     suspendCampaign(

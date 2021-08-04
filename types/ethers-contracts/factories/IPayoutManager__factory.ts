@@ -48,6 +48,16 @@ const _abi = [
           },
           {
             internalType: "address",
+            name: "contractAddress",
+            type: "address",
+          },
+          {
+            internalType: "address",
+            name: "createdBy",
+            type: "address",
+          },
+          {
+            internalType: "address",
             name: "owner",
             type: "address",
           },

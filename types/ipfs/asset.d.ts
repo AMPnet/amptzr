@@ -5,8 +5,9 @@
 export interface IPFSAsset {
   version: number
 
-  name: string
   logo: url | cid
+  description: string | cid
+  documents: Array<string | cid>
 }
 
 type url = string

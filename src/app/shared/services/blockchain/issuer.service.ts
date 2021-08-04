@@ -2,7 +2,6 @@ import {Injectable} from '@angular/core'
 import {combineLatest, from, Observable, of} from 'rxjs'
 import {first, map, switchMap} from 'rxjs/operators'
 import {Issuer, Issuer__factory, IssuerFactory, IssuerFactory__factory} from '../../../../../types/ethers-contracts'
-import {WithStatus, withStatus} from '../../utils/observables'
 import {SessionQuery} from '../../../session/state/session.query'
 import {PreferenceQuery} from '../../../preference/state/preference.query'
 import {BigNumber, providers, Signer} from 'ethers'
@@ -16,19 +15,17 @@ import {SignerService} from '../signer.service'
   providedIn: 'root',
 })
 export class IssuerService {
-  issuerFactory$: Observable<IssuerFactory> = this.sessionQuery.provider$.pipe(
+  factoryContract$: Observable<IssuerFactory> = this.sessionQuery.provider$.pipe(
     map(provider =>
       IssuerFactory__factory.connect(this.preferenceQuery.network.tokenizerConfig.issuerFactory, provider),
     ),
   )
 
-  issuers$: Observable<WithStatus<IssuerWithInfo[]>> = this.issuerFactory$.pipe(
-    switchMap(issuerFactory => withStatus(
-      from(issuerFactory.getInstances()).pipe(
-        switchMap(issuers => combineLatest(
-          issuers.map(issuer => this.getIssuerWithInfo(issuer, issuerFactory.provider))),
-        )),
-    )),
+  issuers$: Observable<IssuerWithInfo[]> = this.factoryContract$.pipe(
+    switchMap(contract => from(contract.getInstances()).pipe(
+      switchMap(issuers => issuers.length === 0 ? of([]) : combineLatest(
+        issuers.map(issuer => this.getIssuerWithInfo(issuer))),
+      ))),
   )
 
   constructor(private sessionQuery: SessionQuery,
@@ -43,18 +40,16 @@ export class IssuerService {
 
   getState(address: string, signerOrProvider: Signer | Provider): Observable<IssuerState> {
     return of(this.contract(address, signerOrProvider)).pipe(
-      // TODO: uncomment this when address will be available from getState()
-      // switchMap(contract => contract.getState() as Promise<IssuerState>),
-      switchMap(contract => from(contract.getState()).pipe(
-        map(state => ({...state, address})),
-      )),
+      switchMap(contract => contract.getState()),
     )
   }
 
-  getIssuerWithInfo(address: string, signerOrProvider: Signer | Provider): Observable<IssuerWithInfo> {
-    return this.getState(address, signerOrProvider).pipe(
-      switchMap(state => this.ipfsService.get<IPFSIssuer>(state.info).pipe(
-        map(info => ({...state, ...info})),
+  getIssuerWithInfo(address: string): Observable<IssuerWithInfo> {
+    return this.sessionQuery.provider$.pipe(
+      switchMap(provider => this.getState(address, provider).pipe(
+        switchMap(state => this.ipfsService.get<IPFSIssuer>(state.info).pipe(
+          map(info => ({...state, ...info})),
+        )),
       )),
     )
   }
@@ -82,7 +77,7 @@ export class IssuerService {
   create(infoHash: string): Observable<string | undefined> {
     return combineLatest([
       this.signerService.ensureAuth,
-      this.issuerFactory$,
+      this.factoryContract$,
     ]).pipe(
       first(),
       map(([signer, contract]) => contract.connect(signer)),
@@ -120,7 +115,7 @@ export class IssuerService {
 }
 
 export interface IssuerState {
-  address: string
+  contractAddress: string
   id: BigNumber;
   owner: string;
   stablecoin: string;

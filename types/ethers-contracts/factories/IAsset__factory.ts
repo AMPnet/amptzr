@@ -34,6 +34,49 @@ const _abi = [
     type: "function",
   },
   {
+    inputs: [
+      {
+        internalType: "address",
+        name: "campaign",
+        type: "address",
+      },
+      {
+        internalType: "address",
+        name: "investor",
+        type: "address",
+      },
+    ],
+    name: "claimLiquidationShare",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "convertFromMirrored",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "uint256",
+        name: "tokenAmount",
+        type: "uint256",
+      },
+      {
+        internalType: "uint256",
+        name: "tokenValue",
+        type: "uint256",
+      },
+    ],
+    name: "finalizeSale",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
     inputs: [],
     name: "getCampaignRecords",
     outputs: [
@@ -98,6 +141,41 @@ const _abi = [
   },
   {
     inputs: [],
+    name: "getSellHistory",
+    outputs: [
+      {
+        components: [
+          {
+            internalType: "address",
+            name: "cfManager",
+            type: "address",
+          },
+          {
+            internalType: "uint256",
+            name: "tokenAmount",
+            type: "uint256",
+          },
+          {
+            internalType: "uint256",
+            name: "tokenValue",
+            type: "uint256",
+          },
+          {
+            internalType: "uint256",
+            name: "timestamp",
+            type: "uint256",
+          },
+        ],
+        internalType: "struct Structs.TokenSaleInfo[]",
+        name: "",
+        type: "tuple[]",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
     name: "getState",
     outputs: [
       {
@@ -106,6 +184,16 @@ const _abi = [
             internalType: "uint256",
             name: "id",
             type: "uint256",
+          },
+          {
+            internalType: "address",
+            name: "contractAddress",
+            type: "address",
+          },
+          {
+            internalType: "address",
+            name: "createdBy",
+            type: "address",
           },
           {
             internalType: "address",
@@ -152,6 +240,36 @@ const _abi = [
             name: "symbol",
             type: "string",
           },
+          {
+            internalType: "uint256",
+            name: "totalAmountRaised",
+            type: "uint256",
+          },
+          {
+            internalType: "uint256",
+            name: "totalTokensSold",
+            type: "uint256",
+          },
+          {
+            internalType: "bool",
+            name: "liquidated",
+            type: "bool",
+          },
+          {
+            internalType: "uint256",
+            name: "liquidationTimestamp",
+            type: "uint256",
+          },
+          {
+            internalType: "uint256",
+            name: "liquidationSnapshotId",
+            type: "uint256",
+          },
+          {
+            internalType: "uint256",
+            name: "liquidationFundsClaimed",
+            type: "uint256",
+          },
         ],
         internalType: "struct Structs.AssetState",
         name: "",
@@ -159,6 +277,13 @@ const _abi = [
       },
     ],
     stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "liquidate",
+    outputs: [],
+    stateMutability: "nonpayable",
     type: "function",
   },
   {
@@ -183,6 +308,32 @@ const _abi = [
       },
     ],
     name: "setIssuerStatus",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "token",
+        type: "address",
+      },
+    ],
+    name: "setMirroredToken",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "bool",
+        name: "whitelistRequiredForTransfer",
+        type: "bool",
+      },
+    ],
+    name: "setWhitelistRequiredForTransfer",
     outputs: [],
     stateMutability: "nonpayable",
     type: "function",

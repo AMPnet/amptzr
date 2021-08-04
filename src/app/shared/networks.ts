@@ -27,6 +27,7 @@ interface TokenizerConfig {
   assetFactory: string,
   cfManagerFactory: string,
   payoutManagerFactory: string,
+  deployerService: string
   defaultWalletApprover: string,
   defaultIssuer: string,
   defaultStableCoin: string,
@@ -52,6 +53,7 @@ export const MaticNetwork: Network = {
     assetFactory: '0x46B01A62d03E2067bBfC6c88D2f2EEDC31cB75a9',
     cfManagerFactory: '0xA167Ac0C34C52a4a91a9c93618150b9ef508152C',
     payoutManagerFactory: '0x39d13eA4781F4FA57a347F5C49dD716048822F16',
+    deployerService: '0x29aF1b53f2cb555B5621A9F13c24711A9EDdEC40',
     defaultWalletApprover: '0x23B00A11F6DBbD3a850a0AE72668109133779575',
     defaultIssuer: '0xD17574450885C1b898bc835Ff9CB5b44A3601c24',
     defaultStableCoin: '0x18D71D80087084df631f95EF29C8a11904DC47F3'
@@ -73,11 +75,12 @@ export const MumbaiNetwork: Network = {
   rpcURLs: ['https://matic-mumbai.chainstacklabs.com'],
   explorerURLs: ['https://explorer-mumbai.maticvigil.com/'],
   tokenizerConfig: {
-    issuerFactory: '0x0959b4eBf0Fe2D708C3DB22dc245a32a135Ef818',
-    assetFactory: '0x46B01A62d03E2067bBfC6c88D2f2EEDC31cB75a9',
-    cfManagerFactory: '0xA167Ac0C34C52a4a91a9c93618150b9ef508152C',
+    issuerFactory: '0x104d15783633A37D3C28F177cD942815a560F4F2',
+    assetFactory: '0xB6FEf14d2F34DEE30147ae2aCe1cCA866641dC60',
+    cfManagerFactory: '0x5f13A17a61B6B0A8784d4eAa6Db5F8E8f6684ee9',
     payoutManagerFactory: '0x39d13eA4781F4FA57a347F5C49dD716048822F16',
-    defaultWalletApprover: '0x23B00A11F6DBbD3a850a0AE72668109133779575',
+    deployerService: '0x29aF1b53f2cb555B5621A9F13c24711A9EDdEC40',
+    defaultWalletApprover: '0xf35808CF8Af3b92c78447619905D201833f8f64e',
     defaultIssuer: '0xD17574450885C1b898bc835Ff9CB5b44A3601c24',
     defaultStableCoin: '0x18D71D80087084df631f95EF29C8a11904DC47F3'
   },

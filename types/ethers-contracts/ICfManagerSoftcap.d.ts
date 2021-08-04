@@ -22,8 +22,10 @@ import { TypedEventFilter, TypedEvent, TypedListener } from "./commons";
 interface ICfManagerSoftcapInterface extends ethers.utils.Interface {
   functions: {
     "changeOwnership(address)": FunctionFragment;
+    "claims(address)": FunctionFragment;
     "getInfoHistory()": FunctionFragment;
     "getState()": FunctionFragment;
+    "investments(address)": FunctionFragment;
     "setInfo(string)": FunctionFragment;
   };
 
@@ -31,22 +33,29 @@ interface ICfManagerSoftcapInterface extends ethers.utils.Interface {
     functionFragment: "changeOwnership",
     values: [string]
   ): string;
+  encodeFunctionData(functionFragment: "claims", values: [string]): string;
   encodeFunctionData(
     functionFragment: "getInfoHistory",
     values?: undefined
   ): string;
   encodeFunctionData(functionFragment: "getState", values?: undefined): string;
+  encodeFunctionData(functionFragment: "investments", values: [string]): string;
   encodeFunctionData(functionFragment: "setInfo", values: [string]): string;
 
   decodeFunctionResult(
     functionFragment: "changeOwnership",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(functionFragment: "claims", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "getInfoHistory",
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "getState", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "investments",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "setInfo", data: BytesLike): Result;
 
   events: {};
@@ -101,6 +110,8 @@ export class ICfManagerSoftcap extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
+    claims(investor: string, overrides?: CallOverrides): Promise<[BigNumber]>;
+
     getInfoHistory(
       overrides?: CallOverrides
     ): Promise<
@@ -115,6 +126,11 @@ export class ICfManagerSoftcap extends BaseContract {
           BigNumber,
           string,
           string,
+          string,
+          string,
+          string,
+          BigNumber,
+          BigNumber,
           BigNumber,
           BigNumber,
           boolean,
@@ -127,10 +143,15 @@ export class ICfManagerSoftcap extends BaseContract {
           string
         ] & {
           id: BigNumber;
+          contractAddress: string;
+          createdBy: string;
           owner: string;
           asset: string;
+          issuer: string;
           tokenPrice: BigNumber;
           softCap: BigNumber;
+          minInvestment: BigNumber;
+          maxInvestment: BigNumber;
           whitelistRequired: boolean;
           finalized: boolean;
           cancelled: boolean;
@@ -143,6 +164,11 @@ export class ICfManagerSoftcap extends BaseContract {
       ]
     >;
 
+    investments(
+      investor: string,
+      overrides?: CallOverrides
+    ): Promise<[BigNumber]>;
+
     setInfo(
       info: string,
       overrides?: Overrides & { from?: string | Promise<string> }
@@ -153,6 +179,8 @@ export class ICfManagerSoftcap extends BaseContract {
     newOwner: string,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
+
+  claims(investor: string, overrides?: CallOverrides): Promise<BigNumber>;
 
   getInfoHistory(
     overrides?: CallOverrides
@@ -165,6 +193,11 @@ export class ICfManagerSoftcap extends BaseContract {
       BigNumber,
       string,
       string,
+      string,
+      string,
+      string,
+      BigNumber,
+      BigNumber,
       BigNumber,
       BigNumber,
       boolean,
@@ -177,10 +210,15 @@ export class ICfManagerSoftcap extends BaseContract {
       string
     ] & {
       id: BigNumber;
+      contractAddress: string;
+      createdBy: string;
       owner: string;
       asset: string;
+      issuer: string;
       tokenPrice: BigNumber;
       softCap: BigNumber;
+      minInvestment: BigNumber;
+      maxInvestment: BigNumber;
       whitelistRequired: boolean;
       finalized: boolean;
       cancelled: boolean;
@@ -192,6 +230,8 @@ export class ICfManagerSoftcap extends BaseContract {
     }
   >;
 
+  investments(investor: string, overrides?: CallOverrides): Promise<BigNumber>;
+
   setInfo(
     info: string,
     overrides?: Overrides & { from?: string | Promise<string> }
@@ -199,6 +239,8 @@ export class ICfManagerSoftcap extends BaseContract {
 
   callStatic: {
     changeOwnership(newOwner: string, overrides?: CallOverrides): Promise<void>;
+
+    claims(investor: string, overrides?: CallOverrides): Promise<BigNumber>;
 
     getInfoHistory(
       overrides?: CallOverrides
@@ -213,6 +255,11 @@ export class ICfManagerSoftcap extends BaseContract {
         BigNumber,
         string,
         string,
+        string,
+        string,
+        string,
+        BigNumber,
+        BigNumber,
         BigNumber,
         BigNumber,
         boolean,
@@ -225,10 +272,15 @@ export class ICfManagerSoftcap extends BaseContract {
         string
       ] & {
         id: BigNumber;
+        contractAddress: string;
+        createdBy: string;
         owner: string;
         asset: string;
+        issuer: string;
         tokenPrice: BigNumber;
         softCap: BigNumber;
+        minInvestment: BigNumber;
+        maxInvestment: BigNumber;
         whitelistRequired: boolean;
         finalized: boolean;
         cancelled: boolean;
@@ -239,6 +291,11 @@ export class ICfManagerSoftcap extends BaseContract {
         info: string;
       }
     >;
+
+    investments(
+      investor: string,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
 
     setInfo(info: string, overrides?: CallOverrides): Promise<void>;
   };
@@ -251,9 +308,16 @@ export class ICfManagerSoftcap extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
+    claims(investor: string, overrides?: CallOverrides): Promise<BigNumber>;
+
     getInfoHistory(overrides?: CallOverrides): Promise<BigNumber>;
 
     getState(overrides?: CallOverrides): Promise<BigNumber>;
+
+    investments(
+      investor: string,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
 
     setInfo(
       info: string,
@@ -267,9 +331,19 @@ export class ICfManagerSoftcap extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
+    claims(
+      investor: string,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
     getInfoHistory(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     getState(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    investments(
+      investor: string,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
 
     setInfo(
       info: string,

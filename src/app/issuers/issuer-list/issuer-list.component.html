@@ -1,12 +1,13 @@
 <div class="px-4 py-2 max-w-screen-lg mx-auto">
-  <ng-container *ngIf="issuers$ | async as issuers">
+  <div *ngIf="issuers$ | async as issuersRes">
+    <div>
+      Select issuer:
+    </div>
+
     <ng-container *ngIf="address$ | async as address">
-      <ng-container *ngIf="issuers.value">
-        <div>
-          Select issuer:
-        </div>
-        <div class="flex flex-wrap gap-1 mt-2">
-          <ng-container *ngFor="let issuer of issuers.value">
+      <ng-container *ngIf="issuersRes.value as issuers">
+        <div class="flex flex-wrap gap-1 mt-2" *ngIf="issuers.length > 0">
+          <ng-container *ngFor="let issuer of issuers">
             <div class="p-2 min-w-[10rem] bg-blue-400 rounded-lg relative">
               <span>{{ issuer.name ?? 'Unknown' }}</span>
               <img class="max-w-[10rem] max-h-20" *ngIf="issuer.logo"
@@ -16,7 +17,7 @@
               <div class="flex flex-col absolute p-2 top-0 right-0 opacity-20 hover:opacity-100
               transition-all ease-in-out">
                 <button class="bg-gray-300 shadow-md rounded-md p-1"
-                        routerLink="{{ issuer.address }}">
+                        routerLink="{{ issuer.contractAddress }}">
                   <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24"
                        stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -25,7 +26,7 @@
                 </button>
                 <button class="bg-gray-300 shadow-md rounded-md p-1 mt-1"
                         *ngIf="address.value === issuer.owner"
-                        routerLink="{{ issuer.address }}/edit">
+                        routerLink="{{ issuer.contractAddress }}/edit">
                   <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24"
                        stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -38,20 +39,23 @@
             </div>
           </ng-container>
         </div>
-
-        <button class="bg-blue-500 disabled:bg-gray-400 text-white p-2 rounded-md mt-2"
-                routerLink="new">
-          New issuer
-        </button>
+        <div *ngIf="issuers.length === 0">
+          No issuers
+        </div>
       </ng-container>
 
-      <ng-container *ngIf="issuers.error">
-        Cannot fetch issuers: {{ issuers.error }}
+      <ng-container *ngIf="issuersRes.error">
+        Cannot fetch issuers: {{ issuersRes.error }}
       </ng-container>
 
-      <ng-container *ngIf="issuers.loading">
+      <ng-container *ngIf="issuersRes.loading">
         Loading issuers
       </ng-container>
     </ng-container>
-  </ng-container>
+  </div>
+
+  <button class="bg-blue-500 disabled:bg-gray-400 text-white p-2 rounded-md mt-2"
+          routerLink="new">
+    New issuer
+  </button>
 </div>

@@ -33,6 +33,16 @@ const _abi = [
         type: "uint256",
       },
       {
+        internalType: "uint256",
+        name: "minInvestment",
+        type: "uint256",
+      },
+      {
+        internalType: "uint256",
+        name: "maxInvestment",
+        type: "uint256",
+      },
+      {
         internalType: "bool",
         name: "whitelistRequired",
         type: "bool",
