@@ -4,7 +4,7 @@ import {withStatus, WithStatus} from '../../shared/utils/observables'
 import {IssuerService, IssuerWithInfo} from '../../shared/services/blockchain/issuer.service'
 import {ActivatedRoute} from '@angular/router'
 import {SessionQuery} from '../../session/state/session.query'
-import {switchMap, tap} from 'rxjs/operators'
+import {map, switchMap, tap} from 'rxjs/operators'
 
 @Component({
   selector: 'app-issuer-detail',
@@ -15,6 +15,7 @@ import {switchMap, tap} from 'rxjs/operators'
 export class IssuerDetailComponent {
   issuer$: Observable<WithStatus<IssuerWithInfo>>
   address$ = this.sessionQuery.address$.pipe(
+    map(value => ({value: value})),
     tap(() => ɵmarkDirty(this)),
   )
 

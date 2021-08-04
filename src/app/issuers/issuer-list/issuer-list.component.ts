@@ -2,7 +2,7 @@ import {Component, OnInit, ChangeDetectionStrategy, ɵmarkDirty} from '@angular/
 import {Observable} from 'rxjs'
 import {WithStatus} from '../../shared/utils/observables'
 import {IssuerService, IssuerWithInfo} from '../../shared/services/blockchain/issuer.service'
-import {tap} from 'rxjs/operators'
+import {map, tap} from 'rxjs/operators'
 import {SessionQuery} from '../../session/state/session.query'
 
 @Component({
@@ -14,6 +14,7 @@ import {SessionQuery} from '../../session/state/session.query'
 export class IssuerListComponent {
   issuers$: Observable<WithStatus<IssuerWithInfo[]>> = this.issuerService.issuers$
   address$ = this.sessionQuery.address$.pipe(
+    map(value => ({value: value})),
     tap(() => ɵmarkDirty(this)),
   )
 

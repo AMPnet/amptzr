@@ -1,5 +1,5 @@
 import {ChangeDetectionStrategy, Component} from '@angular/core'
-import {from, Observable} from 'rxjs'
+import {BehaviorSubject, combineLatest, from, Observable} from 'rxjs'
 import {withStatus, WithStatus} from '../../shared/utils/observables'
 import {IssuerService, IssuerWithInfo} from '../../shared/services/blockchain/issuer.service'
 import {ActivatedRoute} from '@angular/router'
@@ -8,6 +8,7 @@ import {switchMap, tap} from 'rxjs/operators'
 import {FormBuilder, FormGroup, Validators} from '@angular/forms'
 import {IpfsService} from '../../shared/services/ipfs/ipfs.service'
 import {SignerService} from '../../shared/services/signer.service'
+import {DialogService} from '../../shared/services/dialog.service'
 
 @Component({
   selector: 'app-issuer-edit',
@@ -17,7 +18,10 @@ import {SignerService} from '../../shared/services/signer.service'
 })
 export class IssuerEditComponent {
   issuerAddress = this.route.snapshot.params.id
+
+  issuerRefreshSub = new BehaviorSubject<{ isLazy: boolean }>({isLazy: false})
   issuer$: Observable<WithStatus<IssuerWithInfo>>
+
   updateForm: FormGroup
 
   constructor(private route: ActivatedRoute,
@@ -25,31 +29,45 @@ export class IssuerEditComponent {
               private sessionQuery: SessionQuery,
               private ipfsService: IpfsService,
               private signerService: SignerService,
+              private dialogService: DialogService,
               private fb: FormBuilder) {
-    this.issuer$ = this.sessionQuery.provider$.pipe(
-      switchMap(provider =>
-        withStatus(from(this.issuerService.getIssuerWithInfo(this.issuerAddress, provider))),
-      ),
-      tap(issuer => issuer.value && this.updateForm.setValue({
-        ...this.updateForm.value,
-        name: issuer.value.name,
-      })),
-    )
-
     this.updateForm = this.fb.group({
       name: ['', Validators.required],
       logo: [undefined],
     })
+
+    this.issuer$ = combineLatest([
+      this.issuerRefreshSub.asObservable(),
+      this.sessionQuery.provider$,
+    ]).pipe(
+      switchMap(([refresh, provider]) =>
+        withStatus(
+          from(this.issuerService.getIssuerWithInfo(this.issuerAddress, provider)),
+          {hideLoading: refresh.isLazy},
+        ),
+      ),
+      tap(issuer => {
+        if (issuer.value) {
+          this.updateForm.reset()
+          this.updateForm.setValue({
+            ...this.updateForm.value,
+            name: issuer.value.name || '' ,
+          })
+        }
+      }),
+    )
   }
 
   update(issuer: IssuerWithInfo) {
     return () => {
       return this.issuerService.uploadInfo(
-        this.updateForm.get('name')!.value,
-        this.updateForm.get('logo')!.value?.[0],
+        this.updateForm.value.name,
+        this.updateForm.value.logo?.[0],
         issuer,
       ).pipe(
-        switchMap(uploadRes => this.issuerService.updateInfo(this.issuerAddress, uploadRes.path))
+        switchMap(uploadRes => this.issuerService.updateInfo(this.issuerAddress, uploadRes.path)),
+        tap(() => this.issuerRefreshSub.next({isLazy: true})),
+        switchMap(() => this.dialogService.info('Issuer successfully updated!', false)),
       )
     }
   }

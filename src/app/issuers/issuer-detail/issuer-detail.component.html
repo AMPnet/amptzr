@@ -1,4 +1,8 @@
 <div class="px-4 py-2 max-w-screen-lg mx-auto">
+  <div class="my-4">
+    <a routerLink="/issuers">ᐊ Back to Issuers</a>
+  </div>
+
   <ng-container *ngIf="(issuer$ | async) as issuerRes">
     <ng-container *ngIf="issuerRes.value as issuer">
       <ng-container *ngIf="(address$ | async) as address">
@@ -25,7 +29,7 @@
         </div>
 
         <button class="bg-blue-500 disabled:bg-gray-400 text-white p-2 rounded-md mt-2"
-                *ngIf="issuer.owner === address"
+                *ngIf="issuer.owner === address.value"
                 routerLink="edit">
           Edit
         </button>

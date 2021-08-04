@@ -1,4 +1,8 @@
 <div class="px-4 py-2 max-w-screen-lg mx-auto">
+  <div class="my-4">
+    <a routerLink="/issuers">ᐊ Back to Issuers</a>
+  </div>
+
   <ng-container *ngIf="(issuer$ | async) as issuerRes">
     <ng-container *ngIf="issuerRes.value as issuer">
       <form [formGroup]="updateForm">

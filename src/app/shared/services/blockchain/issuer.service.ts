@@ -2,7 +2,7 @@ import {Injectable} from '@angular/core'
 import {combineLatest, from, Observable, of} from 'rxjs'
 import {first, map, switchMap} from 'rxjs/operators'
 import {Issuer, Issuer__factory, IssuerFactory, IssuerFactory__factory} from '../../../../../types/ethers-contracts'
-import {withStatus} from '../../utils/observables'
+import {WithStatus, withStatus} from '../../utils/observables'
 import {SessionQuery} from '../../../session/state/session.query'
 import {PreferenceQuery} from '../../../preference/state/preference.query'
 import {BigNumber, providers, Signer} from 'ethers'
@@ -16,13 +16,13 @@ import {SignerService} from '../signer.service'
   providedIn: 'root',
 })
 export class IssuerService {
-  issuerFactory$ = this.sessionQuery.provider$.pipe(
+  issuerFactory$: Observable<IssuerFactory> = this.sessionQuery.provider$.pipe(
     map(provider =>
       IssuerFactory__factory.connect(this.preferenceQuery.network.tokenizerConfig.issuerFactory, provider),
     ),
   )
 
-  issuers$ = this.issuerFactory$.pipe(
+  issuers$: Observable<WithStatus<IssuerWithInfo[]>> = this.issuerFactory$.pipe(
     switchMap(issuerFactory => withStatus(
       from(issuerFactory.getInstances()).pipe(
         switchMap(issuers => combineLatest(
