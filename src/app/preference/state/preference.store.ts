@@ -19,7 +19,7 @@ export function createInitialState(): PreferenceState {
     JWTAccessToken: '',
     JWTRefreshToken: '',
     chainID: Networks[<ChainID>Number(environment.fixed?.chainID)]?.chainID || MumbaiNetwork.chainID,
-    issuer: environment.fixed.issuer || MumbaiNetwork.tokenizerConfig.defaultIssuer
+    issuer: environment.fixed.issuer || MumbaiNetwork.tokenizerConfig.defaultIssuer,
   }
 }
 

@@ -7,7 +7,10 @@ export interface IPFSAsset {
 
   logo: url | cid
   description: string | cid
-  documents: Array<string | cid>
+  documents: {
+    name: string,
+    location: string | cid
+  }[]
 }
 
 type url = string

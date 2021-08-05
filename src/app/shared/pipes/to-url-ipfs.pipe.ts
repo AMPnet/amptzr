@@ -5,9 +5,9 @@ import {IpfsService} from '../services/ipfs/ipfs.service'
   providedIn: 'root',
 })
 @Pipe({
-  name: 'toImageURL',
+  name: 'toUrlIPFS',
 })
-export class ToImageUrlPipe implements PipeTransform {
+export class ToUrlIPFSPipe implements PipeTransform {
   constructor(private ipfsService: IpfsService) {
   }
 

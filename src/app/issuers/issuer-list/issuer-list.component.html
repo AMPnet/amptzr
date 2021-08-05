@@ -11,7 +11,7 @@
             <div class="p-2 min-w-[10rem] bg-blue-400 rounded-lg relative">
               <span>{{ issuer.name ?? 'Unknown' }}</span>
               <img class="max-w-[10rem] max-h-20" *ngIf="issuer.logo"
-                   src="{{ issuer.logo | toImageURL }}" alt="Issuer logo">
+                   src="{{ issuer.logo | toUrlIPFS }}" alt="Issuer logo">
 
               <!-- action buttons -->
               <div class="flex flex-col absolute p-2 top-0 right-0 opacity-20 hover:opacity-100
@@ -45,7 +45,8 @@
       </ng-container>
 
       <ng-container *ngIf="issuersRes.error">
-        Cannot fetch issuers: {{ issuersRes.error }}
+        Cannot fetch issuers.
+        <div hidden>{{ issuersRes.error | json }}</div>
       </ng-container>
 
       <ng-container *ngIf="issuersRes.loading">

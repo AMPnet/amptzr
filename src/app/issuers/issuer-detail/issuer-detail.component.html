@@ -13,19 +13,22 @@
         <div>
           Logo:
           <img class="p-4 max-w-xs max-h-xs" *ngIf="issuer.logo"
-               [src]="issuer.logo | toImageURL" alt="Issuer Logo">
+               [src]="issuer.logo | toUrlIPFS" alt="Issuer Logo">
         </div>
 
         <div>
-          Address: {{ issuer.contractAddress }}
+          Address: {{ issuer.contractAddress | addrShort }}
+          <app-value-copy [value]="issuer.contractAddress"></app-value-copy>
         </div>
 
         <div>
-          Stablecoin address: {{ issuer.stablecoin }}
+          Stablecoin address: {{ issuer.stablecoin | addrShort }}
+          <app-value-copy [value]="issuer.stablecoin"></app-value-copy>
         </div>
 
         <div>
-          Wallet approver address: {{ issuer.walletApprover }}
+          Wallet approver address: {{ issuer.walletApprover | addrShort }}
+          <app-value-copy [value]="issuer.walletApprover"></app-value-copy>
         </div>
 
         <button class="bg-blue-500 disabled:bg-gray-400 text-white p-2 rounded-md mt-2"
@@ -47,7 +50,7 @@
                   <div>Symbol: {{ asset.symbol ?? 'Unknown' }}</div>
 
                   <img class="max-w-[10rem] max-h-20" *ngIf="asset.logo"
-                       src="{{ asset.logo | toImageURL }}" alt="Issuer logo">
+                       src="{{ asset.logo | toUrlIPFS }}" alt="Issuer logo">
 
                   <!-- action buttons -->
                   <div class="flex flex-col absolute p-2 top-0 right-0 opacity-20 hover:opacity-100
@@ -81,7 +84,8 @@
           </ng-container>
 
           <ng-container *ngIf="assetsRes.error">
-            Failed to fetch assets: {{ assetsRes.error }}
+            Cannot fetch assets.
+            <div hidden>{{ assetsRes.error | json }}</div>
           </ng-container>
 
           <ng-container *ngIf="assetsRes.loading">
@@ -89,7 +93,6 @@
           </ng-container>
         </div>
       </div>
-
 
       <div class="flex gap-1">
         <button class="bg-blue-500 disabled:bg-gray-400 text-white p-2 rounded-md mt-2"
@@ -104,7 +107,8 @@
     </ng-container>
 
     <ng-container *ngIf="issuerRes.error">
-      Cannot fetch issuer: {{ issuerRes.error }}
+      Cannot fetch issuer.
+      <div hidden>{{ issuerRes.error | json }}</div>
     </ng-container>
 
     <ng-container *ngIf="issuerRes.loading">

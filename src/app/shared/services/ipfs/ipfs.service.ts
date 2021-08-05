@@ -49,9 +49,17 @@ export class IpfsService {
     return this.IPFSApiService.addFile(file)
   }
 
+  addText(content: string): Observable<IPFSAddResult> {
+    return this.addObject<IPFSText>({content})
+  }
+
   addObject<ipfsObject>(data: ipfsObject): Observable<IPFSAddResult> {
     return this.IPFSApiService.addObject(data as unknown as object)
   }
 }
 
-type ipfsObject = IPFSAsset | IPFSCampaign | IPFSIssuer
+export interface IPFSText {
+  content: string
+}
+
+type ipfsObject = IPFSAsset | IPFSCampaign | IPFSIssuer | IPFSText

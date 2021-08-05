@@ -1,13 +1,16 @@
 import {Injectable} from '@angular/core'
 import {combineLatest, from, Observable, of} from 'rxjs'
 import {Asset, Asset__factory, AssetFactory, AssetFactory__factory} from '../../../../../types/ethers-contracts'
-import {map, switchMap} from 'rxjs/operators'
+import {first, map, switchMap} from 'rxjs/operators'
 import {SessionQuery} from '../../../session/state/session.query'
 import {PreferenceQuery} from '../../../preference/state/preference.query'
-import {BigNumber, Signer} from 'ethers'
+import {BigNumber, BigNumberish, Signer} from 'ethers'
 import {Provider} from '@ethersproject/providers'
 import {IPFSAsset} from '../../../../../types/ipfs/asset'
 import {IpfsService} from '../ipfs/ipfs.service'
+import {SignerService} from '../signer.service'
+import {findLog} from '../../utils/ethersjs'
+import {IPFSAddResult} from '../ipfs/ipfs.service.types'
 
 @Injectable({
   providedIn: 'root',
@@ -21,6 +24,7 @@ export class AssetService {
 
   constructor(private sessionQuery: SessionQuery,
               private ipfsService: IpfsService,
+              private signerService: SignerService,
               private preferenceQuery: PreferenceQuery) {
   }
 
@@ -51,6 +55,44 @@ export class AssetService {
       )),
     )
   }
+
+  uploadInfo(logo: File, description: string, asset?: IPFSAsset): Observable<IPFSAddResult> {
+    return combineLatest([
+      logo ? this.ipfsService.addFile(logo) : of(undefined),
+      this.ipfsService.addText(description),
+    ]).pipe(
+      switchMap(([logoIPFS, descriptionIPFS]) => this.ipfsService.addObject<IPFSAsset>({
+        version: 0.1,
+        logo: logoIPFS?.path || asset?.logo || '',
+        description: descriptionIPFS.path || asset?.description || '',
+        documents: [], // TODO: implement documents upload
+      })),
+    )
+  }
+
+  create(data: CreateAssetData): Observable<string | undefined> {
+    return combineLatest([
+      this.signerService.ensureAuth,
+      this.factoryContract$,
+    ]).pipe(
+      first(),
+      map(([signer, contract]) => contract.connect(signer)),
+      switchMap(contract => {
+        const creator = this.sessionQuery.getValue().address!
+
+        return from(contract.functions.create(
+          creator, data.issuer,
+          data.initialTokenSupply, data.whitelistRequiredForTransfer,
+          data.name, data.symbol, data.info,
+        )).pipe(
+          switchMap(tx => this.sessionQuery.provider.waitForTransaction(tx.hash)),
+          map(receipt => findLog(
+            receipt, contract, contract.interface.getEvent('AssetCreated'),
+          )?.args?.asset),
+        )
+      }),
+    )
+  }
 }
 
 export interface AssetState {
@@ -68,3 +110,12 @@ export interface AssetState {
 }
 
 export type AssetWithInfo = AssetState & IPFSAsset
+
+interface CreateAssetData {
+  issuer: string,
+  initialTokenSupply: BigNumberish,
+  whitelistRequiredForTransfer: boolean,
+  name: string,
+  symbol: string,
+  info: string,
+}

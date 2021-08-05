@@ -14,7 +14,7 @@
         <div class="mt-2">
           <label for="logo">Logo</label>
           <img class="p-4 max-w-xs max-h-xs"
-               [src]="((updateForm.get('logo')?.value?.[0] | safe:'fileUrl') || issuer.logo) | toImageURL"
+               [src]="((updateForm.get('logo')?.value?.[0] | safe:'fileUrl') || issuer.logo) | toUrlIPFS"
                alt="Issuer Logo">
           <input id="logo" type="file" formControlName="logo" multiple>
         </div>
@@ -29,7 +29,8 @@
     </ng-container>
 
     <ng-container *ngIf="issuerRes.error">
-      Cannot fetch issuer: {{ issuerRes.error }}
+      Cannot fetch issuer.
+      <div hidden>{{ issuerRes.error | json }}</div>
     </ng-container>
 
     <ng-container *ngIf="issuerRes.loading">

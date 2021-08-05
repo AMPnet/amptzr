@@ -18,7 +18,7 @@ export class OffersCardSmallComponent {
     roi: '',
     minInvestment: 0,
     titleImageSrc: '',
-    display: 'small'
+    display: 'small',
   }
 
   constructor() {

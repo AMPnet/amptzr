@@ -43,17 +43,19 @@ import {ProfileAddMandatoryComponent} from './profile/profile-add-mandatory/prof
 import {ReactiveFormsModule} from '@angular/forms'
 import {CurrencyMaskDirective} from './shared/directives/currency-mask.directive'
 import {ValueCopyComponent} from './shared/components/value-copy/value-copy.component'
-import {ToImageUrlPipe} from './shared/pipes/to-image-url.pipe'
 import {FileInputAccessorDirective} from './shared/directives/file-input-accessor.directive'
 import {IssuerEditComponent} from './issuers/issuer-edit/issuer-edit.component'
 import {SafePipe} from './shared/pipes/safe.pipe'
 import {IssuerNewComponent} from './issuers/issuer-new/issuer-new.component'
 import {IssuerListComponent} from './issuers/issuer-list/issuer-list.component'
 import {IssuerDetailComponent} from './issuers/issuer-detail/issuer-detail.component'
-import { AssetNewComponent } from './assets/asset-new/asset-new.component'
-import { AssetEditComponent } from './assets/asset-edit/asset-edit.component'
-import { AssetDetailComponent } from './assets/asset-detail/asset-detail.component'
-import { AssetCampaignNewComponent } from './assets/asset-campaign-new/asset-campaign-new.component'
+import {AssetNewComponent} from './assets/asset-new/asset-new.component'
+import {AssetEditComponent} from './assets/asset-edit/asset-edit.component'
+import {AssetDetailComponent} from './assets/asset-detail/asset-detail.component'
+import {AssetCampaignNewComponent} from './assets/asset-campaign-new/asset-campaign-new.component'
+import {FormatUnitPipe} from './shared/pipes/format-unit.pipe'
+import {ToTextIpfsPipe} from './shared/pipes/to-text-ipfs.pipe'
+import {ToUrlIPFSPipe} from './shared/pipes/to-url-ipfs.pipe'
 
 @NgModule({
   declarations: [
@@ -83,8 +85,10 @@ import { AssetCampaignNewComponent } from './assets/asset-campaign-new/asset-cam
     VeriffComponent,
     FaqComponent,
     AuthProviderNamePipe,
-    ToImageUrlPipe,
+    ToUrlIPFSPipe,
     SafePipe,
+    FormatUnitPipe,
+    ToTextIpfsPipe,
     ProfileAddMandatoryComponent,
     CurrencyMaskDirective,
     ValueCopyComponent,

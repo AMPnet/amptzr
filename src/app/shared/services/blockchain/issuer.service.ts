@@ -4,12 +4,13 @@ import {first, map, switchMap} from 'rxjs/operators'
 import {Issuer, Issuer__factory, IssuerFactory, IssuerFactory__factory} from '../../../../../types/ethers-contracts'
 import {SessionQuery} from '../../../session/state/session.query'
 import {PreferenceQuery} from '../../../preference/state/preference.query'
-import {BigNumber, providers, Signer} from 'ethers'
+import {BigNumber, Signer} from 'ethers'
 import {Provider} from '@ethersproject/providers'
 import {IpfsService} from '../ipfs/ipfs.service'
 import {IPFSIssuer} from '../../../../../types/ipfs/issuer'
 import {IPFSAddResult} from '../ipfs/ipfs.service.types'
 import {SignerService} from '../signer.service'
+import {findLog} from '../../utils/ethersjs'
 
 @Injectable({
   providedIn: 'root',
@@ -94,23 +95,12 @@ export class IssuerService {
           createData.walletApprover, createData.info,
         )).pipe(
           switchMap(tx => this.sessionQuery.provider.waitForTransaction(tx.hash)),
-          map(receipt => this.getDeployedIssuer(receipt, contract)),
+          map(receipt => findLog(
+            receipt, contract, contract.interface.getEvent('IssuerCreated'),
+          )?.args?.issuer),
         )
       }),
     )
-  }
-
-  private getDeployedIssuer(receipt: providers.TransactionReceipt, contract: IssuerFactory): string | undefined {
-    return receipt.logs
-      .map(log => {
-        try {
-          return contract.interface.parseLog(log)
-        } catch (_e) {
-          return undefined
-        }
-      })
-      .find(log => log?.name === contract.interface.getEvent('IssuerCreated').name)
-      ?.args?.issuer
   }
 }
 

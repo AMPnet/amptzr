@@ -28,7 +28,7 @@ export class OffersComponent {
         roi: "12%",
         minInvestment: 650,
         titleImageSrc: "https://images.pexels.com/photos/2850347/pexels-photo-2850347.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260",
-        display: "large"
+        display: "large",
       },
       {
         title: "Wind Farm Stupnik",
@@ -40,7 +40,7 @@ export class OffersComponent {
         roi: "12%",
         minInvestment: 650,
         titleImageSrc: "https://www.afrik21.africa/wp-content/uploads/2019/06/shutterstock_275763713-2-800x400.jpg",
-        display: "small"
+        display: "small",
       },
       {
         title: "Yacht Charter in Murter, Croatia",
@@ -52,7 +52,7 @@ export class OffersComponent {
         roi: "6,5%",
         minInvestment: 50,
         titleImageSrc: "https://marinanovi.hr/wp-content/uploads/2020/12/152-1024x575.jpg",
-        display: "small"
+        display: "small",
       },
       {
         title: "Fairmont Kea Lani, Maui Resort Renewal",
@@ -64,7 +64,7 @@ export class OffersComponent {
         roi: "12%",
         minInvestment: 200,
         titleImageSrc: "https://media.kempinski.com/1139/kempinski-hotel-adriatic-luxury-pool-area-at-daytime.jpg;width=1905;height=794;mode=crop;anchor=middlecenter;autorotate=true;quality=85;scale=both;progressive=true;encoder=freeimage;format=jpg",
-        display: "large"
+        display: "large",
       },
     ])
   }

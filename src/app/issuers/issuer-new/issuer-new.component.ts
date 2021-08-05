@@ -31,7 +31,7 @@ export class IssuerNewComponent {
       this.createForm.get('name')!.value,
       this.createForm.get('logo')!.value?.[0],
     ).pipe(
-      switchMap(uploadRes => this.issuerService.create(uploadRes.path).pipe()),
+      switchMap(uploadRes => this.issuerService.create(uploadRes.path)),
       switchMap(issuerAddress => this.dialogService.info('Issuer successfully created!', false).pipe(
         switchMap(() => this.router.navigate([`/issuers/${issuerAddress}`])),
       )),

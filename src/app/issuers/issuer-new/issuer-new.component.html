@@ -13,7 +13,7 @@
       <label for="logo">Logo</label>
       <img class="p-4 max-w-xs max-h-xs"
            *ngIf="createForm.get('logo')?.value?.[0]"
-           [src]="(createForm.get('logo')?.value?.[0] | safe:'fileUrl') | toImageURL"
+           [src]="(createForm.get('logo')?.value?.[0] | safe:'fileUrl') | toUrlIPFS"
            alt="Issuer Logo">
       <input id="logo" type="file" formControlName="logo" multiple>
     </div>

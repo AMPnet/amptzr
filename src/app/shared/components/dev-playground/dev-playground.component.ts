@@ -1,7 +1,6 @@
 import {ChangeDetectionStrategy, Component} from '@angular/core'
-import {combineLatest, Observable, Subject} from 'rxjs'
-import {concatMap, switchMap, tap} from 'rxjs/operators'
-import {withStatus} from '../../utils/observables'
+import {Observable, Subject} from 'rxjs'
+import {concatMap, switchMap} from 'rxjs/operators'
 import {SignerService} from '../../services/signer.service'
 import {utils} from 'ethers'
 import {DialogService} from '../../services/dialog.service'
@@ -12,7 +11,6 @@ import {SessionQuery} from '../../../session/state/session.query'
 import {HttpClient} from '@angular/common/http'
 import {FormBuilder, FormGroup, Validators} from '@angular/forms'
 import {IpfsService} from '../../services/ipfs/ipfs.service'
-import {IPFSIssuer} from '../../../../../types/ipfs/issuer'
 import {IPFSAddResult} from '../../services/ipfs/ipfs.service.types'
 
 @Component({

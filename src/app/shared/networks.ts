@@ -56,7 +56,7 @@ export const MaticNetwork: Network = {
     deployerService: '0x29aF1b53f2cb555B5621A9F13c24711A9EDdEC40',
     defaultWalletApprover: '0x23B00A11F6DBbD3a850a0AE72668109133779575',
     defaultIssuer: '0xD17574450885C1b898bc835Ff9CB5b44A3601c24',
-    defaultStableCoin: '0x18D71D80087084df631f95EF29C8a11904DC47F3'
+    defaultStableCoin: '0x18D71D80087084df631f95EF29C8a11904DC47F3',
   },
   venlyConfig: {
     secretType: SecretType.MATIC,
@@ -82,7 +82,7 @@ export const MumbaiNetwork: Network = {
     deployerService: '0x29aF1b53f2cb555B5621A9F13c24711A9EDdEC40',
     defaultWalletApprover: '0xf35808CF8Af3b92c78447619905D201833f8f64e',
     defaultIssuer: '0xD17574450885C1b898bc835Ff9CB5b44A3601c24',
-    defaultStableCoin: '0x18D71D80087084df631f95EF29C8a11904DC47F3'
+    defaultStableCoin: '0x18D71D80087084df631f95EF29C8a11904DC47F3',
   },
   venlyConfig: {
     secretType: SecretType.MATIC,

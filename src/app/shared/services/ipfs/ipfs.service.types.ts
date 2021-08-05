@@ -2,6 +2,7 @@ import {Observable} from 'rxjs'
 
 export interface IPFSApi {
   addObject(data: object): Observable<IPFSAddResult>
+
   addFile(file: File): Observable<IPFSAddResult>
 }
 
