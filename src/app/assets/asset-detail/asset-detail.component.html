@@ -10,67 +10,65 @@
           Asset details
         </h1>
 
-        <ng-container *ngIf="(address$ | async) as address">
-          <div>
-            Name: {{ asset.name ?? 'Unknown' }}
-          </div>
+        <div>
+          Name: {{ asset.name ?? 'Unknown' }}
+        </div>
 
-          <div>
-            Logo:
-            <img class="p-4 max-w-xs max-h-xs" *ngIf="asset.logo"
-                 [src]="asset.logo | toUrlIPFS" alt="Asset Logo">
-          </div>
+        <div>
+          Logo:
+          <img class="p-4 max-w-xs max-h-xs" *ngIf="asset.logo"
+               [src]="asset.logo | toUrlIPFS" alt="Asset Logo">
+        </div>
 
-          <div>
-            Address: {{ asset.contractAddress | addrShort }}
-            <app-value-copy [value]="asset.contractAddress"></app-value-copy>
-          </div>
+        <div>
+          Address: {{ asset.contractAddress | addrShort }}
+          <app-value-copy [value]="asset.contractAddress"></app-value-copy>
+        </div>
 
-          <div>
-            Issuer address: {{ asset.issuer | addrShort }}
-            <app-value-copy [value]="asset.issuer"></app-value-copy>
-          </div>
+        <div>
+          Issuer address: {{ asset.issuer | addrShort }}
+          <app-value-copy [value]="asset.issuer"></app-value-copy>
+        </div>
 
-          <div>
-            Owner address: {{ asset.owner | addrShort }}
-            <app-value-copy [value]="asset.owner"></app-value-copy>
-          </div>
+        <div>
+          Owner address: {{ asset.owner | addrShort }}
+          <app-value-copy [value]="asset.owner"></app-value-copy>
+        </div>
 
-          <div>
-            Symbol: {{ asset.symbol }}
-          </div>
+        <div>
+          Symbol: {{ asset.symbol }}
+        </div>
 
-          <div>
-            Initial token supply:
-            {{ asset.initialTokenSupply | formatUnit:'bignumToWei' | number }}
-          </div>
+        <div>
+          Initial token supply:
+          {{ asset.initialTokenSupply | formatUnit:'bignumToWei' | number }}
+        </div>
 
-          <div>
-            <span class="block">Description:</span>
-            <ng-container *ngIf="(asset.description | toTextIPFS | async) as descriptionRes">
-              <ng-container *ngIf="descriptionRes.value as description">
-                <div>
-                  {{ description }}
-                </div>
-              </ng-container>
-
-              <ng-container *ngIf="descriptionRes.error">
-                Cannot fetch description.
-                <div hidden>{{ descriptionRes.error | json }}</div>
-              </ng-container>
-
-              <ng-container *ngIf="descriptionRes.loading">
-                Loading description...
-              </ng-container>
+        <div>
+          <span class="block">Description:</span>
+          <ng-container *ngIf="(asset.description | toTextIPFS | async) as descriptionRes">
+            <ng-container *ngIf="descriptionRes.value as description">
+              <div>
+                {{ description }}
+              </div>
             </ng-container>
-          </div>
 
-          <button class="bg-blue-500 disabled:bg-gray-400 text-white p-2 rounded-md mt-2"
-                  *ngIf="asset.owner === address.value"
-                  routerLink="edit">
-            Edit
-          </button>
-        </ng-container>
+            <ng-container *ngIf="descriptionRes.error">
+              Cannot fetch description.
+              <div hidden>{{ descriptionRes.error | json }}</div>
+            </ng-container>
+
+            <ng-container *ngIf="descriptionRes.loading">
+              Loading description...
+            </ng-container>
+          </ng-container>
+        </div>
+
+        <button class="bg-blue-500 disabled:bg-gray-400 text-white p-2 rounded-md mt-2"
+                *ngIf="asset.owner === address.value"
+                routerLink="edit">
+          Edit
+        </button>
 
         <div class="mt-2">
           Campaigns:

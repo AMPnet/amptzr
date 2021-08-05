@@ -12,6 +12,12 @@ export class FormatUnitPipe implements PipeTransform {
     switch (operation) {
       case Operation.BIGNUM_TO_WEI:
         return utils.formatEther(value)
+      case Operation.PARSE_TOKEN_PRICE:
+        return Number(value) / 10_000
+      case Operation.TO_TOKEN_PRICE:
+        return Number(value) * 10_000
+      case Operation.TO_NUMBER:
+        return Number(value)
       default:
         throw new Error(`Invalid safe type specified: ${operation}`)
     }
@@ -19,5 +25,8 @@ export class FormatUnitPipe implements PipeTransform {
 }
 
 enum Operation {
-  BIGNUM_TO_WEI = 'bignumToWei'
+  BIGNUM_TO_WEI = 'bignumToWei',
+  PARSE_TOKEN_PRICE = 'parseTokenPrice',
+  TO_TOKEN_PRICE = 'toTokenPrice',
+  TO_NUMBER = 'toNumber',
 }

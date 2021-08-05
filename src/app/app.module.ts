@@ -140,6 +140,7 @@ import {CampaignNewComponent} from './campaigns/campaign-new/campaign-new.compon
       useValue: {baseUrl: 'https://jsonplaceholder.typicode.com'},
     },
     CurrencyPipe,
+    FormatUnitPipe,
   ],
   bootstrap: [AppComponent],
 })
