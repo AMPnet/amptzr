@@ -14,7 +14,7 @@ export class ToTextIpfsPipe implements PipeTransform {
   constructor(private ipfsService: IpfsService) {
   }
 
-  transform<T>(value: any): Observable<WithStatus<string>> {
+  transform(value: any): Observable<WithStatus<string>> {
     const cid = this.ipfsService.toCID(value)
 
     if (!cid) {

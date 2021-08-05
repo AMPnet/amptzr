@@ -3,6 +3,10 @@
     <a routerLink="/issuers">ᐊ Back to Issuers</a>
   </div>
 
+  <h1 class="my-2 text-2xl uppercase">
+    Issuer details
+  </h1>
+
   <ng-container *ngIf="(issuer$ | async) as issuerRes">
     <ng-container *ngIf="issuerRes.value as issuer">
       <ng-container *ngIf="(address$ | async) as address">

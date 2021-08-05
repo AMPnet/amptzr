@@ -7,7 +7,7 @@ import {PreferenceQuery} from '../../../preference/state/preference.query'
 import {BigNumber, BigNumberish, Signer} from 'ethers'
 import {Provider} from '@ethersproject/providers'
 import {IPFSAsset} from '../../../../../types/ipfs/asset'
-import {IpfsService} from '../ipfs/ipfs.service'
+import {IpfsService, IPFSText} from '../ipfs/ipfs.service'
 import {SignerService} from '../signer.service'
 import {findLog} from '../../utils/ethersjs'
 import {IPFSAddResult} from '../ipfs/ipfs.service.types'
@@ -47,12 +47,20 @@ export class AssetService {
     )
   }
 
-  getAssetWithInfo(address: string): Observable<AssetWithInfo> {
+  getAssetWithInfo(address: string, fullInfo = false): Observable<AssetWithInfo> {
     return this.sessionQuery.provider$.pipe(
       switchMap(provider => this.getState(address, provider)),
       switchMap(state => this.ipfsService.get<IPFSAsset>(state.info).pipe(
         map(info => ({...state, ...info})),
       )),
+      switchMap(asset => fullInfo ? combineLatest([
+        this.ipfsService.get<IPFSText>(asset.description)
+      ]).pipe(
+        map(([descriptionRes]) => ({
+          ...asset,
+          description: descriptionRes.content
+        }))
+      ) : of(asset))
     )
   }
 
@@ -67,6 +75,14 @@ export class AssetService {
         description: descriptionIPFS.path || asset?.description || '',
         documents: [], // TODO: implement documents upload
       })),
+    )
+  }
+
+  updateInfo(assetAddress: string, infoHash: string) {
+    return this.signerService.ensureAuth.pipe(
+      map(signer => this.contract(assetAddress, signer)),
+      switchMap(contract => contract.setInfo(infoHash)),
+      switchMap(tx => this.sessionQuery.provider.waitForTransaction(tx.hash)),
     )
   }
 

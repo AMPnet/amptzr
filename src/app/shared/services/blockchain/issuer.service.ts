@@ -67,9 +67,9 @@ export class IssuerService {
     )
   }
 
-  updateInfo(address: string, infoHash: string) {
+  updateInfo(issuerAddress: string, infoHash: string) {
     return this.signerService.ensureAuth.pipe(
-      map(signer => this.contract(address, signer)),
+      map(signer => this.contract(issuerAddress, signer)),
       switchMap(contract => contract.setInfo(infoHash)),
       switchMap(tx => this.sessionQuery.provider.waitForTransaction(tx.hash)),
     )

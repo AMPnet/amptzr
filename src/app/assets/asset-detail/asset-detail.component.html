@@ -5,6 +5,10 @@
         <a routerLink="/issuers/{{ asset.issuer }}">ᐊ Back to Issuer</a>
       </div>
 
+      <h1 class="my-2 text-2xl uppercase">
+        Asset details
+      </h1>
+
       <ng-container *ngIf="(address$ | async) as address">
         <div>
           Name: {{ asset.name ?? 'Unknown' }}

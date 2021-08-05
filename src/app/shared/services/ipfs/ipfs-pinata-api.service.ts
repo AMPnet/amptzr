@@ -42,4 +42,3 @@ interface PinataPinResponse {
   PinSize: number,
   Timestamp: Date
 }
-
