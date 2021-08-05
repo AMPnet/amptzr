@@ -54,13 +54,13 @@ export class AssetService {
         map(info => ({...state, ...info})),
       )),
       switchMap(asset => fullInfo ? combineLatest([
-        this.ipfsService.get<IPFSText>(asset.description)
+        this.ipfsService.get<IPFSText>(asset.description),
       ]).pipe(
         map(([descriptionRes]) => ({
           ...asset,
-          description: descriptionRes.content
-        }))
-      ) : of(asset))
+          description: descriptionRes.content,
+        })),
+      ) : of(asset)),
     )
   }
 

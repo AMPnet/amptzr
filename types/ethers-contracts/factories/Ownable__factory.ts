@@ -4,15 +4,31 @@
 
 import { Contract, Signer, utils } from "ethers";
 import { Provider } from "@ethersproject/providers";
-import type {
-  IGlobalRegistry,
-  IGlobalRegistryInterface,
-} from "../IGlobalRegistry";
+import type { Ownable, OwnableInterface } from "../Ownable";
 
 const _abi = [
   {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: true,
+        internalType: "address",
+        name: "previousOwner",
+        type: "address",
+      },
+      {
+        indexed: true,
+        internalType: "address",
+        name: "newOwner",
+        type: "address",
+      },
+    ],
+    name: "OwnershipTransferred",
+    type: "event",
+  },
+  {
     inputs: [],
-    name: "assetFactory",
+    name: "owner",
     outputs: [
       {
         internalType: "address",
@@ -25,54 +41,35 @@ const _abi = [
   },
   {
     inputs: [],
-    name: "cfManagerFactory",
-    outputs: [
-      {
-        internalType: "address",
-        name: "",
-        type: "address",
-      },
-    ],
-    stateMutability: "view",
+    name: "renounceOwnership",
+    outputs: [],
+    stateMutability: "nonpayable",
     type: "function",
   },
   {
-    inputs: [],
-    name: "issuerFactory",
-    outputs: [
+    inputs: [
       {
         internalType: "address",
-        name: "",
+        name: "newOwner",
         type: "address",
       },
     ],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [],
-    name: "payoutManagerFactory",
-    outputs: [
-      {
-        internalType: "address",
-        name: "",
-        type: "address",
-      },
-    ],
-    stateMutability: "view",
+    name: "transferOwnership",
+    outputs: [],
+    stateMutability: "nonpayable",
     type: "function",
   },
 ];
 
-export class IGlobalRegistry__factory {
+export class Ownable__factory {
   static readonly abi = _abi;
-  static createInterface(): IGlobalRegistryInterface {
-    return new utils.Interface(_abi) as IGlobalRegistryInterface;
+  static createInterface(): OwnableInterface {
+    return new utils.Interface(_abi) as OwnableInterface;
   }
   static connect(
     address: string,
     signerOrProvider: Signer | Provider
-  ): IGlobalRegistry {
-    return new Contract(address, _abi, signerOrProvider) as IGlobalRegistry;
+  ): Ownable {
+    return new Contract(address, _abi, signerOrProvider) as Ownable;
   }
 }

@@ -18,6 +18,9 @@ import {AssetNewComponent} from './assets/asset-new/asset-new.component'
 import {AssetDetailComponent} from './assets/asset-detail/asset-detail.component'
 import {AssetEditComponent} from './assets/asset-edit/asset-edit.component'
 import {AssetCampaignNewComponent} from './assets/asset-campaign-new/asset-campaign-new.component'
+import {CampaignNewComponent} from './campaigns/campaign-new/campaign-new.component'
+import {CampaignDetailComponent} from './campaigns/campaign-detail/campaign-detail.component'
+import {CampaignEditComponent} from './campaigns/campaign-edit/campaign-edit.component'
 
 const routes: Routes = [
   {
@@ -41,6 +44,9 @@ const routes: Routes = [
       {path: 'issuers/:id/assets/new-with-campaign', component: AssetCampaignNewComponent},
       {path: 'assets/:id', component: AssetDetailComponent},
       {path: 'assets/:id/edit', component: AssetEditComponent},
+      {path: 'assets/:id/campaigns/new', component: CampaignNewComponent},
+      {path: 'campaigns/:id', component: CampaignDetailComponent},
+      {path: 'campaigns/:id/edit', component: CampaignEditComponent},
       {path: 'faq', component: FaqComponent},
       {path: 'dev_playground', component: DevPlaygroundComponent},
     ],

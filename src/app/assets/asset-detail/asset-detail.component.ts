@@ -5,6 +5,7 @@ import {AssetService, AssetWithInfo} from '../../shared/services/blockchain/asse
 import {map, tap} from 'rxjs/operators'
 import {ActivatedRoute} from '@angular/router'
 import {SessionQuery} from '../../session/state/session.query'
+import {CampaignService, CampaignWithInfo} from '../../shared/services/blockchain/campaign.service'
 
 @Component({
   selector: 'app-asset-detail',
@@ -14,6 +15,7 @@ import {SessionQuery} from '../../session/state/session.query'
 })
 export class AssetDetailComponent {
   asset$: Observable<WithStatus<AssetWithInfo>>
+  campaigns$: Observable<WithStatus<CampaignWithInfo[]>>
   address$ = this.sessionQuery.address$.pipe(
     map(value => ({value: value})),
     tap(() => ɵmarkDirty(this)),
@@ -21,8 +23,10 @@ export class AssetDetailComponent {
 
   constructor(private route: ActivatedRoute,
               private assetService: AssetService,
+              private campaignService: CampaignService,
               private sessionQuery: SessionQuery) {
     const assetAddress = this.route.snapshot.params.id
     this.asset$ = withStatus(this.assetService.getAssetWithInfo(assetAddress))
+    this.campaigns$ = withStatus(this.campaignService.getCampaigns(assetAddress))
   }
 }

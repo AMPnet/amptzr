@@ -6,7 +6,7 @@ export interface IPFSCampaign {
   version: number
 
   name: string
-  logo: url | cid
+  photo: url | cid
   /*
   Short description about the campaign. It is usually represented by a short explanation in
   a textual format (<280 characters).
@@ -17,13 +17,19 @@ export interface IPFSCampaign {
   inline HTML content (WYSIWYG) in textual format.
    */
   description: string | cid
-  startDate: Date
-  endDate: Date
+  startDate: iso8601
+  endDate: iso8601
   return: {
     from?: number,
     to?: number,
   }
+  documents: {
+    name: string,
+    location: string | cid
+  }[]
+  newsURLs: string[]
 }
 
 type url = string
 type cid = string
+type iso8601 = string

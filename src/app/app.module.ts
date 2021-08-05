@@ -56,6 +56,9 @@ import {AssetCampaignNewComponent} from './assets/asset-campaign-new/asset-campa
 import {FormatUnitPipe} from './shared/pipes/format-unit.pipe'
 import {ToTextIpfsPipe} from './shared/pipes/to-text-ipfs.pipe'
 import {ToUrlIPFSPipe} from './shared/pipes/to-url-ipfs.pipe'
+import {CampaignDetailComponent} from './campaigns/campaign-detail/campaign-detail.component'
+import {CampaignEditComponent} from './campaigns/campaign-edit/campaign-edit.component'
+import {CampaignNewComponent} from './campaigns/campaign-new/campaign-new.component'
 
 @NgModule({
   declarations: [
@@ -102,6 +105,9 @@ import {ToUrlIPFSPipe} from './shared/pipes/to-url-ipfs.pipe'
     AssetEditComponent,
     AssetDetailComponent,
     AssetCampaignNewComponent,
+    CampaignDetailComponent,
+    CampaignEditComponent,
+    CampaignNewComponent,
   ],
   imports: [
     BrowserModule,
