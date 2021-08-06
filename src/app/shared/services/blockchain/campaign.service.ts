@@ -15,7 +15,7 @@ import {IpfsService, IPFSText} from '../ipfs/ipfs.service'
 import {SignerService} from '../signer.service'
 import {findLog} from '../../utils/ethersjs'
 import {IPFSAddResult} from '../ipfs/ipfs.service.types'
-import {cid, IPFSCampaign} from '../../../../../types/ipfs/campaign'
+import {cid, IPFSCampaign, IPFSDocument, iso8601} from '../../../../../types/ipfs/campaign'
 
 @Injectable({
   providedIn: 'root',
@@ -80,8 +80,8 @@ export class CampaignService {
         photo: photoIPFS?.path || campaign?.photo || '',
         about: data.about || '',
         description: descriptionIPFS.path || campaign?.description || '',
-        startDate: new Date(Date.now()).toISOString(),
-        endDate: new Date(Date.now()).toISOString(),
+        startDate: data.startDate || '',
+        endDate: data.endDate || '',
         return: data.return || {},
         documents: data.documents || [],
         newsURLs: data.newsURLs || [],
@@ -160,16 +160,14 @@ interface UploadInfoData {
   name: string
   photo: File
   about: string
-  description: string
-  startDate: string
-  endDate: string
+  description: cid
+  startDate: iso8601
+  endDate: iso8601
   return: {
     from?: number
     to?: number
   },
-  documents: {
-    name: string,
-    location: string | cid
-  }[]
+  documents: IPFSDocument[]
+  newDocuments: File[]
   newsURLs: string[]
 }

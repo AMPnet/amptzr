@@ -4,7 +4,7 @@ import {Asset, Asset__factory, AssetFactory, AssetFactory__factory} from '../../
 import {first, map, switchMap} from 'rxjs/operators'
 import {SessionQuery} from '../../../session/state/session.query'
 import {PreferenceQuery} from '../../../preference/state/preference.query'
-import {BigNumber, BigNumberish, Signer} from 'ethers'
+import {BigNumber, BigNumberish, Signer, utils} from 'ethers'
 import {Provider} from '@ethersproject/providers'
 import {IPFSAsset} from '../../../../../types/ipfs/asset'
 import {IpfsService, IPFSText} from '../ipfs/ipfs.service'
@@ -107,6 +107,23 @@ export class AssetService {
           )?.args?.asset),
         )
       }),
+    )
+  }
+
+  transferTokensToCampaign(assetAddress: string, campaignAddress: string, amount: number) {
+    return this.signerService.ensureAuth.pipe(
+      map(signer => this.contract(assetAddress, signer)),
+      switchMap(contract => contract.transfer(campaignAddress, utils.parseEther(String(amount)))),
+      switchMap(tx => this.sessionQuery.provider.waitForTransaction(tx.hash)),
+    )
+  }
+
+  balance(assetAddress: string): Observable<BigNumber> {
+    return this.signerService.ensureAuth.pipe(
+      map(signer => this.contract(assetAddress, signer)),
+      switchMap(contract => from(contract.signer.getAddress()).pipe(
+        switchMap(signerAddress => contract.balanceOf(signerAddress)),
+      ))
     )
   }
 }

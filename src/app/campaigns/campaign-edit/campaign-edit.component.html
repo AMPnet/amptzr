@@ -1,1 +1,68 @@
-<p>campaign-edit works!</p>
+<div class="px-4 py-2 max-w-screen-lg mx-auto">
+  <div class="my-4">
+    <a routerLink="/campaigns/{{ campaignAddress }}">ᐊ Back to Campaign</a>
+  </div>
+
+  <h1 class="my-2 text-2xl uppercase">
+    Edit Campaign
+  </h1>
+
+  <ng-container *ngIf="(campaign$ | async) as campaignRes">
+    <ng-container *ngIf="campaignRes.value as campaign">
+      <form [formGroup]="updateForm">
+        <div class="mt-2">
+          <label class="block" for="name">Name</label>
+          <input type="text" id="name" formControlName="name"/>
+        </div>
+
+        <div class="mt-2">
+          <label class="block" for="about">About</label>
+          <textarea id="about" formControlName="about"
+                    rows="2">
+          </textarea>
+        </div>
+
+        <div class="mt-2">
+          <label class="block" for="description">Description</label>
+          <textarea id="description" formControlName="description"
+                    rows="4">
+          </textarea>
+        </div>
+
+        <div class="mt-2">
+          <label class="block" for="photo">Photo</label>
+          <img class="p-4 max-w-xs max-h-xs"
+               [src]="((updateForm.get('photo')?.value?.[0] | safe:'fileUrl') || campaign.photo) | toUrlIPFS"
+               alt="Campaign Logo">
+          <input id="photo" type="file" formControlName="photo" multiple>
+        </div>
+
+        <div class="mt-2">
+          <label class="block" for="startDate">Start date</label>
+          <input type="date" id="startDate" formControlName="startDate"/>
+        </div>
+
+        <div class="mt-2">
+          <label class="block" for="endDate">End date</label>
+          <input type="date" id="endDate" formControlName="endDate"/>
+        </div>
+
+        <button app-action-button
+                class="bg-blue-500 disabled:bg-gray-400 text-white p-2 rounded-md mt-2"
+                text="Update"
+                [disabled]="!updateForm.dirty || !updateForm.valid"
+                [onClick]="update(campaign).bind(this)">
+        </button>
+      </form>
+    </ng-container>
+
+    <ng-container *ngIf="campaignRes.error">
+      Cannot fetch campaign.
+      <div hidden>{{ campaignRes.error | json }}</div>
+    </ng-container>
+
+    <ng-container *ngIf="campaignRes.loading">
+      Fetching Campaign...
+    </ng-container>
+  </ng-container>
+</div>

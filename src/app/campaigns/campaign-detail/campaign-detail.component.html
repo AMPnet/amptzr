@@ -112,11 +112,18 @@
           {{ campaign.totalInvestorsCount | formatUnit:'toNumber' | number }}
         </div>
 
-        <button class="bg-blue-500 disabled:bg-gray-400 text-white p-2 rounded-md mt-2"
-                *ngIf="campaign.owner === address.value"
-                routerLink="edit">
-          Edit
-        </button>
+        <div class="flex gap-1">
+          <button class="bg-blue-500 disabled:bg-gray-400 text-white p-2 rounded-md mt-2"
+                  *ngIf="campaign.owner === address.value"
+                  routerLink="edit">
+            Edit
+          </button>
+          <button class="bg-blue-500 disabled:bg-gray-400 text-white p-2 rounded-md mt-2"
+                  *ngIf="campaign.owner === address.value"
+                  routerLink="/campaigns/{{ campaign.contractAddress }}/add-tokens">
+            Add tokens
+          </button>
+        </div>
       </ng-container>
     </ng-container>
 

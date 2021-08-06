@@ -21,6 +21,7 @@ import {AssetCampaignNewComponent} from './assets/asset-campaign-new/asset-campa
 import {CampaignNewComponent} from './campaigns/campaign-new/campaign-new.component'
 import {CampaignDetailComponent} from './campaigns/campaign-detail/campaign-detail.component'
 import {CampaignEditComponent} from './campaigns/campaign-edit/campaign-edit.component'
+import {CampaignAddTokensComponent} from './campaigns/campaign-add-tokens/campaign-add-tokens.component'
 
 const routes: Routes = [
   {
@@ -47,6 +48,7 @@ const routes: Routes = [
       {path: 'assets/:id/campaigns/new', component: CampaignNewComponent},
       {path: 'campaigns/:id', component: CampaignDetailComponent},
       {path: 'campaigns/:id/edit', component: CampaignEditComponent},
+      {path: 'campaigns/:id/add-tokens', component: CampaignAddTokensComponent},
       {path: 'faq', component: FaqComponent},
       {path: 'dev_playground', component: DevPlaygroundComponent},
     ],

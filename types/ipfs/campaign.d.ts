@@ -23,13 +23,15 @@ export interface IPFSCampaign {
     from?: number,
     to?: number,
   }
-  documents: {
-    name: string,
-    location: string | cid
-  }[]
+  documents: IPFSDocument[]
   newsURLs: string[]
 }
 
 type url = string
 type cid = string
 type iso8601 = string
+
+export interface IPFSDocument {
+  name: string,
+  location: string | cid
+}
