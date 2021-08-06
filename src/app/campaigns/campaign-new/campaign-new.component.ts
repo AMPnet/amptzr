@@ -6,7 +6,7 @@ import {DialogService} from '../../shared/services/dialog.service'
 import {switchMap} from 'rxjs/operators'
 import {utils} from 'ethers'
 import {CampaignService} from '../../shared/services/blockchain/campaign.service'
-import {FormatUnitPipe} from '../../shared/pipes/format-unit.pipe'
+import {TokenPrice} from '../../shared/utils/token-price'
 
 @Component({
   selector: 'app-campaign-new',
@@ -23,7 +23,6 @@ export class CampaignNewComponent {
               private router: Router,
               private route: ActivatedRoute,
               private dialogService: DialogService,
-              private formatUnitPipe: FormatUnitPipe,
               private fb: FormBuilder) {
     this.createForm = this.fb.group({
       name: ['', Validators.required],
@@ -45,8 +44,7 @@ export class CampaignNewComponent {
     }).pipe(
       switchMap(uploadRes => this.campaignService.create({
         assetAddress: this.asset,
-        initialPricePerToken: this.formatUnitPipe.transform(
-          this.createForm.value.initialPricePerToken, 'toTokenPrice'),
+        initialPricePerToken: TokenPrice.format(this.createForm.value.initialPricePerToken),
         softCap: utils.parseEther(String(this.createForm.value.softCap)),
         minInvestment: utils.parseEther(String(this.createForm.value.minInvestment)),
         maxInvestment: utils.parseEther(String(this.createForm.value.maxInvestment)),

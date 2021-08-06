@@ -1,5 +1,6 @@
 import {Pipe, PipeTransform} from '@angular/core'
 import {utils} from 'ethers'
+import {TokenPrice} from '../utils/token-price'
 
 @Pipe({
   name: 'formatUnit',
@@ -13,13 +14,11 @@ export class FormatUnitPipe implements PipeTransform {
       case Operation.BIGNUM_TO_WEI:
         return utils.formatEther(value)
       case Operation.PARSE_TOKEN_PRICE:
-        return Number(value) / 10_000
-      case Operation.TO_TOKEN_PRICE:
-        return Number(value) * 10_000
+        return TokenPrice.parse(value)
       case Operation.TO_NUMBER:
         return Number(value)
       default:
-        throw new Error(`Invalid safe type specified: ${operation}`)
+        throw new Error(`Invalid format unit type specified: ${operation}`)
     }
   }
 }
@@ -27,6 +26,5 @@ export class FormatUnitPipe implements PipeTransform {
 enum Operation {
   BIGNUM_TO_WEI = 'bignumToWei',
   PARSE_TOKEN_PRICE = 'parseTokenPrice',
-  TO_TOKEN_PRICE = 'toTokenPrice',
   TO_NUMBER = 'toNumber',
 }
