@@ -60,6 +60,7 @@ import {CampaignDetailComponent} from './campaigns/campaign-detail/campaign-deta
 import {CampaignEditComponent} from './campaigns/campaign-edit/campaign-edit.component'
 import {CampaignNewComponent} from './campaigns/campaign-new/campaign-new.component'
 import {CampaignAddTokensComponent} from './campaigns/campaign-add-tokens/campaign-add-tokens.component'
+import {IssuerPathPipe} from './shared/pipes/issuer-path.pipe'
 
 @NgModule({
   declarations: [
@@ -93,6 +94,7 @@ import {CampaignAddTokensComponent} from './campaigns/campaign-add-tokens/campai
     SafePipe,
     FormatUnitPipe,
     ToTextIpfsPipe,
+    IssuerPathPipe,
     ProfileAddMandatoryComponent,
     CurrencyMaskDirective,
     ValueCopyComponent,
@@ -142,6 +144,7 @@ import {CampaignAddTokensComponent} from './campaigns/campaign-add-tokens/campai
       useValue: {baseUrl: 'https://jsonplaceholder.typicode.com'},
     },
     CurrencyPipe,
+    IssuerPathPipe,
   ],
   bootstrap: [AppComponent],
 })

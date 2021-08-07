@@ -1,12 +1,13 @@
 import {ChangeDetectionStrategy, Component} from '@angular/core'
 import {FormBuilder, FormGroup, Validators} from '@angular/forms'
 import {SignerService} from '../../shared/services/signer.service'
-import {ActivatedRoute, Router} from '@angular/router'
+import {ActivatedRoute} from '@angular/router'
 import {DialogService} from '../../shared/services/dialog.service'
 import {switchMap} from 'rxjs/operators'
 import {utils} from 'ethers'
 import {CampaignService} from '../../shared/services/blockchain/campaign.service'
 import {TokenPrice} from '../../shared/utils/token-price'
+import {RouterService} from '../../shared/services/router.service'
 
 @Component({
   selector: 'app-campaign-new',
@@ -20,7 +21,7 @@ export class CampaignNewComponent {
 
   constructor(private campaignService: CampaignService,
               private signerService: SignerService,
-              private router: Router,
+              private router: RouterService,
               private route: ActivatedRoute,
               private dialogService: DialogService,
               private fb: FormBuilder) {

@@ -1,7 +1,13 @@
 import {Injectable} from '@angular/core'
 import {combineLatest, from, Observable, of} from 'rxjs'
 import {first, map, switchMap} from 'rxjs/operators'
-import {Issuer, Issuer__factory, IssuerFactory, IssuerFactory__factory} from '../../../../../types/ethers-contracts'
+import {
+  ERC20__factory,
+  Issuer,
+  Issuer__factory,
+  IssuerFactory,
+  IssuerFactory__factory,
+} from '../../../../../types/ethers-contracts'
 import {SessionQuery} from '../../../session/state/session.query'
 import {PreferenceQuery} from '../../../preference/state/preference.query'
 import {BigNumber, Signer} from 'ethers'
@@ -27,6 +33,15 @@ export class IssuerService {
       switchMap(issuers => issuers.length === 0 ? of([]) : combineLatest(
         issuers.map(issuer => this.getIssuerWithInfo(issuer))),
       ))),
+  )
+
+  stablecoin$ = combineLatest([
+    this.preferenceQuery.issuer$,
+    this.sessionQuery.provider$,
+  ]).pipe(
+    switchMap(([issuer, provider]) => this.getState(issuer.address, provider).pipe(
+      map(state => ERC20__factory.connect(state.stablecoin, provider))
+    )),
   )
 
   constructor(private sessionQuery: SessionQuery,

@@ -9,7 +9,7 @@ import {AuthProvider} from '../preference/state/preference.store'
 import {withStatus} from '../shared/utils/observables'
 import {USDC__factory} from '../../../types/ethers-contracts'
 import {TokenMappingService} from '../shared/services/token-mapping.service'
-import {Router} from '@angular/router'
+import {RouterService} from '../shared/services/router.service'
 
 @Component({
   selector: 'app-wallet',
@@ -71,7 +71,7 @@ export class WalletComponent {
               private tokenMappingService: TokenMappingService,
               private signerService: SignerService,
               private venly: VenlySubsignerService,
-              private router: Router) {
+              private router: RouterService) {
   }
 
   logout(): Observable<unknown> {

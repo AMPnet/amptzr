@@ -2,7 +2,7 @@ import {ChangeDetectionStrategy, Component, ɵmarkDirty} from '@angular/core'
 import {AbstractControl, FormBuilder, FormGroup, ValidationErrors, Validators} from '@angular/forms'
 import {CampaignService, CampaignWithInfo} from '../../shared/services/blockchain/campaign.service'
 import {SignerService} from '../../shared/services/signer.service'
-import {ActivatedRoute, Router} from '@angular/router'
+import {ActivatedRoute} from '@angular/router'
 import {DialogService} from '../../shared/services/dialog.service'
 import {map, shareReplay, switchMap, take, tap} from 'rxjs/operators'
 import {BigNumber, utils} from 'ethers'
@@ -10,6 +10,7 @@ import {AssetService, AssetState} from '../../shared/services/blockchain/asset.s
 import {combineLatest, Observable} from 'rxjs'
 import {withStatus, WithStatus} from '../../shared/utils/observables'
 import {SessionQuery} from '../../session/state/session.query'
+import {RouterService} from '../../shared/services/router.service'
 
 @Component({
   selector: 'app-campaign-add-tokens',
@@ -36,7 +37,7 @@ export class CampaignAddTokensComponent {
               private campaignService: CampaignService,
               private signerService: SignerService,
               private sessionQuery: SessionQuery,
-              private router: Router,
+              private router: RouterService,
               private route: ActivatedRoute,
               private dialogService: DialogService,
               private fb: FormBuilder) {

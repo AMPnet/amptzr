@@ -5,11 +5,11 @@ import {catchError, concatMap, finalize, map, switchMap, take, tap} from 'rxjs/o
 import {SessionStore} from '../../session/state/session.store'
 import {SessionQuery} from '../../session/state/session.query'
 import {DialogService} from './dialog.service'
-import {Router} from '@angular/router'
 import {PreferenceStore} from '../../preference/state/preference.store'
 import {MetamaskSubsignerService, Subsigner} from './subsigners/metamask-subsigner.service'
 import {MatDialog} from '@angular/material/dialog'
 import {AuthComponent} from '../../auth/auth.component'
+import {RouterService} from './router.service'
 
 @Injectable({
   providedIn: 'root',
@@ -30,7 +30,7 @@ export class SignerService {
               private preferenceStore: PreferenceStore,
               private metamaskSubsignerService: MetamaskSubsignerService,
               private ngZone: NgZone,
-              private router: Router,
+              private router: RouterService,
               private dialog: MatDialog,
               private dialogService: DialogService) {
     this.subscribeToChanges()

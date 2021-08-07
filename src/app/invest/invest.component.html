@@ -74,7 +74,7 @@
 
                 <!-- Submit Button for Amount input form -->
                 <button *ngIf="investmentForm.get('amount')?.errors?.walletBalanceTooLow"
-                        routerLink="/wallet"
+                        [routerLink]="'/wallet' | issuerPath"
                         class="bg-indigo-800 rounded-full w-full lg:w-auto px-16 py-2 text-sm mt-4
                         lg:mt-8 text-white float-right disabled:bg-gray-500">
                   Open Wallet ->

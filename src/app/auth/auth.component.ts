@@ -1,5 +1,4 @@
 import {ChangeDetectionStrategy, Component, Optional} from '@angular/core'
-import {Router} from '@angular/router'
 import {Observable} from 'rxjs'
 import {tap} from 'rxjs/operators'
 import {PreferenceQuery} from '../preference/state/preference.query'
@@ -10,6 +9,7 @@ import {MetamaskSubsignerService} from '../shared/services/subsigners/metamask-s
 import {VenlySubsignerService} from '../shared/services/subsigners/venly-subsigner.service'
 import {WalletConnectSubsignerService} from '../shared/services/subsigners/walletconnect-subsigner.service'
 import {MatDialogRef} from '@angular/material/dialog'
+import {RouterService} from '../shared/services/router.service'
 
 @Component({
   selector: 'app-auth',
@@ -27,7 +27,7 @@ export class AuthComponent {
               private walletConnectSubsignerService: WalletConnectSubsignerService,
               private venlySubsignerService: VenlySubsignerService,
               private preferenceQuery: PreferenceQuery,
-              private router: Router,
+              private router: RouterService,
               @Optional() private dialogRef: MatDialogRef<AuthComponent>) {
   }
 

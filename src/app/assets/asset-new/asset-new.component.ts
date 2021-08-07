@@ -1,11 +1,12 @@
 import {ChangeDetectionStrategy, Component} from '@angular/core'
 import {FormBuilder, FormGroup, Validators} from '@angular/forms'
 import {SignerService} from '../../shared/services/signer.service'
-import {ActivatedRoute, Router} from '@angular/router'
+import {ActivatedRoute} from '@angular/router'
 import {DialogService} from '../../shared/services/dialog.service'
 import {switchMap} from 'rxjs/operators'
 import {AssetService} from '../../shared/services/blockchain/asset.service'
 import {utils} from 'ethers'
+import {RouterService} from '../../shared/services/router.service'
 
 @Component({
   selector: 'app-asset-new',
@@ -19,7 +20,7 @@ export class AssetNewComponent {
 
   constructor(private assetService: AssetService,
               private signerService: SignerService,
-              private router: Router,
+              private router: RouterService,
               private route: ActivatedRoute,
               private dialogService: DialogService,
               private fb: FormBuilder) {

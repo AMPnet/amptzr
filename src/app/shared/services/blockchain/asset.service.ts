@@ -123,7 +123,7 @@ export class AssetService {
       map(signer => this.contract(assetAddress, signer)),
       switchMap(contract => from(contract.signer.getAddress()).pipe(
         switchMap(signerAddress => contract.balanceOf(signerAddress)),
-      ))
+      )),
     )
   }
 }

@@ -13,8 +13,13 @@ export class PreferenceQuery extends Query<PreferenceState> {
   network$ = this.select('chainID').pipe(
     map(chainID => Networks[chainID]),
   )
+  issuer$ = this.select('issuer')
 
   get network() {
     return Networks[this.getValue().chainID]
+  }
+
+  get issuer() {
+    return this.getValue().issuer
   }
 }

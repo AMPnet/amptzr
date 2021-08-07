@@ -9,7 +9,11 @@ export interface PreferenceState {
   JWTAccessToken: string;
   JWTRefreshToken: string;
   chainID: ChainID;
-  issuer: string
+  issuer: {
+    address: string,
+    createdByAddress?: string
+    slug?: string
+  }
 }
 
 export function createInitialState(): PreferenceState {
@@ -19,7 +23,9 @@ export function createInitialState(): PreferenceState {
     JWTAccessToken: '',
     JWTRefreshToken: '',
     chainID: Networks[<ChainID>Number(environment.fixed?.chainID)]?.chainID || MumbaiNetwork.chainID,
-    issuer: environment.fixed.issuer || MumbaiNetwork.tokenizerConfig.defaultIssuer,
+    issuer: {
+      address: environment.fixed.issuer || MumbaiNetwork.tokenizerConfig.defaultIssuer,
+    },
   }
 }
 
