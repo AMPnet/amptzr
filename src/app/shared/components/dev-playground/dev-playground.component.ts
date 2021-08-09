@@ -1,5 +1,5 @@
 import {ChangeDetectionStrategy, Component} from '@angular/core'
-import {Observable, Subject} from 'rxjs'
+import {Observable} from 'rxjs'
 import {concatMap, switchMap} from 'rxjs/operators'
 import {SignerService} from '../../services/signer.service'
 import {utils} from 'ethers'
@@ -11,7 +11,6 @@ import {SessionQuery} from '../../../session/state/session.query'
 import {HttpClient} from '@angular/common/http'
 import {FormBuilder, FormGroup, Validators} from '@angular/forms'
 import {IpfsService} from '../../services/ipfs/ipfs.service'
-import {IPFSAddResult} from '../../services/ipfs/ipfs.service.types'
 
 @Component({
   selector: 'app-dev-playground',
@@ -20,7 +19,6 @@ import {IPFSAddResult} from '../../services/ipfs/ipfs.service.types'
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DevPlaygroundComponent {
-  contentSub = new Subject<IPFSAddResult>()
   investForm: FormGroup
 
   constructor(private ipfsService: IpfsService,

@@ -13,7 +13,7 @@ export class CurrencyDefaultPipe implements PipeTransform {
               private stablecoinService: StablecoinService) {
   }
 
-  // TODO: finish adding stablecoin symbol
+  // TODO: finish adding stablecoin symbol from stablecoinService
   transform(
     value: number | string,
     code = 'USD',

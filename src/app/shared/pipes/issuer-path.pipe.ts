@@ -18,8 +18,6 @@ export class IssuerPathPipe implements PipeTransform {
 
     if (path.startsWith('/')) {
       const identifier = this.preferenceQuery.issuer.slug
-      // TODO: set to slug when available
-      // const identifier = this.preferenceQuery.issuer.slug
 
       if (identifier) {
         path = `/${identifier}${path}`
