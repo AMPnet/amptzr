@@ -1,8 +1,6 @@
 import {ChangeDetectionStrategy, Component} from '@angular/core'
-import {Observable, Subject} from 'rxjs'
-import {concatMap, switchMap, tap} from 'rxjs/operators'
-import {withStatus} from '../../utils/observables'
-import {IpfsService} from '../../services/ipfs.service'
+import {Observable} from 'rxjs'
+import {concatMap, switchMap} from 'rxjs/operators'
 import {SignerService} from '../../services/signer.service'
 import {utils} from 'ethers'
 import {DialogService} from '../../services/dialog.service'
@@ -12,6 +10,7 @@ import {TokenMappingService} from '../../services/token-mapping.service'
 import {SessionQuery} from '../../../session/state/session.query'
 import {HttpClient} from '@angular/common/http'
 import {FormBuilder, FormGroup, Validators} from '@angular/forms'
+import {IpfsService} from '../../services/ipfs/ipfs.service'
 
 @Component({
   selector: 'app-dev-playground',
@@ -20,7 +19,6 @@ import {FormBuilder, FormGroup, Validators} from '@angular/forms'
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DevPlaygroundComponent {
-  contentSub = new Subject<string>()
   investForm: FormGroup
 
   constructor(private ipfsService: IpfsService,
@@ -33,22 +31,9 @@ export class DevPlaygroundComponent {
               private fb: FormBuilder,
               private dialogService: DialogService) {
     this.investForm = this.fb.group({
-      amount: [0, Validators.required]
+      amount: [0, Validators.required],
     })
   }
-
-  upload(): Observable<unknown> {
-    return this.ipfsService.addJSON({halo: 'theres'}).pipe(
-      tap(res => {
-        console.log(res)
-        this.contentSub.next(res.path)
-      }),
-    )
-  }
-
-  content$ = this.contentSub.asObservable().pipe(
-    switchMap(contentPath => withStatus(this.ipfsService.get(contentPath))),
-  )
 
   signMessage(): Observable<unknown> {
     const message = 'YOLO'

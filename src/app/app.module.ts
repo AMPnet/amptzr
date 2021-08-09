@@ -43,6 +43,24 @@ import {ProfileAddMandatoryComponent} from './profile/profile-add-mandatory/prof
 import {ReactiveFormsModule} from '@angular/forms'
 import {CurrencyMaskDirective} from './shared/directives/currency-mask.directive'
 import {ValueCopyComponent} from './shared/components/value-copy/value-copy.component'
+import {FileInputAccessorDirective} from './shared/directives/file-input-accessor.directive'
+import {IssuerEditComponent} from './issuers/issuer-edit/issuer-edit.component'
+import {SafePipe} from './shared/pipes/safe.pipe'
+import {IssuerNewComponent} from './issuers/issuer-new/issuer-new.component'
+import {IssuerListComponent} from './issuers/issuer-list/issuer-list.component'
+import {IssuerDetailComponent} from './issuers/issuer-detail/issuer-detail.component'
+import {AssetNewComponent} from './assets/asset-new/asset-new.component'
+import {AssetEditComponent} from './assets/asset-edit/asset-edit.component'
+import {AssetDetailComponent} from './assets/asset-detail/asset-detail.component'
+import {AssetCampaignNewComponent} from './assets/asset-campaign-new/asset-campaign-new.component'
+import {FormatUnitPipe} from './shared/pipes/format-unit.pipe'
+import {ToTextIpfsPipe} from './shared/pipes/to-text-ipfs.pipe'
+import {ToUrlIPFSPipe} from './shared/pipes/to-url-ipfs.pipe'
+import {CampaignDetailComponent} from './campaigns/campaign-detail/campaign-detail.component'
+import {CampaignEditComponent} from './campaigns/campaign-edit/campaign-edit.component'
+import {CampaignNewComponent} from './campaigns/campaign-new/campaign-new.component'
+import {CampaignAddTokensComponent} from './campaigns/campaign-add-tokens/campaign-add-tokens.component'
+import {IssuerPathPipe} from './shared/pipes/issuer-path.pipe'
 
 @NgModule({
   declarations: [
@@ -72,9 +90,28 @@ import {ValueCopyComponent} from './shared/components/value-copy/value-copy.comp
     VeriffComponent,
     FaqComponent,
     AuthProviderNamePipe,
+    ToUrlIPFSPipe,
+    SafePipe,
+    FormatUnitPipe,
+    ToTextIpfsPipe,
+    IssuerPathPipe,
     ProfileAddMandatoryComponent,
     CurrencyMaskDirective,
     ValueCopyComponent,
+    FileInputAccessorDirective,
+    IssuerEditComponent,
+    IssuerDetailComponent,
+    IssuerListComponent,
+    IssuerNewComponent,
+    IssuerListComponent,
+    AssetNewComponent,
+    AssetEditComponent,
+    AssetDetailComponent,
+    AssetCampaignNewComponent,
+    CampaignDetailComponent,
+    CampaignEditComponent,
+    CampaignNewComponent,
+    CampaignAddTokensComponent,
   ],
   imports: [
     BrowserModule,
@@ -107,6 +144,7 @@ import {ValueCopyComponent} from './shared/components/value-copy/value-copy.comp
       useValue: {baseUrl: 'https://jsonplaceholder.typicode.com'},
     },
     CurrencyPipe,
+    IssuerPathPipe,
   ],
   bootstrap: [AppComponent],
 })

@@ -1,0 +1,139 @@
+<div class="px-4 py-2 max-w-screen-lg mx-auto">
+  <ng-container *ngIf="(campaign$ | async) as campaignRes">
+    <ng-container *ngIf="campaignRes.value as campaign">
+      <ng-container *ngIf="(address$ | async) as address">
+        <div class="my-4">
+          <a routerLink="/assets/{{ campaign.asset }}">ᐊ Back to Asset</a>
+        </div>
+
+        <h1 class="my-2 text-2xl uppercase">
+          Campaign details
+        </h1>
+
+        <div>
+          Name: {{ campaign.name ?? 'Unknown' }}
+        </div>
+
+        <div>
+          Logo:
+          <img class="p-4 max-w-xs max-h-xs" *ngIf="campaign.photo"
+               [src]="campaign.photo | toUrlIPFS" alt="Campaign Photo">
+        </div>
+
+        <div>
+          Address: {{ campaign.contractAddress | addrShort }}
+          <app-value-copy [value]="campaign.contractAddress"></app-value-copy>
+        </div>
+
+        <div>
+          Issuer address: {{ campaign.issuer | addrShort }}
+          <app-value-copy [value]="campaign.issuer"></app-value-copy>
+        </div>
+
+        <div>
+          Asset address: {{ campaign.asset | addrShort }}
+          <app-value-copy [value]="campaign.asset"></app-value-copy>
+        </div>
+
+        <div>
+          Owner address: {{ campaign.owner | addrShort }}
+          <app-value-copy [value]="campaign.owner"></app-value-copy>
+        </div>
+
+        <div>
+          Created by address: {{ campaign.createdBy | addrShort }}
+          <app-value-copy [value]="campaign.createdBy"></app-value-copy>
+        </div>
+
+        <div>
+          <span class="block">About:</span>
+          <div>
+            {{ campaign.about | addrShort }}
+          </div>
+        </div>
+
+        <div>
+          <span class="block">Description:</span>
+          <ng-container *ngIf="(campaign.description | toTextIPFS | async) as descriptionRes">
+            <ng-container *ngIf="descriptionRes.value as description">
+              <div>
+                {{ description }}
+              </div>
+            </ng-container>
+
+            <ng-container *ngIf="descriptionRes.error">
+              Cannot fetch description.
+              <div hidden>{{ descriptionRes.error | json }}</div>
+            </ng-container>
+
+            <ng-container *ngIf="descriptionRes.loading">
+              Loading description...
+            </ng-container>
+          </ng-container>
+        </div>
+
+        <div>
+          Token price:
+          {{ campaign.tokenPrice | formatUnit:'parseTokenPrice' | currencyDefault }}
+        </div>
+
+        <div>
+          Total claimable tokens:
+          {{ campaign.totalClaimableTokens | formatUnit:'bignumToWei' | number }}
+        </div>
+
+        <div>
+          Soft cap:
+          {{ campaign.softCap | formatUnit:'bignumToWei' | currencyDefault }}
+        </div>
+
+        <div>
+          Min investment:
+          {{ campaign.minInvestment | formatUnit:'bignumToWei' | currencyDefault }}
+        </div>
+
+        <div>
+          Max investment:
+          {{ campaign.maxInvestment | formatUnit:'bignumToWei' | currencyDefault }}
+        </div>
+
+        <div>
+          Total funds raised:
+          {{ campaign.totalFundsRaised | formatUnit:'bignumToWei' | currencyDefault }}
+        </div>
+
+        <div>
+          Total claims count:
+          {{ campaign.totalClaimsCount | formatUnit:'toNumber' | number }}
+        </div>
+
+        <div>
+          Total investors count:
+          {{ campaign.totalInvestorsCount | formatUnit:'toNumber' | number }}
+        </div>
+
+        <div class="flex gap-1">
+          <button class="bg-blue-500 disabled:bg-gray-400 text-white p-2 rounded-md mt-2"
+                  *ngIf="campaign.owner === address.value"
+                  routerLink="edit">
+            Edit
+          </button>
+          <button class="bg-blue-500 disabled:bg-gray-400 text-white p-2 rounded-md mt-2"
+                  *ngIf="campaign.owner === address.value"
+                  routerLink="/campaigns/{{ campaign.contractAddress }}/add-tokens">
+            Add tokens
+          </button>
+        </div>
+      </ng-container>
+    </ng-container>
+
+    <ng-container *ngIf="campaignRes.error">
+      Cannot fetch campaign.
+      <div hidden>{{ campaignRes.error | json }}</div>
+    </ng-container>
+
+    <ng-container *ngIf="campaignRes.loading">
+      Fetching campaign...
+    </ng-container>
+  </ng-container>
+</div>

@@ -3,14 +3,14 @@ import {EMPTY, Observable, of, throwError} from 'rxjs'
 import {catchError, switchMap, tap} from 'rxjs/operators'
 import {HttpErrorResponse} from '@angular/common/http'
 import {JwtTokenService} from './backend/jwt-token.service'
-import {Router} from '@angular/router'
 import {DialogService} from './dialog.service'
+import {RouterService} from './router.service'
 
 @Injectable({
   providedIn: 'root',
 })
 export class ErrorService {
-  constructor(private router: Router,
+  constructor(private router: RouterService,
               private dialogService: DialogService,
               private jwtTokenService: JwtTokenService) {
   }

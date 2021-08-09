@@ -1,0 +1,86 @@
+<div class="px-4 py-2 max-w-screen-lg mx-auto">
+  <div class="flex content-center items-center">
+    <label for="network" class="">
+      Network
+    </label>
+    <select name="network" id="network"
+            (change)="networkChanged($event)"
+            class="m-2 p-2 bg-blue-200 rounded-md">
+      <option *ngFor="let network of networks"
+              [selected]="currentNetwork === network"
+              [value]="network.chainId">
+        {{ network.name }}
+      </option>
+    </select>
+  </div>
+
+  <div *ngIf="issuers$ | async as issuersRes">
+    <div>
+      Select issuer:
+    </div>
+
+    <ng-container *ngIf="address$ | async as address">
+      <ng-container *ngIf="issuersRes.value as issuers">
+        <div class="flex flex-wrap gap-1 mt-2" *ngIf="issuers.length > 0">
+          <ng-container *ngFor="let issuer of issuers">
+            <div class="p-2 min-w-[10rem] bg-blue-400 rounded-lg relative">
+              <span>{{ issuer.name ?? 'Unknown' }}</span>
+              <img class="max-w-[10rem] max-h-20" *ngIf="issuer.logo"
+                   src="{{ issuer.logo | toUrlIPFS }}" alt="Issuer logo">
+
+              <!-- action buttons -->
+              <div class="flex flex-col absolute p-2 top-0 right-0 opacity-20 hover:opacity-100
+              transition-all ease-in-out">
+                <button class="bg-gray-300 shadow-md rounded-md p-1"
+                        routerLink="{{ issuer.contractAddress }}">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24"
+                       stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                          d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                  </svg>
+                </button>
+                <button class="bg-gray-300 shadow-md rounded-md p-1 mt-1"
+                        *ngIf="address.value === issuer.owner"
+                        routerLink="{{ issuer.contractAddress }}/edit">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24"
+                       stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                          d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                          d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                  </svg>
+                </button>
+              </div>
+
+              <!-- Open button -->
+              <div class="flex flex-col absolute w-full p-2 bottom-0 left-0 opacity-20 hover:opacity-100
+              transition-all ease-in-out">
+                <button class="bg-gray-300 shadow-md rounded-md p-1"
+                        routerLink="/{{ issuer.ansName }}">
+                  Open
+                </button>
+              </div>
+            </div>
+          </ng-container>
+        </div>
+        <div *ngIf="issuers.length === 0">
+          No issuers
+        </div>
+      </ng-container>
+
+      <ng-container *ngIf="issuersRes.error">
+        Cannot fetch issuers.
+        <div hidden>{{ issuersRes.error | json }}</div>
+      </ng-container>
+
+      <ng-container *ngIf="issuersRes.loading">
+        Loading issuers
+      </ng-container>
+    </ng-container>
+  </div>
+
+  <button class="bg-blue-500 disabled:bg-gray-400 text-white p-2 rounded-md mt-2"
+          routerLink="new">
+    New issuer
+  </button>
+</div>

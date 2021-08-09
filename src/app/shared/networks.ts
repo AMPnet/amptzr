@@ -17,7 +17,26 @@ export interface Network {
     symbol: string;
   },
   rpcURLs: string[],
-  explorerURLs: string[]
+  explorerURLs: string[],
+  tokenizerConfig: TokenizerConfig,
+  venlyConfig: VenlyConfig
+}
+
+interface TokenizerConfig {
+  issuerFactory: string,
+  assetFactory: string,
+  cfManagerFactory: string,
+  payoutManagerFactory: string,
+  deployerService: string,
+  queryService: string,
+  defaultWalletApprover: string,
+  defaultIssuer: string,
+  defaultStableCoin: string,
+}
+
+interface VenlyConfig {
+  secretType: SecretType
+  env: 'staging' | 'prod'
 }
 
 export const MaticNetwork: Network = {
@@ -30,6 +49,21 @@ export const MaticNetwork: Network = {
   },
   rpcURLs: ['https://rpc-mainnet.maticvigil.com'],
   explorerURLs: ['https://explorer-mainnet.maticvigil.com/'],
+  tokenizerConfig: {
+    issuerFactory: '0x0959b4eBf0Fe2D708C3DB22dc245a32a135Ef818',
+    assetFactory: '0x46B01A62d03E2067bBfC6c88D2f2EEDC31cB75a9',
+    cfManagerFactory: '0xA167Ac0C34C52a4a91a9c93618150b9ef508152C',
+    payoutManagerFactory: '0x39d13eA4781F4FA57a347F5C49dD716048822F16',
+    deployerService: '0x29aF1b53f2cb555B5621A9F13c24711A9EDdEC40',
+    queryService: '0xF80a26Bf08AF7c8C33d6f8cFcFe9641363bA788b',
+    defaultWalletApprover: '0x23B00A11F6DBbD3a850a0AE72668109133779575',
+    defaultIssuer: '0xD17574450885C1b898bc835Ff9CB5b44A3601c24',
+    defaultStableCoin: '0x18D71D80087084df631f95EF29C8a11904DC47F3',
+  },
+  venlyConfig: {
+    secretType: SecretType.MATIC,
+    env: 'prod',
+  },
 }
 
 export const MumbaiNetwork: Network = {
@@ -42,6 +76,26 @@ export const MumbaiNetwork: Network = {
   },
   rpcURLs: ['https://matic-mumbai.chainstacklabs.com'],
   explorerURLs: ['https://explorer-mumbai.maticvigil.com/'],
+  tokenizerConfig: {
+    issuerFactory: '0xb1EA65089c3525BC4F4287Ea83E0E594cDA00b30',
+    assetFactory: '0xd72d91319E5ff36F34761B72a1e47e803Ce65743',
+    cfManagerFactory: '0xa77d68e73752b4e4E6670032400f9a1Da522ed22',
+    payoutManagerFactory: '0x39d13eA4781F4FA57a347F5C49dD716048822F16',
+    deployerService: '0x9E4A2D67E1b63aB1C46000161c8288D5e4dea075',
+    queryService: '0xF80a26Bf08AF7c8C33d6f8cFcFe9641363bA788b',
+    defaultWalletApprover: '0xf35808CF8Af3b92c78447619905D201833f8f64e',
+    defaultIssuer: '0xD17574450885C1b898bc835Ff9CB5b44A3601c24',
+    defaultStableCoin: '0x18D71D80087084df631f95EF29C8a11904DC47F3',
+  },
+  venlyConfig: {
+    secretType: SecretType.MATIC,
+    env: 'staging',
+  },
+}
+
+export const Networks: { [key in ChainID]: Network } = {
+  [ChainID.MATIC_MAINNET]: MaticNetwork,
+  [ChainID.MUMBAI_TESTNET]: MumbaiNetwork,
 }
 
 const getEthersNetwork = (network: Network): providers.Network => ({
@@ -51,12 +105,11 @@ const getEthersNetwork = (network: Network): providers.Network => ({
     new providers.JsonRpcProvider(network.rpcURLs[0]),
 })
 
-export const EthersNetworks: { [key in ChainID]: providers.Network } = {
-  [ChainID.MATIC_MAINNET]: getEthersNetwork(MaticNetwork),
-  [ChainID.MUMBAI_TESTNET]: getEthersNetwork(MumbaiNetwork),
-}
+export const EthersNetworks = Object.fromEntries(Object.entries(Networks)
+  .map((entry) => [entry[0], getEthersNetwork(entry[1])]),
+)
 
-export interface AddEthereumChainParameter {
+interface AddEthereumChainParameter {
   chainId: string; // A 0x-prefixed hexadecimal string
   chainName: string;
   nativeCurrency: {
@@ -81,19 +134,10 @@ const getMetamaskNetwork = (network: Network): AddEthereumChainParameter => ({
   blockExplorerUrls: network.explorerURLs,
 })
 
-export const MetamaskNetworks: { [key in ChainID]: AddEthereumChainParameter } = {
-  [ChainID.MATIC_MAINNET]: getMetamaskNetwork(MaticNetwork),
-  [ChainID.MUMBAI_TESTNET]: getMetamaskNetwork(MumbaiNetwork),
-}
+export const MetamaskNetworks = Object.fromEntries(Object.entries(Networks)
+  .map((entry) => [entry[0], getMetamaskNetwork(entry[1])]),
+)
 
-export const VenlyNetworks: { [key in ChainID]: { secretType: SecretType, env: 'staging' | 'prod' } } = {
-  [ChainID.MATIC_MAINNET]: {
-    secretType: SecretType.MATIC,
-    env: 'prod',
-  },
-  [ChainID.MUMBAI_TESTNET]: {
-    secretType: SecretType.MATIC,
-    env: 'staging',
-  },
-}
-
+export const VenlyNetworks = Object.fromEntries(Object.entries(Networks)
+  .map((entry) => [entry[0], entry[1].venlyConfig]),
+)

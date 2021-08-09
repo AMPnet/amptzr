@@ -1,0 +1,76 @@
+<div class="px-4 py-2 max-w-screen-lg mx-auto">
+  <div class="my-4">
+    <a routerLink="/assets/{{ asset }}">ᐊ Back to Asset</a>
+  </div>
+
+  <h1 class="my-2 text-2xl uppercase">
+    New Campaign
+  </h1>
+
+  <form [formGroup]="createForm">
+    <div class="mt-2">
+      <label class="block" for="name">Name</label>
+      <input type="text" id="name" formControlName="name">
+    </div>
+
+    <div class="mt-2">
+      <label class="block" for="ansName">ANS Name</label>
+      <input type="text" id="ansName" formControlName="ansName">
+    </div>
+
+    <div class="mt-2">
+      <label class="block" for="photo">Photo</label>
+      <img class="p-4 max-w-xs max-h-xs"
+           *ngIf="createForm.get('photo')?.value?.[0]"
+           [src]="(createForm.get('photo')?.value?.[0] | safe:'fileUrl') | toUrlIPFS"
+           alt="Issuer Logo">
+      <input type="file" id="photo" formControlName="photo" multiple>
+    </div>
+
+    <div class="mt-2">
+      <label class="block" for="description">Description</label>
+      <textarea id="description" formControlName="description"
+                rows="4" cols="50">
+      </textarea>
+    </div>
+
+    <div class="mt-2">
+      <label class="block" for="initialPricePerToken">Initial price per token</label>
+      <input type="text" appCurrencyMask
+             id="initialPricePerToken" formControlName="initialPricePerToken">
+    </div>
+
+    <div class="mt-2">
+      <label class="block" for="softCap">Soft cap</label>
+      <input type="text" appCurrencyMask
+             id="softCap" formControlName="softCap">
+    </div>
+
+    <div class="mt-2">
+      <label class="block" for="minInvestment">Min investment</label>
+      <input type="text" appCurrencyMask
+             id="minInvestment" formControlName="minInvestment">
+    </div>
+
+    <div class="mt-2">
+      <label class="block" for="maxInvestment">Max investment</label>
+      <input type="text" appCurrencyMask
+             id="maxInvestment" formControlName="maxInvestment">
+    </div>
+
+    <div class="mt-2 flex items-center">
+      <input type="checkbox" id="whitelistRequired"
+             formControlName="whitelistRequired">
+      <label class="ml-2" for="whitelistRequired">
+        Whitelist required
+      </label>
+    </div>
+
+    <button app-action-button
+            class="bg-blue-500 disabled:bg-gray-400 text-white p-2 rounded-md mt-2"
+            text="Create"
+            [disabled]="!createForm.valid"
+            [onClick]="create.bind(this)">
+    </button>
+  </form>
+</div>

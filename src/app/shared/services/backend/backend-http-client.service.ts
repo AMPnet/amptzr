@@ -8,7 +8,7 @@ import {PreferenceQuery} from '../../../preference/state/preference.query'
 import {DialogService} from '../dialog.service'
 import {SessionQuery} from '../../../session/state/session.query'
 import {SignerService} from '../signer.service'
-import {Router} from '@angular/router'
+import {RouterService} from '../router.service'
 
 @Injectable({
   providedIn: 'root',
@@ -20,7 +20,7 @@ export class BackendHttpClient {
               private sessionQuery: SessionQuery,
               private signerService: SignerService,
               private dialogService: DialogService,
-              private router: Router,
+              private router: RouterService,
               private jwtTokenService: JwtTokenService) {
     this.subscribeToChanges()
   }

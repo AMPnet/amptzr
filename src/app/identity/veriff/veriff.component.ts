@@ -3,11 +3,11 @@ import {BehaviorSubject, EMPTY, from, Observable, Subject, timer} from 'rxjs'
 import {catchError, delay, filter, repeatWhen, switchMap, take, tap} from 'rxjs/operators'
 import {MESSAGES} from '@veriff/incontext-sdk'
 import {DecisionStatus, State, VeriffService, VeriffSession} from './veriff.service'
-import {Router} from '@angular/router'
 import {BackendUserService} from '../../shared/services/backend/backend-user.service'
 import {DialogService} from '../../shared/services/dialog.service'
 import {BackendHttpClient} from '../../shared/services/backend/backend-http-client.service'
 import {MatDialogRef} from '@angular/material/dialog'
+import {RouterService} from '../../shared/services/router.service'
 
 @Component({
   selector: 'app-veriff',
@@ -24,7 +24,7 @@ export class VeriffComponent {
   private approvedSubject = new Subject<void>()
 
   constructor(private renderer2: Renderer2,
-              private router: Router,
+              private router: RouterService,
               private userService: BackendUserService,
               private dialogService: DialogService,
               private http: BackendHttpClient,
