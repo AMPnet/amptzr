@@ -9,7 +9,7 @@ import {
 import {first, map, switchMap} from 'rxjs/operators'
 import {SessionQuery} from '../../../session/state/session.query'
 import {PreferenceQuery} from '../../../preference/state/preference.query'
-import {BigNumber, BigNumberish, Signer} from 'ethers'
+import {BigNumber, BigNumberish, Signer, utils} from 'ethers'
 import {Provider} from '@ethersproject/providers'
 import {IpfsService, IPFSText} from '../ipfs/ipfs.service'
 import {SignerService} from '../signer.service'
@@ -129,6 +129,14 @@ export class CampaignService {
           )?.args?.cfManager),
         )
       }),
+    )
+  }
+
+  invest(address: string, amount: number) {
+    return this.signerService.ensureAuth.pipe(
+      map(signer => this.contract(address, signer)),
+      switchMap(contract => contract.invest(utils.parseEther(amount.toString()))),
+      switchMap(tx => this.sessionQuery.provider.waitForTransaction(tx.hash)),
     )
   }
 }

@@ -8,6 +8,7 @@ import {ActivatedRoute} from '@angular/router'
 import {StablecoinService} from '../shared/services/blockchain/stablecoin.service'
 import {utils} from 'ethers'
 import {DialogService} from '../shared/services/dialog.service'
+import {RouterService} from '../shared/services/router.service'
 
 @Component({
   selector: 'app-invest',
@@ -34,6 +35,7 @@ export class InvestComponent {
               private campaignService: CampaignService,
               private stablecoinService: StablecoinService,
               private dialogService: DialogService,
+              private router: RouterService,
               private route: ActivatedRoute) {
     const campaignID = this.route.snapshot.params.id
 
@@ -117,7 +119,15 @@ export class InvestComponent {
   }
 
   invest() {
-    return of('continue here...')
+    return combineLatest([
+      this.campaign$.pipe(filter(res => !!res.value)),
+    ]).pipe(take(1),
+      switchMap(([campaign]) => this.campaignService.invest(
+        campaign.value!.contractAddress,
+        this.investmentForm.value.amount,
+      )),
+      switchMap(() => this.router.navigate(['/portfolio'])),
+    )
   }
 }
 
