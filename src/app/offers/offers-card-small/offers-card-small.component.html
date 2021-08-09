@@ -1,52 +1,55 @@
-<div class="w-full h-full flex flex-col justify-start shadow-xl hover:shadow-xl
+<ng-container *ngIf="campaign$ | async as offer">
+  <div class="w-full h-full flex flex-col justify-start shadow-xl hover:shadow-xl
             transition-all duration-300 rounded-3xl">
-  <div class="relative w-full lg:h-52">
-    <!-- TODO: remove hardcoded routerLink -->
-    <a routerLink="12">
-      <img src="{{ offer.titleImageSrc }}" alt="Offer image"
-           class="w-full h-full object-cover rounded-t-4xl">
-    </a>
+    <div class="relative w-full lg:h-52">
+      <a routerLink="{{ offer.contractAddress }}">
+        <img src="{{ offer.photo | toUrlIPFS }}" alt="Offer image"
+             class="w-full h-full object-cover rounded-t-4xl">
+      </a>
 
-    <div class="absolute float-left lg:top-6 left-6 lg:rounded-full
+      <div class="absolute float-left lg:top-6 left-6 lg:rounded-full
     -bottom-10 lg:bottom-auto rounded-2xl
     py-3 px-6 shadow-lg bg-white">
-      <div class="flex flex-col lg:flex-row text-sm flex-row">
-        <div>
-          <span class="font-bold lg:text-lg">{{ offer.roi }}</span>
-          <span class="ml-2 font-light">Annual interest rate</span>
-        </div>
-        <div class="mt-1 lg:mt-auto">
-          <span class="font-bold lg:text-lg lg:ml-8">{{ offer.minInvestment | currencyDefault }}</span>
-          <span class="ml-2 font-light">Minimum investment</span>
+        <div class="flex flex-col lg:flex-row text-sm flex-row">
+          <div>
+            <span class="font-bold lg:text-lg">{{ offer.return.from | percent }}
+              - {{ offer.return.to | percent }}</span>
+            <span class="ml-2 font-light">Annual interest rate</span>
+          </div>
+          <div class="mt-1 lg:mt-auto">
+          <span class="font-bold lg:text-lg lg:ml-8">
+            {{ offer.minInvestment | formatUnit:'bignumToWei' | currencyDefault }}
+          </span>
+            <span class="ml-2 font-light">Minimum investment</span>
+          </div>
         </div>
       </div>
     </div>
-  </div>
-  <div class="w-full lg:h-full flex flex-col justify-between bg-white rounded-b-4xl p-6">
-    <h1 class="mt-6 lg:mt-0 text-4xl uppercase tracking-wider font-light leading-relaxed">
-      {{ offer.title }}
-    </h1>
-    <p class="my-2 font-light text-gray-500 leading-relaxed">
-      {{ offer.shortDescription }}
-    </p>
-    <div class="flex flex-col lg:flex-row justify-between">
-      <app-funding-progress
-        [fundsRaised]="offer.fundsRaised"
-        [fundsRequired]="offer.fundsRequired"
-        [startDate]="offer.startDate"
-        [endDate]="offer.endDate" class="lg:w-9/12"></app-funding-progress>
+    <div class="w-full lg:h-full flex flex-col justify-between bg-white rounded-b-4xl p-6">
+      <h1 class="mt-6 lg:mt-0 text-4xl uppercase tracking-wider font-light leading-relaxed">
+        {{ offer.name }}
+      </h1>
+      <p class="my-2 font-light text-gray-500 leading-relaxed">
+        {{ offer.about }}
+      </p>
+      <div class="flex flex-col lg:flex-row justify-between">
+        <app-funding-progress
+          [fundsRaised]="offer.totalFundsRaised | formatUnit:'bignumToWei'"
+          [fundsRequired]="offer.softCap | formatUnit:'bignumToWei'"
+          [startDate]="offer.startDate"
+          [endDate]="offer.endDate" class="lg:w-9/12"></app-funding-progress>
 
-      <!-- TODO: remove hardcoded routerLink from button -->
-      <button class="bg-indigo-800 hover:bg-indigo-900 transition-all
+        <button class="bg-indigo-800 hover:bg-indigo-900 transition-all
       w-full lg:h-12 lg:w-16 py-3 mt-6 text-white rounded-full flex items-center justify-center"
-              routerLink="12">
-        <span class="lg:hidden">Learn more</span>
-        <svg class="ml-3 lg:ml-0" width="9" height="14" viewBox="0 0 9 14" fill="none"
-             xmlns="http://www.w3.org/2000/svg">
-          <path d="M1.5 1.1665L7.33333 6.99984L1.5 12.8332" stroke="white" stroke-width="2" stroke-linecap="round"
-                stroke-linejoin="round"/>
-        </svg>
-      </button>
+                routerLink="{{ offer.contractAddress }}">
+          <span class="lg:hidden">Learn more</span>
+          <svg class="ml-3 lg:ml-0" width="9" height="14" viewBox="0 0 9 14" fill="none"
+               xmlns="http://www.w3.org/2000/svg">
+            <path d="M1.5 1.1665L7.33333 6.99984L1.5 12.8332" stroke="white" stroke-width="2" stroke-linecap="round"
+                  stroke-linejoin="round"/>
+          </svg>
+        </button>
+      </div>
     </div>
   </div>
-</div>
+</ng-container>

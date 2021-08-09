@@ -55,9 +55,7 @@ export class CampaignService {
   getCampaignWithInfo(address: string, fullInfo = false): Observable<CampaignWithInfo> {
     return this.sessionQuery.provider$.pipe(
       switchMap(provider => this.getState(address, provider)),
-      switchMap(state => this.ipfsService.get<IPFSCampaign>(state.info).pipe(
-        map(info => ({...state, ...info})),
-      )),
+      switchMap(state => this.getCampaignInfo(state)),
       switchMap(campaign => fullInfo ? combineLatest([
         this.ipfsService.get<IPFSText>(campaign.description),
       ]).pipe(
@@ -66,6 +64,12 @@ export class CampaignService {
           description: description.content,
         })),
       ) : of(campaign)),
+    )
+  }
+
+  getCampaignInfo(state: CampaignState) {
+    return this.ipfsService.get<IPFSCampaign>(state.info).pipe(
+      map(info => ({...state, ...info})),
     )
   }
 

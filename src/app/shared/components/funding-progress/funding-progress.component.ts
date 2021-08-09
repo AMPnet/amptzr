@@ -7,11 +7,10 @@ import {ChangeDetectionStrategy, Component, Input} from "@angular/core"
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FundingProgressComponent {
-
   @Input() fundsRaised: number = 0
   @Input() fundsRequired: number = 0
-  @Input() startDate: number = 0
-  @Input() endDate: number = 0
+  @Input() startDate: string = ''
+  @Input() endDate: string = ''
 
   raisedPercentage(): number {
     if (this.fundsRequired === 0) {

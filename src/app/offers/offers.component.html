@@ -2,10 +2,10 @@
   <div class="max-w-6xl mx-auto px-2 lg:px-4 pb-12">
     <div class="flex flex-col justify-center items-center">
       <div class="w-full mx-4 grid grid-cols-2">
-        <div class="lg:mx-4 mt-8" *ngFor="let offer of offers"
-             [class]="{ 'col-span-2': true, 'lg:col-span-1': offer.display === 'small' }">
-          <app-offers-card-large [offer]="offer" *ngIf="offer.display === 'large'"></app-offers-card-large>
-          <app-offers-card-small [offer]="offer" *ngIf="offer.display === 'small'"></app-offers-card-small>
+        <div class="lg:mx-4 mt-8" *ngFor="let offer of offers; let i = index"
+             [class]="{ 'col-span-2': true, 'lg:col-span-1': i % 3 !== 0 }">
+          <app-offers-card-large [campaign]="offer" *ngIf="i % 3 === 0"></app-offers-card-large>
+          <app-offers-card-small [campaign]="offer" *ngIf="i % 3 !== 0"></app-offers-card-small>
         </div>
       </div>
     </div>
