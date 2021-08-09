@@ -1,6 +1,12 @@
-import {ChangeDetectionStrategy, Component} from '@angular/core'
-import {AbstractControl, FormBuilder, FormGroup, ValidatorFn} from '@angular/forms'
-import {BehaviorSubject} from 'rxjs'
+import {ChangeDetectionStrategy, Component, ɵmarkDirty} from '@angular/core'
+import {AbstractControl, FormBuilder, FormGroup, ValidationErrors} from '@angular/forms'
+import {BehaviorSubject, combineLatest, Observable} from 'rxjs'
+import {withStatus, WithStatus} from '../shared/utils/observables'
+import {CampaignService, CampaignWithInfo} from '../shared/services/blockchain/campaign.service'
+import {filter, map, shareReplay, switchMap, take, tap} from 'rxjs/operators'
+import {ActivatedRoute} from '@angular/router'
+import {StablecoinService} from '../shared/services/blockchain/stablecoin.service'
+import {utils} from 'ethers'
 
 @Component({
   selector: 'app-invest',
@@ -11,44 +17,61 @@ import {BehaviorSubject} from 'rxjs'
 export class InvestComponent {
   investState = InvestState
 
-  projectSub = new BehaviorSubject<InvestProjectModel>({
-    title: "Supercool Invest-O-Pia",
-    walletBalance: 500,
-    roi: "8%",
-    description: "This is a small change, but a big move for us. 140 was an arbitrary choice based on the 160 character SMS limit. Proud of how thoughtful the team has been in solving a real problem people have when trying to tweet. And at the same time maintaining our brevity, speed, and essence!",
-    minInvestment: 100,
-    maxInvestment: 1000,
-    imgSrc: "https://images.pexels.com/photos/2850347/pexels-photo-2850347.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260",
-  })
-  project$ = this.projectSub.asObservable()
+  campaign$: Observable<WithStatus<CampaignWithInfo>>
+  balance$ = withStatus(
+    this.stablecoinService.balance$.pipe(
+      shareReplay(1),
+    ),
+  )
+
   investStateSub = new BehaviorSubject<InvestState>(InvestState.Editing)
   investState$ = this.investStateSub.asObservable()
 
   investmentForm: FormGroup
 
-  constructor(private fb: FormBuilder) {
+  constructor(private fb: FormBuilder,
+              private campaignService: CampaignService,
+              private stablecoinService: StablecoinService,
+              private route: ActivatedRoute) {
+    const campaignID = this.route.snapshot.params.id
+
+    this.campaign$ = withStatus(
+      this.campaignService.getAddressByName(campaignID).pipe(
+        switchMap(address => this.campaignService.getCampaignWithInfo(address)),
+        shareReplay(1),
+      ),
+    )
+
     this.investmentForm = this.fb.group({
-      amount: [0, [this.amountValidator()]],
+      amount: [0, [], [this.validAmount.bind(this)]],
     })
   }
 
-  private amountValidator(): ValidatorFn {
-    return (control: AbstractControl) => {
-      const project = this.projectSub.value
-      const amount = control.value
+  private validAmount(control: AbstractControl): Observable<ValidationErrors | null> {
+    return combineLatest([
+      this.campaign$.pipe(filter(res => !!res.value)),
+      this.balance$.pipe(filter(res => !!res.value)),
+    ]).pipe(take(1),
+      map(([campaign, balance]) => {
+        const minInvestment = utils.formatEther(campaign.value!.minInvestment)
+        const maxInvestment = utils.formatEther(campaign.value!.maxInvestment)
+        const walletBalance = utils.formatEther(balance.value!)
+        const amount = control.value
 
-      if (!amount) {
-        return {amountEmpty: true}
-      } else if (amount < project.minInvestment) {
-        return {amountTooLow: true}
-      } else if (amount > project.maxInvestment) {
-        return {amountTooHigh: true}
-      } else if (amount > project.walletBalance) {
-        return {walletBalanceTooLow: true}
-      }
+        if (!amount) {
+          return {amountEmpty: true}
+        } else if (amount < minInvestment) {
+          return {amountTooLow: true}
+        } else if (amount > maxInvestment) {
+          return {amountTooHigh: true}
+        } else if (amount > walletBalance) {
+          return {walletBalanceTooLow: true}
+        }
 
-      return null
-    }
+        return null
+      }),
+      tap(() => ɵmarkDirty(this)),
+    )
   }
 
   goToReview() {
@@ -58,16 +81,6 @@ export class InvestComponent {
   backToEdit() {
     this.investStateSub.next(InvestState.Editing)
   }
-}
-
-interface InvestProjectModel {
-  title: string,
-  walletBalance: number,
-  roi: string,
-  description: string,
-  minInvestment: number,
-  maxInvestment: number,
-  imgSrc: string
 }
 
 enum InvestState {

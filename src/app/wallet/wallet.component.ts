@@ -1,15 +1,13 @@
 import {ChangeDetectionStrategy, Component, ɵmarkDirty} from '@angular/core'
 import {SessionQuery} from '../session/state/session.query'
 import {SignerService} from '../shared/services/signer.service'
-import {utils} from 'ethers'
-import {concatMap, map, switchMap, tap} from 'rxjs/operators'
-import {BehaviorSubject, combineLatest, EMPTY, Observable, of} from 'rxjs'
+import {concatMap, tap} from 'rxjs/operators'
+import {BehaviorSubject, EMPTY, Observable} from 'rxjs'
 import {VenlySubsignerService} from '../shared/services/subsigners/venly-subsigner.service'
 import {AuthProvider} from '../preference/state/preference.store'
 import {withStatus} from '../shared/utils/observables'
-import {USDC__factory} from '../../../types/ethers-contracts'
-import {TokenMappingService} from '../shared/services/token-mapping.service'
 import {RouterService} from '../shared/services/router.service'
+import {StablecoinService} from '../shared/services/blockchain/stablecoin.service'
 
 @Component({
   selector: 'app-wallet',
@@ -30,15 +28,7 @@ export class WalletComponent {
     tap(() => ɵmarkDirty(this)),
   )
 
-  paymentTokenBalance$ = combineLatest([this.sessionQuery.provider$, this.sessionQuery.address$]).pipe(
-    switchMap(([provider, address]) => withStatus(
-      of(USDC__factory.connect(this.tokenMappingService.usdc, provider)).pipe(
-        concatMap(usdc => usdc.balanceOf(address!)),
-        map(value => utils.formatEther(value)),
-        tap(() => ɵmarkDirty(this)),
-      ),
-    )),
-  )
+  balance$ = withStatus(this.stablecoinService.balance$)
 
   // TODO: base currency balance will probably be used here in the future for gas indicator.
   // nativeTokenBalance$ = combineLatest([this.sessionQuery.provider$, this.sessionQuery.address$]).pipe(
@@ -68,8 +58,8 @@ export class WalletComponent {
   ]
 
   constructor(private sessionQuery: SessionQuery,
-              private tokenMappingService: TokenMappingService,
               private signerService: SignerService,
+              private stablecoinService: StablecoinService,
               private venly: VenlySubsignerService,
               private router: RouterService) {
   }
