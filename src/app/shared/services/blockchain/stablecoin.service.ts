@@ -5,7 +5,8 @@ import {ERC20__factory} from '../../../../../types/ethers-contracts'
 import {SessionQuery} from '../../../session/state/session.query'
 import {PreferenceQuery} from '../../../preference/state/preference.query'
 import {IssuerService} from './issuer.service'
-import {BigNumber} from 'ethers'
+import {BigNumber, utils} from 'ethers'
+import {SignerService} from '../signer.service'
 
 @Injectable({
   providedIn: 'root',
@@ -34,6 +35,25 @@ export class StablecoinService {
 
   constructor(private sessionQuery: SessionQuery,
               private preferenceQuery: PreferenceQuery,
+              private signerService: SignerService,
               private issuerService: IssuerService) {
+  }
+
+  getAllowance(campaignAddress: string): Observable<number> {
+    return this.contract$.pipe(
+      switchMap(contract => contract.allowance(this.sessionQuery.getValue().address!, campaignAddress)),
+      map(res => Number(utils.formatEther(res))),
+    )
+  }
+
+  approveAmount(campaignAddress: string, amount: number): Observable<unknown> {
+    return combineLatest([
+      this.contract$,
+      this.signerService.ensureAuth,
+    ]).pipe(
+      map(([contract, signer]) => contract.connect(signer)),
+      switchMap(contract => contract.approve(campaignAddress, utils.parseEther(amount.toString()))),
+      switchMap(tx => this.sessionQuery.provider.waitForTransaction(tx.hash)),
+    )
   }
 }

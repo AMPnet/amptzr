@@ -100,12 +100,13 @@
                         lg:mt-8 text-white float-right disabled:bg-gray-500">
                     Open Wallet ->
                   </button>
-                  <button *ngIf="!investmentForm.get('amount')?.errors?.walletBalanceTooLow"
-                          (click)="goToReview()"
+                  <button app-action-button
+                          *ngIf="!investmentForm.get('amount')?.errors?.walletBalanceTooLow"
+                          [onClick]="goToReview.bind(this)"
                           [disabled]="!investmentForm.valid"
+                          text="Next ->"
                           class="bg-indigo-800 rounded-full w-full lg:w-auto px-16 py-2 text-sm mt-4
                         lg:mt-8 text-white float-right disabled:bg-gray-500">
-                    Next ->
                   </button>
                 </div>
               </div>
@@ -139,8 +140,10 @@
                 <button (click)="backToEdit()" class="rounded-full lg:px-16 py-2 text-sm font-semibold">
                   Cancel
                 </button>
-                <button class="bg-indigo-800 ml-4 rounded-full lg:px-16 px-4 py-2 text-sm text-white">
-                  Confirm & Invest ->
+                <button app-action-button
+                        class="bg-indigo-800 ml-4 rounded-full lg:px-16 px-4 py-2 text-sm text-white"
+                        text="Confirm & Invest ->"
+                        [onClick]="invest.bind(this)">
                 </button>
               </div>
             </div>

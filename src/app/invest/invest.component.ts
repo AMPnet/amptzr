@@ -1,12 +1,13 @@
 import {ChangeDetectionStrategy, Component, ɵmarkDirty} from '@angular/core'
 import {AbstractControl, FormBuilder, FormGroup, ValidationErrors} from '@angular/forms'
-import {BehaviorSubject, combineLatest, Observable} from 'rxjs'
+import {BehaviorSubject, combineLatest, Observable, of, throwError} from 'rxjs'
 import {withStatus, WithStatus} from '../shared/utils/observables'
 import {CampaignService, CampaignWithInfo} from '../shared/services/blockchain/campaign.service'
 import {filter, map, shareReplay, switchMap, take, tap} from 'rxjs/operators'
 import {ActivatedRoute} from '@angular/router'
 import {StablecoinService} from '../shared/services/blockchain/stablecoin.service'
 import {utils} from 'ethers'
+import {DialogService} from '../shared/services/dialog.service'
 
 @Component({
   selector: 'app-invest',
@@ -32,6 +33,7 @@ export class InvestComponent {
   constructor(private fb: FormBuilder,
               private campaignService: CampaignService,
               private stablecoinService: StablecoinService,
+              private dialogService: DialogService,
               private route: ActivatedRoute) {
     const campaignID = this.route.snapshot.params.id
 
@@ -75,11 +77,47 @@ export class InvestComponent {
   }
 
   goToReview() {
-    this.investStateSub.next(InvestState.InReview)
+    return this.getAllowance().pipe(
+      tap(allowance => console.log(allowance, this.investmentForm.value.amount)),
+      switchMap(allowance => allowance < this.investmentForm.value.amount ?
+        this.approveFlow(this.investmentForm.value.amount) : of(allowance),
+      ),
+      tap(() => this.investStateSub.next(InvestState.InReview)),
+    )
+  }
+
+  private getAllowance(): Observable<number> {
+    return combineLatest([
+      this.campaign$.pipe(filter(res => !!res.value)),
+    ]).pipe(take(1),
+      switchMap(([campaign]) => this.stablecoinService.getAllowance(campaign.value!.contractAddress)),
+    )
+  }
+
+  private approveFlow(amount: number) {
+    return this.dialogService.info(
+      'You will be asked to sign the transaction to allow investment from your wallet.',
+    ).pipe(
+      switchMap(res => res ? this.approveAmount(amount) : throwError('USER_DISMISSED_APPROVE_FLOW')),
+    )
+  }
+
+  private approveAmount(amount: number) {
+    return combineLatest([
+      this.campaign$.pipe(filter(res => !!res.value)),
+    ]).pipe(take(1),
+      switchMap(([campaign]) => this.stablecoinService.approveAmount(
+        campaign.value!.contractAddress, amount,
+      )),
+    )
   }
 
   backToEdit() {
     this.investStateSub.next(InvestState.Editing)
+  }
+
+  invest() {
+    return of('continue here...')
   }
 }
 
