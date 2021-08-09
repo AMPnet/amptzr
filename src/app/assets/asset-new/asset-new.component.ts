@@ -50,7 +50,7 @@ export class AssetNewComponent {
         info: uploadRes.path,
       })),
       switchMap(assetAddress => this.dialogService.info('Asset successfully created!', false).pipe(
-        switchMap(() => this.router.navigate([`/assets/${assetAddress}`])),
+        switchMap(() => this.router.router.navigate([`/assets/${assetAddress}`])),
       )),
     )
   }

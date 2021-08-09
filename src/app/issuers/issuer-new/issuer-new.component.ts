@@ -38,9 +38,8 @@ export class IssuerNewComponent {
         this.createForm.value.ansName,
         uploadRes.path,
       )),
-      switchMap(issuerAddress => this.issuerService.getState(issuerAddress!, this.sessionQuery.provider)),
-      switchMap(issuer => this.dialogService.info('Issuer successfully created!', false).pipe(
-        switchMap(() => this.router.router.navigate([`/${issuer.ansName}`])),
+      switchMap(issuerAddress => this.dialogService.info('Issuer successfully created!', false).pipe(
+        switchMap(() => this.router.router.navigate([`/issuers/${issuerAddress}`])),
       )),
     )
   }
