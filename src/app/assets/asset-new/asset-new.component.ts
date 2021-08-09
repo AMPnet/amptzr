@@ -26,6 +26,7 @@ export class AssetNewComponent {
               private fb: FormBuilder) {
     this.createForm = this.fb.group({
       name: ['', Validators.required],
+      ansName: ['', Validators.required],
       logo: [undefined, Validators.required],
       description: ['', Validators.required],
       initialTokenSupply: [0, Validators.required],
@@ -36,11 +37,12 @@ export class AssetNewComponent {
 
   create() {
     return this.assetService.uploadInfo(
-      this.createForm.get('logo')!.value?.[0],
-      this.createForm.get('description')!.value,
+      this.createForm.value.logo?.[0],
+      this.createForm.value.description,
     ).pipe(
       switchMap(uploadRes => this.assetService.create({
         issuer: this.issuer,
+        ansName: this.createForm.value.ansName,
         name: this.createForm.get('name')!.value,
         initialTokenSupply: utils.parseEther(String(this.createForm.get('initialTokenSupply')!.value)),
         symbol: this.createForm.get('symbol')!.value,

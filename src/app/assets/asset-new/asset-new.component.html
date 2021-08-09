@@ -14,6 +14,11 @@
     </div>
 
     <div class="mt-2">
+      <label class="block" for="ansName">ANS Name</label>
+      <input type="text" id="ansName" formControlName="ansName">
+    </div>
+
+    <div class="mt-2">
       <label class="block" for="logo">Logo</label>
       <img class="p-4 max-w-xs max-h-xs"
            *ngIf="createForm.get('logo')?.value?.[0]"

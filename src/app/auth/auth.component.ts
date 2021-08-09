@@ -3,7 +3,6 @@ import {Observable} from 'rxjs'
 import {tap} from 'rxjs/operators'
 import {PreferenceQuery} from '../preference/state/preference.query'
 import {PreferenceStore} from '../preference/state/preference.store'
-import {ChainID, EthersNetworks} from '../shared/networks'
 import {SignerService} from '../shared/services/signer.service'
 import {MetamaskSubsignerService} from '../shared/services/subsigners/metamask-subsigner.service'
 import {VenlySubsignerService} from '../shared/services/subsigners/venly-subsigner.service'
@@ -18,9 +17,6 @@ import {RouterService} from '../shared/services/router.service'
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AuthComponent {
-  networks = Object.values(EthersNetworks)
-  currentNetwork = EthersNetworks[this.preferenceQuery.getValue().chainID]
-
   constructor(private signer: SignerService,
               private preferenceStore: PreferenceStore,
               private metamaskSubsignerService: MetamaskSubsignerService,
@@ -45,12 +41,6 @@ export class AuthComponent {
     return this.signer.login(this.venlySubsignerService).pipe(
       tap(() => this.afterLoginActions()),
     )
-  }
-
-  networkChanged(e: Event): void {
-    const chainID = Number((e.target as HTMLSelectElement).value) as ChainID
-    this.currentNetwork = EthersNetworks[chainID]
-    this.preferenceStore.update({chainID})
   }
 
   isMetamaskAvailable = () => this.metamaskSubsignerService.isAvailable()

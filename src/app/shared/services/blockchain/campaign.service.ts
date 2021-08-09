@@ -108,7 +108,7 @@ export class CampaignService {
         const owner = this.sessionQuery.getValue().address!
 
         return from(contract.functions.create(
-          owner, data.assetAddress,
+          owner, data.ansName, data.assetAddress,
           data.initialPricePerToken, data.softCap,
           data.minInvestment, data.maxInvestment,
           data.whitelistRequired, data.info,
@@ -147,6 +147,7 @@ export interface CampaignState {
 export type CampaignWithInfo = CampaignState & IPFSCampaign
 
 interface CreateCampaignData {
+  ansName: string,
   assetAddress: string,
   initialPricePerToken: BigNumberish,
   softCap: BigNumberish,

@@ -27,6 +27,7 @@ export class CampaignNewComponent {
               private fb: FormBuilder) {
     this.createForm = this.fb.group({
       name: ['', Validators.required],
+      ansName: ['', Validators.required],
       photo: [undefined, Validators.required],
       description: ['', Validators.required],
       initialPricePerToken: [0, Validators.required],
@@ -44,6 +45,7 @@ export class CampaignNewComponent {
       description: this.createForm.value.description,
     }).pipe(
       switchMap(uploadRes => this.campaignService.create({
+        ansName: this.createForm.value.ansName,
         assetAddress: this.asset,
         initialPricePerToken: TokenPrice.format(this.createForm.value.initialPricePerToken),
         softCap: utils.parseEther(String(this.createForm.value.softCap)),

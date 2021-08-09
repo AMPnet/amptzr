@@ -97,7 +97,7 @@ export class AssetService {
         const creator = this.sessionQuery.getValue().address!
 
         return from(contract.functions.create(
-          creator, data.issuer,
+          creator, data.issuer, data.ansName,
           data.initialTokenSupply, data.whitelistRequiredForTransfer,
           data.name, data.symbol, data.info,
         )).pipe(
@@ -146,6 +146,7 @@ export type AssetWithInfo = AssetState & IPFSAsset
 
 interface CreateAssetData {
   issuer: string,
+  ansName: string,
   initialTokenSupply: BigNumberish,
   whitelistRequiredForTransfer: boolean,
   name: string,

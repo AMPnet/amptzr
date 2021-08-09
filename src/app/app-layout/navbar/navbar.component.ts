@@ -46,7 +46,7 @@ export class NavbarComponent {
     )
 
     this.issuer$ = this.preferenceQuery.issuer$.pipe(
-      switchMap(issuer => withStatus(this.issuerService.getIssuerWithInfo(issuer.address)))
+      switchMap(issuer => withStatus(this.issuerService.getIssuerWithInfo(issuer.address))),
     )
   }
 

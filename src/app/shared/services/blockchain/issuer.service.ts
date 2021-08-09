@@ -1,13 +1,7 @@
 import {Injectable} from '@angular/core'
 import {combineLatest, from, Observable, of} from 'rxjs'
 import {first, map, switchMap} from 'rxjs/operators'
-import {
-  ERC20__factory,
-  Issuer,
-  Issuer__factory,
-  IssuerFactory,
-  IssuerFactory__factory,
-} from '../../../../../types/ethers-contracts'
+import {Issuer, Issuer__factory, IssuerFactory, IssuerFactory__factory} from '../../../../../types/ethers-contracts'
 import {SessionQuery} from '../../../session/state/session.query'
 import {PreferenceQuery} from '../../../preference/state/preference.query'
 import {BigNumber, Signer} from 'ethers'
@@ -35,15 +29,6 @@ export class IssuerService {
       ))),
   )
 
-  stablecoin$ = combineLatest([
-    this.preferenceQuery.issuer$,
-    this.sessionQuery.provider$,
-  ]).pipe(
-    switchMap(([issuer, provider]) => this.getState(issuer.address, provider).pipe(
-      map(state => ERC20__factory.connect(state.stablecoin, provider))
-    )),
-  )
-
   constructor(private sessionQuery: SessionQuery,
               private preferenceQuery: PreferenceQuery,
               private signerService: SignerService,
@@ -52,6 +37,12 @@ export class IssuerService {
 
   contract(address: string, signerOrProvider: Signer | Provider): Issuer {
     return Issuer__factory.connect(address, signerOrProvider)
+  }
+
+  getAddressByName(ansName: string): Observable<string> {
+    return this.factoryContract$.pipe(
+      switchMap(contract => contract.namespace(ansName)),
+    )
   }
 
   getState(address: string, signerOrProvider: Signer | Provider): Observable<IssuerState> {
@@ -90,7 +81,7 @@ export class IssuerService {
     )
   }
 
-  create(infoHash: string): Observable<string | undefined> {
+  create(ansName: string, infoHash: string): Observable<string | undefined> {
     return combineLatest([
       this.signerService.ensureAuth,
       this.factoryContract$,
@@ -100,13 +91,14 @@ export class IssuerService {
       switchMap(contract => {
         const createData: CreateIssuerData = {
           owner: this.sessionQuery.getValue().address!,
+          ansName: ansName,
           stablecoin: this.preferenceQuery.network.tokenizerConfig.defaultStableCoin,
           walletApprover: this.preferenceQuery.network.tokenizerConfig.defaultWalletApprover,
           info: infoHash,
         }
 
         return from(contract.functions.create(
-          createData.owner, createData.stablecoin,
+          createData.owner, createData.ansName, createData.stablecoin,
           createData.walletApprover, createData.info,
         )).pipe(
           switchMap(tx => this.sessionQuery.provider.waitForTransaction(tx.hash)),
@@ -120,8 +112,10 @@ export class IssuerService {
 }
 
 export interface IssuerState {
-  contractAddress: string
   id: BigNumber;
+  contractAddress: string;
+  ansName: string;
+  createdBy: string;
   owner: string;
   stablecoin: string;
   walletApprover: string;
@@ -132,6 +126,7 @@ export type IssuerWithInfo = IssuerState & IPFSIssuer
 
 interface CreateIssuerData {
   owner: string,
+  ansName: string,
   stablecoin: string,
   walletApprover: string,
   info: string,

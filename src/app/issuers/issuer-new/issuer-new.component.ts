@@ -5,6 +5,7 @@ import {switchMap} from 'rxjs/operators'
 import {SignerService} from '../../shared/services/signer.service'
 import {DialogService} from '../../shared/services/dialog.service'
 import {RouterService} from '../../shared/services/router.service'
+import {SessionQuery} from '../../session/state/session.query'
 
 @Component({
   selector: 'app-issuer-new',
@@ -17,23 +18,29 @@ export class IssuerNewComponent {
 
   constructor(private issuerService: IssuerService,
               private signerService: SignerService,
+              private sessionQuery: SessionQuery,
               private router: RouterService,
               private dialogService: DialogService,
               private fb: FormBuilder) {
     this.createForm = this.fb.group({
       name: ['', Validators.required],
+      ansName: ['', Validators.required],
       logo: [undefined, Validators.required],
     })
   }
 
   create() {
     return this.issuerService.uploadInfo(
-      this.createForm.get('name')!.value,
-      this.createForm.get('logo')!.value?.[0],
+      this.createForm.value.name,
+      this.createForm.value.logo?.[0],
     ).pipe(
-      switchMap(uploadRes => this.issuerService.create(uploadRes.path)),
-      switchMap(issuerAddress => this.dialogService.info('Issuer successfully created!', false).pipe(
-        switchMap(() => this.router.navigate([`/${issuerAddress}`])),
+      switchMap(uploadRes => this.issuerService.create(
+        this.createForm.value.ansName,
+        uploadRes.path,
+      )),
+      switchMap(issuerAddress => this.issuerService.getState(issuerAddress!, this.sessionQuery.provider)),
+      switchMap(issuer => this.dialogService.info('Issuer successfully created!', false).pipe(
+        switchMap(() => this.router.router.navigate([`/${issuer.ansName}`])),
       )),
     )
   }
