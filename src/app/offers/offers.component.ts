@@ -1,6 +1,7 @@
 import {ChangeDetectionStrategy, Component} from '@angular/core'
 import {SessionQuery} from '../session/state/session.query'
 import {QueryService} from '../shared/services/blockchain/query.service'
+import {withStatus} from '../shared/utils/observables'
 
 @Component({
   selector: 'app-offers',
@@ -9,7 +10,7 @@ import {QueryService} from '../shared/services/blockchain/query.service'
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class OffersComponent {
-  offers$ = this.queryService.offers$
+  offers$ = withStatus(this.queryService.offers$)
 
   constructor(private sessionQuery: SessionQuery,
               private queryService: QueryService) {

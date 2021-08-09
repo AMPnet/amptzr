@@ -46,6 +46,12 @@ export class CampaignService {
     return CfManagerSoftcap__factory.connect(address, signerOrProvider)
   }
 
+  getAddressByName(ansName: string): Observable<string> {
+    return this.factoryContract$.pipe(
+      switchMap(contract => contract.namespace(this.preferenceQuery.issuer.address, ansName)),
+    )
+  }
+
   getState(address: string, signerOrProvider: Signer | Provider): Observable<CampaignState> {
     return of(this.contract(address, signerOrProvider)).pipe(
       switchMap(contract => contract.getState()),
@@ -130,6 +136,8 @@ export class CampaignService {
 export interface CampaignState {
   id: BigNumber;
   contractAddress: string;
+  ansName: string;
+  ansId: BigNumber;
   createdBy: string;
   owner: string;
   asset: string;
@@ -145,6 +153,8 @@ export interface CampaignState {
   totalInvestorsCount: BigNumber;
   totalClaimsCount: BigNumber;
   totalFundsRaised: BigNumber;
+  totalTokensSold: BigNumber;
+  totalTokensBalance: BigNumber;
   info: string;
 }
 
