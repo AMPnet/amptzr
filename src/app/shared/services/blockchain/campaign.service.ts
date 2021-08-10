@@ -16,6 +16,7 @@ import {SignerService} from '../signer.service'
 import {findLog} from '../../utils/ethersjs'
 import {IPFSAddResult} from '../ipfs/ipfs.service.types'
 import {cid, IPFSCampaign, IPFSDocument, iso8601} from '../../../../../types/ipfs/campaign'
+import {ErrorService} from '../error.service'
 
 @Injectable({
   providedIn: 'root',
@@ -30,6 +31,7 @@ export class CampaignService {
   constructor(private sessionQuery: SessionQuery,
               private ipfsService: IpfsService,
               private signerService: SignerService,
+              private errorService: ErrorService,
               private preferenceQuery: PreferenceQuery) {
   }
 
@@ -137,6 +139,7 @@ export class CampaignService {
       map(signer => this.contract(address, signer)),
       switchMap(contract => contract.invest(utils.parseEther(amount.toString()))),
       switchMap(tx => this.sessionQuery.provider.waitForTransaction(tx.hash)),
+      this.errorService.handleError()
     )
   }
 }

@@ -57,12 +57,17 @@ export class InvestComponent {
       this.balance$.pipe(filter(res => !!res.value)),
     ]).pipe(take(1),
       map(([campaign, balance]) => {
-        const minInvestment = utils.formatEther(campaign.value!.minInvestment)
-        const maxInvestment = utils.formatEther(campaign.value!.maxInvestment)
-        const walletBalance = utils.formatEther(balance.value!)
+        // TODO: Implement better math.
+        //  Mind about reading current investment status
+        //  and current shares added to the campaign.
+        const minInvestment = Number(utils.formatEther(campaign.value!.minInvestment))
+        const maxInvestment = Number(utils.formatEther(campaign.value!.maxInvestment))
+        const walletBalance = Number(utils.formatEther(balance.value!))
         const amount = control.value
 
-        if (!amount) {
+        if (walletBalance === 0) {
+          return {walletBalanceTooLow: true}
+        } else if (!amount) {
           return {amountEmpty: true}
         } else if (amount < minInvestment) {
           return {amountTooLow: true}
@@ -80,7 +85,6 @@ export class InvestComponent {
 
   goToReview() {
     return this.getAllowance().pipe(
-      tap(allowance => console.log(allowance, this.investmentForm.value.amount)),
       switchMap(allowance => allowance < this.investmentForm.value.amount ?
         this.approveFlow(this.investmentForm.value.amount) : of(allowance),
       ),
