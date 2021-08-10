@@ -9,13 +9,14 @@ import {
 import {first, map, switchMap} from 'rxjs/operators'
 import {SessionQuery} from '../../../session/state/session.query'
 import {PreferenceQuery} from '../../../preference/state/preference.query'
-import {BigNumber, BigNumberish, Signer} from 'ethers'
+import {BigNumber, BigNumberish, Signer, utils} from 'ethers'
 import {Provider} from '@ethersproject/providers'
 import {IpfsService, IPFSText} from '../ipfs/ipfs.service'
 import {SignerService} from '../signer.service'
 import {findLog} from '../../utils/ethersjs'
 import {IPFSAddResult} from '../ipfs/ipfs.service.types'
 import {cid, IPFSCampaign, IPFSDocument, iso8601} from '../../../../../types/ipfs/campaign'
+import {ErrorService} from '../error.service'
 
 @Injectable({
   providedIn: 'root',
@@ -30,6 +31,7 @@ export class CampaignService {
   constructor(private sessionQuery: SessionQuery,
               private ipfsService: IpfsService,
               private signerService: SignerService,
+              private errorService: ErrorService,
               private preferenceQuery: PreferenceQuery) {
   }
 
@@ -46,6 +48,12 @@ export class CampaignService {
     return CfManagerSoftcap__factory.connect(address, signerOrProvider)
   }
 
+  getAddressByName(ansName: string): Observable<string> {
+    return this.factoryContract$.pipe(
+      switchMap(contract => contract.namespace(this.preferenceQuery.issuer.address, ansName)),
+    )
+  }
+
   getState(address: string, signerOrProvider: Signer | Provider): Observable<CampaignState> {
     return of(this.contract(address, signerOrProvider)).pipe(
       switchMap(contract => contract.getState()),
@@ -55,9 +63,7 @@ export class CampaignService {
   getCampaignWithInfo(address: string, fullInfo = false): Observable<CampaignWithInfo> {
     return this.sessionQuery.provider$.pipe(
       switchMap(provider => this.getState(address, provider)),
-      switchMap(state => this.ipfsService.get<IPFSCampaign>(state.info).pipe(
-        map(info => ({...state, ...info})),
-      )),
+      switchMap(state => this.getCampaignInfo(state)),
       switchMap(campaign => fullInfo ? combineLatest([
         this.ipfsService.get<IPFSText>(campaign.description),
       ]).pipe(
@@ -66,6 +72,12 @@ export class CampaignService {
           description: description.content,
         })),
       ) : of(campaign)),
+    )
+  }
+
+  getCampaignInfo(state: CampaignState) {
+    return this.ipfsService.get<IPFSCampaign>(state.info).pipe(
+      map(info => ({...state, ...info})),
     )
   }
 
@@ -121,11 +133,22 @@ export class CampaignService {
       }),
     )
   }
+
+  invest(address: string, amount: number) {
+    return this.signerService.ensureAuth.pipe(
+      map(signer => this.contract(address, signer)),
+      switchMap(contract => contract.invest(utils.parseEther(amount.toString()))),
+      switchMap(tx => this.sessionQuery.provider.waitForTransaction(tx.hash)),
+      this.errorService.handleError(),
+    )
+  }
 }
 
 export interface CampaignState {
   id: BigNumber;
   contractAddress: string;
+  ansName: string;
+  ansId: BigNumber;
   createdBy: string;
   owner: string;
   asset: string;
@@ -141,6 +164,8 @@ export interface CampaignState {
   totalInvestorsCount: BigNumber;
   totalClaimsCount: BigNumber;
   totalFundsRaised: BigNumber;
+  totalTokensSold: BigNumber;
+  totalTokensBalance: BigNumber;
   info: string;
 }
 

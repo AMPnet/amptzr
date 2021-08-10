@@ -55,7 +55,7 @@ export class CampaignNewComponent {
         info: uploadRes.path,
       })),
       switchMap(campaignAddress => this.dialogService.info('Campaign successfully created!', false).pipe(
-        switchMap(() => this.router.navigate([`/campaigns/${campaignAddress}`])),
+        switchMap(() => this.router.router.navigate([`/campaigns/${campaignAddress}`])),
       )),
     )
   }

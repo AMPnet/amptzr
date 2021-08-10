@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core'
 import {combineLatest, from, Observable, of} from 'rxjs'
-import {first, map, switchMap} from 'rxjs/operators'
+import {first, map, shareReplay, switchMap} from 'rxjs/operators'
 import {Issuer, Issuer__factory, IssuerFactory, IssuerFactory__factory} from '../../../../../types/ethers-contracts'
 import {SessionQuery} from '../../../session/state/session.query'
 import {PreferenceQuery} from '../../../preference/state/preference.query'
@@ -11,6 +11,7 @@ import {IPFSIssuer} from '../../../../../types/ipfs/issuer'
 import {IPFSAddResult} from '../ipfs/ipfs.service.types'
 import {SignerService} from '../signer.service'
 import {findLog} from '../../utils/ethersjs'
+import {WithStatus, withStatus} from '../../utils/observables'
 
 @Injectable({
   providedIn: 'root',
@@ -27,6 +28,11 @@ export class IssuerService {
       switchMap(issuers => issuers.length === 0 ? of([]) : combineLatest(
         issuers.map(issuer => this.getIssuerWithInfo(issuer))),
       ))),
+  )
+
+  issuer$: Observable<WithStatus<IssuerWithInfo>> = this.preferenceQuery.issuer$.pipe(
+    switchMap(issuer => withStatus(this.getIssuerWithInfo(issuer.address))),
+    shareReplay(1),
   )
 
   constructor(private sessionQuery: SessionQuery,

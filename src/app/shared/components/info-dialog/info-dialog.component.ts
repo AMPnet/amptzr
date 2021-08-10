@@ -9,7 +9,10 @@ import {BehaviorSubject} from 'rxjs'
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class InfoDialogComponent implements OnInit {
+  iconType = DialogIcon
+
   private dataSub = new BehaviorSubject<InfoDialogData>({
+    icon: DialogIcon.INFO,
     title: 'Info',
     message: '',
     confirm_text: 'OK',
@@ -43,11 +46,16 @@ export class InfoDialogComponent implements OnInit {
 }
 
 export interface InfoDialogData {
+  icon: DialogIcon
   title: string;
   message: string;
   confirm_text: string;
   cancel_text: string;
   cancelable: boolean;
+}
+
+export enum DialogIcon {
+  INFO, ERROR
 }
 
 export interface InfoDialogResponse {

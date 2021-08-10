@@ -4,14 +4,17 @@
       <b class="text-sm">Your balance:</b>
       <div class="mt-2 lg:flex lg:w-full lg:items-center lg:justify-between">
         <span class="text-3xl mr-8 font-light">
-          <ng-container *ngIf="(paymentTokenBalance$ | async) as paymentTokenBalance">
-            <ng-container *ngIf="paymentTokenBalance.value">
-             {{ paymentTokenBalance.value | currencyDefault }}
+          <ng-container *ngIf="(balance$ | async) as balanceRes">
+            <ng-container *ngIf="balanceRes.value as balance">
+              {{ balance | formatUnit:'bignumToWei' | currencyDefault }}
             </ng-container>
-            <ng-container *ngIf="paymentTokenBalance.error">
+
+            <ng-container *ngIf="balanceRes.error">
               ❌
+              <div hidden>{{ balanceRes.error | json }}</div>
             </ng-container>
-            <ng-container *ngIf="paymentTokenBalance.loading">
+
+            <ng-container *ngIf="balanceRes.loading">
               <app-spinner></app-spinner>
             </ng-container>
           </ng-container>

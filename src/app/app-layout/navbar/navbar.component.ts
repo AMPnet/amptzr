@@ -3,12 +3,12 @@ import {Observable, of} from 'rxjs'
 import {SessionQuery} from '../../session/state/session.query'
 import {AppLayoutStore} from '../state/app-layout.store'
 import {AppLayoutQuery} from '../state/app-layout.query'
-import {filter, finalize, switchMap, tap} from 'rxjs/operators'
+import {filter, finalize, tap} from 'rxjs/operators'
 import {TailwindService} from '../../shared/services/tailwind.service'
 import {UserService} from '../../shared/services/user.service'
 import {SignerService} from '../../shared/services/signer.service'
 import {RouterService} from '../../shared/services/router.service'
-import {withStatus, WithStatus} from '../../shared/utils/observables'
+import {WithStatus} from '../../shared/utils/observables'
 import {IssuerService, IssuerWithInfo} from '../../shared/services/blockchain/issuer.service'
 import {PreferenceQuery} from '../../preference/state/preference.query'
 
@@ -45,9 +45,7 @@ export class NavbarComponent {
       tap(() => this.appLayoutStore.closeDropdownMenu()),
     )
 
-    this.issuer$ = this.preferenceQuery.issuer$.pipe(
-      switchMap(issuer => withStatus(this.issuerService.getIssuerWithInfo(issuer.address))),
-    )
+    this.issuer$ = this.issuerService.issuer$
   }
 
   login(): Observable<unknown> {
