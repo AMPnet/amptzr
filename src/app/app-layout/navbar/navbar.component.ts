@@ -3,14 +3,14 @@ import {Observable, of} from 'rxjs'
 import {SessionQuery} from '../../session/state/session.query'
 import {AppLayoutStore} from '../state/app-layout.store'
 import {AppLayoutQuery} from '../state/app-layout.query'
-import {filter, finalize, tap} from 'rxjs/operators'
+import {filter, tap} from 'rxjs/operators'
 import {TailwindService} from '../../shared/services/tailwind.service'
 import {UserService} from '../../shared/services/user.service'
 import {SignerService} from '../../shared/services/signer.service'
-import {RouterService} from '../../shared/services/router.service'
-import {WithStatus} from '../../shared/utils/observables'
-import {IssuerService, IssuerWithInfo} from '../../shared/services/blockchain/issuer.service'
 import {PreferenceQuery} from '../../preference/state/preference.query'
+import {RouterService} from '../../shared/services/router.service'
+import {IssuerService, IssuerWithInfo} from '../../shared/services/blockchain/issuer.service'
+import {WithStatus} from '../../shared/utils/observables'
 
 @Component({
   selector: 'app-navbar',
@@ -27,7 +27,6 @@ export class NavbarComponent {
   navbarScreenLinks: NavbarItem[] = [
     {title: "Offers", routerLink: "/offers"},
     {title: "Portfolio", routerLink: "/portfolio"},
-    {title: "Wallet", routerLink: "/wallet"},
     {title: "FAQ", routerLink: "/faq"},
   ]
 
@@ -51,13 +50,6 @@ export class NavbarComponent {
   login(): Observable<unknown> {
     return this.signerService.ensureAuth.pipe(
       tap(() => this.appLayoutStore.closeDropdownMenu()),
-    )
-  }
-
-  logout(): Observable<unknown> {
-    return this.userService.logout().pipe(
-      tap(() => this.appLayoutStore.closeDropdownMenu()),
-      finalize(() => this.router.navigate(['/'])),
     )
   }
 

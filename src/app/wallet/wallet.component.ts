@@ -1,13 +1,14 @@
 import {ChangeDetectionStrategy, Component, ɵmarkDirty} from '@angular/core'
 import {SessionQuery} from '../session/state/session.query'
 import {SignerService} from '../shared/services/signer.service'
-import {concatMap, tap} from 'rxjs/operators'
+import {concatMap, finalize, tap} from 'rxjs/operators'
 import {BehaviorSubject, EMPTY, Observable} from 'rxjs'
 import {VenlySubsignerService} from '../shared/services/subsigners/venly-subsigner.service'
 import {AuthProvider} from '../preference/state/preference.store'
 import {withStatus} from '../shared/utils/observables'
 import {RouterService} from '../shared/services/router.service'
 import {StablecoinService} from '../shared/services/blockchain/stablecoin.service'
+import {UserService} from '../shared/services/user.service'
 
 @Component({
   selector: 'app-wallet',
@@ -60,14 +61,15 @@ export class WalletComponent {
   constructor(private sessionQuery: SessionQuery,
               private signerService: SignerService,
               private stablecoinService: StablecoinService,
+              private userService: UserService,
               private venly: VenlySubsignerService,
               private router: RouterService) {
   }
 
-  logout(): Observable<unknown> {
-    return this.signerService.logout().pipe(
-      tap(() => this.router.navigate(['/'])),
-    )
+  logout() {
+    this.userService.logout().pipe(
+      finalize(() => this.router.navigate(['/'])),
+    ).subscribe()
   }
 
   manageVenlyWallets(): Observable<unknown> {
