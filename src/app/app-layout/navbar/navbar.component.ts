@@ -55,13 +55,6 @@ export class NavbarComponent {
     )
   }
 
-  logout(): Observable<unknown> {
-    return this.userService.logout().pipe(
-      tap(() => this.appLayoutStore.closeDropdownMenu()),
-      finalize(() => this.router.navigate(['/'])),
-    )
-  }
-
   toggleDropdown(): Observable<unknown> {
     return of(this.appLayoutStore.toggleDropdownMenu())
   }

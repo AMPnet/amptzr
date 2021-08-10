@@ -2,7 +2,7 @@ import {ChangeDetectionStrategy, Component, ɵmarkDirty} from '@angular/core'
 import {SessionQuery} from '../session/state/session.query'
 import {SignerService} from '../shared/services/signer.service'
 import {utils} from 'ethers'
-import {concatMap, map, switchMap, tap} from 'rxjs/operators'
+import {concatMap, finalize, map, switchMap, tap} from 'rxjs/operators'
 import {BehaviorSubject, combineLatest, EMPTY, Observable, of} from 'rxjs'
 import {VenlySubsignerService} from '../shared/services/subsigners/venly-subsigner.service'
 import {AuthProvider} from '../preference/state/preference.store'
@@ -10,6 +10,7 @@ import {withStatus} from '../shared/utils/observables'
 import {USDC__factory} from '../../../types/ethers-contracts'
 import {TokenMappingService} from '../shared/services/token-mapping.service'
 import {RouterService} from '../shared/services/router.service'
+import {UserService} from "../shared/services/user.service"
 
 @Component({
   selector: 'app-wallet',
@@ -70,14 +71,15 @@ export class WalletComponent {
   constructor(private sessionQuery: SessionQuery,
               private tokenMappingService: TokenMappingService,
               private signerService: SignerService,
+              private userService: UserService,
               private venly: VenlySubsignerService,
               private router: RouterService) {
   }
 
-  logout(): Observable<unknown> {
-    return this.signerService.logout().pipe(
-      tap(() => this.router.navigate(['/'])),
-    )
+  logout() {
+    this.userService.logout().pipe(
+      finalize(() => this.router.navigate(['/'])),
+    ).subscribe()
   }
 
   manageVenlyWallets(): Observable<unknown> {
