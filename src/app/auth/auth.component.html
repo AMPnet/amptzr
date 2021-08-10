@@ -1,7 +1,11 @@
 <div class="min-h-md w-full max-w-md my-5 px-2 py-8 bg-white">
   <!-- Upper Holder - contains Logo -->
   <div class="w-full h-2/6 rounded-t-md flex justify-center items-center">
-    <img src="../../assets/default-logo.png" class="w-30" alt="Logo image">
+    <ng-container *ngIf="(issuer$ | async) as issuerRes">
+      <ng-container *ngIf="issuerRes.value as issuer">
+        <img src="{{ issuer.logo | toUrlIPFS }}" class="w-30" alt="Logo image">
+      </ng-container>
+    </ng-container>
   </div>
 
   <!-- Bottom Holder Screen - Contains login options -->

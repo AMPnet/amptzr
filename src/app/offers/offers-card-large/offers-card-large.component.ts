@@ -1,5 +1,7 @@
-import {ChangeDetectionStrategy, Component, Input} from '@angular/core'
-import {SingleOfferCardModel} from '../offers.component'
+import {ChangeDetectionStrategy, Component, Input, OnChanges, SimpleChanges} from '@angular/core'
+import {CampaignService, CampaignState, CampaignWithInfo} from '../../shared/services/blockchain/campaign.service'
+import {Observable, Subject} from 'rxjs'
+import {switchMap} from 'rxjs/operators'
 
 @Component({
   selector: 'app-offers-card-large',
@@ -7,20 +9,20 @@ import {SingleOfferCardModel} from '../offers.component'
   styleUrls: ['./offers-card-large.component.css'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class OffersCardLargeComponent {
-  @Input() offer: SingleOfferCardModel = {
-    title: '',
-    shortDescription: '',
-    fundsRaised: 0,
-    fundsRequired: 0,
-    startDate: 0,
-    endDate: 0,
-    roi: '',
-    minInvestment: 0,
-    titleImageSrc: '',
-    display: 'large',
+export class OffersCardLargeComponent implements OnChanges {
+  @Input() campaign!: CampaignState
+
+  campaignSub = new Subject<CampaignState>()
+  campaign$: Observable<CampaignWithInfo> = this.campaignSub.asObservable().pipe(
+    switchMap(state => this.campaignService.getCampaignInfo(state)),
+  )
+
+  constructor(private campaignService: CampaignService) {
   }
 
-  constructor() {
+  ngOnChanges(changes: SimpleChanges) {
+    setTimeout(() => {
+      this.campaignSub.next(changes.campaign.currentValue as CampaignState)
+    })
   }
 }

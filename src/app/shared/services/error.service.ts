@@ -60,6 +60,15 @@ export class ErrorService {
           default:
             action$ = this.displayMessage('Something went wrong.')
         }
+      } else if ((errorRes as any).code === -32603) { // Internal JSON-RPC error
+        const error = (errorRes as unknown as EthereumRpcError<EthereumRpcError<string>>)
+        if (error.data?.message?.startsWith('execution reverted:')) {
+          action$ = this.displayMessage(
+            error.data!.message!.replace('execution reverted:', '').trim(),
+          )
+        } else {
+          action$ = this.displayMessage('Something went wrong.')
+        }
       }
 
       if (completeAfterAction) {
@@ -71,8 +80,6 @@ export class ErrorService {
           return action$
         }
       }
-
-      return completeAfterAction ? action$.pipe(switchMap(() => EMPTY)) : action$
     }
   }
 
@@ -86,6 +93,12 @@ interface BackendError {
   message: string;
   err_code: RegistrationError | AuthError | UserError;
   errors: { [key: string]: string };
+}
+
+interface EthereumRpcError<T> {
+  code: number;
+  message?: string;
+  data?: T;
 }
 
 export enum RegistrationError {

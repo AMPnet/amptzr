@@ -28,7 +28,6 @@ import {UnwrapStatusPipe} from './shared/pipes/unwrap-status.pipe'
 import {OfferComponent} from './offer/offer.component'
 import {DepositComponent} from './deposit/deposit.component'
 import {InvestComponent} from './invest/invest.component'
-import {OffersCardLargeComponent} from './offers/offers-card-large/offers-card-large.component'
 import {CurrencyPipe} from '@angular/common'
 import {CurrencyDefaultPipe} from './shared/pipes/currency-default.pipe'
 import {AuthComponent} from './auth/auth.component'
@@ -36,7 +35,6 @@ import {HttpClientModule} from '@angular/common/http'
 import {VeriffComponent} from './identity/veriff/veriff.component'
 import {FaqComponent} from './faq/faq.component'
 import {FundingProgressComponent} from "./shared/components/funding-progress/funding-progress.component"
-import {OffersCardSmallComponent} from "./offers/offers-card-small/offers-card-small.component"
 import {AuthProviderNamePipe} from "./shared/pipes/auth-provider-name.pipe"
 import {ProfileAddMandatoryComponent} from './profile/profile-add-mandatory/profile-add-mandatory.component'
 import {ReactiveFormsModule} from '@angular/forms'
@@ -60,6 +58,8 @@ import {CampaignEditComponent} from './campaigns/campaign-edit/campaign-edit.com
 import {CampaignNewComponent} from './campaigns/campaign-new/campaign-new.component'
 import {CampaignAddTokensComponent} from './campaigns/campaign-add-tokens/campaign-add-tokens.component'
 import {IssuerPathPipe} from './shared/pipes/issuer-path.pipe'
+import {OffersCardLargeComponent} from './offers/offers-card-large/offers-card-large.component'
+import {OffersCardSmallComponent} from './offers/offers-card-small/offers-card-small.component'
 import {WalletButtonComponent} from './app-layout/navbar/wallet-button/wallet-button.component'
 
 @NgModule({
@@ -145,6 +145,7 @@ import {WalletButtonComponent} from './app-layout/navbar/wallet-button/wallet-bu
     },
     CurrencyPipe,
     IssuerPathPipe,
+    ToUrlIPFSPipe,
   ],
   bootstrap: [AppComponent],
 })

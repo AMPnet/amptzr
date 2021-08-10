@@ -18,7 +18,8 @@
         <button *ngFor="let navbarItem of navbarScreenLinks"
                 class="mx-2 p-4 text-gray-700 text-sm border-b-4 font-semibold border-transparent tracking-wider
               whitespace-nowrap hidden lg:inline"
-                [routerLink]="navbarItem.routerLink | issuerPath" routerLinkActive="!text-indigo-800 !border-indigo-800">
+                [routerLink]="navbarItem.routerLink | issuerPath"
+                routerLinkActive="!text-indigo-800 !border-indigo-800">
           {{ navbarItem.title }}
         </button>
 
@@ -60,8 +61,10 @@
               routerLinkActive="!text-indigo-800 !border-indigo-800">
         {{ navbarItem.title }}
       </button>
-      <app-wallet-button *ngIf="(isLoggedIn$ | async) === true" (click)="toggleDropdown()"
-                         class="mt-6" ></app-wallet-button>
+      <app-wallet-button *ngIf="(isLoggedIn$ | async) === true"
+                         (click)="toggleDropdown()"
+                         class="mt-6">
+      </app-wallet-button>
     </div>
   </ng-container>
 </div>

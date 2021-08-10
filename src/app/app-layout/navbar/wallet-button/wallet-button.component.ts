@@ -1,4 +1,4 @@
-import {Component, ChangeDetectionStrategy} from '@angular/core'
+import {ChangeDetectionStrategy, Component} from '@angular/core'
 import {SessionQuery} from "../../../session/state/session.query"
 import {AuthProvider} from 'src/app/preference/state/preference.store'
 import {TailwindService} from "../../../shared/services/tailwind.service"
@@ -9,10 +9,9 @@ import {Observable} from "rxjs"
   selector: 'app-wallet-button',
   templateUrl: './wallet-button.component.html',
   styleUrls: ['./wallet-button.component.css'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class WalletButtonComponent {
-
   address$ = this.sessionQuery.address$
   authProvider$ = this.sessionQuery.authProvider$
   authProviderIconSize$: Observable<number>
@@ -25,5 +24,4 @@ export class WalletButtonComponent {
       map(screen => screen !== ('sm' || 'md') ? 24 : 36),
     )
   }
-
 }

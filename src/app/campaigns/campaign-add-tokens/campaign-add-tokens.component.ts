@@ -77,7 +77,7 @@ export class CampaignAddTokensComponent {
         this.addTokensForm.value.amount,
       ).pipe(
         switchMap(() => this.dialogService.info('Tokens added to campaign.', false)),
-        switchMap(() => this.router.navigate([`/campaigns/${this.campaignAddress}`])),
+        switchMap(() => this.router.router.navigate([`/campaigns/${this.campaignAddress}`])),
       )
     }
   }

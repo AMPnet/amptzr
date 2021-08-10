@@ -22,8 +22,8 @@ export class PortfolioComponent {
         fundsNeeded: 600,
         fundsInvested: 150,
         fundsEarned: 2.50,
-        startDate: 0,
-        endDate: 0,
+        startDate: new Date(Date.now()).toISOString(),
+        endDate: new Date(Date.now()).toISOString(),
         imgSrc: "https://www.boskinac.com/assets/cms_image/cms_image_hotel_gallery_81_original.jpg",
       },
       {
@@ -33,8 +33,8 @@ export class PortfolioComponent {
         fundsNeeded: 850,
         fundsInvested: 150,
         fundsEarned: 0,
-        startDate: 0,
-        endDate: 0,
+        startDate: new Date(Date.now()).toISOString(),
+        endDate: new Date(Date.now()).toISOString(),
         imgSrc: "https://images.pexels.com/photos/2850347/pexels-photo-2850347.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260",
       },
       {
@@ -44,8 +44,8 @@ export class PortfolioComponent {
         fundsNeeded: 600,
         fundsInvested: 150,
         fundsEarned: 2.50,
-        startDate: 0,
-        endDate: 0,
+        startDate: new Date(Date.now()).toISOString(),
+        endDate: new Date(Date.now()).toISOString(),
         imgSrc: "https://www.afrik21.africa/wp-content/uploads/2019/06/shutterstock_275763713-2-800x400.jpg",
       },
       {
@@ -55,8 +55,8 @@ export class PortfolioComponent {
         fundsNeeded: 600,
         fundsInvested: 150,
         fundsEarned: 2.50,
-        startDate: 0,
-        endDate: 0,
+        startDate: new Date(Date.now()).toISOString(),
+        endDate: new Date(Date.now()).toISOString(),
         imgSrc: "https://marinanovi.hr/wp-content/uploads/2020/12/152-1024x575.jpg",
       },
     ],
@@ -83,8 +83,8 @@ interface SinglePortfolioItemModel {
   fundsNeeded: number
   fundsInvested: number
   fundsEarned: number
-  endDate: number
-  startDate: number
+  endDate: string
+  startDate: string
   imgSrc: string
 }
 

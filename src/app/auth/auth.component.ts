@@ -9,6 +9,7 @@ import {VenlySubsignerService} from '../shared/services/subsigners/venly-subsign
 import {WalletConnectSubsignerService} from '../shared/services/subsigners/walletconnect-subsigner.service'
 import {MatDialogRef} from '@angular/material/dialog'
 import {RouterService} from '../shared/services/router.service'
+import {IssuerService} from '../shared/services/blockchain/issuer.service'
 
 @Component({
   selector: 'app-auth',
@@ -17,6 +18,8 @@ import {RouterService} from '../shared/services/router.service'
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AuthComponent {
+  issuer$ = this.issuerService.issuer$
+
   constructor(private signer: SignerService,
               private preferenceStore: PreferenceStore,
               private metamaskSubsignerService: MetamaskSubsignerService,
@@ -24,6 +27,7 @@ export class AuthComponent {
               private venlySubsignerService: VenlySubsignerService,
               private preferenceQuery: PreferenceQuery,
               private router: RouterService,
+              private issuerService: IssuerService,
               @Optional() private dialogRef: MatDialogRef<AuthComponent>) {
   }
 
