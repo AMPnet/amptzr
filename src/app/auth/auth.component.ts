@@ -20,7 +20,6 @@ import {IssuerService} from '../shared/services/blockchain/issuer.service'
 export class AuthComponent {
   issuer$ = this.issuerService.issuer$
 
-
   constructor(private signer: SignerService,
               private preferenceStore: PreferenceStore,
               private metamaskSubsignerService: MetamaskSubsignerService,
