@@ -1,17 +1,15 @@
 import {Injectable} from '@angular/core'
-import {Meta, Title} from '@angular/platform-browser'
+import {Meta} from '@angular/platform-browser'
 
 @Injectable({
   providedIn: 'root',
 })
 export class MetaService {
 
-  constructor(private meta: Meta,
-              private title: Title) {
+  constructor(private meta: Meta) {
   }
 
   setMeta(data: MetaData) {
-    this.title.setTitle(data.title)
     this.meta.addTag({property: 'og:title', content: data.title})
     this.meta.addTag({property: 'og:description', content: data.description})
     this.meta.addTag({property: 'og:image', content: data.imageURL})
