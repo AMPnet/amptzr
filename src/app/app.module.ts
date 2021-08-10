@@ -145,6 +145,7 @@ import {IssuerPathPipe} from './shared/pipes/issuer-path.pipe'
     },
     CurrencyPipe,
     IssuerPathPipe,
+    ToUrlIPFSPipe,
   ],
   bootstrap: [AppComponent],
 })
