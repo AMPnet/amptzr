@@ -142,6 +142,17 @@ export class CampaignService {
       this.errorService.handleError(),
     )
   }
+
+  alreadyInvested(address: string): Observable<number> {
+    return combineLatest([
+      of(this.contract(address, this.sessionQuery.provider)),
+      this.signerService.ensureAuth,
+    ]).pipe(
+      switchMap(([contract, _signer]) =>
+        contract.investments(this.sessionQuery.getValue().address!)),
+      map(res => Number(utils.formatEther(res))),
+    )
+  }
 }
 
 export interface CampaignState {

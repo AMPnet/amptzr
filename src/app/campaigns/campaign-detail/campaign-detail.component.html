@@ -78,11 +78,6 @@
         </div>
 
         <div>
-          Total claimable tokens:
-          {{ campaign.totalClaimableTokens | formatUnit:'bignumToWei' | number }}
-        </div>
-
-        <div>
           Soft cap:
           {{ campaign.softCap | formatUnit:'bignumToWei' | currencyDefault }}
         </div>
@@ -98,8 +93,13 @@
         </div>
 
         <div>
-          Total funds raised:
-          {{ campaign.totalFundsRaised | formatUnit:'bignumToWei' | currencyDefault }}
+          Total claimable tokens:
+          {{ campaign.totalClaimsCount | formatUnit:'bignumToWei' | number }}
+        </div>
+
+        <div>
+          Total investors count:
+          {{ campaign.totalInvestorsCount | formatUnit:'toNumber' | number }}
         </div>
 
         <div>
@@ -108,8 +108,18 @@
         </div>
 
         <div>
-          Total investors count:
-          {{ campaign.totalInvestorsCount | formatUnit:'toNumber' | number }}
+          Total funds raised:
+          {{ campaign.totalFundsRaised | formatUnit:'bignumToWei' | currencyDefault }}
+        </div>
+
+        <div>
+          Total tokens sold:
+          {{ campaign.totalTokensSold| formatUnit:'bignumToWei' | number }}
+        </div>
+
+        <div>
+          Total tokens balance:
+          {{ campaign.totalTokensBalance | formatUnit:'bignumToWei' | number }}
         </div>
 
         <div class="flex gap-1">
