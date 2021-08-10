@@ -139,7 +139,7 @@ export class CampaignService {
       map(signer => this.contract(address, signer)),
       switchMap(contract => contract.invest(utils.parseEther(amount.toString()))),
       switchMap(tx => this.sessionQuery.provider.waitForTransaction(tx.hash)),
-      this.errorService.handleError()
+      this.errorService.handleError(),
     )
   }
 }
