@@ -27,7 +27,6 @@ export class NavbarComponent {
   navbarScreenLinks: NavbarItem[] = [
     {title: "Offers", routerLink: "/offers"},
     {title: "Portfolio", routerLink: "/portfolio"},
-    {title: "Wallet", routerLink: "/wallet"},
     {title: "FAQ", routerLink: "/faq"},
   ]
 

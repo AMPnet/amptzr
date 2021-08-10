@@ -11,7 +11,6 @@ import {BrowserAnimationsModule} from '@angular/platform-browser/animations'
 import {OffersComponent} from './offers/offers.component'
 import {MatDialogModule} from '@angular/material/dialog'
 import {PortfolioComponent} from './portfolio/portfolio.component'
-import {WalletStatusComponent} from './shared/components/wallet-status/wallet-status.component'
 import {WalletComponent} from './wallet/wallet.component'
 import {ActionButtonComponent} from './shared/components/action-button/action-button.component'
 import {AddrShortPipe} from './shared/pipes/addr-short.pipe'
@@ -61,6 +60,7 @@ import {CampaignEditComponent} from './campaigns/campaign-edit/campaign-edit.com
 import {CampaignNewComponent} from './campaigns/campaign-new/campaign-new.component'
 import {CampaignAddTokensComponent} from './campaigns/campaign-add-tokens/campaign-add-tokens.component'
 import {IssuerPathPipe} from './shared/pipes/issuer-path.pipe'
+import {WalletButtonComponent} from './app-layout/navbar/wallet-button/wallet-button.component'
 
 @NgModule({
   declarations: [
@@ -69,7 +69,6 @@ import {IssuerPathPipe} from './shared/pipes/issuer-path.pipe'
     OffersComponent,
     PortfolioComponent,
     WalletComponent,
-    WalletStatusComponent,
     ActionButtonComponent,
     AddrShortPipe,
     UnwrapStatusPipe,
@@ -112,6 +111,7 @@ import {IssuerPathPipe} from './shared/pipes/issuer-path.pipe'
     CampaignEditComponent,
     CampaignNewComponent,
     CampaignAddTokensComponent,
+    WalletButtonComponent,
   ],
   imports: [
     BrowserModule,

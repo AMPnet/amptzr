@@ -27,7 +27,7 @@ export class TailwindService {
       .sort((s1, s2) => s1.width - s2.width)
   }
 
-  private getScreen(): string {
+  getScreen(): string {
     if (this.screens.length === 0) return ''
 
     const windowWidth = window.innerWidth
