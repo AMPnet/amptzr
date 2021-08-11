@@ -81,7 +81,7 @@ export class InvestComponent {
         return {
           min, max,
           walletBalance,
-          userInvestGap
+          userInvestGap,
         }
       }),
       shareReplay(1),
