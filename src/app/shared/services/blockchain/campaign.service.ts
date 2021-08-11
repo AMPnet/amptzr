@@ -17,6 +17,8 @@ import {findLog} from '../../utils/ethersjs'
 import {IPFSAddResult} from '../ipfs/ipfs.service.types'
 import {cid, IPFSCampaign, IPFSDocument, iso8601} from '../../../../../types/ipfs/campaign'
 import {ErrorService} from '../error.service'
+import {formatEther} from 'ethers/lib/utils'
+import {TokenPrice} from '../../utils/token-price'
 
 @Injectable({
   providedIn: 'root',
@@ -141,6 +143,40 @@ export class CampaignService {
       switchMap(tx => this.sessionQuery.provider.waitForTransaction(tx.hash)),
       this.errorService.handleError(),
     )
+  }
+
+  alreadyInvested(address: string): Observable<number> {
+    return combineLatest([
+      of(this.contract(address, this.sessionQuery.provider)),
+      this.signerService.ensureAuth,
+    ]).pipe(
+      switchMap(([contract, _signer]) =>
+        contract.investments(this.sessionQuery.getValue().address!)),
+      map(res => Number(utils.formatEther(res))),
+    )
+  }
+
+  stats(campaign: CampaignState) {
+    const tokenBalance = Number(formatEther(campaign.totalTokensBalance))
+    const tokensSold = Number(formatEther(campaign.totalTokensSold))
+    const softCap = Number(formatEther(campaign.softCap))
+    const tokenPrice = TokenPrice.parse(campaign.tokenPrice.toNumber())
+    const tokensAvailable = tokenBalance - tokensSold
+
+    const valueInvested = tokensSold * tokenPrice
+    const valueTotal = tokenBalance * tokenPrice
+    const valueToInvest = tokensAvailable * tokenPrice
+
+    return {
+      tokenBalance,
+      tokensSold,
+      softCap,
+      tokenPrice,
+      tokensAvailable,
+      valueInvested,
+      valueTotal,
+      valueToInvest,
+    }
   }
 }
 

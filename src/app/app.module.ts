@@ -62,6 +62,7 @@ import {OffersCardLargeComponent} from './offers/offers-card-large/offers-card-l
 import {OffersCardSmallComponent} from './offers/offers-card-small/offers-card-small.component'
 import {WalletButtonComponent} from './app-layout/navbar/wallet-button/wallet-button.component'
 import {FaqQuestionComponent} from './faq/faq-question/faq-question.component'
+import {MatTooltipModule} from '@angular/material/tooltip'
 
 @NgModule({
   declarations: [
@@ -124,6 +125,7 @@ import {FaqQuestionComponent} from './faq/faq-question/faq-question.component'
     AkitaNgRouterStoreModule,
     BrowserAnimationsModule,
     MatDialogModule,
+    MatTooltipModule,
     A11yModule,
     ServiceWorkerModule.register('ngsw-worker.js', {
       enabled: environment.production,
