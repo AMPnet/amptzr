@@ -14,25 +14,25 @@ export class FaqComponent {
       items: [
         {
           question: "Will I get rich fast?",
-          answer: "No."
+          answer: "No.",
         },
         {
           question: "Is this the final version of this FAQ, will there be any actual questions here?",
           answer: "Of course these are not the actual questions, what are you thinking? The real questions will come" +
-            " later.\n\nAlso, newlines are a thing that should be displayed correctly here.\nLike this, see?"
+            " later.\n\nAlso, newlines are a thing that should be displayed correctly here.\nLike this, see?",
         },
-      ]
+      ],
     },
     {
       categoryName: "Stupid questions",
       items: [
         {
           question: "I accidentally posted my private key on Facebook, are my coins safe?",
-          answer: "LOL, no."
+          answer: "LOL, no.",
         },
         {
           question: "Can I ask a question?",
-          answer: "Sure."
+          answer: "Sure.",
         },
         {
           question: "I feel like I should be able to write a lot of text, but I mean really really REALLY a lot of" +
@@ -40,29 +40,29 @@ export class FaqComponent {
             " know if this blasted thing works or not, what if there is some kind of limit that should never be" +
             " reached when doing sopmething like this? I mean, it's going great so far, but can I go on writing" +
             " random crap like this, will I ever stop?",
-          answer: "You misspelled 'sopmething', you idiot."
+          answer: "You misspelled 'sopmething', you idiot.",
         },
-      ]
+      ],
     },
     {
       categoryName: "Stupider questions",
       items: [
         {
           question: "What, there is only one question here?",
-          answer: "Always has been."
+          answer: "Always has been.",
         },
-      ]
+      ],
     },
     {
       categoryName: "Meme questions",
       items: [
         {
           question: "When moon?",
-          answer: "Go away."
+          answer: "Go away.",
         },
         {
           question: "Can we get some Fs in the chat?",
-          answer: "FFFFFFFFFFFF"
+          answer: "FFFFFFFFFFFF",
         },
         {
           question: "What is love?",
@@ -79,14 +79,15 @@ export class FaqComponent {
             " me\nNo more\nWhat is love?\nOh baby, don't hurt me\nDon't hurt me\nNo more\nYeah, yeah\nWhoa, whoa," +
             " oh\nWhoa, whoa, oh\nWhat is love?\nOh baby, don't hurt me\nDon't hurt me\nNo more\nWhat is love?\nOh" +
             " baby, don't hurt me\nDon't hurt me\nNo more (whoa, whoa)\nOh baby, don't hurt me\nDon't hurt me\nNo" +
-            " more (whoa, whoa)\nOh baby, don't hurt me\nDon't hurt me\nNo more\nWhat is love?"
+            " more (whoa, whoa)\nOh baby, don't hurt me\nDon't hurt me\nNo more\nWhat is love?",
         },
-      ]
-    }
+      ],
+    },
   ]
   selectedCategory$ = new BehaviorSubject<QuestionCategory>(this.questionCategories[0])
 
-  constructor() {}
+  constructor() {
+  }
 
   selectCategory(category: QuestionCategory) {
     this.selectedCategory$.next(category)

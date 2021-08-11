@@ -1,18 +1,17 @@
-<ng-container *ngIf="delayedDisplay$ | async">
-  <ng-container *ngIf="type === 'inline-xs'">
-    <ng-container *ngTemplateOutlet="inlineXs"></ng-container>
-  </ng-container>
+<ng-container *ngIf="type === 'inline-xs'">
+  <ng-container *ngTemplateOutlet="inlineXs"></ng-container>
+</ng-container>
 
-  <ng-container *ngIf="type === 'inline-base'">
-    <ng-container *ngTemplateOutlet="inlineBase"></ng-container>
-  </ng-container>
+<ng-container *ngIf="type === 'inline-base'">
+  <ng-container *ngTemplateOutlet="inlineBase"></ng-container>
+</ng-container>
 
-  <ng-container *ngIf="type === 'overlay'">
-    <ng-container *ngTemplateOutlet="overlay"></ng-container>
-  </ng-container>
+<ng-container *ngIf="type === 'overlay'">
+  <ng-container *ngTemplateOutlet="overlay"></ng-container>
+</ng-container>
 
 
-  <ng-template #inlineXs>
+<ng-template #inlineXs>
     <span class="inline-flex">
       <svg class="animate-spin h-3 w-3 text-blue-500" xmlns="http://www.w3.org/2000/svg" fill="none"
            viewBox="0 0 24 24">
@@ -22,9 +21,9 @@
         </path>
       </svg>
     </span>
-  </ng-template>
+</ng-template>
 
-  <ng-template #inlineBase>
+<ng-template #inlineBase>
     <span class="inline-flex">
       <svg class="animate-spin h-4 w-4 text-blue-500" xmlns="http://www.w3.org/2000/svg" fill="none"
            viewBox="0 0 24 24">
@@ -34,39 +33,38 @@
         </path>
       </svg>
     </span>
-  </ng-template>
+</ng-template>
 
-  <ng-template #overlay>
-    <div class="mt-40 ml-4">
-      <div class="boxes">
-        <div class="box">
-          <div></div>
-          <div></div>
-          <div></div>
-          <div></div>
-        </div>
-        <div class="box">
-          <div></div>
-          <div></div>
-          <div></div>
-          <div></div>
-        </div>
-        <div class="box">
-          <div></div>
-          <div></div>
-          <div></div>
-          <div></div>
-        </div>
-        <div class="box">
-          <div></div>
-          <div></div>
-          <div></div>
-          <div></div>
-        </div>
+<ng-template #overlay>
+  <div class="flex justify-center mt-40">
+    <div class="boxes">
+      <div class="box">
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+      </div>
+      <div class="box">
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+      </div>
+      <div class="box">
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+      </div>
+      <div class="box">
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
       </div>
     </div>
-    <div class="text-lg font-semibold text-indigo-800 mt-20">
-      <ng-content></ng-content>
-    </div>
-  </ng-template>
-</ng-container>
+  </div>
+  <div class="flex justify-center text-lg font-semibold text-indigo-800 mt-24">
+    <ng-content></ng-content>
+  </div>
+</ng-template>

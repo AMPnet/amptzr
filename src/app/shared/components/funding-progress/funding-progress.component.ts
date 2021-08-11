@@ -1,5 +1,5 @@
 import {ChangeDetectionStrategy, Component, Input, OnInit} from "@angular/core"
-import {CampaignService, CampaignState, CampaignWithInfo} from '../../services/blockchain/campaign.service'
+import {CampaignService, CampaignWithInfo} from '../../services/blockchain/campaign.service'
 
 @Component({
   selector: 'app-funding-progress',

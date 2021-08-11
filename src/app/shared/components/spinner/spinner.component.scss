@@ -12,6 +12,7 @@ $shadow: #DBE3F4;
   transform-style: preserve-3d;
   transform-origin: 50% 50%;
   transform: rotateX(60deg) rotateZ(45deg) rotateY(0deg) translateZ(0px);
+
   .box {
     width: var(--size);
     height: var(--size);
@@ -19,22 +20,27 @@ $shadow: #DBE3F4;
     left: 0;
     position: absolute;
     transform-style: preserve-3d;
+
     &:nth-child(1) {
       transform: translate(100%, 0);
       animation: box1 var(--duration) linear infinite;
     }
+
     &:nth-child(2) {
       transform: translate(0, 100%);
       animation: box2 var(--duration) linear infinite;
     }
+
     &:nth-child(3) {
       transform: translate(100%, 100%);
       animation: box3 var(--duration) linear infinite;
     }
+
     &:nth-child(4) {
       transform: translate(200%, 0);
       animation: box4 var(--duration) linear infinite;
     }
+
     & > div {
       --background: #{$color};
       --top: auto;
@@ -53,19 +59,23 @@ $shadow: #DBE3F4;
       bottom: var(--bottom);
       left: var(--left);
       transform: rotateY(var(--rotateY)) rotateX(var(--rotateX)) translateZ(var(--translateZ));
+
       &:nth-child(1) {
         --top: 0;
         --left: 0;
       }
+
       &:nth-child(2) {
         --background: #{$colorRight};
         --right: 0;
         --rotateY: 90deg;
       }
+
       &:nth-child(3) {
         --background: #{$colorLeft};
         --rotateX: -90deg;
       }
+
       &:nth-child(4) {
         --background: #{$shadow};
         --top: 0;
@@ -87,7 +97,7 @@ $shadow: #DBE3F4;
 }
 
 @keyframes box2 {
-  0%{
+  0% {
     transform: translate(0, 100%);
   }
   50% {
@@ -109,7 +119,7 @@ $shadow: #DBE3F4;
 }
 
 @keyframes box4 {
-  0%{
+  0% {
     transform: translate(200%, 0);
   }
   50% {
@@ -120,12 +130,9 @@ $shadow: #DBE3F4;
   }
 }
 
-html {
-  -webkit-font-smoothing: antialiased;
-}
-
 * {
   box-sizing: border-box;
+
   &:before, &:after {
     box-sizing: border-box;
   }
