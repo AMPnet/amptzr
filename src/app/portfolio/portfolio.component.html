@@ -40,11 +40,8 @@
             <div class="text-3xl mt-4 lg:text-4xl tracking-wider font-light uppercase">{{ item.name }}</div>
             <div class="mt-2 flex flex-col lg:flex-row justify-start lg:justify-between">
               <div class="w-full lg:mr-16">
-                <app-funding-progress
-                  [startDate]="item.startDate"
-                  [endDate]="item.endDate"
-                  [fundsRaised]="item.fundsRaised"
-                  [fundsRequired]="item.fundsNeeded"></app-funding-progress>
+                <!-- TODO: uncomment when updating portfolio screen -->
+                <!--                <app-funding-progress [campaign]="offer"></app-funding-progress>-->
               </div>
               <div class="flex items-end">
                 <button *ngIf="item.projectState === projectState.InFunding" app-action-button

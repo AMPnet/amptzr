@@ -40,8 +40,12 @@ export class StablecoinService {
   }
 
   getAllowance(campaignAddress: string): Observable<number> {
-    return this.contract$.pipe(
-      switchMap(contract => contract.allowance(this.sessionQuery.getValue().address!, campaignAddress)),
+    return combineLatest([
+      this.contract$,
+      this.signerService.ensureAuth,
+    ]).pipe(
+      switchMap(([contract, _signer]) =>
+        contract.allowance(this.sessionQuery.getValue().address!, campaignAddress)),
       map(res => Number(utils.formatEther(res))),
     )
   }

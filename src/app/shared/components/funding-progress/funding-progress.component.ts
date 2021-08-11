@@ -1,4 +1,5 @@
-import {ChangeDetectionStrategy, Component, Input} from "@angular/core"
+import {ChangeDetectionStrategy, Component, Input, OnInit} from "@angular/core"
+import {CampaignService, CampaignState, CampaignWithInfo} from '../../services/blockchain/campaign.service'
 
 @Component({
   selector: 'app-funding-progress',
@@ -6,17 +7,37 @@ import {ChangeDetectionStrategy, Component, Input} from "@angular/core"
   styleUrls: ['./funding-progress.component.css'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class FundingProgressComponent {
-  @Input() fundsRaised: number = 0
-  @Input() fundsRequired: number = 0
-  @Input() startDate: string = ''
-  @Input() endDate: string = ''
+export class FundingProgressComponent implements OnInit {
+  @Input() campaign!: CampaignWithInfo
 
-  raisedPercentage(): number {
-    if (this.fundsRequired === 0) {
-      return 100
-    }
+  progressData: ProgressData | undefined
 
-    return Math.min(100 * this.fundsRaised / this.fundsRequired, 100)
+  constructor(private campaignService: CampaignService) {
   }
+
+  ngOnInit() {
+    const stats = this.campaignService.stats(this.campaign)
+
+    const raisedPercentage = stats.valueTotal !== 0 ?
+      stats.valueInvested / stats.valueTotal : 0
+
+    const softCapPercentage = stats.valueTotal !== 0 ?
+      stats.softCap / stats.valueTotal : 0
+
+    this.progressData = {
+      raised: stats.valueInvested,
+      raisedPercentage: raisedPercentage,
+      total: stats.valueTotal,
+      softCap: stats.softCap,
+      softCapPercentage: softCapPercentage,
+    }
+  }
+}
+
+interface ProgressData {
+  raised: number,
+  raisedPercentage: number,
+  total: number,
+  softCap: number,
+  softCapPercentage: number,
 }
