@@ -75,7 +75,7 @@ export class InvestComponent {
 
         const walletBalance = Number(utils.formatEther(balance))
 
-        let min = alreadyInvested > 0 ? 0 : campaignMin
+        const min = alreadyInvested > 0 ? 0 : campaignMin
         let max = campaignAmountAvailable < campaignMax ? campaignAmountAvailable : campaignMax
 
         // ensure floor on 2 decimal points
