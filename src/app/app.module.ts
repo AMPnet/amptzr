@@ -61,6 +61,7 @@ import {IssuerPathPipe} from './shared/pipes/issuer-path.pipe'
 import {OffersCardLargeComponent} from './offers/offers-card-large/offers-card-large.component'
 import {OffersCardSmallComponent} from './offers/offers-card-small/offers-card-small.component'
 import {WalletButtonComponent} from './app-layout/navbar/wallet-button/wallet-button.component'
+import {FaqQuestionComponent} from './faq/faq-question/faq-question.component'
 import {MatTooltipModule} from '@angular/material/tooltip'
 
 @NgModule({
@@ -113,6 +114,7 @@ import {MatTooltipModule} from '@angular/material/tooltip'
     CampaignNewComponent,
     CampaignAddTokensComponent,
     WalletButtonComponent,
+    FaqQuestionComponent,
   ],
   imports: [
     BrowserModule,
