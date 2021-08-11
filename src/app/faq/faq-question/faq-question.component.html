@@ -1,0 +1,18 @@
+<div class="w-full rounded-2xl flex-col shadow-lg justify-between bg-white p-4 mb-4
+            lg:p-8 flex lg:flex-row lg:items-end">
+  <div class="flex flex-col w-full">
+    <div class="flex flex-row justify-between items-center cursor-pointer" (click)="toggle()">
+      <div class="font-semibold text-lg lg:text-2xl">{{ question }}</div>
+      <div class="flex items-center justify-center">
+        <svg class="transition-all duration-300" [class.rotate-180]="toggled" width="16" height="9" viewBox="0 0 16 9"
+             fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M15 1L8 8L1 1" stroke="#3F3F46" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+    </div>
+    <div class="font-semibold text-base overflow-hidden transition-all ease-in-out duration-300"
+         [class.pt-8]="toggled" [class.max-h-0]="!toggled">
+      <ng-content></ng-content>
+    </div>
+  </div>
+</div>

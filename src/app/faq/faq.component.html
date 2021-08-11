@@ -1,3 +1,18 @@
-<h1>FAQ</h1>
+<div class="w-full h-full flex justify-center mt-8 px-2 pb-8">
+  <div class="w-full max-w-6xl">
+    <div class="w-full flex flex-row overflow-x-auto flex-nowrap lg:flex-wrap mb-8">
+      <span *ngFor="let category of questionCategories"
+            (click)="selectCategory(category)"
+            class="whitespace-nowrap text-base font-semibold text-indigo-800 bg-blue-200 rounded-full
+                   px-4 py-2 cursor-pointer"
+            [class.bg-blue-200]="(selectedCategory$ | async) === category">
+        {{ category.categoryName }}
+      </span>
+    </div>
 
-<p>to be implemented...</p>
+    <app-faq-question *ngFor="let item of (selectedCategory$ | async)!.items" [question]="item.question">
+      <div class="whitespace-pre-wrap">{{ item.answer }}</div>
+    </app-faq-question>
+
+  </div>
+</div>
