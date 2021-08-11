@@ -32,12 +32,9 @@
       <p class="my-2 font-light text-gray-500 leading-relaxed">
         {{ offer.about }}
       </p>
-      <div class="flex flex-col lg:flex-row justify-between">
-        <app-funding-progress
-          [fundsRaised]="offer.totalFundsRaised | formatUnit:'bignumToWei'"
-          [fundsRequired]="offer.softCap | formatUnit:'bignumToWei'"
-          [startDate]="offer.startDate"
-          [endDate]="offer.endDate" class="lg:w-9/12"></app-funding-progress>
+      <div class="flex flex-col justify-between lg:flex-row lg:gap-4">
+        <app-funding-progress class="w-full" [campaign]="offer">
+        </app-funding-progress>
 
         <button class="bg-indigo-800 hover:bg-indigo-900 transition-all
       w-full lg:h-12 lg:w-16 py-3 mt-6 text-white rounded-full flex items-center justify-center"

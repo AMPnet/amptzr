@@ -6,11 +6,10 @@ import {CampaignService, CampaignWithInfo} from '../shared/services/blockchain/c
 import {map, shareReplay, switchMap, take, tap} from 'rxjs/operators'
 import {ActivatedRoute} from '@angular/router'
 import {StablecoinService} from '../shared/services/blockchain/stablecoin.service'
-import {utils} from 'ethers'
 import {DialogService} from '../shared/services/dialog.service'
 import {RouterService} from '../shared/services/router.service'
 import {SessionQuery} from '../session/state/session.query'
-import {TokenPrice} from '../shared/utils/token-price'
+import {formatEther} from 'ethers/lib/utils'
 
 @Component({
   selector: 'app-invest',
@@ -64,25 +63,25 @@ export class InvestComponent {
       this.alreadyInvested$,
     ]).pipe(take(1),
       map(([campaign, balance, alreadyInvested]) => {
-        const campaignMin = Number(utils.formatEther(campaign.minInvestment))
-        const campaignMax = Number(utils.formatEther(campaign.maxInvestment))
+        const walletBalance = Number(formatEther(balance))
 
-        const campaignTokensBalance = Number(utils.formatEther(campaign.totalTokensBalance))
-        const campaignTokensSold = Number(utils.formatEther(campaign.totalTokensSold))
-        const campaignTokenPrice = TokenPrice.parse(campaign.tokenPrice.toNumber())
-        const campaignTokensAvailable = campaignTokensBalance - campaignTokensSold
-        const campaignAmountAvailable = campaignTokensAvailable * campaignTokenPrice
+        const campaignMin = Number(formatEther(campaign.minInvestment))
+        const campaignMax = Number(formatEther(campaign.maxInvestment))
 
-        const walletBalance = Number(utils.formatEther(balance))
+        const campaignStats = this.campaignService.stats(campaign)
 
-        let min = alreadyInvested > 0 ? 0 : campaignMin
-        let max = campaignAmountAvailable < campaignMax ? campaignAmountAvailable : campaignMax
+        const min = alreadyInvested > 0 ? 0 : campaignMin
 
-        // ensure floor on 2 decimal points
-        max = Math.round(Math.floor(max * 100)) / 100
+        let userInvestGap = this.floorDecimals(campaignMax - alreadyInvested)
+        let max = this.floorDecimals(Math.min(userInvestGap, campaignStats.valueToInvest))
+
+        userInvestGap = Math.floor(userInvestGap * 100) / 100
+        max = Math.floor(max * 100) / 100
 
         return {
-          min, max, walletBalance,
+          min, max,
+          walletBalance,
+          userInvestGap
         }
       }),
       shareReplay(1),
@@ -91,6 +90,11 @@ export class InvestComponent {
     this.investmentForm = this.fb.group({
       amount: [0, [], [this.validAmount.bind(this)]],
     })
+
+  }
+
+  private floorDecimals(value: number): number {
+    return Math.floor(value * 100) / 100
   }
 
   private validAmount(control: AbstractControl): Observable<ValidationErrors | null> {
@@ -98,8 +102,10 @@ export class InvestComponent {
       map(data => {
         const amount = control.value
 
-        if (data.max === 0) {
-          return {maxReached: true}
+        if (data.userInvestGap === 0) {
+          return {userMaxReached: true}
+        } else if (data.max === 0) {
+          return {campaignMaxReached: true}
         } else if (data.walletBalance === 0) {
           return {walletBalanceTooLow: true}
         } else if (!amount) {
@@ -162,7 +168,7 @@ export class InvestComponent {
       this.campaign$,
     ]).pipe(take(1),
       switchMap(([campaign]) => this.campaignService.invest(
-        campaign!.contractAddress,
+        campaign.contractAddress,
         this.investmentForm.value.amount,
       )),
       switchMap(() => this.router.navigate(['/portfolio'])),
@@ -179,4 +185,5 @@ interface PreInvestData {
   min: number,
   max: number,
   walletBalance: number
+  userInvestGap: number
 }

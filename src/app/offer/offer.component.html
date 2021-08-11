@@ -58,11 +58,7 @@
 
           <!-- RIGHT COLUMN -->
           <div class="w-full mt-8 lg:w-8/12 lg:pr-4">
-            <app-funding-progress
-              [fundsRaised]="offer.totalFundsRaised | formatUnit:'bignumToWei'"
-              [fundsRequired]="offer.softCap | formatUnit:'bignumToWei'"
-              [startDate]="offer.startDate"
-              [endDate]="offer.endDate"></app-funding-progress>
+            <app-funding-progress [campaign]="offer"></app-funding-progress>
 
             <!-- Floating Invest button -->
             <div class="fixed lg:relative lg:w-full bottom-4 right-4 lg:right-0 px-4 lg:px-0 w-7/12">

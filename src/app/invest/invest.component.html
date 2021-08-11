@@ -21,13 +21,14 @@
                         I want to invest
                       </label>
                       <input class="w-full mt-2 p-3 border outline-none rounded-xl disabled:bg-gray-100"
-                             [attr.disabled]="investmentForm.get('amount')?.errors?.maxReached"
+                             [attr.disabled]="investmentForm.get('amount')?.errors?.userMaxReached
+                             || investmentForm.get('amount')?.errors?.campaignMaxReached"
                              type="text" appCurrencyMask
                              id="investmentAmount"
                              formControlName="amount"/>
                       <div class="mt-4 w-full flex items-end justify-between">
                         <div class="text-sm flex">
-                          <ng-container *ngIf="data.min > 0">
+                          <ng-container *ngIf="data.max > 0 && data.min > 0">
                             <span class="font-semibold mr-1">
                               {{ data.min | currencyDefault }}
                             </span>
@@ -87,10 +88,12 @@
                         </ng-container>
                       </span>
                     </div>
-                    <div class="flex items-center" *ngIf="investmentForm.get('amount')?.errors?.maxReached">
-                      <span class="text-sm font-semibold">
-                        All tokens for this campaign are sold.
-                      </span>
+
+                    <div class="text-sm font-semibold" *ngIf="investmentForm.get('amount')?.errors?.userMaxReached">
+                      You have invested the maximum allowed amount in this project.
+                    </div>
+                    <div class="text-sm font-semibold" *ngIf="investmentForm.get('amount')?.errors?.campaignMaxReached">
+                      The project is closed for funding.
                     </div>
                   </div>
 
@@ -104,7 +107,8 @@
                   <button app-action-button
                           *ngIf="!investmentForm.get('amount')?.errors?.walletBalanceTooLow"
                           [onClick]="goToReview.bind(this)"
-                          [disabled]="!investmentForm.valid || investmentForm.get('amount')?.errors?.maxReached"
+                          [disabled]="!investmentForm.valid || investmentForm.get('amount')?.errors?.userMaxReached
+                          || investmentForm.get('amount')?.errors?.campaignMaxReached"
                           text="Next ->"
                           class="bg-indigo-800 rounded-full w-full lg:w-auto px-16 py-2 text-sm mt-4
                         lg:mt-8 text-white float-right disabled:bg-gray-500">
@@ -119,14 +123,15 @@
             <h2 class="mt-8 hidden lg:block font-semibold">
               Review your investment
             </h2>
+
             <div class="mt-4 shadow-lg rounded-3xl bg-white p-8 flex flex-col">
               <h3 class="font-semibold mb-4">
                 Investing
               </h3>
               <div class="flex flex-col lg:flex-row lg:items-center">
-            <span class="text-3xl mr-2 font-semibold">
-              {{ investmentForm.get('amount')?.value | currencyDefault }}
-            </span>
+                <span class="text-3xl mr-2 font-semibold">
+                  {{ investmentForm.get('amount')?.value | currencyDefault }}
+                </span>
                 <span class="hidden lg:inline">-></span>
                 <span class="text-3xl lg:ml-2 mt-2 lg:mt-auto uppercase">{{ campaign.name }}</span>
               </div>

@@ -1,25 +1,42 @@
-<div *ngIf="fundsRaised < fundsRequired">
-  <span class="mt-6 font-bold text-gray-800 text-sm">{{ fundsRaised | currencyDefault }}</span>
-  <span class="mx-1 text-sm">of</span>
-  <span class="mt-6 font-bold text-gray-800 text-sm">{{ fundsRequired | currencyDefault }}</span>
-  <div class="relative pt-1 mt-2">
-    <div class="overflow-hidden h-2 mb-2 text-xs flex rounded bg-gray-200">
-      <div [style.width.%]="raisedPercentage()"
-           class="shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-indigo-800"></div>
+<ng-container *ngIf="progressData as data">
+  <ng-container *ngIf="campaign">
+    <div *ngIf="data.raised < data.total">
+      <span class="mt-6 font-bold text-gray-800 text-sm">{{ data.raised | currencyDefault }}</span>
+      <span class="mx-1 text-sm">of</span>
+      <span class="mt-6 font-bold text-gray-800 text-sm">{{ data.total | currencyDefault }}</span>
+      <div class="relative h-2 mb-2 pt-1 mt-2">
+        <!-- Progress tray -->
+        <div class="absolute w-full h-full rounded bg-gray-200"></div>
+
+        <!-- Progress amount -->
+        <div class="absolute h-full rounded bg-indigo-800"
+             [style.width.%]="data.raisedPercentage * 100"></div>
+
+        <!-- Soft cap value -->
+        <div class="absolute h-full w-px bg-green-200"
+             *ngIf="data.total > data.softCap"
+             matTooltip="Soft cap {{ data.softCap | currencyDefault }}"
+             [style.left.%]="data.softCapPercentage * 100">
+        </div>
+      </div>
+      <div class="flex justify-between">
+        <div class="font-bold text-indigo-800 text-sm uppercase">
+          {{ data.raisedPercentage | percent }} funded
+        </div>
+        <div class="font-light text-gray-400 text-sm">
+          {{ campaign.startDate | date: 'mediumDate' }} - {{ campaign.endDate | date: 'mediumDate' }}
+        </div>
+      </div>
     </div>
-  </div>
-  <div class="flex justify-between">
-    <div class="font-bold text-indigo-800 text-sm">{{ raisedPercentage() | number:'1.0-0' }}% funded</div>
-    <div class="font-light text-gray-400 text-sm">
-      {{ startDate | date: 'mediumDate'}} - {{ endDate | date: 'mediumDate'}}
+    <div *ngIf="data.raised >= data.total">
+      <span class="mt-6 font-bold text-indigo-900 text-lg uppercase">
+        {{ data.raised | currencyDefault }}
+      </span> raised
+      <div class="flex justify-between mt-3">
+        <div class="font-light text-gray-400 text-sm">
+          {{ campaign.startDate | date: 'mediumDate' }} - {{ campaign.endDate | date: 'mediumDate' }}
+        </div>
+      </div>
     </div>
-  </div>
-</div>
-<div *ngIf="fundsRaised >= fundsRequired">
-  <span class="mt-6 font-bold text-indigo-900 text-lg">{{ fundsRaised | currencyDefault }}</span> Raised
-  <div class="flex justify-between mt-3">
-    <div class="font-light text-gray-400 text-sm">
-      {{ startDate | date: 'mediumDate'}} - {{ endDate | date: 'mediumDate'}}
-    </div>
-  </div>
-</div>
+  </ng-container>
+</ng-container>
