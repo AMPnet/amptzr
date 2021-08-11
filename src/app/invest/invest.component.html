@@ -167,7 +167,7 @@
 
       <ng-container *ngIf="campaignRes.loading">
         <div class="flex justify-center py-8">
-          Loading campaign...
+          <app-spinner type="overlay">Loading campaign...</app-spinner>
         </div>
       </ng-container>
     </ng-container>

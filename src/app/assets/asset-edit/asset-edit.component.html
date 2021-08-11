@@ -40,7 +40,7 @@
     </ng-container>
 
     <ng-container *ngIf="assetRes.loading">
-      Fetching Asset...
+      <app-spinner type="overlay">Loading asset...</app-spinner>
     </ng-container>
   </ng-container>
 </div>

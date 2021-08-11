@@ -34,7 +34,7 @@
     </ng-container>
 
     <ng-container *ngIf="dataRes.loading">
-      Fetching Campaign...
+      <app-spinner type="overlay">Fetching campaign...</app-spinner>
     </ng-container>
   </ng-container>
 </div>

@@ -51,7 +51,7 @@
               </ng-container>
 
               <ng-container *ngIf="descriptionRes.loading">
-                Loading description...
+                <app-spinner type="overlay">Loading description...</app-spinner>
               </ng-container>
             </ng-container>
           </div>
@@ -105,7 +105,7 @@
     </ng-container>
 
     <ng-container *ngIf="campaignRes.loading">
-      Loading offer...
+      <app-spinner type="overlay">Loading offer...</app-spinner>
     </ng-container>
   </div>
 </ng-container>
