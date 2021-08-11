@@ -13,6 +13,5 @@
     <app-faq-question *ngFor="let item of (selectedCategory$ | async)!.items" [question]="item.question">
       <div class="whitespace-pre-wrap">{{ item.answer }}</div>
     </app-faq-question>
-
   </div>
 </div>

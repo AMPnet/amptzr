@@ -8,7 +8,6 @@ import {BehaviorSubject} from "rxjs"
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FaqComponent {
-
   questionCategories: QuestionCategory[] = [
     {
       categoryName: "Common questions",

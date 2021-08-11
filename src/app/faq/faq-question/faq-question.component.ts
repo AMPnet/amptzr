@@ -7,7 +7,6 @@ import {Component, ChangeDetectionStrategy, Input} from '@angular/core'
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FaqQuestionComponent {
-
   @Input() question!: string
   toggled = false
 
@@ -16,5 +15,4 @@ export class FaqQuestionComponent {
   toggle() {
     this.toggled = !this.toggled
   }
-
 }
