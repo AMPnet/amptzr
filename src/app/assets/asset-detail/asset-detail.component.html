@@ -59,7 +59,7 @@
             </ng-container>
 
             <ng-container *ngIf="descriptionRes.loading">
-              Loading description...
+              <app-spinner type="overlay">Loading description...</app-spinner>
             </ng-container>
           </ng-container>
         </div>
@@ -121,7 +121,7 @@
             </ng-container>
 
             <ng-container *ngIf="campaignsRes.loading">
-              Loading campaigns...
+              <app-spinner type="overlay">Loading campaigns...</app-spinner>
             </ng-container>
           </div>
         </div>
@@ -141,7 +141,7 @@
     </ng-container>
 
     <ng-container *ngIf="assetRes.loading">
-      Fetching asset...
+      <app-spinner type="overlay">Fetching asset...</app-spinner>
     </ng-container>
   </ng-container>
 </div>

@@ -1,4 +1,4 @@
-import {Component, ChangeDetectionStrategy, Input} from '@angular/core'
+import {ChangeDetectionStrategy, Component, Input} from '@angular/core'
 
 @Component({
   selector: 'app-faq-question',
@@ -10,7 +10,8 @@ export class FaqQuestionComponent {
   @Input() question!: string
   toggled = false
 
-  constructor() {}
+  constructor() {
+  }
 
   toggle() {
     this.toggled = !this.toggled

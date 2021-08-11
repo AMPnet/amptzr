@@ -38,7 +38,7 @@
     </ng-container>
 
     <ng-container *ngIf="issuerRes.loading">
-      Fetching Issuer...
+      <app-spinner type="overlay">Fetching issuer...</app-spinner>
     </ng-container>
   </ng-container>
 </div>

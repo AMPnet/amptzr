@@ -27,7 +27,7 @@
 
     <ng-container *ngIf="offersRes.loading">
       <div class="flex justify-center py-4">
-        Loading offers...
+        <app-spinner type="overlay">Loading offers...</app-spinner>
       </div>
     </ng-container>
   </ng-container>

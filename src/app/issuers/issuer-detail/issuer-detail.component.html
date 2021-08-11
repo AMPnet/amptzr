@@ -93,7 +93,7 @@
             </ng-container>
 
             <ng-container *ngIf="assetsRes.loading">
-              Loading assets...
+              <app-spinner type="overlay">Loading assets...</app-spinner>
             </ng-container>
           </div>
         </div>
@@ -117,7 +117,7 @@
     </ng-container>
 
     <ng-container *ngIf="issuerRes.loading">
-      Fetching issuer...
+      <app-spinner type="overlay">Fetching issuer...</app-spinner>
     </ng-container>
   </ng-container>
 </div>

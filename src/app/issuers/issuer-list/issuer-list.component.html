@@ -74,7 +74,7 @@
       </ng-container>
 
       <ng-container *ngIf="issuersRes.loading">
-        Loading issuers
+        <app-spinner type="overlay">Loading issuers...</app-spinner>
       </ng-container>
     </ng-container>
   </div>
