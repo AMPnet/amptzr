@@ -31,7 +31,6 @@ export class FundingProgressComponent implements OnInit {
       softCap: stats.softCap,
       softCapPercentage: softCapPercentage,
     }
-    console.log(this.progressData)
   }
 }
 

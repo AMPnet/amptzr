@@ -72,11 +72,8 @@ export class InvestComponent {
 
         const min = alreadyInvested > 0 ? 0 : campaignMin
 
-        let userInvestGap = this.floorDecimals(campaignMax - alreadyInvested)
-        let max = this.floorDecimals(Math.min(userInvestGap, campaignStats.valueToInvest))
-
-        userInvestGap = Math.floor(userInvestGap * 100) / 100
-        max = Math.floor(max * 100) / 100
+        const userInvestGap = this.floorDecimals(campaignMax - alreadyInvested)
+        const max = Math.min(userInvestGap, this.floorDecimals(campaignStats.valueToInvest))
 
         return {
           min, max,
