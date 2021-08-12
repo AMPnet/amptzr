@@ -22,11 +22,12 @@ export class PortfolioComponent {
   )
   portfolioWithStatus$ = withStatus(this.portfolio$)
 
-  totalInvested$: Observable<WithStatus<{ value: number }>> = this.portfolio$.pipe(
-    map(p => p.length > 0 ?
-      p.map(item => Number(formatEther(item.tokenValue))).reduce((prev, curr) => prev + curr) : 0),
-    map(v => ({value: v})),
-    switchMap(p => withStatus(of(p))),
+  totalInvested$: Observable<{ value: number }> = this.portfolio$.pipe(
+    switchMap(portfolio => of(portfolio).pipe(
+      map(p => p.length > 0 ?
+        p.map(item => Number(formatEther(item.tokenValue))).reduce((prev, curr) => prev + curr) : 0),
+      map(v => ({value: v})),
+    ),),
   )
 
   constructor(private sessionQuery: SessionQuery,

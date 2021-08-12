@@ -1,107 +1,117 @@
 <ng-container *ngIf="(campaign$ | async) as campaignRes">
   <div class="flex justify-center mb-12 mt-8 lg:mx-0">
     <ng-container *ngIf="campaignRes.value as offer">
-      <div class=" w-full rounded-3xl pb-12 shadow-md mx-2 lg:mx-auto max-w-6xl h-full bg-white flex flex-col">
-        <div class="relative">
-          <img class="rounded-t-3xl lg:h-96 lg:mx-auto w-full object-cover"
-               [src]="offer.photo | toUrlIPFS"
-               alt="Offer photo" srcset="">
-          <div class="bg-white shadow-xl p-6 lg:h-10 lg:rounded-full
+      <ng-container *ngIf="address$ | async as address">
+        <div class=" w-full rounded-3xl pb-12 shadow-md mx-2 lg:mx-auto max-w-6xl h-full bg-white flex flex-col">
+          <div class="relative">
+            <img class="rounded-t-3xl lg:h-96 lg:mx-auto w-full object-cover"
+                 [src]="offer.photo | toUrlIPFS"
+                 alt="Offer photo" srcset="">
+            <div class="bg-white shadow-xl p-6 lg:h-10 lg:rounded-full
                             absolute lg:bottom-8 -bottom-11 left-4 lg:left-12 flex flex-col lg:flex-row lg:items-center
                             rounded-t-xl rounded-b-xl">
-            <div>
+              <div>
               <span class="font-bold lg:text-lg">
                 {{ offer.return?.from | percent }} - {{ offer.return?.to | percent }}
               </span>
-              <span class="ml-2 font-light text-sm">Annual interest rate</span>
-            </div>
-            <div class="mt-2 lg:mt-0">
+                <span class="ml-2 font-light text-sm">Annual interest rate</span>
+              </div>
+              <div class="mt-2 lg:mt-0">
               <span class="lg:ml-6 font-bold lg:text-lg">
                 {{ offer.minInvestment | formatUnit:'bignumToWei' | currencyDefault }}
               </span>
-              <span class="ml-2 font-light text-sm">Min investment</span>
-            </div>
-            <div class="mt-2 lg:mt-0">
+                <span class="ml-2 font-light text-sm">Min investment</span>
+              </div>
+              <div class="mt-2 lg:mt-0">
               <span class="lg:ml-6 font-bold lg:text-lg">
                 {{ offer.maxInvestment | formatUnit:'bignumToWei' | currencyDefault }}
               </span>
-              <span class="ml-2 font-light text-sm">Max investment</span>
+                <span class="ml-2 font-light text-sm">Max investment</span>
+              </div>
             </div>
           </div>
-        </div>
-        <div class="w-full h-full bg-white flex lg:flex-row gap-8 flex-col-reverse pt-8 lg:pl-14 px-4">
+          <div class="w-full h-full bg-white flex lg:flex-row gap-8 flex-col-reverse pt-8 lg:pl-14 px-4">
 
-          <!-- LEFT COLUMN -->
-          <div class="w-full leading-normal mt-8 lg:mt-8">
-            <h1 class="text-4xl font-light tracking-wider leading-relaxed">{{ offer.name }}</h1>
+            <!-- LEFT COLUMN -->
+            <div class="w-full leading-normal mt-8 lg:mt-8">
+              <h1 class="text-4xl font-light tracking-wider leading-relaxed">{{ offer.name }}</h1>
 
-            <div class="mt-4 text-lg font-light text-gray-500">
-              {{ offer.about }}
+              <div class="mt-4 text-lg font-light text-gray-500">
+                {{ offer.about }}
+              </div>
+
+              <ng-container *ngIf="(offer.description | toTextIPFS | async) as descriptionRes">
+                <ng-container *ngIf="descriptionRes.value as description">
+                  <!-- TODO: Add safety for content parsing, prevent injection -->
+                  <div class="mt-4 font-light text-gray-700" [innerHtml]="description"></div>
+                </ng-container>
+
+                <ng-container *ngIf="descriptionRes.error">
+                  Cannot fetch description.
+                  <div hidden>{{ descriptionRes.error | json }}</div>
+                </ng-container>
+
+                <ng-container *ngIf="descriptionRes.loading">
+                  <app-spinner type="overlay">Loading description...</app-spinner>
+                </ng-container>
+              </ng-container>
             </div>
 
-            <ng-container *ngIf="(offer.description | toTextIPFS | async) as descriptionRes">
-              <ng-container *ngIf="descriptionRes.value as description">
-                <!-- TODO: Add safety for content parsing, prevent injection -->
-                <div class="mt-4 font-light text-gray-700" [innerHtml]="description"></div>
-              </ng-container>
+            <!-- RIGHT COLUMN -->
+            <div class="w-full mt-8 lg:w-8/12 lg:pr-4">
+              <app-funding-progress [campaign]="offer"></app-funding-progress>
 
-              <ng-container *ngIf="descriptionRes.error">
-                Cannot fetch description.
-                <div hidden>{{ descriptionRes.error | json }}</div>
-              </ng-container>
-
-              <ng-container *ngIf="descriptionRes.loading">
-                <app-spinner type="overlay">Loading description...</app-spinner>
-              </ng-container>
-            </ng-container>
-          </div>
-
-          <!-- RIGHT COLUMN -->
-          <div class="w-full mt-8 lg:w-8/12 lg:pr-4">
-            <app-funding-progress [campaign]="offer"></app-funding-progress>
-
-            <!-- Floating Invest button -->
-            <div class="fixed lg:relative lg:w-full bottom-4 right-4 lg:right-0 px-4 lg:px-0 w-7/12">
-              <button app-action-button
-                      [onClick]="goToInvest(offer.contractAddress).bind(this)"
-                      text="Invest"
-                      class="w-full mr-8 lg:mr-0 py-3 shadow-xl rounded-full bg-indigo-800
+              <!-- Floating Invest button -->
+              <div class="fixed lg:relative lg:w-full bottom-4 right-4 lg:right-0 px-4 lg:px-0 w-7/12">
+                <button app-action-button
+                        [onClick]="goToInvest(offer.contractAddress).bind(this)"
+                        [disabled]="offer.finalized || offer.cancelled"
+                        text="Invest"
+                        class="w-full mr-8 lg:mr-0 py-3 shadow-xl rounded-full bg-indigo-800
                       text-white mt-12 flex items-center justify-center disabled:bg-gray-400">
-                <ng-template #content>
-                  <svg width="21" height="20" viewBox="0 0 21 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path
-                      d="M2.5 10C2.5 7.87827 3.34285 5.84344 4.84315 4.34315C6.34344 2.84285 8.37827 2 10.5 2V10H18.5C18.5 12.1217 17.6571 14.1566 16.1569 15.6569C14.6566 17.1571 12.6217 18 10.5 18C8.37827 18 6.34344 17.1571 4.84315 15.6569C3.34285 14.1566 2.5 12.1217 2.5 10Z"
-                      fill="white"/>
-                    <path
-                      d="M12.5 2.25195C13.8836 2.61042 15.1462 3.3324 16.1569 4.34307C17.1676 5.35375 17.8895 6.61633 18.248 7.99995H12.5V2.25195Z"
-                      fill="white"/>
-                  </svg>
-                  <span class="ml-2">Invest</span>
-                </ng-template>
-              </button>
-            </div>
+                  <ng-template #content>
+                    <svg width="21" height="20" viewBox="0 0 21 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path
+                        d="M2.5 10C2.5 7.87827 3.34285 5.84344 4.84315 4.34315C6.34344 2.84285 8.37827 2 10.5 2V10H18.5C18.5 12.1217 17.6571 14.1566 16.1569 15.6569C14.6566 17.1571 12.6217 18 10.5 18C8.37827 18 6.34344 17.1571 4.84315 15.6569C3.34285 14.1566 2.5 12.1217 2.5 10Z"
+                        fill="white"/>
+                      <path
+                        d="M12.5 2.25195C13.8836 2.61042 15.1462 3.3324 16.1569 4.34307C17.1676 5.35375 17.8895 6.61633 18.248 7.99995H12.5V2.25195Z"
+                        fill="white"/>
+                    </svg>
+                    <span class="ml-2">Invest</span>
+                  </ng-template>
+                </button>
+              </div>
 
-            <div class="mt-10 text-lg uppercase font-light">Project Documents</div>
-            <div *ngFor="let document of offer.documents" class="mt-4 flex items-center cursor-pointer">
-              <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path
-                  d="M8 20V21C8 21.7956 8.31607 22.5587 8.87868 23.1213C9.44129 23.6839 10.2044 24 11 24H21C21.7956 24 22.5587 23.6839 23.1213 23.1213C23.6839 22.5587 24 21.7956 24 21V20M20 16L16 20M16 20L12 16M16 20V8"
-                  stroke="#3730A3" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-              </svg>
-              <a class="ml-3 text-sm" href="{{ document.location | toUrlIPFS }}">{{ document.name }}</a>
-            </div>
-            <div class="mt-10 text-lg uppercase font-light">Project News</div>
-            <div *ngFor="let newsItem of offer.newsURLs" class="mt-4 flex items-center cursor-pointer">
-              <svg width="26" height="26" viewBox="0 0 26 26" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path
-                  d="M14.3333 18.3333H13V13H11.6667M13 7.66667H13.0133M25 13C25 14.5759 24.6896 16.1363 24.0866 17.5922C23.4835 19.0481 22.5996 20.371 21.4853 21.4853C20.371 22.5996 19.0481 23.4835 17.5922 24.0866C16.1363 24.6896 14.5759 25 13 25C11.4241 25 9.86371 24.6896 8.4078 24.0866C6.95189 23.4835 5.62902 22.5996 4.51472 21.4853C3.40042 20.371 2.5165 19.0481 1.91345 17.5922C1.31039 16.1363 1 14.5759 1 13C1 9.8174 2.26428 6.76516 4.51472 4.51472C6.76516 2.26428 9.8174 1 13 1C16.1826 1 19.2348 2.26428 21.4853 4.51472C23.7357 6.76516 25 9.8174 25 13Z"
-                  stroke="#3730A3" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-              </svg>
-              <a href="{{ newsItem.link }}" class="ml-3 text-sm">{{ newsItem }}</a>
+              <button app-action-button
+                      *ngIf="!offer.finalized && offer.totalFundsRaised >= offer.softCap && offer.owner === address.value"
+                      [onClick]="finalize(offer.contractAddress).bind(this)"
+                      text="Finalize"
+                      class="w-full py-2 mt-2 shadow-xl rounded-full bg-green-600 text-white disabled:bg-gray-400">
+              </button>
+
+              <div class="mt-10 text-lg uppercase font-light">Project Documents</div>
+              <div *ngFor="let document of offer.documents" class="mt-4 flex items-center cursor-pointer">
+                <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path
+                    d="M8 20V21C8 21.7956 8.31607 22.5587 8.87868 23.1213C9.44129 23.6839 10.2044 24 11 24H21C21.7956 24 22.5587 23.6839 23.1213 23.1213C23.6839 22.5587 24 21.7956 24 21V20M20 16L16 20M16 20L12 16M16 20V8"
+                    stroke="#3730A3" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                <a class="ml-3 text-sm" href="{{ document.location | toUrlIPFS }}">{{ document.name }}</a>
+              </div>
+              <div class="mt-10 text-lg uppercase font-light">Project News</div>
+              <div *ngFor="let newsItem of offer.newsURLs" class="mt-4 flex items-center cursor-pointer">
+                <svg width="26" height="26" viewBox="0 0 26 26" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path
+                    d="M14.3333 18.3333H13V13H11.6667M13 7.66667H13.0133M25 13C25 14.5759 24.6896 16.1363 24.0866 17.5922C23.4835 19.0481 22.5996 20.371 21.4853 21.4853C20.371 22.5996 19.0481 23.4835 17.5922 24.0866C16.1363 24.6896 14.5759 25 13 25C11.4241 25 9.86371 24.6896 8.4078 24.0866C6.95189 23.4835 5.62902 22.5996 4.51472 21.4853C3.40042 20.371 2.5165 19.0481 1.91345 17.5922C1.31039 16.1363 1 14.5759 1 13C1 9.8174 2.26428 6.76516 4.51472 4.51472C6.76516 2.26428 9.8174 1 13 1C16.1826 1 19.2348 2.26428 21.4853 4.51472C23.7357 6.76516 25 9.8174 25 13Z"
+                    stroke="#3730A3" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                <a href="{{ newsItem.link }}" class="ml-3 text-sm">{{ newsItem }}</a>
+              </div>
             </div>
           </div>
         </div>
-      </div>
+      </ng-container>
     </ng-container>
 
     <ng-container *ngIf="campaignRes.error">
