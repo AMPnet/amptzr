@@ -29,10 +29,17 @@
       </div>
     </div>
     <div *ngIf="data.raised >= data.total">
-      <span class="mt-6 font-bold text-indigo-900 text-lg uppercase">
-        {{ data.raised | currencyDefault }}
-      </span> raised
-      <div class="flex justify-between mt-3">
+      <div>
+          <span class="mt-6 font-bold text-indigo-900 text-lg uppercase">
+            {{ data.raised | currencyDefault }}
+          </span> raised
+      </div>
+
+      <div class="flex justify-between mt-2">
+        <div *ngIf="campaign.finalized" class="font-bold text-indigo-800 text-sm uppercase">
+          finished
+        </div>
+
         <div class="font-light text-gray-400 text-sm">
           {{ campaign.startDate | date: 'mediumDate' }} - {{ campaign.endDate | date: 'mediumDate' }}
         </div>

@@ -160,14 +160,14 @@
 
       <ng-container *ngIf="campaignRes.error">
         <div class="flex justify-center py-8">
-          Cannot fetch campaign.
+          Cannot fetch project.
         </div>
         <div hidden>{{ campaignRes.error | json }}</div>
       </ng-container>
 
       <ng-container *ngIf="campaignRes.loading">
         <div class="flex justify-center py-8">
-          <app-spinner type="overlay">Loading campaign...</app-spinner>
+          <app-spinner type="overlay">Loading project...</app-spinner>
         </div>
       </ng-container>
     </ng-container>

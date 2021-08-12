@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core'
 import {combineLatest, Observable, of} from 'rxjs'
-import {delay, filter, map, repeatWhen, switchMap, take} from 'rxjs/operators'
+import {delay, filter, map, repeatWhen, switchMap, take, tap} from 'rxjs/operators'
 import {VeriffService} from './veriff/veriff.service'
 import {BackendUserService} from '../shared/services/backend/backend-user.service'
 import {IssuerService} from '../shared/services/blockchain/issuer.service'

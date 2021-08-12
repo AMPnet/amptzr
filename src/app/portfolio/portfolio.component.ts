@@ -1,6 +1,12 @@
 import {ChangeDetectionStrategy, Component} from '@angular/core'
-import {BehaviorSubject} from 'rxjs'
-import {map} from 'rxjs/operators'
+import {WithStatus, withStatus} from '../shared/utils/observables'
+import {SessionQuery} from '../session/state/session.query'
+import {QueryService} from '../shared/services/blockchain/query.service'
+import {map, switchMap, tap} from 'rxjs/operators'
+import {BehaviorSubject, Observable, of} from 'rxjs'
+import {formatEther} from 'ethers/lib/utils'
+import {CampaignService} from '../shared/services/blockchain/campaign.service'
+import {DialogService} from '../shared/services/dialog.service'
 
 @Component({
   selector: 'app-portfolio',
@@ -9,88 +15,33 @@ import {map} from 'rxjs/operators'
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PortfolioComponent {
-  projectState = ProjectState
+  portfolioSub = new BehaviorSubject<void>(undefined)
 
-  portfolioSub = new BehaviorSubject<PortfolioModel>({
-    totalInvestment: 100,
-    unclaimedEarning: 5.42,
-    items: [
-      {
-        name: "Wind Farm Stupnik",
-        projectState: ProjectState.Finalized,
-        fundsRaised: 600,
-        fundsNeeded: 600,
-        fundsInvested: 150,
-        fundsEarned: 2.50,
-        startDate: new Date(Date.now()).toISOString(),
-        endDate: new Date(Date.now()).toISOString(),
-        imgSrc: "https://www.boskinac.com/assets/cms_image/cms_image_hotel_gallery_81_original.jpg",
-      },
-      {
-        name: "Solar Farm Zagreb",
-        projectState: ProjectState.InFunding,
-        fundsRaised: 600,
-        fundsNeeded: 850,
-        fundsInvested: 150,
-        fundsEarned: 0,
-        startDate: new Date(Date.now()).toISOString(),
-        endDate: new Date(Date.now()).toISOString(),
-        imgSrc: "https://images.pexels.com/photos/2850347/pexels-photo-2850347.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260",
-      },
-      {
-        name: "Geo Farm Lipik",
-        projectState: ProjectState.Unsuccessful,
-        fundsRaised: 450,
-        fundsNeeded: 600,
-        fundsInvested: 150,
-        fundsEarned: 2.50,
-        startDate: new Date(Date.now()).toISOString(),
-        endDate: new Date(Date.now()).toISOString(),
-        imgSrc: "https://www.afrik21.africa/wp-content/uploads/2019/06/shutterstock_275763713-2-800x400.jpg",
-      },
-      {
-        name: "Farmaonica",
-        projectState: ProjectState.Successful,
-        fundsRaised: 450,
-        fundsNeeded: 600,
-        fundsInvested: 150,
-        fundsEarned: 2.50,
-        startDate: new Date(Date.now()).toISOString(),
-        endDate: new Date(Date.now()).toISOString(),
-        imgSrc: "https://marinanovi.hr/wp-content/uploads/2020/12/152-1024x575.jpg",
-      },
-    ],
-  })
-  portfolio$ = this.portfolioSub.asObservable()
-  isClaimable$ = this.portfolio$.pipe(
-    map((portfolio) => portfolio.unclaimedEarning > 0),
+  portfolio$ = this.portfolioSub.asObservable().pipe(
+    switchMap(() => this.queryService.portfolio$),
+  )
+  portfolioWithStatus$ = withStatus(this.portfolio$)
+
+  totalInvested$: Observable<{ value: number }> = this.portfolio$.pipe(
+    switchMap(portfolio => of(portfolio).pipe(
+      map(p => p.length > 0 ?
+        p.map(item => Number(formatEther(item.tokenValue))).reduce((prev, curr) => prev + curr) : 0),
+      map(v => ({value: v})),
+    ),),
   )
 
-  constructor() {
+  constructor(private sessionQuery: SessionQuery,
+              private queryService: QueryService,
+              private dialogService: DialogService,
+              private campaignService: CampaignService) {
   }
-}
 
-interface PortfolioModel {
-  totalInvestment: number
-  unclaimedEarning: number
-  items: SinglePortfolioItemModel[]
-}
-
-interface SinglePortfolioItemModel {
-  name: string
-  projectState: ProjectState
-  fundsRaised: number
-  fundsNeeded: number
-  fundsInvested: number
-  fundsEarned: number
-  endDate: string
-  startDate: string
-  imgSrc: string
-}
-
-export enum ProjectState {
-  Finalized,
-  Successful,
-  Unsuccessful,
-  InFunding
+  cancel(contractAddress: string) {
+    return () => {
+      return this.campaignService.cancelInvestment(contractAddress).pipe(
+        switchMap(() => this.dialogService.success('Investment has been cancelled successfully.')),
+        tap(() => this.portfolioSub.next()),
+      )
+    }
+  }
 }
