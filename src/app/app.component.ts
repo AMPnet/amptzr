@@ -24,7 +24,7 @@ export class AppComponent {
     tap(() => document.location.reload()),
   )
 
-  issuerTitle$ = this.issuerService.issuer$.pipe(
+  issuerTitle$ = this.issuerService.issuerWithStatus$.pipe(
     filter(res => !!res.value),
     tap(issuer => this.title.setTitle(issuer.value!.name)),
   )

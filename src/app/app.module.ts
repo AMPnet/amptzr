@@ -63,6 +63,7 @@ import {OffersCardSmallComponent} from './offers/offers-card-small/offers-card-s
 import {WalletButtonComponent} from './app-layout/navbar/wallet-button/wallet-button.component'
 import {FaqQuestionComponent} from './faq/faq-question/faq-question.component'
 import {MatTooltipModule} from '@angular/material/tooltip'
+import {IssuerEditAdvancedComponent} from './issuers/issuer-edit-advanced/issuer-edit-advanced.component'
 
 @NgModule({
   declarations: [
@@ -115,6 +116,7 @@ import {MatTooltipModule} from '@angular/material/tooltip'
     CampaignAddTokensComponent,
     WalletButtonComponent,
     FaqQuestionComponent,
+    IssuerEditAdvancedComponent,
   ],
   imports: [
     BrowserModule,

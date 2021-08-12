@@ -44,7 +44,7 @@ export class NavbarComponent {
       tap(() => this.appLayoutStore.closeDropdownMenu()),
     )
 
-    this.issuer$ = this.issuerService.issuer$
+    this.issuer$ = this.issuerService.issuerWithStatus$
   }
 
   login(): Observable<unknown> {

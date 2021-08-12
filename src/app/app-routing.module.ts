@@ -23,6 +23,7 @@ import {CampaignDetailComponent} from './campaigns/campaign-detail/campaign-deta
 import {CampaignEditComponent} from './campaigns/campaign-edit/campaign-edit.component'
 import {CampaignAddTokensComponent} from './campaigns/campaign-add-tokens/campaign-add-tokens.component'
 import {IssuerGuard} from './shared/guards/issuer.guard'
+import {IssuerEditAdvancedComponent} from './issuers/issuer-edit-advanced/issuer-edit-advanced.component'
 
 const routes: Routes = [
   {path: '', pathMatch: 'full', redirectTo: 'issuers'},
@@ -30,8 +31,9 @@ const routes: Routes = [
   {path: 'issuers/new', component: IssuerNewComponent},
   {path: 'issuers/:id', component: IssuerDetailComponent},
   {path: 'issuers/:id/edit', component: IssuerEditComponent},
+  {path: 'issuers/:id/edit/advanced', component: IssuerEditAdvancedComponent},
   {path: 'issuers/:id/assets/new', component: AssetNewComponent},
-  {path: 'issuers/:id/assets/new-with-campaign', component: AssetCampaignNewComponent},
+  {path: 'issuers/:id/assets/new_with_campaign', component: AssetCampaignNewComponent},
   {path: 'assets/:id', component: AssetDetailComponent},
   {path: 'assets/:id/edit', component: AssetEditComponent},
   {path: 'assets/:id/campaigns/new', component: CampaignNewComponent},

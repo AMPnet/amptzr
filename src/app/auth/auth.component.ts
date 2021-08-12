@@ -18,7 +18,7 @@ import {IssuerService} from '../shared/services/blockchain/issuer.service'
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AuthComponent {
-  issuer$ = this.issuerService.issuer$
+  issuer$ = this.issuerService.issuerWithStatus$
 
   constructor(private signer: SignerService,
               private preferenceStore: PreferenceStore,

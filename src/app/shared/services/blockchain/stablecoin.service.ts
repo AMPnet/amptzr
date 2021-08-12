@@ -24,9 +24,21 @@ export class StablecoinService {
   balance$: Observable<BigNumber> = combineLatest([
     this.contract$,
     this.sessionQuery.address$,
+    this.sessionQuery.provider$,
   ]).pipe(
     switchMap(([contract, address]) => address ? contract.balanceOf(address) : of(BigNumber.from(0))),
   )
+
+  // TODO: Balance WIP
+  // bal$: Observable<BigNumber> = combineLatest([
+  //   this.contract$,
+  //   this.sessionQuery.address$,
+  //   this.sessionQuery.provider$
+  // ]).pipe(
+  //   filter(([_contract, address, _provider]) => !!address),
+  //   switchMap(([contract, address, provider]) => fromEvent(provider, ))
+  //   switchMap(([contract, address, provider]) => contract.balanceOf(address!)),
+  // )
 
   symbol$ = this.contract$.pipe(
     switchMap(contract => contract.symbol()),

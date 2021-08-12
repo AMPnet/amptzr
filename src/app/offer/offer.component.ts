@@ -6,6 +6,9 @@ import {switchMap, tap} from 'rxjs/operators'
 import {WithStatus, withStatus} from '../shared/utils/observables'
 import {MetaService} from '../shared/services/meta.service'
 import {ToUrlIPFSPipe} from '../shared/pipes/to-url-ipfs.pipe'
+import {IdentityService} from '../identity/identity.service'
+import {ProfileService} from '../profile/profile.service'
+import {RouterService} from '../shared/services/router.service'
 
 @Component({
   selector: 'app-offer',
@@ -19,6 +22,9 @@ export class OfferComponent {
   constructor(private campaignService: CampaignService,
               private metaService: MetaService,
               private toUrlIPFSPipe: ToUrlIPFSPipe,
+              private identityService: IdentityService,
+              private profileService: ProfileService,
+              private router: RouterService,
               private route: ActivatedRoute) {
     const campaignID = this.route.snapshot.params.id
 
@@ -33,5 +39,15 @@ export class OfferComponent {
         })),
       ),
     )
+  }
+
+  goToInvest(campaignAddress: string) {
+    return () => {
+      return this.identityService.ensureIdentityChecked(campaignAddress).pipe(
+        // TODO: add check for balance > 0
+        switchMap(() => this.profileService.ensureBasicInfo),
+        switchMap(() => this.router.navigate(['invest'], {relativeTo: this.route})),
+      )
+    }
   }
 }
