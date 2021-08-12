@@ -29,7 +29,9 @@ export class WalletComponent {
     tap(() => ɵmarkDirty(this)),
   )
 
-  balance$ = withStatus(this.stablecoinService.balance$)
+  balance$ = withStatus(this.stablecoinService.balance$).pipe(
+    tap(() => ɵmarkDirty(this)),
+  )
 
   // TODO: base currency balance will probably be used here in the future for gas indicator.
   // nativeTokenBalance$ = combineLatest([this.sessionQuery.provider$, this.sessionQuery.address$]).pipe(
