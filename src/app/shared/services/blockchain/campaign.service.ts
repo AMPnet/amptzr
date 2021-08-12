@@ -186,6 +186,15 @@ export class CampaignService {
       map(state => state.whitelistRequired),
     )
   }
+
+  cancelInvestment(address: string) {
+    return this.signerService.ensureAuth.pipe(
+      map(signer => this.contract(address, signer)),
+      switchMap(contract => contract.cancelInvestment()),
+      switchMap(tx => this.sessionQuery.provider.waitForTransaction(tx.hash)),
+      this.errorService.handleError(),
+    )
+  }
 }
 
 export interface CampaignState {
