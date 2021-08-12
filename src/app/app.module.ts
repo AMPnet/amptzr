@@ -64,6 +64,7 @@ import {WalletButtonComponent} from './app-layout/navbar/wallet-button/wallet-bu
 import {FaqQuestionComponent} from './faq/faq-question/faq-question.component'
 import {MatTooltipModule} from '@angular/material/tooltip'
 import {IssuerEditAdvancedComponent} from './issuers/issuer-edit-advanced/issuer-edit-advanced.component'
+import {DepositFlowComponent} from './deposit/deposit-flow/deposit-flow.component'
 
 @NgModule({
   declarations: [
@@ -117,6 +118,7 @@ import {IssuerEditAdvancedComponent} from './issuers/issuer-edit-advanced/issuer
     WalletButtonComponent,
     FaqQuestionComponent,
     IssuerEditAdvancedComponent,
+    DepositFlowComponent,
   ],
   imports: [
     BrowserModule,
