@@ -1,7 +1,7 @@
-import {ChangeDetectionStrategy, Component, ɵmarkDirty} from '@angular/core'
+import {ChangeDetectionStrategy, Component} from '@angular/core'
 import {SessionQuery} from '../session/state/session.query'
 import {SignerService} from '../shared/services/signer.service'
-import {concatMap, finalize, tap} from 'rxjs/operators'
+import {concatMap, finalize} from 'rxjs/operators'
 import {BehaviorSubject, EMPTY, Observable} from 'rxjs'
 import {VenlySubsignerService} from '../shared/services/subsigners/venly-subsigner.service'
 import {AuthProvider} from '../preference/state/preference.store'
@@ -25,13 +25,9 @@ export class WalletComponent {
   userIdentitySub = new BehaviorSubject<string>('John Smith')
   userIdentity$ = this.userIdentitySub.asObservable()
 
-  address$ = this.sessionQuery.address$.pipe(
-    tap(() => ɵmarkDirty(this)),
-  )
+  address$ = this.sessionQuery.address$
 
-  balance$ = withStatus(this.stablecoinService.balance$).pipe(
-    tap(() => ɵmarkDirty(this)),
-  )
+  balance$ = withStatus(this.stablecoinService.balance$)
 
   // TODO: base currency balance will probably be used here in the future for gas indicator.
   // nativeTokenBalance$ = combineLatest([this.sessionQuery.provider$, this.sessionQuery.address$]).pipe(
