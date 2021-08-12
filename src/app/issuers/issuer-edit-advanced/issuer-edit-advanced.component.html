@@ -1,0 +1,40 @@
+<div class="px-4 py-2 max-w-screen-lg mx-auto">
+  <div class="my-4">
+    <a routerLink="/issuers/{{ issuerAddress }}/edit">ᐊ Back to Edit Issuer</a>
+  </div>
+
+  <h1 class="my-2 text-2xl uppercase">
+    Edit issuer (advanced)
+  </h1>
+
+  <ng-container *ngIf="(issuer$ | async) as issuerRes">
+    <ng-container *ngIf="issuerRes.value as issuer">
+      <form [formGroup]="changeWalletApproverForm">
+        <label for="walletApproverAddress" class="mt-2">
+          Wallet approver address
+        </label>
+
+        <div class="flex gap-2 mt-2">
+          <input type="text" id="walletApproverAddress"
+                 formControlName="address">
+
+          <button app-action-button
+                  class="bg-blue-500 disabled:bg-gray-400 text-white p-2 rounded-md mt-2"
+                  text="Update"
+                  [disabled]="!changeWalletApproverForm.dirty || !changeWalletApproverForm.valid"
+                  [onClick]="changeWalletApprover.bind(this)">
+          </button>
+        </div>
+      </form>
+    </ng-container>
+
+    <ng-container *ngIf="issuerRes.error">
+      Cannot fetch issuer.
+      <div hidden>{{ issuerRes.error | json }}</div>
+    </ng-container>
+
+    <ng-container *ngIf="issuerRes.loading">
+      <app-spinner type="overlay">Fetching issuer...</app-spinner>
+    </ng-container>
+  </ng-container>
+</div>

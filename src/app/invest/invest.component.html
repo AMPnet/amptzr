@@ -7,8 +7,8 @@
           <div *ngIf="(investState$ | async) === investState.Editing">
             <div class="flex flex-col lg:flex-row mt-8 shadow-lg rounded-3xl bg-white">
               <img
-                class="lg:w-5/12 w-full rounded-t-3xl lg:rounded-l-3xl object-cover h-full
-                card-corner-radius-override max-h-80"
+                class="lg:w-5/12 w-full rounded-t-3xl lg:rounded-l-3xl object-cover
+                card-corner-radius-override"
                 src="{{ campaign.photo | toUrlIPFS }}" alt="Project image">
               <div class="w-full flex flex-col p-4 lg:p-8">
                 <!-- Input with label, min invest and max invest amounts -->

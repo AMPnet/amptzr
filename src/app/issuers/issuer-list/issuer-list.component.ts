@@ -1,8 +1,8 @@
-import {ChangeDetectionStrategy, Component, ɵmarkDirty} from '@angular/core'
+import {ChangeDetectionStrategy, Component} from '@angular/core'
 import {Observable} from 'rxjs'
 import {withStatus, WithStatus} from '../../shared/utils/observables'
 import {IssuerService, IssuerWithInfo} from '../../shared/services/blockchain/issuer.service'
-import {map, switchMap, tap} from 'rxjs/operators'
+import {map, switchMap} from 'rxjs/operators'
 import {SessionQuery} from '../../session/state/session.query'
 import {ChainID, EthersNetworks} from '../../shared/networks'
 import {PreferenceStore} from '../../preference/state/preference.store'
@@ -24,7 +24,6 @@ export class IssuerListComponent {
 
   address$ = this.sessionQuery.address$.pipe(
     map(value => ({value: value})),
-    tap(() => ɵmarkDirty(this)),
   )
 
   constructor(private issuerService: IssuerService,

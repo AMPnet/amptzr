@@ -83,7 +83,7 @@ export const MumbaiNetwork: Network = {
     payoutManagerFactory: '0x39d13eA4781F4FA57a347F5C49dD716048822F16',
     deployerService: '0x9E4A2D67E1b63aB1C46000161c8288D5e4dea075',
     queryService: '0xF80a26Bf08AF7c8C33d6f8cFcFe9641363bA788b',
-    defaultWalletApprover: '0xf35808CF8Af3b92c78447619905D201833f8f64e',
+    defaultWalletApprover: '0x142f05565D9e0562e7caA09bAf816D263615dfe6',
     defaultIssuer: '0xD17574450885C1b898bc835Ff9CB5b44A3601c24',
     defaultStableCoin: '0x18D71D80087084df631f95EF29C8a11904DC47F3',
   },

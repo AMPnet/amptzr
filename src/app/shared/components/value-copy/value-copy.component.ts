@@ -3,62 +3,62 @@ import {BehaviorSubject, Observable, of} from 'rxjs'
 import {delay, switchMap, tap} from 'rxjs/operators'
 
 @Component({
-    selector: 'app-value-copy',
-    templateUrl: './value-copy.component.html',
-    styleUrls: ['./value-copy.component.css'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
+  selector: 'app-value-copy',
+  templateUrl: './value-copy.component.html',
+  styleUrls: ['./value-copy.component.css'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ValueCopyComponent implements OnInit {
-    @Input() value = ''
-    @Input() delay = 1000
-    @Input() textReady = ''
-    @Input() textCopied = ''
+  @Input() value = ''
+  @Input() delay = 1000
+  @Input() textReady = ''
+  @Input() textCopied = ''
 
-    stateType = State
-    stateTexts!: { [key in State]: string }
+  stateType = State
+  stateTexts!: { [key in State]: string }
 
-    stateSub = new BehaviorSubject<State>(State.READY)
-    state$ = this.stateSub.asObservable()
+  stateSub = new BehaviorSubject<State>(State.READY)
+  state$ = this.stateSub.asObservable()
 
-    constructor() {
+  constructor() {
+  }
+
+  ngOnInit() {
+    this.stateTexts = {
+      [State.READY]: this.textReady,
+      [State.COPIED]: this.textCopied,
     }
+  }
 
-    ngOnInit() {
-        this.stateTexts = {
-            [State.READY]: this.textReady,
-            [State.COPIED]: this.textCopied,
-        }
-    }
+  click(): Observable<unknown> {
+    return of(null).pipe(
+      tap(() => {
+        this.copyToClipboard()
+        this.stateSub.next(State.COPIED)
+      }),
+      switchMap(() => of(null).pipe(
+        delay(this.delay),
+        tap(() => this.stateSub.next(State.READY)),
+      )),
+    )
+  }
 
-    click(): Observable<unknown> {
-        return of(null).pipe(
-            tap(() => {
-                this.copyToClipboard()
-                this.stateSub.next(State.COPIED)
-            }),
-            switchMap(() => of(null).pipe(
-                delay(this.delay),
-                tap(() => this.stateSub.next(State.READY)),
-            )),
-        )
-    }
-
-    private copyToClipboard() {
-        const selBox = document.createElement('textarea')
-        selBox.style.position = 'fixed'
-        selBox.style.left = '0'
-        selBox.style.top = '0'
-        selBox.style.opacity = '0'
-        selBox.value = this.value || ''
-        document.body.appendChild(selBox)
-        selBox.focus()
-        selBox.select()
-        document.execCommand('copy')
-        document.body.removeChild(selBox)
-    }
+  private copyToClipboard() {
+    const selBox = document.createElement('textarea')
+    selBox.style.position = 'fixed'
+    selBox.style.left = '0'
+    selBox.style.top = '0'
+    selBox.style.opacity = '0'
+    selBox.value = this.value || ''
+    document.body.appendChild(selBox)
+    selBox.focus()
+    selBox.select()
+    document.execCommand('copy')
+    document.body.removeChild(selBox)
+  }
 }
 
 enum State {
-    READY = 1,
-    COPIED = 2
+  READY = 1,
+  COPIED = 2
 }

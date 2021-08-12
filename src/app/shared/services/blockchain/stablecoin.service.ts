@@ -1,12 +1,13 @@
 import {Injectable} from '@angular/core'
-import {combineLatest, Observable, of} from 'rxjs'
-import {map, shareReplay, switchMap} from 'rxjs/operators'
+import {combineLatest, merge, Observable, of} from 'rxjs'
+import {filter, map, shareReplay, switchMap} from 'rxjs/operators'
 import {ERC20__factory} from '../../../../../types/ethers-contracts'
 import {SessionQuery} from '../../../session/state/session.query'
 import {PreferenceQuery} from '../../../preference/state/preference.query'
 import {IssuerService} from './issuer.service'
 import {BigNumber, utils} from 'ethers'
 import {SignerService} from '../signer.service'
+import {contractEvent} from '../../utils/ethersjs'
 
 @Injectable({
   providedIn: 'root',
@@ -25,7 +26,14 @@ export class StablecoinService {
     this.contract$,
     this.sessionQuery.address$,
   ]).pipe(
-    switchMap(([contract, address]) => address ? contract.balanceOf(address) : of(BigNumber.from(0))),
+    filter(([_contract, address]) => !!address),
+    switchMap(([contract, address]) => merge(
+      of(undefined),
+      contractEvent(contract, contract.filters.Transfer(address!)),
+      contractEvent(contract, contract.filters.Transfer(null, address!)),
+    ).pipe(
+      switchMap(() => contract.balanceOf(address!)),
+    )),
   )
 
   symbol$ = this.contract$.pipe(

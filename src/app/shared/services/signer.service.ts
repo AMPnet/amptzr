@@ -1,6 +1,6 @@
 import {Injectable, NgZone} from '@angular/core'
 import {providers, utils} from 'ethers'
-import {from, Observable, of, Subject, throwError} from 'rxjs'
+import {from, fromEvent, merge, Observable, of, Subject, throwError} from 'rxjs'
 import {catchError, concatMap, finalize, map, switchMap, take, tap} from 'rxjs/operators'
 import {SessionStore} from '../../session/state/session.store'
 import {SessionQuery} from '../../session/state/session.query'
@@ -24,6 +24,23 @@ export class SignerService {
   chainChanged$ = this.chainChangedSub.asObservable()
   disconnected$ = this.disconnectedSub.asObservable()
   provider$ = this.sessionQuery.provider$
+
+  private listenersSub = new Subject<any>()
+
+  listeners$ = this.listenersSub.asObservable().pipe(
+    switchMap(provider => merge(
+      fromEvent<string[]>(provider, 'accountsChanged').pipe(
+        map(accounts => () => this.accountsChangedSub.next(accounts)),
+      ),
+      fromEvent<string>(provider, 'chainChanged').pipe(
+        map(chainID => () => this.chainChangedSub.next(chainID)),
+      ),
+      fromEvent<void>(provider, 'disconnect').pipe(
+        map(() => () => this.disconnectedSub.next()),
+      ),
+    )),
+    tap(action => this.ngZone.run(() => action())),
+  )
 
   constructor(private sessionStore: SessionStore,
               private sessionQuery: SessionQuery,
@@ -106,20 +123,7 @@ export class SignerService {
   }
 
   registerListeners(): void {
-    (this.sessionQuery.signer?.provider as any)?.provider?.removeAllListeners(['accountsChanged']);
-    (this.sessionQuery.signer?.provider as any)?.provider.on('accountsChanged', (accounts: string[]) => {
-      this.accountsChangedSub.next(accounts)
-    });
-
-    (this.sessionQuery.signer?.provider as any)?.provider?.removeAllListeners(['chainChanged']);
-    (this.sessionQuery.signer?.provider as any)?.provider.on('chainChanged', (chainID: string) => {
-      this.chainChangedSub.next(chainID)
-    });
-
-    (this.sessionQuery.signer?.provider as any)?.provider?.removeAllListeners(['disconnect']);
-    (this.sessionQuery.signer?.provider as any)?.provider.on('disconnect', () => {
-      this.disconnectedSub.next()
-    })
+    this.listenersSub.next((this.sessionQuery.signer?.provider as any)?.provider)
   }
 
   private subscribeToChanges(): void {
@@ -144,6 +148,8 @@ export class SignerService {
         this.logoutNavToOffers().subscribe(),
       ),
     ).subscribe()
+
+    this.listeners$.subscribe()
   }
 
   private logoutNavToOffers(): Observable<unknown> {

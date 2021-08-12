@@ -6,7 +6,7 @@ import {
   CfManagerSoftcapFactory,
   CfManagerSoftcapFactory__factory,
 } from '../../../../../types/ethers-contracts'
-import {first, map, switchMap} from 'rxjs/operators'
+import {first, map, switchMap, take} from 'rxjs/operators'
 import {SessionQuery} from '../../../session/state/session.query'
 import {PreferenceQuery} from '../../../preference/state/preference.query'
 import {BigNumber, BigNumberish, Signer, utils} from 'ethers'
@@ -177,6 +177,14 @@ export class CampaignService {
       valueTotal,
       valueToInvest,
     }
+  }
+
+  isWhitelistRequired(address: string): Observable<boolean> {
+    return this.sessionQuery.provider$.pipe(
+      switchMap(provider => this.getState(address, provider)),
+      take(1),
+      map(state => state.whitelistRequired),
+    )
   }
 }
 

@@ -59,8 +59,9 @@ export class MetamaskSubsignerService implements Subsigner {
 
   private loginGetAddress(signer: providers.JsonRpcSigner, opts: SubsignerLoginOpts): Observable<string> {
     return from(signer.getAddress()).pipe(
-      catchError(() => opts.force ? from(signer.provider.send('eth_requestAccounts', [])) :
-        throwError('NO_ADDRESS')),
+      catchError(() => opts.force ? from(signer.provider.send('eth_requestAccounts', [])).pipe(
+        map(addresses => addresses?.[0]),
+      ) : throwError('NO_ADDRESS')),
       concatMap(address => !!address ? of(address) : throwError('NO_ADDRESS')),
       concatMap(address => opts.wallet ? (
         opts.wallet === address ? of(address) : throwError('WRONG_ADDRESS')

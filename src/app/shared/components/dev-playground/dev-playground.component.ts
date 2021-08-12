@@ -1,16 +1,4 @@
 import {ChangeDetectionStrategy, Component} from '@angular/core'
-import {Observable} from 'rxjs'
-import {concatMap, switchMap} from 'rxjs/operators'
-import {SignerService} from '../../services/signer.service'
-import {utils} from 'ethers'
-import {DialogService} from '../../services/dialog.service'
-import {IdentityService} from '../../../identity/identity.service'
-import {ProfileService} from '../../../profile/profile.service'
-import {TokenMappingService} from '../../services/token-mapping.service'
-import {SessionQuery} from '../../../session/state/session.query'
-import {HttpClient} from '@angular/common/http'
-import {FormBuilder, FormGroup, Validators} from '@angular/forms'
-import {IpfsService} from '../../services/ipfs/ipfs.service'
 
 @Component({
   selector: 'app-dev-playground',
@@ -19,29 +7,7 @@ import {IpfsService} from '../../services/ipfs/ipfs.service'
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DevPlaygroundComponent {
-  investForm: FormGroup
-
-  constructor(private ipfsService: IpfsService,
-              private signerService: SignerService,
-              private identityService: IdentityService,
-              private profileService: ProfileService,
-              private tokenMappingService: TokenMappingService,
-              private sessionQuery: SessionQuery,
-              private http: HttpClient,
-              private fb: FormBuilder,
-              private dialogService: DialogService) {
-    this.investForm = this.fb.group({
-      amount: [0, Validators.required],
-    })
-  }
-
-  signMessage(): Observable<unknown> {
-    const message = 'YOLO'
-    return this.signerService.signMessage(message).pipe(
-      concatMap(signed => this.dialogService.info(
-        `The address of the author that signed the message: ${utils.verifyMessage(message, signed)}`, false,
-      )),
-    )
+  constructor() {
   }
 
   // Used as a proof of concept for fetching transactions as usual provider methods are not
@@ -72,14 +38,6 @@ export class DevPlaygroundComponent {
   //     tap(logs => console.log('logs', logs)),
   //   )
   // }
-
-  checkInvest() {
-    return this.signerService.ensureAuth.pipe(
-      switchMap(() => this.identityService.ensureIdentityChecked),
-      switchMap(() => this.profileService.ensureBasicInfo),
-      switchMap(() => this.dialogService.info('You have passed all requirements for investing.', false)),
-    )
-  }
 
   // TODO: transaction examples. clean when it will be used elsewhere.
   // sendUSDC(to: string, amount: string) {

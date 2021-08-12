@@ -17,7 +17,9 @@
 
       <div *ngIf="decisionPending(session)" class="mt-3">
         <p class="text-center">
-          Your account is in process of verification. Please wait...
+          <app-spinner type="overlay" class="w-72">
+            Your account is in process of verification. Please wait...
+          </app-spinner>
         </p>
       </div>
 
@@ -70,7 +72,7 @@
       </div>
 
       <div *ngIf="waitApproved(session)">
-        Please wait...
+        <app-spinner type="overlay" class="w-72">Please wait...</app-spinner>
       </div>
     </ng-container>
   </div>
@@ -79,5 +81,5 @@
 <ng-container *ngIf="approved$ | async"></ng-container>
 
 <ng-template #spinner>
-  Loading...
+  <app-spinner type="overlay" class="w-72">Loading...</app-spinner>
 </ng-template>

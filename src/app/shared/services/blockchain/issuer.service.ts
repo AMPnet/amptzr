@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core'
 import {combineLatest, from, Observable, of} from 'rxjs'
-import {first, map, shareReplay, switchMap} from 'rxjs/operators'
+import {first, map, shareReplay, switchMap, take} from 'rxjs/operators'
 import {Issuer, Issuer__factory, IssuerFactory, IssuerFactory__factory} from '../../../../../types/ethers-contracts'
 import {SessionQuery} from '../../../session/state/session.query'
 import {PreferenceQuery} from '../../../preference/state/preference.query'
@@ -30,8 +30,12 @@ export class IssuerService {
       ))),
   )
 
-  issuer$: Observable<WithStatus<IssuerWithInfo>> = this.preferenceQuery.issuer$.pipe(
-    switchMap(issuer => withStatus(this.getIssuerWithInfo(issuer.address))),
+  issuer$: Observable<IssuerWithInfo> = this.preferenceQuery.issuer$.pipe(
+    switchMap(issuer => this.getIssuerWithInfo(issuer.address)),
+    shareReplay(1),
+  )
+
+  issuerWithStatus$: Observable<WithStatus<IssuerWithInfo>> = withStatus(this.issuer$).pipe(
     shareReplay(1),
   )
 
@@ -113,6 +117,26 @@ export class IssuerService {
           )?.args?.issuer),
         )
       }),
+    )
+  }
+
+  isWalletApproved(address: string): Observable<boolean> {
+    return combineLatest([
+      this.signerService.ensureAuth,
+      this.sessionQuery.provider$,
+      this.issuer$,
+    ]).pipe(
+      map(([_signer, provider, issuer]) => this.contract(issuer.contractAddress, provider)),
+      switchMap(contract => contract.isWalletApproved(address)),
+      take(1),
+    )
+  }
+
+  changeWalletApprover(issuerAddress: string, walletApproverAddress: string) {
+    return this.signerService.ensureAuth.pipe(
+      map(signer => this.contract(issuerAddress, signer)),
+      switchMap(contract => contract.changeWalletApprover(walletApproverAddress)),
+      switchMap(tx => this.sessionQuery.provider.waitForTransaction(tx.hash)),
     )
   }
 }

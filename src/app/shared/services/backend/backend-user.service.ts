@@ -19,6 +19,10 @@ export class BackendUserService {
   updateUser(userUpdate: UserUpdate): Observable<User> {
     return this.http.put<User>(`${this.path}/user`, userUpdate)
   }
+
+  whitelistUser(data: WhitelistUserData): Observable<void> {
+    return this.http.post<void>(`${this.path}/user/whitelist`, data)
+  }
 }
 
 interface User {
@@ -30,4 +34,9 @@ interface User {
 
 interface UserUpdate {
   email: string;
+}
+
+interface WhitelistUserData {
+  issuer_address: string
+  chain_id: number
 }
