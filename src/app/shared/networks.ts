@@ -94,7 +94,7 @@ export const MumbaiNetwork: Network = {
     queryService: '0xF80a26Bf08AF7c8C33d6f8cFcFe9641363bA788b',
     defaultWalletApprover: '0x142f05565D9e0562e7caA09bAf816D263615dfe6',
     defaultIssuer: '0xD17574450885C1b898bc835Ff9CB5b44A3601c24',
-    defaultStableCoin: '0x9733aa0fb74a01f058fbeb0ad9da3f483058908e',
+    defaultStableCoin: '0x18D71D80087084df631f95EF29C8a11904DC47F3',
   },
   venlyConfig: {
     secretType: SecretType.MATIC,
