@@ -19,7 +19,11 @@ export interface Network {
   rpcURLs: string[],
   explorerURLs: string[],
   tokenizerConfig: TokenizerConfig,
-  venlyConfig: VenlyConfig
+  venlyConfig: VenlyConfig,
+  ramp: {
+    swapAsset: string,
+    url?: string // URL is needed only for testing environments, Ramp uses production version when URL is not specified
+  }
 }
 
 interface TokenizerConfig {
@@ -64,6 +68,9 @@ export const MaticNetwork: Network = {
     secretType: SecretType.MATIC,
     env: 'prod',
   },
+  ramp: {
+    swapAsset: 'MATIC_USDC'
+  },
 }
 
 export const MumbaiNetwork: Network = {
@@ -85,11 +92,15 @@ export const MumbaiNetwork: Network = {
     queryService: '0xF80a26Bf08AF7c8C33d6f8cFcFe9641363bA788b',
     defaultWalletApprover: '0x142f05565D9e0562e7caA09bAf816D263615dfe6',
     defaultIssuer: '0xD17574450885C1b898bc835Ff9CB5b44A3601c24',
-    defaultStableCoin: '0x18D71D80087084df631f95EF29C8a11904DC47F3',
+    defaultStableCoin: '0x9733aa0fb74a01f058fbeb0ad9da3f483058908e',
   },
   venlyConfig: {
     secretType: SecretType.MATIC,
     env: 'staging',
+  },
+  ramp: {
+    swapAsset: 'MATIC_USDC2',
+    url: 'https://ri-widget-staging.firebaseapp.com/',
   },
 }
 

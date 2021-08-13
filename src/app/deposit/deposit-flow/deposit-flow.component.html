@@ -1,13 +1,15 @@
 <div class="w-full max-w-6xl">
   <div class="w-full flex flex-col rounded-3xl shadow-lg justify-between bg-white p-4 lg:p-8">
     <div class="w-full max-w-md mr-16">
-      <label for="depositAmount" class="text-lg">
-        <b>I want to deposit</b>
-      </label>
-      <input class="w-full mt-2 p-3 border outline-none rounded-xl disabled:bg-gray-100"
-             type="text" appCurrencyMask
-             id="depositAmount"
-             formControlName="amount"/>
+      <form [formGroup]="depositForm">
+        <label for="depositAmount" class="text-lg">
+          <b>I want to deposit</b>
+        </label>
+        <input class="w-full mt-2 p-3 border outline-none rounded-xl disabled:bg-gray-100"
+               type="text" appCurrencyMask
+               id="depositAmount"
+               formControlName="amount"/>
+      </form>
       <div class="flex items-center gap-2 mt-4">
         <p class="text-sm">powered by:</p>
         <svg width="88" height="32" viewBox="0 0 138 32" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -89,13 +91,17 @@
             stroke="#6B7280" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
         </svg>
         <div class="flex flex-col text-sm">
-          <b>Deposits bigger than $20 000:</b>
+          <b>Deposits bigger than $20,000:</b>
           <p>For assistance and transfer options contact our team from 10am to 6pm GMT Monday to Friday.</p>
         </div>
       </div>
 
       <button class="bg-indigo-800 hover:bg-indigo-900 transition-all w-full max-w-xs
-                     py-2 text-white rounded-full flex items-center justify-center">
+                     py-2 text-white rounded-full flex items-center justify-center
+                     disabled:bg-gray-200 disabled:cursor-not-allowed"
+              [attr.disabled]="depositForm.get('amount')?.errors?.amountTooLow ||
+                               depositForm.get('amount')?.errors?.amountTooHigh"
+              (click)="showRamp()">
         Next
         <svg class="ml-3" width="9" height="14" viewBox="0 0 9 14" fill="none" xmlns="http://www.w3.org/2000/svg">
           <path d="M1.5 1.1665L7.33333 6.99984L1.5 12.8332" stroke="white" stroke-width="2" stroke-linecap="round"
