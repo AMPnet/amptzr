@@ -1,5 +1,5 @@
 import {NgModule} from '@angular/core'
-import {Route, RouterModule, Routes} from '@angular/router'
+import {RouterModule, Routes} from '@angular/router'
 import {OffersComponent} from './offers/offers.component'
 import {PortfolioComponent} from './portfolio/portfolio.component'
 import {WalletComponent} from './wallet/wallet.component'
@@ -27,6 +27,7 @@ import {IssuerEditAdvancedComponent} from './issuers/issuer-edit-advanced/issuer
 import {environment} from '../environments/environment'
 import {NetworkGuard} from './shared/guards/network.guard'
 import {AppComponent} from './app.component'
+import {HomeComponent} from './home/home.component'
 
 
 const appRoutes: Routes = [
@@ -45,8 +46,9 @@ const appRoutes: Routes = [
       },
       {path: 'faq', component: FaqComponent},
       {path: 'dev_playground', component: DevPlaygroundComponent},
-    ]
+    ],
   },
+  {path: '**', redirectTo: 'offers'}
 ]
 
 const issuerNamespace: Routes = !environment.fixed.issuer ? [{
@@ -57,12 +59,9 @@ const networkNamespace: Routes = !environment.fixed.chainID ? [{
   path: ':chainID', canActivate: [NetworkGuard], children: issuerNamespace,
 }] : issuerNamespace
 
-const home: Route = {
-  path: '', pathMatch: 'full', redirectTo: !environment.fixed.issuer ? 'issuers' : 'offers',
-}
-
 const routes: Routes = [
-  home,
+  {path: '', pathMatch: 'full', redirectTo: !environment.fixed.issuer ? 'home' : 'offers'},
+  {path: 'home', component: HomeComponent},
   {path: 'issuers', component: IssuerListComponent},
   {path: 'issuers/new', component: IssuerNewComponent},
   {path: 'issuers/:id', component: IssuerDetailComponent},
@@ -79,6 +78,7 @@ const routes: Routes = [
   {
     path: '', component: AppLayoutComponent, children: networkNamespace,
   },
+  {path: '**', redirectTo: 'home'}
 ]
 
 @NgModule({

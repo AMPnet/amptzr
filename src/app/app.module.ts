@@ -66,6 +66,7 @@ import {MatTooltipModule} from '@angular/material/tooltip'
 import {IssuerEditAdvancedComponent} from './issuers/issuer-edit-advanced/issuer-edit-advanced.component'
 import {DepositFlowComponent} from './deposit/deposit-flow/deposit-flow.component'
 import {SelectNetworkComponent} from './shared/components/select-network/select-network.component'
+import {HomeComponent} from './home/home.component'
 
 @NgModule({
   declarations: [
@@ -121,6 +122,7 @@ import {SelectNetworkComponent} from './shared/components/select-network/select-
     IssuerEditAdvancedComponent,
     DepositFlowComponent,
     SelectNetworkComponent,
+    HomeComponent,
   ],
   imports: [
     BrowserModule,
