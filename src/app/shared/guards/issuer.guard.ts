@@ -6,6 +6,7 @@ import {PreferenceQuery} from '../../preference/state/preference.query'
 import {PreferenceStore} from '../../preference/state/preference.store'
 import {IssuerService} from '../services/blockchain/issuer.service'
 import {SessionQuery} from '../../session/state/session.query'
+import {environment} from '../../../environments/environment'
 
 @Injectable({
   providedIn: 'root',
@@ -18,10 +19,16 @@ export class IssuerGuard implements CanActivate {
   }
 
   canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<boolean | UrlTree> {
-    return of(route.params.issuer).pipe(
+    return of(environment.fixed.issuer || route.params.issuer as string).pipe(
       // TODO: handle error cases
-      // TODO: handle getting issuers also by id (number) or address (0x...)
-      switchMap(issuer => this.issuerService.getAddressByName(issuer)),
+      // TODO: handle getting issuers also by id (number)
+      switchMap(issuer => {
+        if (issuer.startsWith('0x')) {
+          return of(issuer)
+        } else {
+          return this.issuerService.getAddressByName(issuer)
+        }
+      }),
       switchMap(issuerAddress => this.issuerService.getState(issuerAddress, this.sessionQuery.provider)),
       tap(issuer => this.preferenceStore.update({
         issuer: {

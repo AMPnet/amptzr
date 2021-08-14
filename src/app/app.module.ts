@@ -65,6 +65,7 @@ import {FaqQuestionComponent} from './faq/faq-question/faq-question.component'
 import {MatTooltipModule} from '@angular/material/tooltip'
 import {IssuerEditAdvancedComponent} from './issuers/issuer-edit-advanced/issuer-edit-advanced.component'
 import {DepositFlowComponent} from './deposit/deposit-flow/deposit-flow.component'
+import {SelectNetworkComponent} from './shared/components/select-network/select-network.component'
 
 @NgModule({
   declarations: [
@@ -119,6 +120,7 @@ import {DepositFlowComponent} from './deposit/deposit-flow/deposit-flow.componen
     FaqQuestionComponent,
     IssuerEditAdvancedComponent,
     DepositFlowComponent,
+    SelectNetworkComponent,
   ],
   imports: [
     BrowserModule,

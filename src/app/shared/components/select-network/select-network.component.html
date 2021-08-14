@@ -1,0 +1,15 @@
+<div class="flex content-center items-center"
+     *ngIf="!isNetworkFixed">
+  <label for="network" class="">
+    Network
+  </label>
+  <select name="network" id="network"
+          (change)="networkChanged($event)"
+          class="m-2 p-2 bg-blue-200 rounded-md">
+    <option *ngFor="let network of networks"
+            [selected]="currentNetwork === network"
+            [value]="network.chainId">
+      {{ network.name }}
+    </option>
+  </select>
+</div>

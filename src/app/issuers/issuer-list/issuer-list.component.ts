@@ -7,6 +7,8 @@ import {SessionQuery} from '../../session/state/session.query'
 import {ChainID, EthersNetworks} from '../../shared/networks'
 import {PreferenceStore} from '../../preference/state/preference.store'
 import {PreferenceQuery} from '../../preference/state/preference.query'
+import {RouterService} from '../../shared/services/router.service'
+import {environment} from '../../../environments/environment'
 
 @Component({
   selector: 'app-issuer-list',
@@ -15,9 +17,6 @@ import {PreferenceQuery} from '../../preference/state/preference.query'
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class IssuerListComponent {
-  networks = Object.values(EthersNetworks)
-  currentNetwork = EthersNetworks[this.preferenceQuery.getValue().chainID]
-
   issuers$: Observable<WithStatus<IssuerWithInfo[]>> = this.sessionQuery.provider$.pipe(
     switchMap(() => withStatus(this.issuerService.issuers$)),
   )
@@ -29,12 +28,11 @@ export class IssuerListComponent {
   constructor(private issuerService: IssuerService,
               private preferenceStore: PreferenceStore,
               private preferenceQuery: PreferenceQuery,
+              private router: RouterService,
               private sessionQuery: SessionQuery) {
   }
 
-  networkChanged(e: Event): void {
-    const chainID = Number((e.target as HTMLSelectElement).value) as ChainID
-    this.currentNetwork = EthersNetworks[chainID]
-    this.preferenceStore.update({chainID})
+  openIssuer(issuer: IssuerWithInfo) {
+    this.router.navigateIssuer(issuer.ansName)
   }
 }
