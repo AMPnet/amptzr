@@ -87,8 +87,9 @@ export class CampaignService {
     return combineLatest([
       data.photo ? this.ipfsService.addFile(data.photo) : of(undefined),
       this.ipfsService.addText(data.description || ''),
+      this.uploadMultipleDocuments(data.newDocuments),
     ]).pipe(
-      switchMap(([photoIPFS, descriptionIPFS]) => this.ipfsService.addObject<IPFSCampaign>({
+      switchMap(([photoIPFS, descriptionIPFS, newDocuments]) => this.ipfsService.addObject<IPFSCampaign>({
         version: 0.1,
         name: data.name || '',
         photo: photoIPFS?.path || campaign?.photo || '',
@@ -97,7 +98,7 @@ export class CampaignService {
         startDate: data.startDate || '',
         endDate: data.endDate || '',
         return: data.return || {},
-        documents: data.documents || [],
+        documents: (data.documents || []).concat(newDocuments),
         newsURLs: data.newsURLs || [],
       })),
     )
@@ -202,6 +203,22 @@ export class CampaignService {
       switchMap(contract => contract.finalize()),
       switchMap(tx => this.sessionQuery.provider.waitForTransaction(tx.hash)),
       this.errorService.handleError(),
+    )
+  }
+
+  private uploadMultipleDocuments(documents: File[] | undefined): Observable<IPFSDocument[]> {
+    if (documents && documents.length > 0) {
+      return combineLatest(documents.map(this.uploadDocument.bind(this)))
+    }
+
+    return of([])
+  }
+
+  private uploadDocument(document: File): Observable<IPFSDocument> {
+    return this.ipfsService.addFile(document).pipe(
+      map((ipfsResult) => {
+        return {name: document.name, location: ipfsResult.path}
+      })
     )
   }
 }
