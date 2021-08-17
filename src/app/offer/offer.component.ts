@@ -1,5 +1,5 @@
 import {ChangeDetectionStrategy, Component} from '@angular/core'
-import {BehaviorSubject, Observable} from 'rxjs'
+import {BehaviorSubject, combineLatest, Observable, of} from 'rxjs'
 import {CampaignService, CampaignWithInfo} from '../shared/services/blockchain/campaign.service'
 import {ActivatedRoute} from '@angular/router'
 import {map, switchMap, tap} from 'rxjs/operators'
@@ -10,8 +10,8 @@ import {IdentityService} from '../identity/identity.service'
 import {ProfileService} from '../profile/profile.service'
 import {RouterService} from '../shared/services/router.service'
 import {DialogService} from '../shared/services/dialog.service'
-import {SessionService} from '../session/state/session.service'
 import {SessionQuery} from '../session/state/session.query'
+import {LinkPreviewResponse, LinkPreviewService} from "../shared/services/backend/link-preview.service"
 
 @Component({
   selector: 'app-offer',
@@ -22,6 +22,7 @@ import {SessionQuery} from '../session/state/session.query'
 export class OfferComponent {
   campaignSub = new BehaviorSubject<void>(undefined)
   campaign$: Observable<WithStatus<CampaignWithInfo>>
+  links$: Observable<WithStatus<LinkPreviewResponse[]>>
   address$ = this.sessionQuery.address$.pipe(
     map(value => ({value: value})),
   )
@@ -34,7 +35,8 @@ export class OfferComponent {
               private sessionQuery: SessionQuery,
               private dialogService: DialogService,
               private router: RouterService,
-              private route: ActivatedRoute) {
+              private route: ActivatedRoute,
+              private linkPreviewService: LinkPreviewService,) {
     const campaignID = this.route.snapshot.params.id
 
     this.campaign$ = this.campaignSub.asObservable().pipe(
@@ -49,6 +51,17 @@ export class OfferComponent {
           })),
         ),
       )),
+    )
+    this.links$ = this.campaign$.pipe(
+      switchMap((campaign) => {
+        const previewLinks = campaign.value?.newsURLs?.map((url) => this.linkPreviewService.previewLink(url))
+
+        if (previewLinks && previewLinks.length > 0) {
+          return withStatus(combineLatest(previewLinks))
+        } else {
+          return withStatus(of([]))
+        }
+      })
     )
   }
 
