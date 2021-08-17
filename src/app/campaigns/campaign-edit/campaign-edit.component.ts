@@ -1,7 +1,7 @@
 import {ChangeDetectionStrategy, Component} from '@angular/core'
 import {BehaviorSubject, Observable} from 'rxjs'
 import {withStatus, WithStatus} from '../../shared/utils/observables'
-import {FormBuilder, FormGroup, Validators} from '@angular/forms'
+import {FormArray, FormBuilder, FormGroup, Validators} from '@angular/forms'
 import {ActivatedRoute} from '@angular/router'
 import {SessionQuery} from '../../session/state/session.query'
 import {IpfsService} from '../../shared/services/ipfs/ipfs.service'
@@ -23,6 +23,7 @@ export class CampaignEditComponent {
   campaign$: Observable<WithStatus<CampaignWithInfo>>
 
   updateForm: FormGroup
+  newsUrls: FormArray
 
   constructor(private route: ActivatedRoute,
               private campaignService: CampaignService,
@@ -40,8 +41,10 @@ export class CampaignEditComponent {
       endDate: ['', Validators.required],
       documents: [undefined],
       newDocuments: [undefined],
+      newsUrls: this.fb.array([]),
     })
 
+    this.newsUrls = this.updateForm.get('newsUrls') as FormArray
     this.campaign$ = this.campaignRefreshSub.asObservable().pipe(
       switchMap(refresh =>
         withStatus(
@@ -62,6 +65,11 @@ export class CampaignEditComponent {
             documents: asset.value.documents,
             newDocuments: [],
           })
+          this.newsUrls.clear()
+          this.newsUrls.markAsPristine()
+          asset.value.newsURLs.forEach((value) => this.newsUrls.push(this.fb.group({
+            url: [value, Validators.required]
+          })))
         }
       }),
     )
@@ -83,7 +91,7 @@ export class CampaignEditComponent {
             from: this.updateForm.value.returnFrom,
             to: this.updateForm.value.returnTo,
           },
-          newsURLs: this.updateForm.value.newsURLs,
+          newsURLs: this.newsUrls.value.map((fg: any) => fg.url),
         },
         campaign,
       ).pipe(
@@ -97,5 +105,16 @@ export class CampaignEditComponent {
   removeDocument(index: number) {
     this.updateForm.value.documents.splice(index, 1)
     this.updateForm.markAsDirty()
+  }
+
+  addNewsUrl() {
+    this.newsUrls.push(this.fb.group({
+      url: ['', Validators.required]
+    }))
+  }
+
+  removeNewsUrl(index: number) {
+    this.newsUrls.removeAt(index)
+    this.newsUrls.markAsDirty()
   }
 }
