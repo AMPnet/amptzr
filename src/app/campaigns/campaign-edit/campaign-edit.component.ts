@@ -38,6 +38,8 @@ export class CampaignEditComponent {
       description: [''],
       startDate: ['', Validators.required],
       endDate: ['', Validators.required],
+      documents: [undefined],
+      newDocuments: [undefined],
     })
 
     this.campaign$ = this.campaignRefreshSub.asObservable().pipe(
@@ -57,6 +59,8 @@ export class CampaignEditComponent {
             description: asset.value.description || '',
             startDate: asset.value.startDate.split('T')[0],
             endDate: asset.value.endDate.split('T')[0],
+            documents: asset.value.documents,
+            newDocuments: [],
           })
         }
       }),
@@ -88,5 +92,10 @@ export class CampaignEditComponent {
         switchMap(() => this.dialogService.info('Campaign successfully updated!', false)),
       )
     }
+  }
+
+  removeDocument(index: number) {
+    this.updateForm.value.documents.splice(index, 1)
+    this.updateForm.markAsDirty()
   }
 }
