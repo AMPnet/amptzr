@@ -41,7 +41,7 @@
           <label class="block">Documents</label>
           <div *ngFor="let document of updateForm.value.documents; let i = index">
             {{ document.name }}
-            <button (click)="updateForm.value.documents.splice(i, 1); updateForm.markAsDirty()">❌</button>
+            <button (click)="removeDocument(i)">❌</button>
           </div>
         </div>
 

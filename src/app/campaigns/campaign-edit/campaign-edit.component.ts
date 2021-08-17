@@ -93,4 +93,9 @@ export class CampaignEditComponent {
       )
     }
   }
+
+  removeDocument(index: number) {
+    this.updateForm.value.documents.splice(index, 1)
+    this.updateForm.markAsDirty()
+  }
 }
