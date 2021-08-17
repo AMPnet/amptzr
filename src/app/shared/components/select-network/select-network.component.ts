@@ -1,9 +1,13 @@
 import {ChangeDetectionStrategy, Component} from '@angular/core'
 import {ChainID, EthersNetworks} from '../../networks'
 import {environment} from '../../../../environments/environment'
-import {PreferenceStore} from '../../../preference/state/preference.store'
 import {PreferenceQuery} from '../../../preference/state/preference.query'
+import {PreferenceStore} from '../../../preference/state/preference.store'
 
+
+/**
+ * Only this component should be used for changing the networks.
+ */
 @Component({
   selector: 'app-select-network',
   templateUrl: './select-network.component.html',
