@@ -2,7 +2,7 @@ import {ChangeDetectionStrategy, Component} from '@angular/core'
 import {BehaviorSubject, combineLatest, Observable, of} from 'rxjs'
 import {CampaignService, CampaignWithInfo} from '../shared/services/blockchain/campaign.service'
 import {ActivatedRoute} from '@angular/router'
-import {map, switchMap, tap} from 'rxjs/operators'
+import {filter, map, switchMap, tap} from 'rxjs/operators'
 import {WithStatus, withStatus} from '../shared/utils/observables'
 import {MetaService} from '../shared/services/meta.service'
 import {ToUrlIPFSPipe} from '../shared/pipes/to-url-ipfs.pipe'
@@ -22,7 +22,7 @@ import {LinkPreviewResponse, LinkPreviewService} from "../shared/services/backen
 export class OfferComponent {
   campaignSub = new BehaviorSubject<void>(undefined)
   campaign$: Observable<WithStatus<CampaignWithInfo>>
-  links$: Observable<WithStatus<LinkPreviewResponse[]>>
+  links$: Observable<WithStatus<LinkPreviewResponse[]> | undefined>
   address$ = this.sessionQuery.address$.pipe(
     map(value => ({value: value})),
   )
@@ -53,15 +53,16 @@ export class OfferComponent {
       )),
     )
     this.links$ = this.campaign$.pipe(
+      filter((campaign) => !!campaign.value),
       switchMap((campaign) => {
-        const previewLinks = campaign.value?.newsURLs?.map((url) => this.linkPreviewService.previewLink(url))
+        const previewLinks = campaign.value!.newsURLs?.map((url) => this.linkPreviewService.previewLink(url))
 
         if (previewLinks && previewLinks.length > 0) {
           return withStatus(combineLatest(previewLinks))
         } else {
-          return withStatus(of([]))
+          return of(undefined)
         }
-      })
+      }),
     )
   }
 
