@@ -65,6 +65,7 @@ import {FaqQuestionComponent} from './faq/faq-question/faq-question.component'
 import {MatTooltipModule} from '@angular/material/tooltip'
 import {IssuerEditAdvancedComponent} from './issuers/issuer-edit-advanced/issuer-edit-advanced.component'
 import {DepositFlowComponent} from './deposit/deposit-flow/deposit-flow.component'
+import {QuillModule} from 'ngx-quill'
 
 @NgModule({
   declarations: [
@@ -137,6 +138,7 @@ import {DepositFlowComponent} from './deposit/deposit-flow/deposit-flow.componen
       // or after 30 seconds (whichever comes first).
       registrationStrategy: 'registerWhenStable:30000',
     }),
+    QuillModule.forRoot(),
   ],
   providers: [
     PreferenceService,
