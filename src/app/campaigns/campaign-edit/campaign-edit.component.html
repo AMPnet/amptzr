@@ -52,8 +52,8 @@
 
         <div class="mt-2" formArrayName="newsUrls">
           <label class="block">News URLs</label>
-          <div *ngFor="let newsUrlForm of newsUrls.controls; let i = index" [formGroupName]="i" class="mt-2">
-            <input type="text" formControlName="url">
+          <div *ngFor="let control of newsUrlsControls(); let i = index" class="mt-2">
+            <input type="text" [formControl]="control">
             <button class="ml-2" (click)="removeNewsUrl(i)">❌</button>
           </div>
           <button class="mt-2" (click)="addNewsUrl()">➕ Add URL</button>

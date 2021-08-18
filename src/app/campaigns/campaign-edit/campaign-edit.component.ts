@@ -1,7 +1,7 @@
 import {ChangeDetectionStrategy, Component} from '@angular/core'
 import {BehaviorSubject, Observable} from 'rxjs'
 import {withStatus, WithStatus} from '../../shared/utils/observables'
-import {FormArray, FormBuilder, FormGroup, Validators} from '@angular/forms'
+import {FormArray, FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms'
 import {ActivatedRoute} from '@angular/router'
 import {SessionQuery} from '../../session/state/session.query'
 import {IpfsService} from '../../shared/services/ipfs/ipfs.service'
@@ -67,9 +67,7 @@ export class CampaignEditComponent {
           })
           this.newsUrls.clear()
           this.newsUrls.markAsPristine()
-          asset.value.newsURLs.forEach((value) => this.newsUrls.push(this.fb.group({
-            url: [value, Validators.required]
-          })))
+          asset.value.newsURLs.forEach((value) => this.newsUrls.push(this.fb.control(value, [Validators.required])))
         }
       }),
     )
@@ -91,7 +89,7 @@ export class CampaignEditComponent {
             from: this.updateForm.value.returnFrom,
             to: this.updateForm.value.returnTo,
           },
-          newsURLs: this.newsUrls.value.map((fg: any) => fg.url),
+          newsURLs: this.newsUrls.value,
         },
         campaign,
       ).pipe(
@@ -107,10 +105,12 @@ export class CampaignEditComponent {
     this.updateForm.markAsDirty()
   }
 
+  newsUrlsControls() {
+    return this.newsUrls.controls as FormControl[]
+  }
+
   addNewsUrl() {
-    this.newsUrls.push(this.fb.group({
-      url: ['', Validators.required]
-    }))
+    this.newsUrls.push(this.fb.control('', [Validators.required]))
   }
 
   removeNewsUrl(index: number) {
