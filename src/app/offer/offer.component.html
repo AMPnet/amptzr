@@ -91,7 +91,7 @@
               </button>
 
               <div class="mt-10 text-lg uppercase font-light">Project Documents</div>
-              <div *ngFor="let document of offer.documents" class="mt-4 flex items-center cursor-pointer">
+              <div *ngFor="let document of offer.documents" class="mt-4 flex items-center">
                 <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
                   <path
                     d="M8 20V21C8 21.7956 8.31607 22.5587 8.87868 23.1213C9.44129 23.6839 10.2044 24 11 24H21C21.7956 24 22.5587 23.6839 23.1213 23.1213C23.6839 22.5587 24 21.7956 24 21V20M20 16L16 20M16 20L12 16M16 20V8"
@@ -109,7 +109,7 @@
                           d="M14.3333 18.3333H13V13H11.6667M13 7.66667H13.0133M25 13C25 14.5759 24.6896 16.1363 24.0866 17.5922C23.4835 19.0481 22.5996 20.371 21.4853 21.4853C20.371 22.5996 19.0481 23.4835 17.5922 24.0866C16.1363 24.6896 14.5759 25 13 25C11.4241 25 9.86371 24.6896 8.4078 24.0866C6.95189 23.4835 5.62902 22.5996 4.51472 21.4853C3.40042 20.371 2.5165 19.0481 1.91345 17.5922C1.31039 16.1363 1 14.5759 1 13C1 9.8174 2.26428 6.76516 4.51472 4.51472C6.76516 2.26428 9.8174 1 13 1C16.1826 1 19.2348 2.26428 21.4853 4.51472C23.7357 6.76516 25 9.8174 25 13Z"
                           stroke="#3730A3" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                       </svg>
-                      <a href="{{ link.url }}" class="ml-3 text-sm cursor-pointer">
+                      <a href="{{ link.url }}" class="ml-3 text-sm">
                         {{ link.open_graph?.title ?? link.url }}
                       </a>
                     </div>
