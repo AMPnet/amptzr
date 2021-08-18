@@ -128,13 +128,13 @@
                     </div>
                   </ng-container>
 
-                  <ng-container *ngIf="linksRes.loading">
-                    <app-spinner type="inline-xs"></app-spinner>
-                  </ng-container>
-
                   <ng-container *ngIf="linksRes.error">
                     Cannot fetch news links.
                     <div hidden>{{ linksRes.error | json }}</div>
+                  </ng-container>
+
+                  <ng-container *ngIf="linksRes.loading">
+                    <app-spinner type="inline-xs"></app-spinner>
                   </ng-container>
                 </div>
               </ng-container>

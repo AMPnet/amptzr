@@ -1,8 +1,8 @@
 import {Injectable} from '@angular/core'
-import {HttpClient, HttpParams} from '@angular/common/http'
-import {Observable} from 'rxjs'
+import {Observable, of} from 'rxjs'
 import {environment} from '../../../../environments/environment'
-import {map} from "rxjs/operators"
+import {catchError, map} from "rxjs/operators"
+import {BackendHttpClient} from "./backend-http-client.service"
 
 @Injectable({
   providedIn: 'root',
@@ -10,12 +10,11 @@ import {map} from "rxjs/operators"
 export class LinkPreviewService {
   path = `${environment.backendURL}/api/link`
 
-  constructor(private http: HttpClient) {
+  constructor(private http: BackendHttpClient) {
   }
 
   previewLink(url: string): Observable<LinkPreviewResponse> {
-    const params = new HttpParams().set('url', url)
-    return this.http.get<LinkPreviewResponse>(`${this.path}/preview`, {params: params}).pipe(
+    return this.http.get<LinkPreviewResponse>(`${this.path}/preview`, {url: url}, true).pipe(
       map((response) => {
         if (response.open_graph?.image?.url) {
           return {
@@ -30,7 +29,8 @@ export class LinkPreviewService {
           }
         }
         return response
-      })
+      }),
+      catchError(() => of({url: url})),
     )
   }
 }
