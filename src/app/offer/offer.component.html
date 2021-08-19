@@ -42,8 +42,7 @@
 
               <ng-container *ngIf="(offer.description | toTextIPFS | async) as descriptionRes">
                 <ng-container *ngIf="descriptionRes.value as description">
-                  <!-- TODO: Add safety for content parsing, prevent injection -->
-                  <div class="mt-4 font-light text-gray-700" [innerHtml]="description"></div>
+                  <quill-view class="mt-4 font-light text-gray-700" [content]="description" format="html"></quill-view>
                 </ng-container>
 
                 <ng-container *ngIf="descriptionRes.error">

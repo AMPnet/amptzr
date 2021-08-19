@@ -2,7 +2,6 @@
 @import 'tailwindcss/components';
 @import 'tailwindcss/utilities';
 @import '~quill/dist/quill.core.css';
-@import '~quill/dist/quill.bubble.css';
 @import '~quill/dist/quill.snow.css';
 /* You can add global styles to this file, and also import other style files */
 
@@ -38,4 +37,29 @@ body {
 
 button, textarea, input, select, a {
   -webkit-tap-highlight-color: transparent;
+}
+
+.ql-editor {
+  font-family: 'Raleway', sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+
+  h1 {
+    color: #3730A3;
+    font-size: 18px;
+    font-weight: 800;
+    text-transform: uppercase;
+  }
+
+  h2 {
+    color: #3730A3;
+    font-size: 16px;
+    font-weight: 800;
+    text-transform: uppercase;
+  }
+}
+
+/* Remove editor padding when only showing rich text */
+.ngx-quill-view > div.ql-editor {
+  padding: 0;
 }
