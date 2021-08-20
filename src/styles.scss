@@ -40,29 +40,20 @@ button, textarea, input, select, a {
 }
 
 .ql-editor {
+  @apply text-base;
   font-family: 'Raleway', sans-serif;
-  font-size: 14px;
-  font-weight: 500;
 
   h1 {
-    color: #3730A3;
-    font-size: 18px;
-    font-weight: 800;
-    text-transform: uppercase;
+    @apply pb-4 text-indigo-800 text-xl font-bold;
   }
 
   h2 {
-    color: #3730A3;
-    font-size: 16px;
-    font-weight: 800;
-    text-transform: uppercase;
+    @apply pb-4 text-indigo-800 text-lg font-bold;
   }
 
   pre.ql-syntax {
+    @apply bg-blue-50 text-base #{!important};
     color: inherit !important;
-    background-color: #EFF6FF !important;
-    font-size: 14px;
-    font-weight: 500;
   }
 }
 
