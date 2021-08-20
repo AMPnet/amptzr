@@ -52,12 +52,12 @@ button, textarea, input, select, a {
   }
 
   pre.ql-syntax {
-    @apply bg-blue-50 text-base #{!important};
+    @apply bg-blue-50 text-base font-mono #{!important};
     color: inherit !important;
   }
 }
 
 /* Remove editor padding when only showing rich text */
 .ngx-quill-view > div.ql-editor {
-  padding: 0;
+  @apply p-0;
 }
