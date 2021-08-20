@@ -57,6 +57,13 @@ button, textarea, input, select, a {
     font-weight: 800;
     text-transform: uppercase;
   }
+
+  pre.ql-syntax {
+    color: inherit !important;
+    background-color: #EFF6FF !important;
+    font-size: 14px;
+    font-weight: 500;
+  }
 }
 
 /* Remove editor padding when only showing rich text */
