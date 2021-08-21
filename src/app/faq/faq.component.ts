@@ -10,79 +10,82 @@ import {BehaviorSubject} from "rxjs"
 export class FaqComponent {
   questionCategories: QuestionCategory[] = [
     {
-      categoryName: "Common questions",
+      categoryName: "BASIC TERMS",
       items: [
         {
-          question: "Will I get rich fast?",
-          answer: "No.",
+          question: "What is a token?",
+          answer: "Crypto tokens are a type of cryptocurrency that represents an asset or specific use and resides" +
+            " on their blockchain. Tokens can be used for investment purposes, to store value, or to make purchases."
         },
         {
-          question: "Is this the final version of this FAQ, will there be any actual questions here?",
-          answer: "Of course these are not the actual questions, what are you thinking? The real questions will come" +
-            " later.\n\nAlso, newlines are a thing that should be displayed correctly here.\nLike this, see?",
+          question: "What is a crypto wallet?",
+          answer: "A cryptocurrency wallet is a device, physical medium, program or a service which stores the" +
+            " public and/or private keys for cryptocurrency transactions. In addition to this basic function of" +
+            " storing the keys, a cryptocurrency wallet more often also offers the functionality of encrypting" +
+            " and/or signing information."
         },
-      ],
+        {
+          question: "What is USDC?",
+          answer: "USD Coin (USDC) is a type of cryptocurrency that is referred to as a stablecoin. You can always" +
+            " redeem 1 USD Coin for US$1.00, giving it a stable price."
+        },
+      ]
     },
     {
-      categoryName: "Stupid questions",
+      categoryName: "WALLET AND PIN",
       items: [
         {
-          question: "I accidentally posted my private key on Facebook, are my coins safe?",
-          answer: "LOL, no.",
+          question: "Do I need to have a wallet to invest?",
+          answer: "Yes."
         },
         {
-          question: "Can I ask a question?",
-          answer: "Sure.",
+          question: "How can I create a wallet?",
+          answer: "Just follow the instructions during login and you will be prompted to create your wallet and PIN" +
+            " for it. Before creating a wallet please read <a href='https://help.venly.io/en/article/what-is-a-pin-" +
+            "2e4br3/' target='_blank' rel='noopener noreferrer' class='underline'>this</a> first."
         },
         {
-          question: "I feel like I should be able to write a lot of text, but I mean really really REALLY a lot of" +
-            " text, and that should be displayed correctly right? What if I don't write enough and then we will never" +
-            " know if this blasted thing works or not, what if there is some kind of limit that should never be" +
-            " reached when doing sopmething like this? I mean, it's going great so far, but can I go on writing" +
-            " random crap like this, will I ever stop?",
-          answer: "You misspelled 'sopmething', you idiot.",
+          question: "What if I forgot the PIN for my wallet?",
+          answer: "For this we use a third party service provider called Venly. You can find more information about" +
+            " PIN recovery <a href='https://help.venly.io/en/article/i-forgot-my-pin-1hgc4ej/' target='_blank'" +
+            " rel='noopener noreferrer' class='underline'>here</a>."
         },
-      ],
+      ]
     },
     {
-      categoryName: "Stupider questions",
+      categoryName: "TRANSACTIONS",
       items: [
         {
-          question: "What, there is only one question here?",
-          answer: "Always has been.",
-        },
-      ],
-    },
-    {
-      categoryName: "Meme questions",
-      items: [
-        {
-          question: "When moon?",
-          answer: "Go away.",
+          question: "What countries do you support?",
+          answer: "170+ countries and territories. For this we use a third party service provider called Ramp" +
+            " Network. For more information click <a href='https://support.ramp.network/en/article/what-count" +
+            "ries-do-you-support-1ua7sn1/' target='_blank' rel='noopener noreferrer' class='underline'>here</a>."
         },
         {
-          question: "Can we get some Fs in the chat?",
-          answer: "FFFFFFFFFFFF",
+          question: "What are your payment options?",
+          answer: "For this we use a third party service provider called Ramp Network. For more information click" +
+            " <a href='https://support.ramp.network/en/article/what-are-your-payment-options-15vji5a/'" +
+            " target='_blank' rel='noopener noreferrer' class='underline'>here</a>."
         },
         {
-          question: "What is love?",
-          answer: "What is love?\nOh baby, don't hurt me\nDon't hurt me\nNo more\nBaby, don't hurt me, don't hurt" +
-            " me\nNo more\nWhat is love?\nYeah\nNo, I don't know why you're not fair\nI give you my love, but you" +
-            " don't care\nSo what is right and what is wrong?\nGimme a sign\nWhat is love?\nOh baby, don't hurt" +
-            " me\nDon't hurt me\nNo more\nWhat is love?\nOh baby, don't hurt me\nDon't hurt me\nNo more\nWhoa, whoa," +
-            " oh\nWhoa, whoa, oh\nOh, I don't know, what can I do?\nWhat else can I say? It's up to you\nI know we're" +
-            " one, just me and you\nI can't go on\nWhat is love?\nOh baby, don't hurt me\nDon't hurt me\nNo" +
-            " more\nWhat is love?\nOh baby, don't hurt me\nDon't hurt me\nNo more\nWhoa, whoa, oh\nWhoa, whoa," +
-            " oh\nWhat is love?\nWhat is love?\nWhat is love?\nOh baby, don't hurt me\nDon't hurt me\nNo" +
-            " more\nDon't hurt me\nDon't hurt me\nI want no other, no other lover\nThis is our life, our time\nIf" +
-            " we are together, I need you forever\nIs it love?\nWhat is love?\nOh baby, don't hurt me\nDon't hurt" +
-            " me\nNo more\nWhat is love?\nOh baby, don't hurt me\nDon't hurt me\nNo more\nYeah, yeah\nWhoa, whoa," +
-            " oh\nWhoa, whoa, oh\nWhat is love?\nOh baby, don't hurt me\nDon't hurt me\nNo more\nWhat is love?\nOh" +
-            " baby, don't hurt me\nDon't hurt me\nNo more (whoa, whoa)\nOh baby, don't hurt me\nDon't hurt me\nNo" +
-            " more (whoa, whoa)\nOh baby, don't hurt me\nDon't hurt me\nNo more\nWhat is love?",
+          question: "How long does it take to settle the transaction?",
+          answer: "For this we use a third party service provider called Ramp Network. For more information click" +
+            " <a href='https://support.ramp.network/en/article/how-long-does-it-take-to-settle-the-transaction-cq" +
+            "ux2a/' target='_blank' rel='noopener noreferrer' class='underline'>here</a>."
         },
-      ],
-    },
+        {
+          question: "How much does the transaction fee cost?",
+          answer: "For this we use a third party service provider called Ramp Network. For more information click" +
+            " <a href='https://support.ramp.network/en/article/what-are-your-fees-1atf5lv/' target='_blank'" +
+            " rel='noopener noreferrer' class='underline'>here</a>."
+        },
+        {
+          question: "What if I need some other troubleshooting with transactions?",
+          answer: "For more information click <a href='https://support.ramp.network/en/category/troubleshooting-" +
+            "1yc8pkt/' target='_blank' rel='noopener noreferrer' class='underline'>here</a>."
+        },
+      ]
+    }
   ]
   selectedCategory$ = new BehaviorSubject<QuestionCategory>(this.questionCategories[0])
 
