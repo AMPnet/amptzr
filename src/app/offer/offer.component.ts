@@ -22,7 +22,7 @@ import {LinkPreviewResponse, LinkPreviewService} from "../shared/services/backen
 export class OfferComponent {
   campaignSub = new BehaviorSubject<void>(undefined)
   campaign$: Observable<WithStatus<CampaignWithInfo>>
-  links$: Observable<WithStatus<LinkPreviewResponse[]> | undefined>
+  links$: Observable<WithStatus<{ value: LinkPreviewResponse[] }>>
   address$ = this.sessionQuery.address$.pipe(
     map(value => ({value: value})),
   )
@@ -36,7 +36,7 @@ export class OfferComponent {
               private dialogService: DialogService,
               private router: RouterService,
               private route: ActivatedRoute,
-              private linkPreviewService: LinkPreviewService,) {
+              private linkPreviewService: LinkPreviewService) {
     const campaignID = this.route.snapshot.params.id
 
     this.campaign$ = this.campaignSub.asObservable().pipe(
@@ -52,16 +52,17 @@ export class OfferComponent {
         ),
       )),
     )
+
     this.links$ = this.campaign$.pipe(
       filter((campaign) => !!campaign.value),
       switchMap((campaign) => {
+        if (!campaign.value!.newsURLs) {
+          return withStatus(of({value: []}))
+        }
+
         const previewLinks = campaign.value!.newsURLs?.map((url) => this.linkPreviewService.previewLink(url))
 
-        if (previewLinks && previewLinks.length > 0) {
-          return withStatus(combineLatest(previewLinks))
-        } else {
-          return of(undefined)
-        }
+        return withStatus(combineLatest(previewLinks).pipe(map(value => ({value}))))
       }),
     )
   }
