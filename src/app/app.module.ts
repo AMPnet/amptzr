@@ -65,6 +65,9 @@ import {FaqQuestionComponent} from './faq/faq-question/faq-question.component'
 import {MatTooltipModule} from '@angular/material/tooltip'
 import {IssuerEditAdvancedComponent} from './issuers/issuer-edit-advanced/issuer-edit-advanced.component'
 import {DepositFlowComponent} from './deposit/deposit-flow/deposit-flow.component'
+import {TruncatePipe} from './shared/pipes/truncate.pipe'
+import {UnescapePipe} from './shared/pipes/unescape.pipe'
+import {AppQuillModule} from './shared/modules/app-quill.module'
 import {SelectNetworkComponent} from './shared/components/select-network/select-network.component'
 import {HomeComponent} from './home/home.component'
 
@@ -121,6 +124,8 @@ import {HomeComponent} from './home/home.component'
     FaqQuestionComponent,
     IssuerEditAdvancedComponent,
     DepositFlowComponent,
+    TruncatePipe,
+    UnescapePipe,
     SelectNetworkComponent,
     HomeComponent,
   ],
@@ -141,6 +146,7 @@ import {HomeComponent} from './home/home.component'
       // or after 30 seconds (whichever comes first).
       registrationStrategy: 'registerWhenStable:30000',
     }),
+    AppQuillModule,
   ],
   providers: [
     PreferenceService,
@@ -158,6 +164,8 @@ import {HomeComponent} from './home/home.component'
     CurrencyPipe,
     IssuerPathPipe,
     ToUrlIPFSPipe,
+    TruncatePipe,
+    UnescapePipe,
   ],
   bootstrap: [AppComponent],
 })

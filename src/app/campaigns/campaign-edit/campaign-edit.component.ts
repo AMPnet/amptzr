@@ -1,7 +1,7 @@
 import {ChangeDetectionStrategy, Component} from '@angular/core'
 import {BehaviorSubject, Observable} from 'rxjs'
 import {withStatus, WithStatus} from '../../shared/utils/observables'
-import {FormBuilder, FormGroup, Validators} from '@angular/forms'
+import {FormArray, FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms'
 import {ActivatedRoute} from '@angular/router'
 import {SessionQuery} from '../../session/state/session.query'
 import {IpfsService} from '../../shared/services/ipfs/ipfs.service'
@@ -23,6 +23,7 @@ export class CampaignEditComponent {
   campaign$: Observable<WithStatus<CampaignWithInfo>>
 
   updateForm: FormGroup
+  newsUrls: FormArray
 
   constructor(private route: ActivatedRoute,
               private campaignService: CampaignService,
@@ -38,7 +39,11 @@ export class CampaignEditComponent {
       description: [''],
       startDate: ['', Validators.required],
       endDate: ['', Validators.required],
+      documents: [undefined],
+      newDocuments: [undefined],
+      newsUrls: this.fb.array([]),
     })
+    this.newsUrls = this.updateForm.get('newsUrls') as FormArray
 
     this.campaign$ = this.campaignRefreshSub.asObservable().pipe(
       switchMap(refresh =>
@@ -57,7 +62,13 @@ export class CampaignEditComponent {
             description: asset.value.description || '',
             startDate: asset.value.startDate.split('T')[0],
             endDate: asset.value.endDate.split('T')[0],
+            documents: asset.value.documents,
+            newDocuments: [],
           })
+          this.newsUrls.clear()
+          asset.value.newsURLs.forEach(url =>
+            this.newsUrls.push(this.fb.control(url, [Validators.required]))
+          )
         }
       }),
     )
@@ -79,14 +90,37 @@ export class CampaignEditComponent {
             from: this.updateForm.value.returnFrom,
             to: this.updateForm.value.returnTo,
           },
-          newsURLs: this.updateForm.value.newsURLs,
+          newsURLs: this.newsUrls.value,
         },
         campaign,
       ).pipe(
         switchMap(uploadRes => this.campaignService.updateInfo(this.campaignAddress, uploadRes.path)),
         tap(() => this.campaignRefreshSub.next({isLazy: true})),
         switchMap(() => this.dialogService.info('Campaign successfully updated!', false)),
+        tap(() => this.updateForm.get('description')?.markAsPristine()),
       )
     }
+  }
+
+  markDescriptionAsDirty() {
+    this.updateForm.get('description')?.markAsDirty()
+  }
+
+  removeDocument(index: number) {
+    this.updateForm.value.documents.splice(index, 1)
+    this.updateForm.markAsDirty()
+  }
+
+  newsUrlsControls() {
+    return this.newsUrls.controls as FormControl[]
+  }
+
+  addNewsUrl() {
+    this.newsUrls.push(this.fb.control('', [Validators.required]))
+  }
+
+  removeNewsUrl(index: number) {
+    this.newsUrls.removeAt(index)
+    this.newsUrls.markAsDirty()
   }
 }

@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core'
 import {combineLatest, from, Observable, of} from 'rxjs'
-import {first, map, shareReplay, switchMap, take} from 'rxjs/operators'
+import {filter, first, map, shareReplay, switchMap, take} from 'rxjs/operators'
 import {Issuer, Issuer__factory, IssuerFactory, IssuerFactory__factory} from '../../../../../types/ethers-contracts'
 import {SessionQuery} from '../../../session/state/session.query'
 import {PreferenceQuery} from '../../../preference/state/preference.query'
@@ -30,12 +30,14 @@ export class IssuerService {
       ))),
   )
 
-  issuer$: Observable<IssuerWithInfo> = this.preferenceQuery.issuer$.pipe(
-    switchMap(issuer => this.getIssuerWithInfo(issuer.address)),
+  issuerWithStatus$: Observable<WithStatus<IssuerWithInfo>> = this.preferenceQuery.issuer$.pipe(
+    switchMap(issuer => withStatus(this.getIssuerWithInfo(issuer.address))),
     shareReplay(1),
   )
 
-  issuerWithStatus$: Observable<WithStatus<IssuerWithInfo>> = withStatus(this.issuer$).pipe(
+  issuer$: Observable<IssuerWithInfo> = this.issuerWithStatus$.pipe(
+    filter(issuerWithStatus => !!issuerWithStatus.value),
+    map(issuerWithStatus => issuerWithStatus.value!),
     shareReplay(1),
   )
 

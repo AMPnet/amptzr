@@ -103,8 +103,8 @@
                      py-2 text-white rounded-full flex items-center justify-center
                      disabled:bg-gray-400"
               text="Next"
-              [attr.disabled]="depositForm.get('amount')?.errors?.amountTooLow ||
-                               depositForm.get('amount')?.errors?.amountTooHigh"
+              [disabled]="depositForm.get('amount')?.errors?.amountTooLow ||
+                          depositForm.get('amount')?.errors?.amountTooHigh"
               [onClick]="showRamp.bind(this)">
         <ng-template #content>
           Next
