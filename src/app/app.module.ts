@@ -65,6 +65,8 @@ import {FaqQuestionComponent} from './faq/faq-question/faq-question.component'
 import {MatTooltipModule} from '@angular/material/tooltip'
 import {IssuerEditAdvancedComponent} from './issuers/issuer-edit-advanced/issuer-edit-advanced.component'
 import {DepositFlowComponent} from './deposit/deposit-flow/deposit-flow.component'
+import {TruncatePipe} from './shared/pipes/truncate.pipe'
+import {UnescapePipe} from './shared/pipes/unescape.pipe'
 import {QuillModule} from 'ngx-quill'
 
 @NgModule({
@@ -120,6 +122,8 @@ import {QuillModule} from 'ngx-quill'
     FaqQuestionComponent,
     IssuerEditAdvancedComponent,
     DepositFlowComponent,
+    TruncatePipe,
+    UnescapePipe,
   ],
   imports: [
     BrowserModule,
@@ -154,7 +158,7 @@ import {QuillModule} from 'ngx-quill'
         'align',
         'link',
         'image',
-        'video'
+        'video',
       ],
       modules: {
         toolbar: [
@@ -172,8 +176,8 @@ import {QuillModule} from 'ngx-quill'
           [{'align': []}],
           ['clean'],
           ['link', 'image', 'video'],
-        ]
-      }
+        ],
+      },
     }),
   ],
   providers: [
@@ -192,6 +196,8 @@ import {QuillModule} from 'ngx-quill'
     CurrencyPipe,
     IssuerPathPipe,
     ToUrlIPFSPipe,
+    TruncatePipe,
+    UnescapePipe,
   ],
   bootstrap: [AppComponent],
 })
