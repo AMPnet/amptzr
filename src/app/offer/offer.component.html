@@ -6,7 +6,7 @@
           <div class="relative">
             <img class="rounded-t-3xl lg:h-96 lg:mx-auto w-full object-cover"
                  [src]="offer.photo | toUrlIPFS"
-                 alt="Offer photo" srcset="">
+                 alt="Offer photo">
             <div class="bg-white shadow-xl p-6 lg:h-10 lg:rounded-full
                             absolute lg:bottom-8 -bottom-11 left-4 lg:left-12 flex flex-col lg:flex-row lg:items-center
                             rounded-t-xl rounded-b-xl">
@@ -41,9 +41,9 @@
               </div>
 
               <ng-container *ngIf="(offer.description | toTextIPFS | async) as descriptionRes">
-                <ng-container *ngIf="descriptionRes.value as description">
-                  <quill-view class="mt-4 font-light text-gray-700" [content]="description" format="html"></quill-view>
-                </ng-container>
+                <div *ngIf="descriptionRes.value as description" class="mt-4 font-light text-gray-700">
+                  <quill-view [content]="description" format="html"></quill-view>
+                </div>
 
                 <ng-container *ngIf="descriptionRes.error">
                   Cannot fetch description.
