@@ -43,8 +43,8 @@ export class CampaignEditComponent {
       newDocuments: [undefined],
       newsUrls: this.fb.array([]),
     })
-
     this.newsUrls = this.updateForm.get('newsUrls') as FormArray
+
     this.campaign$ = this.campaignRefreshSub.asObservable().pipe(
       switchMap(refresh =>
         withStatus(
@@ -66,8 +66,9 @@ export class CampaignEditComponent {
             newDocuments: [],
           })
           this.newsUrls.clear()
-          this.newsUrls.markAsPristine()
-          asset.value.newsURLs.forEach((value) => this.newsUrls.push(this.fb.control(value, [Validators.required])))
+          asset.value.newsURLs.forEach(url =>
+            this.newsUrls.push(this.fb.control(url, [Validators.required]))
+          )
         }
       }),
     )
