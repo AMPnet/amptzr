@@ -24,9 +24,9 @@
 
         <div class="mt-2">
           <label class="block" for="description">Description</label>
-          <textarea id="description" formControlName="description"
-                    rows="4">
-          </textarea>
+          <quill-editor id="description" formControlName="description"
+                        (onContentChanged)="markDescriptionAsDirty()">
+          </quill-editor>
         </div>
 
         <div class="mt-2">

@@ -67,6 +67,7 @@ import {IssuerEditAdvancedComponent} from './issuers/issuer-edit-advanced/issuer
 import {DepositFlowComponent} from './deposit/deposit-flow/deposit-flow.component'
 import {TruncatePipe} from './shared/pipes/truncate.pipe'
 import {UnescapePipe} from './shared/pipes/unescape.pipe'
+import {AppQuillModule} from './shared/modules/app-quill.module'
 
 @NgModule({
   declarations: [
@@ -141,6 +142,7 @@ import {UnescapePipe} from './shared/pipes/unescape.pipe'
       // or after 30 seconds (whichever comes first).
       registrationStrategy: 'registerWhenStable:30000',
     }),
+    AppQuillModule,
   ],
   providers: [
     PreferenceService,
@@ -159,7 +161,7 @@ import {UnescapePipe} from './shared/pipes/unescape.pipe'
     IssuerPathPipe,
     ToUrlIPFSPipe,
     TruncatePipe,
-    UnescapePipe
+    UnescapePipe,
   ],
   bootstrap: [AppComponent],
 })

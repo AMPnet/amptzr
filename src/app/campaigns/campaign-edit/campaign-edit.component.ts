@@ -97,8 +97,13 @@ export class CampaignEditComponent {
         switchMap(uploadRes => this.campaignService.updateInfo(this.campaignAddress, uploadRes.path)),
         tap(() => this.campaignRefreshSub.next({isLazy: true})),
         switchMap(() => this.dialogService.info('Campaign successfully updated!', false)),
+        tap(() => this.updateForm.get('description')?.markAsPristine()),
       )
     }
+  }
+
+  markDescriptionAsDirty() {
+    this.updateForm.get('description')?.markAsDirty()
   }
 
   removeDocument(index: number) {
