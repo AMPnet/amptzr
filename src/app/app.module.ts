@@ -66,6 +66,7 @@ import {MatTooltipModule} from '@angular/material/tooltip'
 import {IssuerEditAdvancedComponent} from './issuers/issuer-edit-advanced/issuer-edit-advanced.component'
 import {DepositFlowComponent} from './deposit/deposit-flow/deposit-flow.component'
 import {TruncatePipe} from './shared/pipes/truncate.pipe'
+import {UnescapePipe} from './shared/pipes/unescape.pipe'
 
 @NgModule({
   declarations: [
@@ -121,6 +122,7 @@ import {TruncatePipe} from './shared/pipes/truncate.pipe'
     IssuerEditAdvancedComponent,
     DepositFlowComponent,
     TruncatePipe,
+    UnescapePipe,
   ],
   imports: [
     BrowserModule,
@@ -157,6 +159,7 @@ import {TruncatePipe} from './shared/pipes/truncate.pipe'
     IssuerPathPipe,
     ToUrlIPFSPipe,
     TruncatePipe,
+    UnescapePipe
   ],
   bootstrap: [AppComponent],
 })

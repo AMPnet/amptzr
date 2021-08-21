@@ -11,7 +11,7 @@ import {ProfileService} from '../profile/profile.service'
 import {RouterService} from '../shared/services/router.service'
 import {DialogService} from '../shared/services/dialog.service'
 import {SessionQuery} from '../session/state/session.query'
-import {LinkPreviewResponse, LinkPreviewService} from "../shared/services/backend/link-preview.service"
+import {LinkPreviewResponse, LinkPreviewService} from '../shared/services/backend/link-preview.service'
 
 @Component({
   selector: 'app-offer',
