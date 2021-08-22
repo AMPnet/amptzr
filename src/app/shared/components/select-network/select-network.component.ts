@@ -4,7 +4,6 @@ import {environment} from '../../../../environments/environment'
 import {PreferenceQuery} from '../../../preference/state/preference.query'
 import {PreferenceStore} from '../../../preference/state/preference.store'
 
-
 /**
  * Only this component should be used for changing the networks.
  */

@@ -70,6 +70,7 @@ import {UnescapePipe} from './shared/pipes/unescape.pipe'
 import {AppQuillModule} from './shared/modules/app-quill.module'
 import {SelectNetworkComponent} from './shared/components/select-network/select-network.component'
 import {HomeComponent} from './home/home.component'
+import {combineLatest} from 'rxjs'
 
 @NgModule({
   declarations: [
@@ -153,7 +154,7 @@ import {HomeComponent} from './home/home.component'
     {
       provide: APP_INITIALIZER,
       useFactory: (pref: PreferenceService) =>
-        () => pref.initSigner().toPromise(),
+        () => combineLatest([pref.initSigner(), pref.checkFixedConfig()]),
       multi: true,
       deps: [PreferenceService],
     },
