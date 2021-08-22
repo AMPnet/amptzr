@@ -6,32 +6,34 @@
       Select issuer:
     </div>
 
-    <ng-container *ngIf="address$ | async as address">
-      <ng-container *ngIf="issuersRes.value as issuers">
-        <div class="flex flex-wrap gap-1 mt-2" *ngIf="issuers.length > 0">
-          <ng-container *ngFor="let issuer of issuers">
-            <a [routerLink]="" (click)="openIssuer(issuer)">
-              <div class="p-2 min-w-[10rem] min-h-[10rem] bg-blue-400 rounded-lg">
+    <ng-container *ngIf="issuersRes.value as issuers">
+      <div class="flex flex-wrap items-stretch gap-1 mt-2" *ngIf="issuers.length > 0">
+        <ng-container *ngFor="let issuer of issuers">
+          <a [routerLink]="" (click)="openIssuer(issuer)">
+            <div class="flex flex-col p-2 w-48 h-full bg-indigo-400 rounded-lg">
+              <div>
                 <span>{{ issuer.name ?? 'Unknown' }}</span>
-                <img class="max-w-[10rem] max-h-20" *ngIf="issuer.logo"
+              </div>
+              <div class="h-32 p-2">
+                <img class="w-full h-full object-contain" *ngIf="issuer.logo"
                      src="{{ issuer.logo | toUrlIPFS }}" alt="Issuer logo">
               </div>
-            </a>
-          </ng-container>
-        </div>
-        <div *ngIf="issuers.length === 0">
-          No issuers
-        </div>
-      </ng-container>
+            </div>
+          </a>
+        </ng-container>
+      </div>
+      <div *ngIf="issuers.length === 0">
+        No issuers
+      </div>
+    </ng-container>
 
-      <ng-container *ngIf="issuersRes.error">
-        Cannot fetch issuers.
-        <div hidden>{{ issuersRes.error | json }}</div>
-      </ng-container>
+    <ng-container *ngIf="issuersRes.error">
+      Cannot fetch issuers.
+      <div hidden>{{ issuersRes.error | json }}</div>
+    </ng-container>
 
-      <ng-container *ngIf="issuersRes.loading">
-        <app-spinner type="overlay">Loading issuers...</app-spinner>
-      </ng-container>
+    <ng-container *ngIf="issuersRes.loading">
+      <app-spinner type="overlay">Loading issuers...</app-spinner>
     </ng-container>
   </div>
 </div>
