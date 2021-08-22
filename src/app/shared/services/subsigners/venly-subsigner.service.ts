@@ -6,6 +6,7 @@ import {Subsigner, SubsignerLoginOpts} from './metamask-subsigner.service'
 import {ArkaneConnect, AuthenticationResult} from '@arkane-network/arkane-connect/dist/src/connect/connect'
 import {AuthProvider, PreferenceStore} from '../../../preference/state/preference.store'
 import {VenlyNetworks} from '../../networks'
+import {environment} from '../../../../environments/environment'
 
 @Injectable({
   providedIn: 'root',
@@ -31,7 +32,7 @@ export class VenlySubsignerService implements Subsigner {
       concatMap(lib => {
         const network = VenlyNetworks[this.preferenceStore.getValue().chainID]
         return from(lib.Arkane.createArkaneProviderEngine({
-          clientId: 'AMPnet', // TODO: extract env variable
+          clientId: environment.arkane.clientID,
           skipAuthentication: true,
           secretType: network.secretType,
           environment: network.env,

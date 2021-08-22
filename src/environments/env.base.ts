@@ -1,7 +1,9 @@
 import {PostBuildEnv, PreBuildEnv} from '../../types/env'
+import {getClientByHostname} from '../app/shared/hostnames'
 
 const preBuildEnv = process.env as unknown as PreBuildEnv
 const postBuildEnv = (window as any).env as PostBuildEnv
+
 export const environment = {
   production: false,
   commitHash: preBuildEnv.COMMIT_HASH,
@@ -16,7 +18,8 @@ export const environment = {
   },
   backendURL: postBuildEnv?.BACKEND_URL || 'https://eth-staging.ampnet.io',
   fixed: {
-    chainID: postBuildEnv?.FIXED_CHAIN_ID,
-    issuer: postBuildEnv?.FIXED_ISSUER,
+    chainID: getClientByHostname()?.network.chainID ||
+      (postBuildEnv?.FIXED_CHAIN_ID ? Number(postBuildEnv?.FIXED_CHAIN_ID) : undefined),
+    issuer: getClientByHostname()?.issuerAddress || (postBuildEnv?.FIXED_ISSUER ?? undefined),
   },
 }

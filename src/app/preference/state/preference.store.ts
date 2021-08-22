@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core'
 import {Store, StoreConfig} from '@datorama/akita'
-import {ChainID, MumbaiNetwork, Networks} from '../../shared/networks'
+import {ChainID, MaticNetwork, Networks} from '../../shared/networks'
 import {environment} from '../../../environments/environment'
 
 export interface PreferenceState {
@@ -22,9 +22,9 @@ export function createInitialState(): PreferenceState {
     authProvider: '',
     JWTAccessToken: '',
     JWTRefreshToken: '',
-    chainID: Networks[<ChainID>Number(environment.fixed?.chainID)]?.chainID || MumbaiNetwork.chainID,
+    chainID: environment.fixed.chainID || MaticNetwork.chainID,
     issuer: {
-      address: environment.fixed.issuer || MumbaiNetwork.tokenizerConfig.defaultIssuer,
+      address: environment.fixed.issuer || MaticNetwork.tokenizerConfig.defaultIssuer,
     },
   }
 }

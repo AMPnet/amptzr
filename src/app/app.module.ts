@@ -68,6 +68,9 @@ import {DepositFlowComponent} from './deposit/deposit-flow/deposit-flow.componen
 import {TruncatePipe} from './shared/pipes/truncate.pipe'
 import {UnescapePipe} from './shared/pipes/unescape.pipe'
 import {AppQuillModule} from './shared/modules/app-quill.module'
+import {SelectNetworkComponent} from './shared/components/select-network/select-network.component'
+import {HomeComponent} from './home/home.component'
+import {combineLatest} from 'rxjs'
 
 @NgModule({
   declarations: [
@@ -124,6 +127,8 @@ import {AppQuillModule} from './shared/modules/app-quill.module'
     DepositFlowComponent,
     TruncatePipe,
     UnescapePipe,
+    SelectNetworkComponent,
+    HomeComponent,
   ],
   imports: [
     BrowserModule,
@@ -149,7 +154,7 @@ import {AppQuillModule} from './shared/modules/app-quill.module'
     {
       provide: APP_INITIALIZER,
       useFactory: (pref: PreferenceService) =>
-        () => pref.initSigner().toPromise(),
+        () => combineLatest([pref.initSigner(), pref.checkFixedConfig()]),
       multi: true,
       deps: [PreferenceService],
     },
