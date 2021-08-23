@@ -42,7 +42,8 @@
 
               <ng-container *ngIf="(offer.description | toTextIPFS | async) as descriptionRes">
                 <div *ngIf="descriptionRes.value as description" class="mt-4 font-light text-gray-700">
-                  <quill-view [content]="description" format="html"></quill-view>
+                  <quill-view [content]="description" format="html" (onEditorCreated)="quillMods($event)">
+                  </quill-view>
                 </div>
 
                 <ng-container *ngIf="descriptionRes.error">

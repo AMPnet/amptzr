@@ -9,6 +9,7 @@ import {SignerService} from '../../shared/services/signer.service'
 import {DialogService} from '../../shared/services/dialog.service'
 import {switchMap, tap} from 'rxjs/operators'
 import {CampaignService, CampaignWithInfo} from '../../shared/services/blockchain/campaign.service'
+import {quillMods} from '../../shared/utils/quill'
 
 @Component({
   selector: 'app-campaign-edit',
@@ -24,6 +25,8 @@ export class CampaignEditComponent {
 
   updateForm: FormGroup
   newsUrls: FormArray
+
+  quillMods = quillMods
 
   constructor(private route: ActivatedRoute,
               private campaignService: CampaignService,
@@ -67,7 +70,7 @@ export class CampaignEditComponent {
           })
           this.newsUrls.clear()
           asset.value.newsURLs.forEach(url =>
-            this.newsUrls.push(this.fb.control(url, [Validators.required]))
+            this.newsUrls.push(this.fb.control(url, [Validators.required])),
           )
         }
       }),

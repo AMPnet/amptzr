@@ -29,7 +29,6 @@ import {NetworkGuard} from './shared/guards/network.guard'
 import {AppComponent} from './app.component'
 import {HomeComponent} from './home/home.component'
 
-
 const appRoutes: Routes = [
   {
     path: '', component: AppComponent, canActivate: [IssuerGuard], children: [
