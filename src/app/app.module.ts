@@ -1,5 +1,6 @@
 import {BrowserModule} from '@angular/platform-browser'
 import {APP_INITIALIZER, NgModule} from '@angular/core'
+import {combineLatest} from 'rxjs'
 
 import {AppRoutingModule} from './app-routing.module'
 import {AppComponent} from './app.component'
@@ -70,7 +71,7 @@ import {UnescapePipe} from './shared/pipes/unescape.pipe'
 import {AppQuillModule} from './shared/modules/app-quill.module'
 import {SelectNetworkComponent} from './shared/components/select-network/select-network.component'
 import {HomeComponent} from './home/home.component'
-import {combineLatest} from 'rxjs'
+import {GoogleTranslateComponent} from './shared/components/google-translate/google-translate.component'
 
 @NgModule({
   declarations: [
@@ -129,6 +130,7 @@ import {combineLatest} from 'rxjs'
     UnescapePipe,
     SelectNetworkComponent,
     HomeComponent,
+    GoogleTranslateComponent,
   ],
   imports: [
     BrowserModule,

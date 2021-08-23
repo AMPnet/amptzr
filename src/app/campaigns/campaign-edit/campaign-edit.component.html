@@ -25,6 +25,7 @@
         <div class="mt-2">
           <label class="block" for="description">Description</label>
           <quill-editor id="description" formControlName="description"
+                        (onEditorCreated)="quillMods($event)"
                         (onContentChanged)="markDescriptionAsDirty()">
           </quill-editor>
         </div>

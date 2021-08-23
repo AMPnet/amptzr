@@ -56,7 +56,8 @@
 
       <!-- Navigation links -->
       <button *ngFor="let navbarItem of navbarScreenLinks" (click)="toggleDropdown()"
-              class="pt-8 pb-4 text-gray-700 text-3xl text-left whitespace-nowrap border-b-8 border-transparent font-semibold"
+              class="pt-8 pb-4 text-gray-700 text-3xl text-left whitespace-nowrap
+              border-b-8 border-transparent font-semibold"
               [routerLink]="navbarItem.routerLink | issuerPath"
               routerLinkActive="!text-indigo-800 !border-indigo-800">
         {{ navbarItem.title }}

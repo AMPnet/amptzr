@@ -12,6 +12,7 @@ import {RouterService} from '../shared/services/router.service'
 import {DialogService} from '../shared/services/dialog.service'
 import {SessionQuery} from '../session/state/session.query'
 import {LinkPreviewResponse, LinkPreviewService} from '../shared/services/backend/link-preview.service'
+import {quillMods} from '../shared/utils/quill'
 
 @Component({
   selector: 'app-offer',
@@ -26,6 +27,8 @@ export class OfferComponent {
   address$ = this.sessionQuery.address$.pipe(
     map(value => ({value: value})),
   )
+
+  quillMods = quillMods
 
   constructor(private campaignService: CampaignService,
               private metaService: MetaService,
