@@ -30,7 +30,7 @@ import {QuillModule} from 'ngx-quill'
           [{'script': 'sub'}, {'script': 'super'}],
           [{'indent': '-1'}, {'indent': '+1'}],
           [{'direction': 'rtl'}],
-          [{'size': ['small', false, 'large', 'huge']}], // disable font size changes
+          // [{'size': ['small', false, 'large', 'huge']}], // disable font size changes
           [{'header': [1, 2, false]}],
           // [{'color': []}, {'background': []}], // disable color and background changes
           // [{'font': ['']}], // disable font style changes
