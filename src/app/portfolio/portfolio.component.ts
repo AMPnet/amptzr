@@ -1,9 +1,9 @@
 import {ChangeDetectionStrategy, Component} from '@angular/core'
-import {WithStatus, withStatus} from '../shared/utils/observables'
+import {withStatus} from '../shared/utils/observables'
 import {SessionQuery} from '../session/state/session.query'
 import {QueryService} from '../shared/services/blockchain/query.service'
-import {map, switchMap, tap} from 'rxjs/operators'
-import {BehaviorSubject, Observable, of} from 'rxjs'
+import {map, shareReplay, switchMap, tap} from 'rxjs/operators'
+import {BehaviorSubject, Observable} from 'rxjs'
 import {formatEther} from 'ethers/lib/utils'
 import {CampaignService} from '../shared/services/blockchain/campaign.service'
 import {DialogService} from '../shared/services/dialog.service'
@@ -19,15 +19,14 @@ export class PortfolioComponent {
 
   portfolio$ = this.portfolioSub.asObservable().pipe(
     switchMap(() => this.queryService.portfolio$),
+    shareReplay({bufferSize: 1, refCount: true}),
   )
   portfolioWithStatus$ = withStatus(this.portfolio$)
 
   totalInvested$: Observable<{ value: number }> = this.portfolio$.pipe(
-    switchMap(portfolio => of(portfolio).pipe(
-      map(p => p.length > 0 ?
-        p.map(item => Number(formatEther(item.tokenValue))).reduce((prev, curr) => prev + curr) : 0),
-      map(v => ({value: v})),
-    ),),
+    map(portfolio => portfolio.length > 0 ?
+      portfolio.map(item => Number(formatEther(item.tokenValue))).reduce((prev, curr) => prev + curr) : 0),
+    map(v => ({value: v})),
   )
 
   constructor(private sessionQuery: SessionQuery,
