@@ -135,12 +135,7 @@
                 <span class="hidden lg:inline">-></span>
                 <span class="text-3xl lg:ml-2 mt-2 lg:mt-auto uppercase">{{ campaign.name }}</span>
               </div>
-              <div class="mt-4 rounded-full px-4 py-2 bg-gray-100 flex items-center">
-                <span class="font-semibold">
-                  {{ campaign.return?.from | percent }} - {{ campaign.return?.to | percent }}
-                </span>
-                <span class="text-sm ml-2">Expected return on investment</span>
-              </div>
+              <app-offer-investment-info [offer]="campaign" display="return-only"></app-offer-investment-info>
               <div class="mt-4 text-gray-500">{{ campaign.about }}</div>
               <div class="w-full flex justify-end mt-8 mb-4">
                 <button (click)="backToEdit()" class="rounded-full lg:px-16 py-2 text-sm font-semibold">

@@ -10,7 +10,7 @@ import {PercentPipe} from "@angular/common"
 })
 export class OfferInvestmentInfoComponent {
 
-  @Input() display: 'narrow' | 'wide' = 'narrow'
+  @Input() display: 'narrow' | 'wide' | 'return-only' = 'narrow'
   @Input() offer!: CampaignWithInfo
 
   constructor(private percentPipe: PercentPipe,) {
