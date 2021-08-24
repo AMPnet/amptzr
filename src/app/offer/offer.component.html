@@ -67,7 +67,9 @@
               </div>
 
               <button app-action-button
-                      *ngIf="!offer.finalized && offer.totalFundsRaised >= offer.softCap && offer.owner === address.value"
+                      *ngIf="!offer.cancelled && !offer.finalized &&
+                              offer.totalFundsRaised.gte(offer.softCap) &&
+                              offer.owner === address.value"
                       [onClick]="finalize(offer.contractAddress).bind(this)"
                       text="Finalize"
                       class="w-full py-2 mt-2 shadow-xl rounded-full bg-green-600 text-white disabled:bg-gray-400">
