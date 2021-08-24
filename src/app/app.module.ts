@@ -72,6 +72,7 @@ import {AppQuillModule} from './shared/modules/app-quill.module'
 import {SelectNetworkComponent} from './shared/components/select-network/select-network.component'
 import {HomeComponent} from './home/home.component'
 import {GoogleTranslateComponent} from './shared/components/google-translate/google-translate.component'
+import {PercentageMaskDirective} from './shared/directives/percentage-mask.directive'
 
 @NgModule({
   declarations: [
@@ -131,6 +132,7 @@ import {GoogleTranslateComponent} from './shared/components/google-translate/goo
     SelectNetworkComponent,
     HomeComponent,
     GoogleTranslateComponent,
+    PercentageMaskDirective,
   ],
   imports: [
     BrowserModule,

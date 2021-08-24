@@ -51,14 +51,14 @@
 
           <fieldset class="contents" [disabled]="isCampaignReturnValueDisabled()">
             <label class="pr-2">From:</label>
-            <input class="disabled:bg-gray-200 disabled:cursor-not-allowed"
-                   id="returnFrom" type="number" min="0" formControlName="returnFrom">
+            <input class="disabled:bg-gray-200 disabled:cursor-not-allowed" appPercentageMask
+                   id="returnFrom" type="text" formControlName="returnFrom">
           </fieldset>
 
           <fieldset class="contents" [disabled]="isCampaignReturnValueDisabled() || isCampaignReturnValueFixed()">
             <label class="px-2">to:</label>
-            <input class="disabled:bg-gray-200 disabled:cursor-not-allowed"
-                   id="returnTo" type="number" [min]="updateForm.value.returnFrom" formControlName="returnTo">
+            <input class="disabled:bg-gray-200 disabled:cursor-not-allowed" appPercentageMask
+                   id="returnTo" type="text" formControlName="returnTo">
           </fieldset>
 
           <label class="px-2">Fixed:</label>
