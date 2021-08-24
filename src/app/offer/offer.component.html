@@ -10,24 +10,7 @@
             <div class="bg-white shadow-xl p-6 lg:h-10 lg:rounded-full
                             absolute lg:bottom-8 -bottom-11 left-4 lg:left-12 flex flex-col lg:flex-row lg:items-center
                             rounded-t-xl rounded-b-xl">
-              <div>
-              <span class="font-bold lg:text-lg">
-                {{ offer.return?.from | percent }} - {{ offer.return?.to | percent }}
-              </span>
-                <span class="ml-2 font-light text-sm">Annual interest rate</span>
-              </div>
-              <div class="mt-2 lg:mt-0">
-              <span class="lg:ml-6 font-bold lg:text-lg">
-                {{ offer.minInvestment | formatUnit:'bignumToWei' | currencyDefault }}
-              </span>
-                <span class="ml-2 font-light text-sm">Min investment</span>
-              </div>
-              <div class="mt-2 lg:mt-0">
-              <span class="lg:ml-6 font-bold lg:text-lg">
-                {{ offer.maxInvestment | formatUnit:'bignumToWei' | currencyDefault }}
-              </span>
-                <span class="ml-2 font-light text-sm">Max investment</span>
-              </div>
+              <app-offer-investment-info [offer]="offer" display="wide"></app-offer-investment-info>
             </div>
           </div>
           <div class="w-full h-full bg-white flex lg:flex-row gap-8 flex-col pt-8 lg:pl-14 px-4">

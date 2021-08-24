@@ -1,0 +1,22 @@
+<div class="flex flex-col lg:flex-row text-sm flex-row lg:gap-8">
+  <div *ngIf="hasReturnRate()">
+    <span class="font-bold lg:text-lg">{{ returnRateRange() }}</span>
+    <span class="ml-2 font-light" [class.text-sm]="display === 'wide'">
+      {{ returnRateFrequency() | titlecase }} interest rate
+    </span>
+  </div>
+
+  <div class="mt-1 lg:mt-auto">
+    <span class="font-bold lg:text-lg">
+      {{ offer.minInvestment | formatUnit:'bignumToWei' | currencyDefault }}
+    </span>
+    <span class="ml-2 font-light" [class.text-sm]="display === 'wide'">Minimum investment</span>
+  </div>
+
+  <div class="mt-1 lg:mt-auto" *ngIf="display === 'wide'">
+    <span class="font-bold lg:text-lg">
+      {{ offer.maxInvestment | formatUnit:'bignumToWei' | currencyDefault }}
+    </span>
+    <span class="ml-2 font-light text-sm">Max investment</span>
+  </div>
+</div>

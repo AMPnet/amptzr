@@ -29,7 +29,7 @@ import {UnwrapStatusPipe} from './shared/pipes/unwrap-status.pipe'
 import {OfferComponent} from './offer/offer.component'
 import {DepositComponent} from './deposit/deposit.component'
 import {InvestComponent} from './invest/invest.component'
-import {CurrencyPipe} from '@angular/common'
+import {CurrencyPipe, PercentPipe} from '@angular/common'
 import {CurrencyDefaultPipe} from './shared/pipes/currency-default.pipe'
 import {AuthComponent} from './auth/auth.component'
 import {HttpClientModule} from '@angular/common/http'
@@ -73,6 +73,7 @@ import {SelectNetworkComponent} from './shared/components/select-network/select-
 import {HomeComponent} from './home/home.component'
 import {GoogleTranslateComponent} from './shared/components/google-translate/google-translate.component'
 import {PercentageMaskDirective} from './shared/directives/percentage-mask.directive'
+import {OfferInvestmentInfoComponent} from './offer-investment-info/offer-investment-info.component'
 
 @NgModule({
   declarations: [
@@ -133,6 +134,7 @@ import {PercentageMaskDirective} from './shared/directives/percentage-mask.direc
     HomeComponent,
     GoogleTranslateComponent,
     PercentageMaskDirective,
+    OfferInvestmentInfoComponent,
   ],
   imports: [
     BrowserModule,
@@ -171,6 +173,7 @@ import {PercentageMaskDirective} from './shared/directives/percentage-mask.direc
     ToUrlIPFSPipe,
     TruncatePipe,
     UnescapePipe,
+    PercentPipe,
   ],
   bootstrap: [AppComponent],
 })
