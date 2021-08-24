@@ -20,6 +20,7 @@ export interface IPFSCampaign {
   startDate: iso8601
   endDate: iso8601
   return: {
+    frequency?: ReturnFrequency,
     from?: number,
     to?: number,
   }
@@ -35,3 +36,8 @@ export interface IPFSDocument {
   name: string,
   location: string | cid
 }
+
+// Since enums are not supported in .d.ts files, this is a hack to give ourselves a list of enum values as well as the
+// type union of all its values
+export type ReturnFrequencies = readonly ['monthly', 'quarterly', 'semi-annual', 'annual']
+export type ReturnFrequency = ReturnFrequencies[number]

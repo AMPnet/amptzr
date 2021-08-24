@@ -39,6 +39,33 @@
         </div>
 
         <div class="mt-2">
+          <label class="block">Return frequency</label>
+          <select id="returnFrequency" formControlName="returnFrequency">
+            <option value="">-- None --</option>
+            <option *ngFor="let item of ReturnFrequencies" value="{{ item }}">{{ item | titlecase }}</option>
+          </select>
+        </div>
+
+        <div class="mt-2">
+          <label class="block">Return value</label>
+
+          <fieldset class="contents" [disabled]="isCampaignReturnValueDisabled()">
+            <label class="pr-2">From:</label>
+            <input class="disabled:bg-gray-200 disabled:cursor-not-allowed"
+                   id="returnFrom" type="number" min="0" formControlName="returnFrom">
+          </fieldset>
+
+          <fieldset class="contents" [disabled]="isCampaignReturnValueDisabled() || isCampaignReturnValueFixed()">
+            <label class="px-2">to:</label>
+            <input class="disabled:bg-gray-200 disabled:cursor-not-allowed"
+                   id="returnTo" type="number" [min]="updateForm.value.returnFrom" formControlName="returnTo">
+          </fieldset>
+
+          <label class="px-2">Fixed:</label>
+          <input id="returnFixed" type="checkbox" formControlName="returnFixed">
+        </div>
+
+        <div class="mt-2">
           <label class="block">Documents</label>
           <div *ngFor="let document of updateForm.value.documents; let i = index">
             {{ document.name }}
