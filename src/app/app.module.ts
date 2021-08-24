@@ -29,7 +29,7 @@ import {UnwrapStatusPipe} from './shared/pipes/unwrap-status.pipe'
 import {OfferComponent} from './offer/offer.component'
 import {DepositComponent} from './deposit/deposit.component'
 import {InvestComponent} from './invest/invest.component'
-import {CurrencyPipe, PercentPipe} from '@angular/common'
+import {CurrencyPipe, DatePipe, PercentPipe} from '@angular/common'
 import {CurrencyDefaultPipe} from './shared/pipes/currency-default.pipe'
 import {AuthComponent} from './auth/auth.component'
 import {HttpClientModule} from '@angular/common/http'
@@ -174,6 +174,7 @@ import {OfferInvestmentInfoComponent} from './offer-investment-info/offer-invest
     TruncatePipe,
     UnescapePipe,
     PercentPipe,
+    DatePipe,
   ],
   bootstrap: [AppComponent],
 })
