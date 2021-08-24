@@ -48,7 +48,7 @@ export class FundingProgressComponent implements OnInit {
       return `Until ${this.formatDate(this.campaign.endDate)}`
     }
 
-    return ""
+    return ''
   }
 
   private formatDate(value?: string): string | null {

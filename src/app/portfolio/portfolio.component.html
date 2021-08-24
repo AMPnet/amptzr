@@ -47,7 +47,9 @@
                 </div>
               </div>
               <div class="text-3xl mt-4 lg:text-4xl tracking-wider font-light uppercase">
-                <a routerLink="{{ '/offers/' + item.campaign.ansName | issuerPath }}">{{ item.campaign.name }}</a>
+                <a routerLink="{{ '/offers/' + item.campaign.ansName | issuerPath }}">
+                  {{ item.campaign.name }}
+                </a>
               </div>
               <div class="mt-2 flex flex-col lg:flex-row justify-start lg:justify-between">
                 <div class="w-full lg:mr-16">

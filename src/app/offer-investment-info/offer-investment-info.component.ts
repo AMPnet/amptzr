@@ -9,7 +9,6 @@ import {PercentPipe} from "@angular/common"
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class OfferInvestmentInfoComponent {
-
   @Input() display: 'narrow' | 'wide' | 'return-only' = 'narrow'
   @Input() offer!: CampaignWithInfo
 
