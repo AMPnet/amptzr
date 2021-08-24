@@ -19,9 +19,9 @@ export class OfferInvestmentInfoComponent {
     return !!this.offer.return.from
   }
 
-  returnRateRange(): string | null {
+  returnRateRange(): string {
     if (this.offer.return.from === this.offer.return.to || !this.offer.return.to) {
-      return this.percentPipe.transform(this.offer.return.from)
+      return this.percentPipe.transform(this.offer.return.from) || ''
     }
 
     return `${this.percentPipe.transform(this.offer.return.from)} - ${this.percentPipe.transform(this.offer.return.to)}`
