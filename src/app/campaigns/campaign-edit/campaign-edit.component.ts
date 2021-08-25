@@ -10,6 +10,7 @@ import {DialogService} from '../../shared/services/dialog.service'
 import {switchMap, tap} from 'rxjs/operators'
 import {CampaignService, CampaignWithInfo} from '../../shared/services/blockchain/campaign.service'
 import {quillMods} from '../../shared/utils/quill'
+import {ReturnFrequencies, ReturnFrequency} from '../../../../types/ipfs/campaign'
 
 @Component({
   selector: 'app-campaign-edit',
@@ -27,6 +28,7 @@ export class CampaignEditComponent {
   newsUrls: FormArray
 
   quillMods = quillMods
+  readonly ReturnFrequencies: ReturnFrequencies = ['monthly', 'quarterly', 'semi-annual', 'annual']
 
   constructor(private route: ActivatedRoute,
               private campaignService: CampaignService,
@@ -40,6 +42,10 @@ export class CampaignEditComponent {
       photo: [undefined],
       about: [''],
       description: [''],
+      returnFrequency: [''],
+      returnFrom: [0],
+      returnTo: [0],
+      returnFixed: [true],
       startDate: ['', Validators.required],
       endDate: ['', Validators.required],
       documents: [undefined],
@@ -57,12 +63,20 @@ export class CampaignEditComponent {
       ),
       tap(asset => {
         if (asset.value) {
+          const sameReturnRange = asset.value.return.from === asset.value.return.to
+          const noReturnToValue = !asset.value.return.to
+          const noReturnFromValue = !asset.value.return.from
+
           this.updateForm.reset()
           this.updateForm.setValue({
             ...this.updateForm.value,
             name: asset.value.name || '',
             about: asset.value.about || '',
             description: asset.value.description || '',
+            returnFrequency: asset.value.return.frequency || '',
+            returnFrom: asset.value.return.from || 0,
+            returnTo: asset.value.return.to || 0,
+            returnFixed: sameReturnRange || noReturnToValue || noReturnFromValue,
             startDate: asset.value.startDate.split('T')[0],
             endDate: asset.value.endDate.split('T')[0],
             documents: asset.value.documents,
@@ -89,10 +103,7 @@ export class CampaignEditComponent {
           endDate: new Date(this.updateForm.value.endDate).toISOString(),
           documents: this.updateForm.value.documents,
           newDocuments: this.updateForm.value.newDocuments,
-          return: {
-            from: this.updateForm.value.returnFrom,
-            to: this.updateForm.value.returnTo,
-          },
+          return: this.createCampaignReturnObject(),
           newsURLs: this.newsUrls.value,
         },
         campaign,
@@ -105,8 +116,35 @@ export class CampaignEditComponent {
     }
   }
 
+  private createCampaignReturnObject(): { frequency?: ReturnFrequency, from?: number, to?: number } {
+    if (!this.updateForm.value.returnFrequency) {
+      return {}
+    }
+
+    if (this.updateForm.value.returnFixed) {
+      return {
+        frequency: this.updateForm.value.returnFrequency,
+        from: this.updateForm.value.returnFrom,
+      }
+    }
+
+    return {
+      frequency: this.updateForm.value.returnFrequency,
+      from: this.updateForm.value.returnFrom,
+      to: this.updateForm.value.returnTo,
+    }
+  }
+
   markDescriptionAsDirty() {
     this.updateForm.get('description')?.markAsDirty()
+  }
+
+  get isCampaignReturnValueDisabled() {
+    return !this.updateForm.get('returnFrequency')?.value
+  }
+
+  get isCampaignReturnValueFixed() {
+    return this.updateForm.get('returnFixed')?.value
   }
 
   removeDocument(index: number) {

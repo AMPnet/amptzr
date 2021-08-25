@@ -3,13 +3,15 @@
 
   <ng-container *ngIf="issuer$ | async as issuerRes">
     <!-- Navbar -->
-    <div class=" px-4 flex w-full h-16 sticky max-w-6xl lg:h-20"
+    <div class="w-full h-16 px-4 flex justify-between sticky max-w-6xl lg:h-20"
          [class]="(isDropdownOpen$ | async) ? 'fixed' : ''">
 
       <!-- Logo -->
-      <div class="flex-1 py-2">
+      <div class="py-2">
         <ng-container *ngIf="issuerRes.value as issuer">
-          <img class="h-full pl-4 py-1 object-contain" src="{{ issuer.logo | toUrlIPFS }}" alt="Logo">
+          <a [routerLink]="'/offers' | issuerPath">
+            <img class="h-full pl-4 py-1 object-contain" src="{{ issuer.logo | toUrlIPFS }}" alt="Logo">
+          </a>
         </ng-container>
       </div>
 

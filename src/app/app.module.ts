@@ -29,7 +29,7 @@ import {UnwrapStatusPipe} from './shared/pipes/unwrap-status.pipe'
 import {OfferComponent} from './offer/offer.component'
 import {DepositComponent} from './deposit/deposit.component'
 import {InvestComponent} from './invest/invest.component'
-import {CurrencyPipe} from '@angular/common'
+import {CurrencyPipe, DatePipe, PercentPipe} from '@angular/common'
 import {CurrencyDefaultPipe} from './shared/pipes/currency-default.pipe'
 import {AuthComponent} from './auth/auth.component'
 import {HttpClientModule} from '@angular/common/http'
@@ -72,6 +72,8 @@ import {AppQuillModule} from './shared/modules/app-quill.module'
 import {SelectNetworkComponent} from './shared/components/select-network/select-network.component'
 import {HomeComponent} from './home/home.component'
 import {GoogleTranslateComponent} from './shared/components/google-translate/google-translate.component'
+import {PercentageMaskDirective} from './shared/directives/percentage-mask.directive'
+import {OfferInvestmentInfoComponent} from './offer-investment-info/offer-investment-info.component'
 
 @NgModule({
   declarations: [
@@ -131,6 +133,8 @@ import {GoogleTranslateComponent} from './shared/components/google-translate/goo
     SelectNetworkComponent,
     HomeComponent,
     GoogleTranslateComponent,
+    PercentageMaskDirective,
+    OfferInvestmentInfoComponent,
   ],
   imports: [
     BrowserModule,
@@ -169,6 +173,8 @@ import {GoogleTranslateComponent} from './shared/components/google-translate/goo
     ToUrlIPFSPipe,
     TruncatePipe,
     UnescapePipe,
+    PercentPipe,
+    DatePipe,
   ],
   bootstrap: [AppComponent],
 })

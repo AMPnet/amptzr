@@ -1,0 +1,39 @@
+<ng-container *ngIf="display === 'wide' || display === 'narrow'">
+  <ng-container *ngTemplateOutlet="fullInfo"></ng-container>
+</ng-container>
+
+<ng-container *ngIf="display === 'return-only'">
+  <ng-container *ngTemplateOutlet="returnOnly"></ng-container>
+</ng-container>
+
+<ng-template #fullInfo>
+  <div class="flex flex-col lg:flex-row text-sm flex-row lg:gap-8">
+    <div *ngIf="hasReturnRate()">
+      <span class="font-bold lg:text-lg">{{ returnRateRange() }}</span>
+      <span class="ml-2 font-light" [class.text-sm]="display === 'wide'">
+        {{ returnRateFrequency() | titlecase }} interest rate
+      </span>
+    </div>
+
+    <div class="mt-1 lg:mt-auto">
+      <span class="font-bold lg:text-lg">
+        {{ offer.minInvestment | formatUnit:'bignumToWei' | currencyDefault }}
+      </span>
+      <span class="ml-2 font-light" [class.text-sm]="display === 'wide'">Minimum investment</span>
+    </div>
+
+    <div class="mt-1 lg:mt-auto" *ngIf="display === 'wide'">
+      <span class="font-bold lg:text-lg">
+        {{ offer.maxInvestment | formatUnit:'bignumToWei' | currencyDefault }}
+      </span>
+      <span class="ml-2 font-light text-sm">Max investment</span>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #returnOnly>
+  <div *ngIf="hasReturnRate()" class="mt-4 rounded-full px-4 py-2 bg-gray-100 flex items-center">
+    <span class="font-semibold">{{ returnRateRange() }}</span>
+    <span class="text-sm ml-2">Expected {{ returnRateFrequency() }} return on investment</span>
+  </div>
+</ng-template>

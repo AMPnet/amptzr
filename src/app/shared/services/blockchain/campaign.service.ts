@@ -15,7 +15,7 @@ import {IpfsService, IPFSText} from '../ipfs/ipfs.service'
 import {SignerService} from '../signer.service'
 import {findLog} from '../../utils/ethersjs'
 import {IPFSAddResult} from '../ipfs/ipfs.service.types'
-import {cid, IPFSCampaign, IPFSDocument, iso8601} from '../../../../../types/ipfs/campaign'
+import {cid, IPFSCampaign, IPFSDocument, iso8601, ReturnFrequency} from '../../../../../types/ipfs/campaign'
 import {ErrorService} from '../error.service'
 import {formatEther} from 'ethers/lib/utils'
 import {TokenPrice} from '../../utils/token-price'
@@ -269,6 +269,7 @@ interface UploadInfoData {
   startDate: iso8601
   endDate: iso8601
   return: {
+    frequency?: ReturnFrequency,
     from?: number
     to?: number
   },

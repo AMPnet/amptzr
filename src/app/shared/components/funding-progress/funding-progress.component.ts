@@ -1,5 +1,6 @@
 import {ChangeDetectionStrategy, Component, Input, OnInit} from "@angular/core"
 import {CampaignService, CampaignWithInfo} from '../../services/blockchain/campaign.service'
+import {DatePipe} from '@angular/common'
 
 @Component({
   selector: 'app-funding-progress',
@@ -12,7 +13,8 @@ export class FundingProgressComponent implements OnInit {
 
   progressData: ProgressData | undefined
 
-  constructor(private campaignService: CampaignService) {
+  constructor(private campaignService: CampaignService,
+              private datePipe: DatePipe,) {
   }
 
   ngOnInit() {
@@ -31,6 +33,26 @@ export class FundingProgressComponent implements OnInit {
       softCap: stats.softCap,
       softCapPercentage: softCapPercentage,
     }
+  }
+
+  dateRange() {
+    if (!!this.campaign.startDate && !!this.campaign.endDate) {
+      return `${this.formatDate(this.campaign.startDate)} - ${this.formatDate(this.campaign.endDate)}`
+    }
+
+    if (!!this.campaign.startDate) {
+      return `From ${this.formatDate(this.campaign.startDate)}`
+    }
+
+    if (!!this.campaign.endDate) {
+      return `Until ${this.formatDate(this.campaign.endDate)}`
+    }
+
+    return ''
+  }
+
+  private formatDate(value?: string): string | null {
+    return this.datePipe.transform(value, "mediumDate")
   }
 }
 
