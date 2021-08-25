@@ -1,6 +1,6 @@
 # Amptzr
 
-[![Staging](https://github.com/AMPnet/amptzr/actions/workflows/deploy-master.yaml/badge.svg)](https://github.com/AMPnet/amptzr/actions/workflows/deploy-master.yaml)
+[![ci](https://github.com/AMPnet/amptzr/actions/workflows/ci.yaml/badge.svg)](https://github.com/AMPnet/amptzr/actions/workflows/ci.yaml)
 
 The platform for tokenizing real–world assets – powered by blockchain.
 
