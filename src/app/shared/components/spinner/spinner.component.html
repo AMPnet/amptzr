@@ -35,15 +35,17 @@
 </ng-template>
 
 <ng-template #overlay>
-  <div class="flex justify-center mt-40 min-h-screen">
-    <div class="sk-folding-cube">
-      <div class="sk-cube1 sk-cube"></div>
-      <div class="sk-cube2 sk-cube"></div>
-      <div class="sk-cube4 sk-cube"></div>
-      <div class="sk-cube3 sk-cube"></div>
+  <div class="flex-col justify-center min-h-screen">
+    <div class="flex justify-center mt-40">
+      <div class="sk-folding-cube">
+        <div class="sk-cube1 sk-cube"></div>
+        <div class="sk-cube2 sk-cube"></div>
+        <div class="sk-cube4 sk-cube"></div>
+        <div class="sk-cube3 sk-cube"></div>
+      </div>
     </div>
-  </div>
-  <div class="flex justify-center font-semibold text-indigo-800 mt-10">
-    <ng-content></ng-content>
+    <div class="flex justify-center font-semibold text-indigo-800 mt-10">
+      <ng-content></ng-content>
+    </div>
   </div>
 </ng-template>
