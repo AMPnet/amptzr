@@ -49,13 +49,15 @@
         <div class="mt-2">
           <label class="block">Return value</label>
 
-          <fieldset class="contents" [disabled]="isCampaignReturnValueDisabled()">
-            <label class="pr-2">From:</label>
+          <fieldset class="contents" [disabled]="isCampaignReturnValueDisabled">
+            <label class="pr-2">
+              {{ isCampaignReturnValueDisabled || isCampaignReturnValueFixed ? "Rate:" : "From:" }}
+            </label>
             <input class="disabled:bg-gray-200 disabled:cursor-not-allowed" appPercentageMask
                    id="returnFrom" type="text" formControlName="returnFrom">
           </fieldset>
 
-          <fieldset class="contents" [disabled]="isCampaignReturnValueDisabled() || isCampaignReturnValueFixed()">
+          <fieldset class="contents" [class.hidden]="isCampaignReturnValueDisabled || isCampaignReturnValueFixed">
             <label class="px-2">to:</label>
             <input class="disabled:bg-gray-200 disabled:cursor-not-allowed" appPercentageMask
                    id="returnTo" type="text" formControlName="returnTo">

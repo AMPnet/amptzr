@@ -139,11 +139,11 @@ export class CampaignEditComponent {
     this.updateForm.get('description')?.markAsDirty()
   }
 
-  isCampaignReturnValueDisabled() {
+  get isCampaignReturnValueDisabled() {
     return !this.updateForm.get('returnFrequency')?.value
   }
 
-  isCampaignReturnValueFixed() {
+  get isCampaignReturnValueFixed() {
     return this.updateForm.get('returnFixed')?.value
   }
 
