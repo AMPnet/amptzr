@@ -99,7 +99,9 @@ export class InvestComponent {
       map(data => {
         const amount = control.value
 
-        if (data.userInvestGap === 0) {
+        if (data.min > data.max) {
+          return {campaignMaxReached: true}
+        } else if (data.userInvestGap === 0) {
           return {userMaxReached: true}
         } else if (data.max === 0) {
           return {campaignMaxReached: true}
