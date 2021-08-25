@@ -1,5 +1,13 @@
-name: Check PR
-on: pull_request
+name: ci
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
 
 jobs:
   build:
@@ -7,7 +15,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node-version: [ 12.x ]
+        node-version: [ 14.x ]
 
     steps:
       - uses: actions/checkout@v2
@@ -28,7 +36,7 @@ jobs:
         with:
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
-      - name: SSH modify config
+      - name: Set git config
         run: |
           git config --global url."https://".insteadOf ssh://
 
@@ -38,5 +46,5 @@ jobs:
       - name: Run linter
         run: npm run lint
 
-      - name: Generate production build
+      - name: Generate build
         run: npm run build
