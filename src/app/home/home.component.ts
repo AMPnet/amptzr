@@ -2,7 +2,7 @@ import {ChangeDetectionStrategy, Component} from '@angular/core'
 import {Observable} from 'rxjs'
 import {withStatus, WithStatus} from '../shared/utils/observables'
 import {IssuerService, IssuerWithInfo} from '../shared/services/blockchain/issuer.service'
-import {map, switchMap} from 'rxjs/operators'
+import {switchMap} from 'rxjs/operators'
 import {RouterService} from '../shared/services/router.service'
 import {SessionQuery} from '../session/state/session.query'
 

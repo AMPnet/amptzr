@@ -47,7 +47,7 @@ const appRoutes: Routes = [
       {path: 'dev_playground', component: DevPlaygroundComponent},
     ],
   },
-  {path: '**', redirectTo: 'offers'}
+  {path: '**', redirectTo: 'offers'},
 ]
 
 const issuerNamespace: Routes = !environment.fixed.issuer ? [{
@@ -77,7 +77,7 @@ const routes: Routes = [
   {
     path: '', component: AppLayoutComponent, children: networkNamespace,
   },
-  {path: '**', redirectTo: 'home'}
+  {path: '**', redirectTo: 'home'},
 ]
 
 @NgModule({

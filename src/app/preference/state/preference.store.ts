@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core'
 import {Store, StoreConfig} from '@datorama/akita'
-import {ChainID, MaticNetwork, Networks} from '../../shared/networks'
+import {ChainID, MaticNetwork} from '../../shared/networks'
 import {environment} from '../../../environments/environment'
 
 export interface PreferenceState {
