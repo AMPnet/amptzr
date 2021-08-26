@@ -74,6 +74,7 @@ import {HomeComponent} from './home/home.component'
 import {GoogleTranslateComponent} from './shared/components/google-translate/google-translate.component'
 import {PercentageMaskDirective} from './shared/directives/percentage-mask.directive'
 import {OfferInvestmentInfoComponent} from './offer-investment-info/offer-investment-info.component'
+import {TransactionTypeNamePipe} from './shared/pipes/transaction-type-name'
 
 @NgModule({
   declarations: [
@@ -135,6 +136,7 @@ import {OfferInvestmentInfoComponent} from './offer-investment-info/offer-invest
     GoogleTranslateComponent,
     PercentageMaskDirective,
     OfferInvestmentInfoComponent,
+    TransactionTypeNamePipe,
   ],
   imports: [
     BrowserModule,
