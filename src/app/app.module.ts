@@ -29,7 +29,7 @@ import {UnwrapStatusPipe} from './shared/pipes/unwrap-status.pipe'
 import {OfferComponent} from './offer/offer.component'
 import {DepositComponent} from './deposit/deposit.component'
 import {InvestComponent} from './invest/invest.component'
-import {CurrencyPipe, DatePipe, PercentPipe} from '@angular/common'
+import {CurrencyPipe, DatePipe, PercentPipe, ViewportScroller} from '@angular/common'
 import {CurrencyDefaultPipe} from './shared/pipes/currency-default.pipe'
 import {AuthComponent} from './auth/auth.component'
 import {HttpClientModule} from '@angular/common/http'
@@ -73,6 +73,8 @@ import {HomeComponent} from './home/home.component'
 import {GoogleTranslateComponent} from './shared/components/google-translate/google-translate.component'
 import {PercentageMaskDirective} from './shared/directives/percentage-mask.directive'
 import {OfferInvestmentInfoComponent} from './offer-investment-info/offer-investment-info.component'
+import {Router, Scroll} from '@angular/router'
+import {delay, filter} from 'rxjs/operators'
 
 @NgModule({
   declarations: [
@@ -178,4 +180,23 @@ import {OfferInvestmentInfoComponent} from './offer-investment-info/offer-invest
 })
 
 export class AppModule {
+  constructor(router: Router, viewportScroller: ViewportScroller) {
+    // Workaround for issue with scroll restoration
+    // https://github.com/angular/angular/issues/24547#issuecomment-503076245
+    router.events.pipe(
+      filter((e: any): e is Scroll => e instanceof Scroll),
+      delay(200),
+    ).subscribe(e => {
+      if (e.position) {
+        // backward navigation
+        viewportScroller.scrollToPosition(e.position)
+      } else if (e.anchor) {
+        // anchor navigation
+        viewportScroller.scrollToAnchor(e.anchor)
+      } else {
+        // forward navigation
+        viewportScroller.scrollToPosition([0, 0])
+      }
+    })
+  }
 }
