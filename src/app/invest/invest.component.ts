@@ -9,7 +9,7 @@ import {StablecoinService} from '../shared/services/blockchain/stablecoin.servic
 import {DialogService} from '../shared/services/dialog.service'
 import {RouterService} from '../shared/services/router.service'
 import {SessionQuery} from '../session/state/session.query'
-import {formatEther} from 'ethers/lib/utils'
+import {InvestService, PreInvestData} from '../shared/services/invest.service'
 
 @Component({
   selector: 'app-invest',
@@ -23,11 +23,6 @@ export class InvestComponent {
   campaign$: Observable<CampaignWithInfo>
   campaignWithStatus$: Observable<WithStatus<CampaignWithInfo>>
 
-  balance$ = this.stablecoinService.balance$.pipe(
-    shareReplay(1),
-  )
-
-  alreadyInvested$: Observable<number>
   preInvestData$: Observable<PreInvestData>
 
   investStateSub = new BehaviorSubject<InvestState>(InvestState.Editing)
@@ -40,47 +35,24 @@ export class InvestComponent {
               private sessionQuery: SessionQuery,
               private stablecoinService: StablecoinService,
               private dialogService: DialogService,
+              private investService: InvestService,
               private router: RouterService,
               private route: ActivatedRoute) {
     const campaignID = this.route.snapshot.params.id
 
-    this.campaign$ = this.campaignService.getAddressByName(campaignID).pipe(
+    const campaignAddress$ = this.campaignService.getAddressByName(campaignID).pipe(
+      shareReplay(1),
+    )
+
+    this.campaign$ = campaignAddress$.pipe(
       switchMap(address => this.campaignService.getCampaignWithInfo(address)),
       shareReplay(1),
     )
 
     this.campaignWithStatus$ = withStatus(this.campaign$)
 
-    this.alreadyInvested$ = this.campaign$.pipe(
-      switchMap(campaign =>
-        this.campaignService.alreadyInvested(campaign.contractAddress)),
-      shareReplay(1),
-    )
-
-    this.preInvestData$ = combineLatest([
-      this.campaign$,
-      this.balance$,
-      this.alreadyInvested$,
-    ]).pipe(take(1),
-      map(([campaign, balance, alreadyInvested]) => {
-        const walletBalance = Number(formatEther(balance))
-
-        const campaignMin = Number(formatEther(campaign.minInvestment))
-        const campaignMax = Number(formatEther(campaign.maxInvestment))
-
-        const campaignStats = this.campaignService.stats(campaign)
-
-        const userInvestGap = this.floorDecimals(campaignMax - alreadyInvested)
-
-        const max = Math.min(userInvestGap, this.floorDecimals(campaignStats.valueToInvest))
-        const min = Math.min(alreadyInvested > 0 ? 0 : campaignMin, userInvestGap, max)
-
-        return {
-          min, max,
-          walletBalance,
-          userInvestGap,
-        }
-      }),
+    this.preInvestData$ = campaignAddress$.pipe(
+      switchMap(address => this.investService.preInvestData(address)),
       tap(stats => {
         if (stats.min === stats.max) this.investmentForm.setValue({amount: stats.min})
       }),
@@ -92,13 +64,9 @@ export class InvestComponent {
     })
   }
 
-  private floorDecimals(value: number): number {
-    return Math.floor(value * 100) / 100
-  }
-
   private validAmount(control: AbstractControl): Observable<ValidationErrors | null> {
-    return this.preInvestData$.pipe(take(1),
-      map(data => {
+    return combineLatest([this.preInvestData$]).pipe(take(1),
+      map(([data]) => {
         const amount = control.value
 
         if (data.userInvestGap === 0) {
@@ -133,9 +101,7 @@ export class InvestComponent {
   }
 
   private getAllowance(): Observable<number> {
-    return combineLatest([
-      this.campaign$,
-    ]).pipe(take(1),
+    return combineLatest([this.campaign$]).pipe(take(1),
       switchMap(([campaign]) => this.stablecoinService.getAllowance(campaign.contractAddress)),
     )
   }
@@ -149,9 +115,7 @@ export class InvestComponent {
   }
 
   private approveAmount(amount: number) {
-    return combineLatest([
-      this.campaign$,
-    ]).pipe(take(1),
+    return combineLatest([this.campaign$]).pipe(take(1),
       switchMap(([campaign]) => this.stablecoinService.approveAmount(
         campaign.contractAddress, amount,
       )),
@@ -163,9 +127,7 @@ export class InvestComponent {
   }
 
   invest() {
-    return combineLatest([
-      this.campaign$,
-    ]).pipe(take(1),
+    return combineLatest([this.campaign$]).pipe(take(1),
       switchMap(([campaign]) => this.campaignService.invest(
         campaign.contractAddress,
         this.investmentForm.value.amount,
@@ -178,11 +140,4 @@ export class InvestComponent {
 enum InvestState {
   Editing,
   InReview
-}
-
-interface PreInvestData {
-  min: number,
-  max: number,
-  walletBalance: number
-  userInvestGap: number
 }

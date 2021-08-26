@@ -157,7 +157,9 @@ export class CampaignService {
     )
   }
 
-  stats(campaign: CampaignState) {
+  stats(campaign: CampaignState): CampaignStats {
+    const userMin = Number(formatEther(campaign.minInvestment))
+    const userMax = Number(formatEther(campaign.maxInvestment))
     const tokenBalance = Number(formatEther(campaign.totalTokensBalance))
     const tokensSold = Number(formatEther(campaign.totalTokensSold))
     const softCap = Number(formatEther(campaign.softCap))
@@ -169,6 +171,8 @@ export class CampaignService {
     const valueToInvest = tokensAvailable * tokenPrice
 
     return {
+      userMin,
+      userMax,
       tokenBalance,
       tokensSold,
       softCap,
@@ -218,7 +222,7 @@ export class CampaignService {
     return this.ipfsService.addFile(document).pipe(
       map((ipfsResult) => {
         return {name: document.name, location: ipfsResult.path}
-      })
+      }),
     )
   }
 }
@@ -276,4 +280,17 @@ interface UploadInfoData {
   documents: IPFSDocument[]
   newDocuments: File[]
   newsURLs: string[]
+}
+
+export interface CampaignStats {
+  userMin: number
+  userMax: number
+  tokenBalance: number
+  tokensSold: number
+  softCap: number
+  tokenPrice: number
+  tokensAvailable: number
+  valueInvested: number
+  valueTotal: number
+  valueToInvest: number
 }
