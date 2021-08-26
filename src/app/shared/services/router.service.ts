@@ -1,7 +1,6 @@
 import {Injectable} from '@angular/core'
 import {NavigationExtras, Router} from '@angular/router'
 import {IssuerPathPipe} from '../pipes/issuer-path.pipe'
-import {IssuerWithInfo} from './blockchain/issuer.service'
 import {environment} from '../../../environments/environment'
 import {PreferenceQuery} from '../../preference/state/preference.query'
 

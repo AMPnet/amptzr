@@ -4,11 +4,9 @@ import {withStatus, WithStatus} from '../../shared/utils/observables'
 import {IssuerService, IssuerWithInfo} from '../../shared/services/blockchain/issuer.service'
 import {map, switchMap} from 'rxjs/operators'
 import {SessionQuery} from '../../session/state/session.query'
-import {ChainID, EthersNetworks} from '../../shared/networks'
 import {PreferenceStore} from '../../preference/state/preference.store'
 import {PreferenceQuery} from '../../preference/state/preference.query'
 import {RouterService} from '../../shared/services/router.service'
-import {environment} from '../../../environments/environment'
 
 @Component({
   selector: 'app-issuer-list',

@@ -43,7 +43,7 @@ export class QueryService {
         map(campaignWithInfo => ({...portfolio, campaign: campaignWithInfo})),
       ))),
     ),
-    map(portfolio => portfolio.filter(item => item.tokenAmount > BigNumber.from(0)))
+    map(portfolio => portfolio.filter(item => item.tokenAmount > BigNumber.from(0))),
   )
 
   constructor(private sessionQuery: SessionQuery,

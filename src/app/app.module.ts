@@ -29,7 +29,7 @@ import {UnwrapStatusPipe} from './shared/pipes/unwrap-status.pipe'
 import {OfferComponent} from './offer/offer.component'
 import {DepositComponent} from './deposit/deposit.component'
 import {InvestComponent} from './invest/invest.component'
-import {CurrencyPipe, DatePipe, PercentPipe} from '@angular/common'
+import {CurrencyPipe, DatePipe, PercentPipe, ViewportScroller} from '@angular/common'
 import {CurrencyDefaultPipe} from './shared/pipes/currency-default.pipe'
 import {AuthComponent} from './auth/auth.component'
 import {HttpClientModule} from '@angular/common/http'
@@ -59,8 +59,7 @@ import {CampaignEditComponent} from './campaigns/campaign-edit/campaign-edit.com
 import {CampaignNewComponent} from './campaigns/campaign-new/campaign-new.component'
 import {CampaignAddTokensComponent} from './campaigns/campaign-add-tokens/campaign-add-tokens.component'
 import {IssuerPathPipe} from './shared/pipes/issuer-path.pipe'
-import {OffersCardLargeComponent} from './offers/offers-card-large/offers-card-large.component'
-import {OffersCardSmallComponent} from './offers/offers-card-small/offers-card-small.component'
+import {OffersCardComponent} from './offers/offers-card/offers-card.component'
 import {WalletButtonComponent} from './app-layout/navbar/wallet-button/wallet-button.component'
 import {FaqQuestionComponent} from './faq/faq-question/faq-question.component'
 import {MatTooltipModule} from '@angular/material/tooltip'
@@ -74,6 +73,8 @@ import {HomeComponent} from './home/home.component'
 import {GoogleTranslateComponent} from './shared/components/google-translate/google-translate.component'
 import {PercentageMaskDirective} from './shared/directives/percentage-mask.directive'
 import {OfferInvestmentInfoComponent} from './offer-investment-info/offer-investment-info.component'
+import {Router, Scroll} from '@angular/router'
+import {delay, filter} from 'rxjs/operators'
 
 @NgModule({
   declarations: [
@@ -95,8 +96,7 @@ import {OfferInvestmentInfoComponent} from './offer-investment-info/offer-invest
     OfferComponent,
     DepositComponent,
     InvestComponent,
-    OffersCardLargeComponent,
-    OffersCardSmallComponent,
+    OffersCardComponent,
     FundingProgressComponent,
     CurrencyDefaultPipe,
     VeriffComponent,
@@ -180,4 +180,23 @@ import {OfferInvestmentInfoComponent} from './offer-investment-info/offer-invest
 })
 
 export class AppModule {
+  constructor(router: Router, viewportScroller: ViewportScroller) {
+    // Workaround for issue with scroll restoration
+    // https://github.com/angular/angular/issues/24547#issuecomment-503076245
+    router.events.pipe(
+      filter((e: any): e is Scroll => e instanceof Scroll),
+      delay(200),
+    ).subscribe(e => {
+      if (e.position) {
+        // backward navigation
+        viewportScroller.scrollToPosition(e.position)
+      } else if (e.anchor) {
+        // anchor navigation
+        viewportScroller.scrollToAnchor(e.anchor)
+      } else {
+        // forward navigation
+        viewportScroller.scrollToPosition([0, 0])
+      }
+    })
+  }
 }
