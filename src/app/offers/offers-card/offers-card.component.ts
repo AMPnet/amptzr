@@ -2,16 +2,17 @@ import {ChangeDetectionStrategy, Component, Input, OnChanges, SimpleChanges} fro
 import {CampaignService, CampaignState, CampaignWithInfo} from '../../shared/services/blockchain/campaign.service'
 import {Observable, Subject} from 'rxjs'
 import {switchMap} from 'rxjs/operators'
-import {withStatus, WithStatus} from '../../shared/utils/observables'
+import {WithStatus, withStatus} from '../../shared/utils/observables'
 
 @Component({
-  selector: 'app-offers-card-small',
-  templateUrl: './offers-card-small.component.html',
-  styleUrls: ['./offers-card-small.component.css'],
+  selector: 'app-offers-card',
+  templateUrl: './offers-card.component.html',
+  styleUrls: ['./offers-card.component.css'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class OffersCardSmallComponent implements OnChanges {
+export class OffersCardComponent implements OnChanges {
   @Input() campaign!: CampaignState
+  @Input() size: 'small' | 'large' = 'large'
 
   campaignSub = new Subject<CampaignState>()
   campaign$: Observable<WithStatus<CampaignWithInfo>> = this.campaignSub.asObservable().pipe(

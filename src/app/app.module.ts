@@ -59,8 +59,7 @@ import {CampaignEditComponent} from './campaigns/campaign-edit/campaign-edit.com
 import {CampaignNewComponent} from './campaigns/campaign-new/campaign-new.component'
 import {CampaignAddTokensComponent} from './campaigns/campaign-add-tokens/campaign-add-tokens.component'
 import {IssuerPathPipe} from './shared/pipes/issuer-path.pipe'
-import {OffersCardLargeComponent} from './offers/offers-card-large/offers-card-large.component'
-import {OffersCardSmallComponent} from './offers/offers-card-small/offers-card-small.component'
+import {OffersCardComponent} from './offers/offers-card/offers-card.component'
 import {WalletButtonComponent} from './app-layout/navbar/wallet-button/wallet-button.component'
 import {FaqQuestionComponent} from './faq/faq-question/faq-question.component'
 import {MatTooltipModule} from '@angular/material/tooltip'
@@ -95,8 +94,7 @@ import {OfferInvestmentInfoComponent} from './offer-investment-info/offer-invest
     OfferComponent,
     DepositComponent,
     InvestComponent,
-    OffersCardLargeComponent,
-    OffersCardSmallComponent,
+    OffersCardComponent,
     FundingProgressComponent,
     CurrencyDefaultPipe,
     VeriffComponent,

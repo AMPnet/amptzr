@@ -70,10 +70,10 @@ export class InvestComponent {
 
         const campaignStats = this.campaignService.stats(campaign)
 
-        const min = alreadyInvested > 0 ? 0 : campaignMin
-
         const userInvestGap = this.floorDecimals(campaignMax - alreadyInvested)
+
         const max = Math.min(userInvestGap, this.floorDecimals(campaignStats.valueToInvest))
+        const min = Math.min(alreadyInvested > 0 ? 0 : campaignMin, userInvestGap, max)
 
         return {
           min, max,
@@ -81,13 +81,15 @@ export class InvestComponent {
           userInvestGap,
         }
       }),
+      tap(stats => {
+        if (stats.min === stats.max) this.investmentForm.setValue({amount: stats.min})
+      }),
       shareReplay(1),
     )
 
     this.investmentForm = this.fb.group({
       amount: [0, [], [this.validAmount.bind(this)]],
     })
-
   }
 
   private floorDecimals(value: number): number {
@@ -99,9 +101,7 @@ export class InvestComponent {
       map(data => {
         const amount = control.value
 
-        if (data.min > data.max) {
-          return {campaignMaxReached: true}
-        } else if (data.userInvestGap === 0) {
+        if (data.userInvestGap === 0) {
           return {userMaxReached: true}
         } else if (data.max === 0) {
           return {campaignMaxReached: true}
