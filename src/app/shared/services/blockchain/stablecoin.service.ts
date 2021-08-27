@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core'
-import {combineLatest, merge, Observable, of} from 'rxjs'
+import {combineLatest, from, merge, Observable, of} from 'rxjs'
 import {filter, map, shareReplay, switchMap} from 'rxjs/operators'
 import {ERC20__factory} from '../../../../../types/ethers-contracts'
 import {SessionQuery} from '../../../session/state/session.query'
@@ -8,6 +8,7 @@ import {IssuerService} from './issuer.service'
 import {BigNumber, utils} from 'ethers'
 import {SignerService} from '../signer.service'
 import {contractEvent} from '../../utils/ethersjs'
+import {DialogService} from '../dialog.service'
 
 @Injectable({
   providedIn: 'root',
@@ -44,6 +45,7 @@ export class StablecoinService {
   constructor(private sessionQuery: SessionQuery,
               private preferenceQuery: PreferenceQuery,
               private signerService: SignerService,
+              private dialogService: DialogService,
               private issuerService: IssuerService) {
   }
 
@@ -65,7 +67,10 @@ export class StablecoinService {
     ]).pipe(
       map(([contract, signer]) => contract.connect(signer)),
       switchMap(contract => contract.approve(campaignAddress, utils.parseEther(amount.toString()))),
-      switchMap(tx => this.sessionQuery.provider.waitForTransaction(tx.hash)),
+      switchMap(tx => this.dialogService.loading(
+        from(this.sessionQuery.provider.waitForTransaction(tx.hash)),
+        'Processing transaction...',
+      )),
     )
   }
 }

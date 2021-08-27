@@ -19,6 +19,7 @@ import {cid, IPFSCampaign, IPFSDocument, iso8601, ReturnFrequency} from '../../.
 import {ErrorService} from '../error.service'
 import {formatEther} from 'ethers/lib/utils'
 import {TokenPrice} from '../../utils/token-price'
+import {DialogService} from '../dialog.service'
 
 @Injectable({
   providedIn: 'root',
@@ -34,6 +35,7 @@ export class CampaignService {
               private ipfsService: IpfsService,
               private signerService: SignerService,
               private errorService: ErrorService,
+              private dialogService: DialogService,
               private preferenceQuery: PreferenceQuery) {
   }
 
@@ -108,7 +110,10 @@ export class CampaignService {
     return this.signerService.ensureAuth.pipe(
       map(signer => this.contract(campaignAddress, signer)),
       switchMap(contract => contract.setInfo(infoHash)),
-      switchMap(tx => this.sessionQuery.provider.waitForTransaction(tx.hash)),
+      switchMap(tx => this.dialogService.loading(
+        from(this.sessionQuery.provider.waitForTransaction(tx.hash)),
+        'Processing transaction...',
+      )),
     )
   }
 
@@ -128,7 +133,10 @@ export class CampaignService {
           data.minInvestment, data.maxInvestment,
           data.whitelistRequired, data.info,
         )).pipe(
-          switchMap(tx => this.sessionQuery.provider.waitForTransaction(tx.hash)),
+          switchMap(tx => this.dialogService.loading(
+            from(this.sessionQuery.provider.waitForTransaction(tx.hash)),
+            'Processing transaction...',
+          )),
           map(receipt => findLog(
             receipt, contract, contract.interface.getEvent('CfManagerSoftcapCreated'),
           )?.args?.cfManager),
@@ -141,7 +149,10 @@ export class CampaignService {
     return this.signerService.ensureAuth.pipe(
       map(signer => this.contract(address, signer)),
       switchMap(contract => contract.invest(utils.parseEther(amount.toString()))),
-      switchMap(tx => this.sessionQuery.provider.waitForTransaction(tx.hash)),
+      switchMap(tx => this.dialogService.loading(
+        from(this.sessionQuery.provider.waitForTransaction(tx.hash)),
+        'Processing transaction...',
+      )),
       this.errorService.handleError(),
     )
   }
@@ -196,7 +207,10 @@ export class CampaignService {
     return this.signerService.ensureAuth.pipe(
       map(signer => this.contract(address, signer)),
       switchMap(contract => contract.cancelInvestment()),
-      switchMap(tx => this.sessionQuery.provider.waitForTransaction(tx.hash)),
+      switchMap(tx => this.dialogService.loading(
+        from(this.sessionQuery.provider.waitForTransaction(tx.hash)),
+        'Processing transaction...',
+      )),
       this.errorService.handleError(),
     )
   }
@@ -205,7 +219,10 @@ export class CampaignService {
     return this.signerService.ensureAuth.pipe(
       map(signer => this.contract(address, signer)),
       switchMap(contract => contract.finalize()),
-      switchMap(tx => this.sessionQuery.provider.waitForTransaction(tx.hash)),
+      switchMap(tx => this.dialogService.loading(
+        from(this.sessionQuery.provider.waitForTransaction(tx.hash)),
+        'Processing transaction...',
+      )),
       this.errorService.handleError(),
     )
   }

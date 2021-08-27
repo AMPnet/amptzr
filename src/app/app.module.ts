@@ -75,6 +75,7 @@ import {PercentageMaskDirective} from './shared/directives/percentage-mask.direc
 import {OfferInvestmentInfoComponent} from './offer-investment-info/offer-investment-info.component'
 import {Router, Scroll} from '@angular/router'
 import {delay, filter} from 'rxjs/operators'
+import {LoadingDialogComponent} from './shared/components/loading-dialog/loading-dialog.component'
 
 @NgModule({
   declarations: [
@@ -135,6 +136,7 @@ import {delay, filter} from 'rxjs/operators'
     GoogleTranslateComponent,
     PercentageMaskDirective,
     OfferInvestmentInfoComponent,
+    LoadingDialogComponent,
   ],
   imports: [
     BrowserModule,
