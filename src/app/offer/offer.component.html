@@ -7,11 +7,11 @@
             <img class="rounded-t-3xl lg:h-96 lg:mx-auto w-full object-cover"
                  [src]="offer.photo | toUrlIPFS"
                  alt="Offer photo">
-            <div class="bg-white shadow-xl p-6 lg:h-10 lg:rounded-full
-                            absolute lg:bottom-8 -bottom-11 left-4 lg:left-12 flex flex-col lg:flex-row lg:items-center
-                            rounded-t-xl rounded-b-xl">
-              <app-offer-investment-info [offer]="offer" display="wide"></app-offer-investment-info>
-            </div>
+            <app-offer-investment-info
+              [offer]="offer" display="wide"
+              class="bg-white shadow-xl p-6 lg:h-10 lg:rounded-full
+              absolute lg:bottom-8 -bottom-11 left-4 lg:left-12 flex flex-col lg:flex-row lg:items-center
+              rounded-t-xl rounded-b-xl"></app-offer-investment-info>
           </div>
           <div class="w-full h-full bg-white flex lg:flex-row gap-8 flex-col pt-8 lg:pl-14 px-4">
 

@@ -14,7 +14,7 @@ export class FundingProgressComponent implements OnInit {
   progressData: ProgressData | undefined
 
   constructor(private campaignService: CampaignService,
-              private datePipe: DatePipe,) {
+              private datePipe: DatePipe) {
   }
 
   ngOnInit() {

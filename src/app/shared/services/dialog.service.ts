@@ -7,7 +7,8 @@ import {
   InfoDialogData,
   InfoDialogResponse,
 } from '../components/info-dialog/info-dialog.component'
-import {map} from 'rxjs/operators'
+import {finalize, map} from 'rxjs/operators'
+import {LoadingDialogComponent, LoadingDialogData} from '../components/loading-dialog/loading-dialog.component'
 
 @Injectable({
   providedIn: 'root',
@@ -46,5 +47,15 @@ export class DialogService {
         cancelable: false,
       } as InfoDialogData,
     }).afterClosed()
+  }
+
+  loading<T>(obs$: Observable<T>, message: string): Observable<T> {
+    const dialogRef = this.dialog.open(LoadingDialogComponent, {
+      data: {message} as LoadingDialogData,
+    })
+
+    return obs$.pipe(
+      finalize(() => dialogRef.close()),
+    )
   }
 }

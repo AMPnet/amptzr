@@ -12,6 +12,7 @@ import {IPFSAddResult} from '../ipfs/ipfs.service.types'
 import {SignerService} from '../signer.service'
 import {findLog} from '../../utils/ethersjs'
 import {WithStatus, withStatus} from '../../utils/observables'
+import {DialogService} from '../dialog.service'
 
 @Injectable({
   providedIn: 'root',
@@ -44,6 +45,7 @@ export class IssuerService {
   constructor(private sessionQuery: SessionQuery,
               private preferenceQuery: PreferenceQuery,
               private signerService: SignerService,
+              private dialogService: DialogService,
               private ipfsService: IpfsService) {
   }
 
@@ -89,7 +91,10 @@ export class IssuerService {
     return this.signerService.ensureAuth.pipe(
       map(signer => this.contract(issuerAddress, signer)),
       switchMap(contract => contract.setInfo(infoHash)),
-      switchMap(tx => this.sessionQuery.provider.waitForTransaction(tx.hash)),
+      switchMap(tx => this.dialogService.loading(
+        from(this.sessionQuery.provider.waitForTransaction(tx.hash)),
+        'Processing transaction...',
+      )),
     )
   }
 
@@ -113,7 +118,10 @@ export class IssuerService {
           createData.owner, createData.ansName, createData.stablecoin,
           createData.walletApprover, createData.info,
         )).pipe(
-          switchMap(tx => this.sessionQuery.provider.waitForTransaction(tx.hash)),
+          switchMap(tx => this.dialogService.loading(
+            from(this.sessionQuery.provider.waitForTransaction(tx.hash)),
+            'Processing transaction...',
+          )),
           map(receipt => findLog(
             receipt, contract, contract.interface.getEvent('IssuerCreated'),
           )?.args?.issuer),
@@ -138,7 +146,10 @@ export class IssuerService {
     return this.signerService.ensureAuth.pipe(
       map(signer => this.contract(issuerAddress, signer)),
       switchMap(contract => contract.changeWalletApprover(walletApproverAddress)),
-      switchMap(tx => this.sessionQuery.provider.waitForTransaction(tx.hash)),
+      switchMap(tx => this.dialogService.loading(
+        from(this.sessionQuery.provider.waitForTransaction(tx.hash)),
+        'Processing transaction...',
+      )),
     )
   }
 }

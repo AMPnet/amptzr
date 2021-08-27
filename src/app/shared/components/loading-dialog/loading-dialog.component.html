@@ -1,0 +1,9 @@
+<ng-container *ngIf="(data$ | async) as data">
+  <div class="px-8 max-w-sm">
+    <div class="flex justify-center">
+      <app-spinner type="overlay">
+        {{ data.message }}
+      </app-spinner>
+    </div>
+  </div>
+</ng-container>
