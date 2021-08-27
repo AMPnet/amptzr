@@ -1,12 +1,13 @@
 import {Injectable} from '@angular/core'
 import {from, Observable, of, throwError} from 'rxjs'
-import {concatMap, map, tap} from 'rxjs/operators'
+import {concatMap, map, switchMap, tap} from 'rxjs/operators'
 import {providers} from 'ethers'
 import {Subsigner, SubsignerLoginOpts} from './metamask-subsigner.service'
 import {ArkaneConnect, AuthenticationResult} from '@arkane-network/arkane-connect/dist/src/connect/connect'
 import {AuthProvider, PreferenceStore} from '../../../preference/state/preference.store'
 import {VenlyNetworks} from '../../networks'
 import {environment} from '../../../../environments/environment'
+import {DialogService} from '../dialog.service'
 
 @Injectable({
   providedIn: 'root',
@@ -14,7 +15,8 @@ import {environment} from '../../../../environments/environment'
 export class VenlySubsignerService implements Subsigner {
   subprovider!: ArkaneSubprovider
 
-  constructor(private preferenceStore: PreferenceStore) {
+  constructor(private preferenceStore: PreferenceStore,
+              private dialogService: DialogService) {
   }
 
   login(opts: SubsignerLoginOpts): Observable<providers.JsonRpcSigner> {
@@ -46,10 +48,17 @@ export class VenlySubsignerService implements Subsigner {
                              opts: SubsignerLoginOpts): Observable<providers.JsonRpcSigner> {
     return of(opts.force).pipe(
       concatMap(force => force ?
-        from(this.subprovider.authenticate()) :
+        this.authenticateProcedure() :
         from(this.subprovider.checkAuthenticated())),
       concatMap(authRes => authRes.isAuthenticated ? of(authRes) : throwError('NO_ADDRESS')),
       concatMap(() => of(signer)),
+    )
+  }
+
+  private authenticateProcedure(): Observable<AuthenticationResult> {
+    return this.dialogService.info('You will be redirected to Venly to authenticate.').pipe(
+      switchMap(confirm => confirm ? from(this.subprovider.authenticate()) :
+        throwError('VENLY_AUTH_INFO_DISMISSED')),
     )
   }
 
