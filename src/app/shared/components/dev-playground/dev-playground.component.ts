@@ -44,7 +44,7 @@ export class DevPlaygroundComponent {
   //   return () => {
   //     return this.signerService.ensureAuth.pipe(
   //       map(signer => USDC__factory.connect(this.tokenMappingService.usdc, signer)),
-  //       concatMap(usdc => from(usdc.transfer(to, utils.parseEther(amount))).pipe(
+  //       concatMap(usdc => from(usdc.transfer(to, stablecoin.parse(amount))).pipe(
   //         tap(tx => console.log('transaction broadcasted: ', tx)),
   //         concatMap(tx => from(this.sessionQuery.provider.waitForTransaction(tx.hash, 3))),
   //         tap(receipt => console.log('receipt: ', receipt)),
@@ -62,7 +62,7 @@ export class DevPlaygroundComponent {
   //     return this.signerService.ensureAuth.pipe(
   //       concatMap(signer => from(signer.sendTransaction({
   //         to: to,
-  //         value: utils.parseEther(amount),
+  //         value: stablecoin.parse(amount),
   //         gasLimit: utils.hexlify('0x100000'), // 100000
   //       }))),
   //       tap(tx => console.log('transaction broadcasted: ', tx)),

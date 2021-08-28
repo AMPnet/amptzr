@@ -4,10 +4,10 @@ import {SignerService} from '../../shared/services/signer.service'
 import {ActivatedRoute} from '@angular/router'
 import {DialogService} from '../../shared/services/dialog.service'
 import {switchMap} from 'rxjs/operators'
-import {utils} from 'ethers'
 import {CampaignService} from '../../shared/services/blockchain/campaign.service'
 import {TokenPrice} from '../../shared/utils/token-price'
 import {RouterService} from '../../shared/services/router.service'
+import {StablecoinService} from '../../shared/services/blockchain/stablecoin.service'
 
 @Component({
   selector: 'app-campaign-new',
@@ -23,6 +23,7 @@ export class CampaignNewComponent {
               private signerService: SignerService,
               private router: RouterService,
               private route: ActivatedRoute,
+              private stablecoin: StablecoinService,
               private dialogService: DialogService,
               private fb: FormBuilder) {
     this.createForm = this.fb.group({
@@ -48,9 +49,9 @@ export class CampaignNewComponent {
         ansName: this.createForm.value.ansName,
         assetAddress: this.asset,
         initialPricePerToken: TokenPrice.format(this.createForm.value.initialPricePerToken),
-        softCap: utils.parseEther(String(this.createForm.value.softCap)),
-        minInvestment: utils.parseEther(String(this.createForm.value.minInvestment)),
-        maxInvestment: utils.parseEther(String(this.createForm.value.maxInvestment)),
+        softCap: this.stablecoin.parse(this.createForm.value.softCap),
+        minInvestment: this.stablecoin.parse(this.createForm.value.minInvestment),
+        maxInvestment: this.stablecoin.parse(this.createForm.value.maxInvestment),
         whitelistRequired: this.createForm.value.whitelistRequired,
         info: uploadRes.path,
       })),

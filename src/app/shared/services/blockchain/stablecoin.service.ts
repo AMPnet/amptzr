@@ -1,11 +1,11 @@
 import {Injectable} from '@angular/core'
-import {combineLatest, from, merge, Observable, of} from 'rxjs'
-import {filter, map, shareReplay, switchMap} from 'rxjs/operators'
+import {BehaviorSubject, combineLatest, from, merge, Observable, of} from 'rxjs'
+import {filter, map, switchMap, tap} from 'rxjs/operators'
 import {ERC20__factory} from '../../../../../types/ethers-contracts'
 import {SessionQuery} from '../../../session/state/session.query'
 import {PreferenceQuery} from '../../../preference/state/preference.query'
 import {IssuerService} from './issuer.service'
-import {BigNumber, utils} from 'ethers'
+import {BigNumber, BigNumberish, utils} from 'ethers'
 import {SignerService} from '../signer.service'
 import {contractEvent} from '../../utils/ethersjs'
 import {DialogService} from '../dialog.service'
@@ -23,6 +23,9 @@ export class StablecoinService {
     )),
   )
 
+  private precisionSub = new BehaviorSubject<number>(18)
+  private symbolSub = new BehaviorSubject<string>('$')
+
   balance$: Observable<BigNumber> = combineLatest([
     this.contract$,
     this.sessionQuery.address$,
@@ -37,16 +40,34 @@ export class StablecoinService {
     )),
   )
 
-  symbol$ = this.contract$.pipe(
-    switchMap(contract => contract.symbol()),
-    shareReplay(1),
-  )
-
   constructor(private sessionQuery: SessionQuery,
               private preferenceQuery: PreferenceQuery,
               private signerService: SignerService,
               private dialogService: DialogService,
               private issuerService: IssuerService) {
+    this.contract$.pipe(
+      switchMap(contract => combineLatest([contract.decimals(), contract.symbol()])),
+      tap(([decimals, symbol]) => {
+        this.precisionSub.next(decimals)
+        this.symbolSub.next(symbol)
+      }),
+    ).subscribe()
+  }
+
+  get precision() {
+    return this.precisionSub.value
+  }
+
+  get symbol() {
+    return this.symbolSub.value
+  }
+
+  format(wei: BigNumberish) {
+    return Number(utils.formatUnits(wei, this.precision))
+  }
+
+  parse(amount: string | number) {
+    return utils.parseUnits(String(amount), this.precision)
   }
 
   getAllowance(campaignAddress: string): Observable<number> {
@@ -56,7 +77,7 @@ export class StablecoinService {
     ]).pipe(
       switchMap(([contract, _signer]) =>
         contract.allowance(this.sessionQuery.getValue().address!, campaignAddress)),
-      map(res => Number(utils.formatEther(res))),
+      map(res => this.format(res)),
     )
   }
 
@@ -66,7 +87,7 @@ export class StablecoinService {
       this.signerService.ensureAuth,
     ]).pipe(
       map(([contract, signer]) => contract.connect(signer)),
-      switchMap(contract => contract.approve(campaignAddress, utils.parseEther(amount.toString()))),
+      switchMap(contract => contract.approve(campaignAddress, this.parse(amount))),
       switchMap(tx => this.dialogService.loading(
         from(this.sessionQuery.provider.waitForTransaction(tx.hash)),
         'Processing transaction...',

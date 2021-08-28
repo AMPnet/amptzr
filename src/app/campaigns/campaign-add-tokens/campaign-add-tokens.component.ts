@@ -5,12 +5,13 @@ import {SignerService} from '../../shared/services/signer.service'
 import {ActivatedRoute} from '@angular/router'
 import {DialogService} from '../../shared/services/dialog.service'
 import {map, shareReplay, switchMap, take, tap} from 'rxjs/operators'
-import {BigNumber, utils} from 'ethers'
+import {BigNumber} from 'ethers'
 import {AssetService, AssetState} from '../../shared/services/blockchain/asset.service'
 import {combineLatest, Observable} from 'rxjs'
 import {withStatus, WithStatus} from '../../shared/utils/observables'
 import {SessionQuery} from '../../session/state/session.query'
 import {RouterService} from '../../shared/services/router.service'
+import {StablecoinService} from '../../shared/services/blockchain/stablecoin.service'
 
 @Component({
   selector: 'app-campaign-add-tokens',
@@ -39,6 +40,7 @@ export class CampaignAddTokensComponent {
               private sessionQuery: SessionQuery,
               private router: RouterService,
               private route: ActivatedRoute,
+              private stablecoin: StablecoinService,
               private dialogService: DialogService,
               private fb: FormBuilder) {
     this.campaign$ = this.campaignService.getCampaignWithInfo(this.campaignAddress).pipe(
@@ -84,7 +86,7 @@ export class CampaignAddTokensComponent {
 
   private validAmount(control: AbstractControl): Observable<ValidationErrors | null> {
     return combineLatest([this.tokenBalance$]).pipe(take(1),
-      map(([balance]) => Number(utils.formatEther(balance))),
+      map(([balance]) => this.stablecoin.format(balance)),
       map(balance => {
         const amount = control.value
 

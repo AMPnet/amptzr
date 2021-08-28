@@ -9,7 +9,7 @@ import {
 import {first, map, switchMap, take} from 'rxjs/operators'
 import {SessionQuery} from '../../../session/state/session.query'
 import {PreferenceQuery} from '../../../preference/state/preference.query'
-import {BigNumber, BigNumberish, Signer, utils} from 'ethers'
+import {BigNumber, BigNumberish, Signer} from 'ethers'
 import {Provider} from '@ethersproject/providers'
 import {IpfsService, IPFSText} from '../ipfs/ipfs.service'
 import {SignerService} from '../signer.service'
@@ -20,6 +20,7 @@ import {ErrorService} from '../error.service'
 import {formatEther} from 'ethers/lib/utils'
 import {TokenPrice} from '../../utils/token-price'
 import {DialogService} from '../dialog.service'
+import {StablecoinService} from './stablecoin.service'
 
 @Injectable({
   providedIn: 'root',
@@ -36,6 +37,7 @@ export class CampaignService {
               private signerService: SignerService,
               private errorService: ErrorService,
               private dialogService: DialogService,
+              private stablecoin: StablecoinService,
               private preferenceQuery: PreferenceQuery) {
   }
 
@@ -148,7 +150,7 @@ export class CampaignService {
   invest(address: string, amount: number) {
     return this.signerService.ensureAuth.pipe(
       map(signer => this.contract(address, signer)),
-      switchMap(contract => contract.invest(utils.parseEther(amount.toString()))),
+      switchMap(contract => contract.invest(this.stablecoin.parse(amount))),
       switchMap(tx => this.dialogService.loading(
         from(this.sessionQuery.provider.waitForTransaction(tx.hash)),
         'Processing transaction...',
@@ -164,7 +166,7 @@ export class CampaignService {
     ]).pipe(
       switchMap(([contract, _signer]) =>
         contract.investments(this.sessionQuery.getValue().address!)),
-      map(res => Number(utils.formatEther(res))),
+      map(res => this.stablecoin.format(res)),
     )
   }
 

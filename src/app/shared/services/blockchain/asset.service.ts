@@ -4,7 +4,7 @@ import {Asset, Asset__factory, AssetFactory, AssetFactory__factory} from '../../
 import {first, map, switchMap} from 'rxjs/operators'
 import {SessionQuery} from '../../../session/state/session.query'
 import {PreferenceQuery} from '../../../preference/state/preference.query'
-import {BigNumber, BigNumberish, Signer, utils} from 'ethers'
+import {BigNumber, BigNumberish, Signer} from 'ethers'
 import {Provider} from '@ethersproject/providers'
 import {IPFSAsset} from '../../../../../types/ipfs/asset'
 import {IpfsService, IPFSText} from '../ipfs/ipfs.service'
@@ -12,6 +12,7 @@ import {SignerService} from '../signer.service'
 import {findLog} from '../../utils/ethersjs'
 import {IPFSAddResult} from '../ipfs/ipfs.service.types'
 import {DialogService} from '../dialog.service'
+import {StablecoinService} from './stablecoin.service'
 
 @Injectable({
   providedIn: 'root',
@@ -27,6 +28,7 @@ export class AssetService {
               private ipfsService: IpfsService,
               private signerService: SignerService,
               private dialogService: DialogService,
+              private stablecoin: StablecoinService,
               private preferenceQuery: PreferenceQuery) {
   }
 
@@ -121,7 +123,7 @@ export class AssetService {
   transferTokensToCampaign(assetAddress: string, campaignAddress: string, amount: number) {
     return this.signerService.ensureAuth.pipe(
       map(signer => this.contract(assetAddress, signer)),
-      switchMap(contract => contract.transfer(campaignAddress, utils.parseEther(String(amount)))),
+      switchMap(contract => contract.transfer(campaignAddress, this.stablecoin.parse(amount))),
       switchMap(tx => this.dialogService.loading(
         from(this.sessionQuery.provider.waitForTransaction(tx.hash)),
         'Processing transaction...',

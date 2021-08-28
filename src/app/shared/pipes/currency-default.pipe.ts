@@ -10,10 +10,10 @@ import {StablecoinService} from '../services/blockchain/stablecoin.service'
 })
 export class CurrencyDefaultPipe implements PipeTransform {
   constructor(private currencyPipe: CurrencyPipe,
-              private stablecoinService: StablecoinService) {
+              private stablecoin: StablecoinService) {
   }
 
-  // TODO: finish adding stablecoin symbol from stablecoinService
+  // TODO: finish adding stablecoin symbol from stablecoin
   transform(
     value: number | string,
     code = 'USD',
