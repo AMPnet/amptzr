@@ -34,7 +34,7 @@
           </button>
           <button class="flex items-center justify-center text-white w-full lg:w-auto text-sm rounded-full
                         bg-indigo-800 hover:bg-indigo-900 py-4 mt-2 lg:mt-0 lg:px-8
-                        disabled:bg-gray-200 disabled:cursor-not-allowed"
+                        disabled:bg-gray-400 disabled:cursor-not-allowed"
                   disabled>
             <svg class="h-3.5 w-3.5 mr-2" width="22" height="18" viewBox="0 0 22 18" fill="none"
                  xmlns="http://www.w3.org/2000/svg">
@@ -88,79 +88,5 @@
   </div>
 
   <!-- Transaction History Component -->
-  <div class="flex flex-col mt-6">
-    <div class="flex flex-row justify-between items-center">
-      <span class="font-semibold">Transaction History</span>
-      <button class="flex items-center justify-center text-white w-full lg:w-auto text-sm rounded-full
-                     bg-indigo-800 hover:bg-indigo-900 py-4 mt-2 lg:mt-0 lg:px-8"
-              (click)="downloadTransactionHistory()">
-        <svg class="h-3.5 w-3.5 mr-2" width="22" height="18" viewBox="0 0 22 18" fill="none"
-             xmlns="http://www.w3.org/2000/svg">
-          <path
-            d="M1.47461 13V14C1.47461 14.7956 1.85599 15.5587 2.53485 16.1213C3.21371 16.6839 4.13444 17 5.0945 17H17.1608C18.1209 17 19.0416 16.6839 19.7204 16.1213C20.3993 15.5587 20.7807 14.7956 20.7807 14V13M15.9542 9L11.1276 13M11.1276 13L6.30113 9M11.1276 13V1"
-            stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
-        <span class="font-semibold tracking-wider">Download</span>
-      </button>
-    </div>
-    <div class="flex flex-col mt-4">
-      <ng-container *ngIf="transactionHistory$ | async as txHistoryRes">
-        <ng-container *ngIf="txHistoryRes.value as txHistory">
-          <div *ngFor="let transaction of txHistory.transactions; let i = index"
-               class="rounded-xl whitespace-nowrap shadow-md bg-white p-4 my-1.5 flex items-center justify-between">
-            <div class="flex">
-              <div *ngIf="!isOutgoingTransaction(transaction)"
-                   class="rounded-full w-10 h-10 bg-green-600 flex justify-center items-center text-white">
-                <svg width="18" height="18" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path
-                    d="M13.7546 24.0815L5.89748 15.9999M5.89748 15.9999L13.7546 7.91828M5.89748 15.9999L26.1016 15.9999"
-                    stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
-                </svg>
-              </div>
-              <div *ngIf="isOutgoingTransaction(transaction)"
-                   class="rounded-full w-10 h-10 bg-pink-600 flex justify-center items-center text-white">
-                <svg width="18" height="18" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M18.2454 7.91846L26.1025 16.0001M26.1025 16.0001L18.2454 24.0817M26.1025 16.0001H5.89844"
-                        stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
-                </svg>
-              </div>
-              <div class="flex flex-col ml-4">
-                <span class="font-semibold">{{ transaction.type | transactionTypeName }}</span>
-                <ng-container *ngIf="txHistory.campaignNames$[i] | async as campaignNameRes">
-                  <span *ngIf="campaignNameRes.value as campaignName">{{ campaignName }}</span>
-
-                  <ng-container *ngIf="campaignNameRes.error">
-                    Unable to fetch campaign name.
-                    <div hidden>{{ txHistoryRes.error | json }}</div>
-                  </ng-container>
-
-                  <ng-container *ngIf="campaignNameRes.loading">
-                    <app-spinner type="inline-base"></app-spinner>
-                  </ng-container>
-                </ng-container>
-              </div>
-            </div>
-            <div class="text-right float-right">
-              <div class="font-semibold">
-                {{ transactionValueSign(transaction) }}
-                {{ transaction.token_value | formatUnit:'bignumToWei' | currencyDefault }}
-              </div>
-              <div>
-                {{ transaction.timestamp | date:'dd. MM. yyyy.' }}
-              </div>
-            </div>
-          </div>
-        </ng-container>
-
-        <ng-container *ngIf="txHistoryRes.error">
-          Cannot fetch transaction history.
-          <div hidden>{{ txHistoryRes.error | json }}</div>
-        </ng-container>
-
-        <ng-container *ngIf="txHistoryRes.loading">
-          <app-spinner type="overlay">Loading transaction history...</app-spinner>
-        </ng-container>
-      </ng-container>
-    </div>
-  </div>
+  <app-wallet-tx-history></app-wallet-tx-history>
 </div>

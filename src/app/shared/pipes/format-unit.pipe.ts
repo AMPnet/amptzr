@@ -12,7 +12,12 @@ export class FormatUnitPipe implements PipeTransform {
   public transform(value: any, operation: Operation | string) {
     switch (operation) {
       case Operation.BIGNUM_TO_WEI:
-        return Number(utils.formatEther(value))
+        switch (typeof value) {
+          case 'number':
+            return Number(utils.formatEther(BigInt(value).toString()))
+          default:
+            return Number(utils.formatEther(value))
+        }
       case Operation.PARSE_TOKEN_PRICE:
         return TokenPrice.parse(value)
       case Operation.TO_NUMBER:

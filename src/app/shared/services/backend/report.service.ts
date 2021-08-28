@@ -6,10 +6,9 @@ import {Observable} from 'rxjs'
 import {ErrorService} from '../error.service'
 import {map} from 'rxjs/operators'
 import {PreferenceQuery} from '../../../preference/state/preference.query'
-import {BigNumber} from 'ethers'
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class ReportService {
   path = `${environment.backendURL}/api/report`
@@ -32,8 +31,8 @@ export class ReportService {
       {
         params: params,
         headers: this.http.authHttpOptions(false).headers,
-        responseType: 'arraybuffer'
-      }
+        responseType: 'arraybuffer',
+      },
     ).pipe(
       this.errorService.handleError(),
       map(data => {
@@ -41,11 +40,11 @@ export class ReportService {
           'UserTransactions',
           this.datePipe.transform(new Date(), 'yMdhhmmss'),
           `${!!from ? 'from' + params['from'] : ''}`,
-          `${!!to ? 'to' + params['to'] : ''}`
+          `${!!to ? 'to' + params['to'] : ''}`,
         ].filter(text => !!text).join('_') + '.pdf'
 
         ReportService.downloadFile(data, fileName)
-      })
+      }),
     )
   }
 
@@ -85,20 +84,20 @@ export interface TransactionHistory {
 export interface Transaction {
   from_address: eth_address
   to_address: eth_address
+  contract: eth_address
   chain_id: number
   hash: string
   type: TransactionType
   asset: eth_address
   timestamp: number
-  token_amount: BigNumber
-  token_value: BigNumber
+  token_amount: BigInt
+  token_value: BigInt
   payout_id: number
-  revenue: number
+  revenue: BigInt
 }
 
 export enum TransactionType {
-  INVEST = 'INVEST',
-  FINALIZE_INVEST = 'FINALIZE_INVEST',
-  CANCEL_INVEST = 'CANCEL_INVEST',
-  REVENUE_CLAIM = 'REVENUE_CLAIM',
+  RESERVE_INVESTMENT = 'RESERVE_INVESTMENT',
+  CANCEL_INVESTMENT = 'CANCEL_INVESTMENT',
+  REVENUE_SHARE = 'REVENUE_SHARE',
 }
