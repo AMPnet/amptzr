@@ -17,7 +17,6 @@ import {findLog} from '../../utils/ethersjs'
 import {IPFSAddResult} from '../ipfs/ipfs.service.types'
 import {cid, IPFSCampaign, IPFSDocument, iso8601, ReturnFrequency} from '../../../../../types/ipfs/campaign'
 import {ErrorService} from '../error.service'
-import {formatEther} from 'ethers/lib/utils'
 import {TokenPrice} from '../../utils/token-price'
 import {DialogService} from '../dialog.service'
 import {StablecoinService} from './stablecoin.service'
@@ -173,8 +172,8 @@ export class CampaignService {
   stats(campaign: CampaignState): CampaignStats {
     const userMin = this.stablecoin.format(campaign.minInvestment)
     const userMax = this.stablecoin.format(campaign.maxInvestment)
-    const tokenBalance = Number(formatEther(campaign.totalTokensBalance))
-    const tokensSold = Number(formatEther(campaign.totalTokensSold))
+    const tokenBalance = this.stablecoin.format(campaign.totalTokensBalance, 18)
+    const tokensSold = this.stablecoin.format(campaign.totalTokensSold, 18)
     const softCap = this.stablecoin.format(campaign.softCap)
     const tokenPrice = TokenPrice.parse(campaign.tokenPrice.toNumber())
     const tokensAvailable = tokenBalance - tokensSold

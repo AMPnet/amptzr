@@ -5,10 +5,11 @@ import {ERC20__factory} from '../../../../../types/ethers-contracts'
 import {SessionQuery} from '../../../session/state/session.query'
 import {PreferenceQuery} from '../../../preference/state/preference.query'
 import {IssuerService} from './issuer.service'
-import {BigNumber, BigNumberish, utils} from 'ethers'
+import {BigNumber, BigNumberish} from 'ethers'
 import {SignerService} from '../signer.service'
 import {contractEvent} from '../../utils/ethersjs'
 import {DialogService} from '../dialog.service'
+import {formatUnits, parseUnits} from 'ethers/lib/utils'
 
 @Injectable({
   providedIn: 'root',
@@ -65,11 +66,11 @@ export class StablecoinService {
   }
 
   format(wei: BigNumberish, precision?: number) {
-    return Number(utils.formatUnits(wei, precision ?? this.precision))
+    return Number(formatUnits(wei, precision ?? this.precision))
   }
 
   parse(amount: string | number, precision?: number) {
-    return utils.parseUnits(String(amount), precision ?? this.precision)
+    return parseUnits(String(amount), precision ?? this.precision)
   }
 
   getAllowance(campaignAddress: string): Observable<number> {
