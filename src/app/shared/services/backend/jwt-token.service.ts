@@ -32,18 +32,14 @@ export class JwtTokenService {
     )
   }
 
-  refreshJWT(refreshToken: string) {
-    return this.http.post<AuthJWTResponse>(`${this.path}/authorize/refresh`, {
-      refresh_token: refreshToken,
-    }).pipe(
-      this.saveTokens(),
-    )
-  }
-
   logout(): Observable<void> {
     if (!this.isLoggedIn()) return of(undefined)
 
-    return this.http.post<void>(`${this.path}/user/logout`, {}).pipe(
+    return this.http.post<void>(`${this.path}/user/logout`, {}, {
+      headers: {
+        'Authorization': `Bearer ${this.accessToken}`,
+      },
+    }).pipe(
       catchError(() => of(undefined)),
       finalize(() => this.removeTokens()),
     )

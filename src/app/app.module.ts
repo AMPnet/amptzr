@@ -76,6 +76,8 @@ import {OfferInvestmentInfoComponent} from './offer-investment-info/offer-invest
 import {Router, Scroll} from '@angular/router'
 import {delay, filter} from 'rxjs/operators'
 import {LoadingDialogComponent} from './shared/components/loading-dialog/loading-dialog.component'
+import {WalletTxHistoryComponent} from './wallet/wallet-tx-history/wallet-tx-history.component'
+import {WalletTxHistoryItemComponent} from './wallet/wallet-tx-history-item/wallet-tx-history-item.component'
 
 @NgModule({
   declarations: [
@@ -137,6 +139,8 @@ import {LoadingDialogComponent} from './shared/components/loading-dialog/loading
     PercentageMaskDirective,
     OfferInvestmentInfoComponent,
     LoadingDialogComponent,
+    WalletTxHistoryComponent,
+    WalletTxHistoryItemComponent,
   ],
   imports: [
     BrowserModule,

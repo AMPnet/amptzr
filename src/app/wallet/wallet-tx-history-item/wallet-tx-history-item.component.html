@@ -1,0 +1,48 @@
+<ng-container *ngIf="(txView$ | async) as tx">
+  <div class="flex justify-between">
+    <div class="flex">
+      <div *ngIf="tx.isOutgoing"
+           class="rounded-full w-10 h-10 bg-indigo-600 flex justify-center items-center text-white">
+        <svg width="18" height="18" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M18.2454 7.91846L26.1025 16.0001M26.1025 16.0001L18.2454 24.0817M26.1025 16.0001H5.89844"
+                stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      <div *ngIf="!tx.isOutgoing"
+           class="rounded-full w-10 h-10 bg-green-600 flex justify-center items-center text-white">
+        <svg width="18" height="18" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path
+            d="M13.7546 24.0815L5.89748 15.9999M5.89748 15.9999L13.7546 7.91828M5.89748 15.9999L26.1016 15.9999"
+            stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+
+      <div class="flex flex-col ml-4">
+        <span class="font-semibold">{{ tx.typeName }}</span>
+        <ng-container *ngIf="(entityName$ | async) as nameRes">
+          <ng-container *ngIf="nameRes.value as name">
+            {{ name }}
+          </ng-container>
+
+          <ng-container *ngIf="nameRes.error">
+            ❌
+            <div hidden>{{ nameRes.error | json }}</div>
+          </ng-container>
+
+          <ng-container *ngIf="nameRes.loading">
+            <app-spinner type="inline-base"></app-spinner>
+          </ng-container>
+        </ng-container>
+      </div>
+    </div>
+
+    <div class="text-right">
+      <div class="font-semibold">
+        {{ tx.sign }} {{ tx.token_value | formatUnit:'bignumToWei' | currencyDefault }}
+      </div>
+      <div>
+        {{ tx.timestamp | date:'longDate' }}
+      </div>
+    </div>
+  </div>
+</ng-container>
