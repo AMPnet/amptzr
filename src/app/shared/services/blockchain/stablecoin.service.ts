@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core'
 import {BehaviorSubject, combineLatest, from, merge, Observable, of} from 'rxjs'
-import {filter, map, switchMap, tap} from 'rxjs/operators'
+import {distinctUntilChanged, filter, map, switchMap, tap} from 'rxjs/operators'
 import {ERC20__factory} from '../../../../../types/ethers-contracts'
 import {SessionQuery} from '../../../session/state/session.query'
 import {PreferenceQuery} from '../../../preference/state/preference.query'
@@ -19,8 +19,17 @@ export class StablecoinService {
     this.preferenceQuery.issuer$,
     this.sessionQuery.provider$,
   ]).pipe(
+    distinctUntilChanged(),
     switchMap(([issuer, provider]) => this.issuerService.getState(issuer.address, provider).pipe(
       map(state => ERC20__factory.connect(state.stablecoin, provider)),
+    )),
+    switchMap(contract => of(contract).pipe(
+      switchMap(contract => combineLatest([contract.decimals(), contract.symbol()])),
+      tap(([decimals, symbol]) => {
+        this.precisionSub.next(decimals)
+        this.symbolSub.next(symbol)
+      }),
+      map(() => contract),
     )),
   )
 
@@ -48,13 +57,6 @@ export class StablecoinService {
               private signerService: SignerService,
               private dialogService: DialogService,
               private issuerService: IssuerService) {
-    this.contract$.pipe(
-      switchMap(contract => combineLatest([contract.decimals(), contract.symbol()])),
-      tap(([decimals, symbol]) => {
-        this.precisionSub.next(decimals)
-        this.symbolSub.next(symbol)
-      }),
-    ).subscribe()
   }
 
   get precision() {

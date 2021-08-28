@@ -52,7 +52,9 @@ const appRoutes: Routes = [
 
 const issuerNamespace: Routes = !environment.fixed.issuer ? [{
   path: ':issuer', canActivate: [IssuerGuard], children: appRoutes,
-}] : appRoutes
+}] : [{
+  path: '', canActivate: [IssuerGuard], children: appRoutes,
+}]
 
 const networkNamespace: Routes = !environment.fixed.chainID ? [{
   path: ':chainID', canActivate: [NetworkGuard], children: issuerNamespace,
