@@ -45,7 +45,7 @@ export class AssetNewComponent {
         issuer: this.issuer,
         ansName: this.createForm.value.ansName,
         name: this.createForm.get('name')!.value,
-        initialTokenSupply: this.stablecoin.parse(this.createForm.get('initialTokenSupply')!.value),
+        initialTokenSupply: this.stablecoin.parse(this.createForm.get('initialTokenSupply')!.value, 18),
         symbol: this.createForm.get('symbol')!.value,
         whitelistRequiredForTransfer: this.createForm.get('whitelistRequiredForTransfer')!.value,
         info: uploadRes.path,

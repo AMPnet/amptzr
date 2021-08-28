@@ -114,12 +114,12 @@
 
         <div>
           Total tokens sold:
-          {{ campaign.totalTokensSold | formatUnit:'bignumToWei' | number }}
+          {{ campaign.totalTokensSold | formatUnit:'bignumToWei':18 | number }}
         </div>
 
         <div>
           Total tokens balance:
-          {{ campaign.totalTokensBalance | formatUnit:'bignumToWei' | number }}
+          {{ campaign.totalTokensBalance | formatUnit:'bignumToWei':18 | number }}
         </div>
 
         <div class="flex gap-1">

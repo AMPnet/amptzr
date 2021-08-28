@@ -171,11 +171,11 @@ export class CampaignService {
   }
 
   stats(campaign: CampaignState): CampaignStats {
-    const userMin = Number(formatEther(campaign.minInvestment))
-    const userMax = Number(formatEther(campaign.maxInvestment))
+    const userMin = this.stablecoin.format(campaign.minInvestment)
+    const userMax = this.stablecoin.format(campaign.maxInvestment)
     const tokenBalance = Number(formatEther(campaign.totalTokensBalance))
     const tokensSold = Number(formatEther(campaign.totalTokensSold))
-    const softCap = Number(formatEther(campaign.softCap))
+    const softCap = this.stablecoin.format(campaign.softCap)
     const tokenPrice = TokenPrice.parse(campaign.tokenPrice.toNumber())
     const tokensAvailable = tokenBalance - tokensSold
 

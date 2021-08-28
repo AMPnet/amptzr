@@ -23,7 +23,9 @@ export class StablecoinService {
     )),
   )
 
-  private precisionSub = new BehaviorSubject<number>(18)
+  // TODO: set default to 18 digits when screens for managing
+  //  will be finished.
+  private precisionSub = new BehaviorSubject<number>(6)
   private symbolSub = new BehaviorSubject<string>('$')
 
   balance$: Observable<BigNumber> = combineLatest([
@@ -62,12 +64,12 @@ export class StablecoinService {
     return this.symbolSub.value
   }
 
-  format(wei: BigNumberish) {
-    return Number(utils.formatUnits(wei, this.precision))
+  format(wei: BigNumberish, precision?: number) {
+    return Number(utils.formatUnits(wei, precision ?? this.precision))
   }
 
-  parse(amount: string | number) {
-    return utils.parseUnits(String(amount), this.precision)
+  parse(amount: string | number, precision?: number) {
+    return utils.parseUnits(String(amount), precision ?? this.precision)
   }
 
   getAllowance(campaignAddress: string): Observable<number> {

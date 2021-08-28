@@ -123,7 +123,7 @@ export class AssetService {
   transferTokensToCampaign(assetAddress: string, campaignAddress: string, amount: number) {
     return this.signerService.ensureAuth.pipe(
       map(signer => this.contract(assetAddress, signer)),
-      switchMap(contract => contract.transfer(campaignAddress, this.stablecoin.parse(amount))),
+      switchMap(contract => contract.transfer(campaignAddress, this.stablecoin.parse(amount, 18))),
       switchMap(tx => this.dialogService.loading(
         from(this.sessionQuery.provider.waitForTransaction(tx.hash)),
         'Processing transaction...',

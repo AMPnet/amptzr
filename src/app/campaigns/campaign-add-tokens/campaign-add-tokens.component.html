@@ -16,7 +16,7 @@
         </div>
 
         <div>
-          Token balance: {{ data.balance | formatUnit:'bignumToWei' | currencyDefault:data.asset.symbol }}
+          Token balance: {{ data.balance | formatUnit:'bignumToWei':18 | currencyDefault:data.asset.symbol }}
         </div>
 
         <button app-action-button
