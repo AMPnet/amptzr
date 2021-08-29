@@ -50,15 +50,15 @@ const appRoutes: Routes = [
   {path: '**', redirectTo: 'offers'},
 ]
 
-const issuerNamespace: Routes = !environment.fixed.issuer ? [{
-  path: ':issuer', canActivate: [IssuerGuard], children: appRoutes,
-}] : [{
-  path: '', canActivate: [IssuerGuard], children: appRoutes,
+const issuerRoutes: Routes = [{
+  path: !environment.fixed.issuer ? ':issuer' : '',
+  canActivate: [IssuerGuard], children: appRoutes,
 }]
 
-const networkNamespace: Routes = !environment.fixed.chainID ? [{
-  path: ':chainID', canActivate: [NetworkGuard], children: issuerNamespace,
-}] : issuerNamespace
+const networkRoutes: Routes = [{
+  path: !environment.fixed.chainID ? ':chainID' : '',
+  canActivate: [NetworkGuard], children: issuerRoutes,
+}]
 
 const routes: Routes = [
   {path: '', pathMatch: 'full', redirectTo: !environment.fixed.issuer ? 'home' : 'offers'},
@@ -77,7 +77,7 @@ const routes: Routes = [
   {path: 'campaigns/:id/edit', component: CampaignEditComponent},
   {path: 'campaigns/:id/add-tokens', component: CampaignAddTokensComponent},
   {
-    path: '', component: AppLayoutComponent, children: networkNamespace,
+    path: '', component: AppLayoutComponent, children: networkRoutes,
   },
   {path: '**', redirectTo: 'home'},
 ]
