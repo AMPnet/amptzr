@@ -21,7 +21,9 @@ export class ReportService {
 
   transactionHistory(from?: Date, to?: Date): Observable<TransactionHistory> {
     const params = this.createFromToDateParams(from, to)
-    return this.http.get<TransactionHistory>(`${this.path}/tx_history/${this.preferenceQuery.network.chainID}`, params)
+    const chainID = this.preferenceQuery.network.chainID
+    const issuer = this.preferenceQuery.issuer.address
+    return this.http.get<TransactionHistory>(`${this.path}/tx_history/${chainID}/${issuer}`, params)
   }
 
   downloadTransactionHistoryReport(from?: Date, to?: Date): Observable<void> {
