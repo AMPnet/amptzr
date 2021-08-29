@@ -4,9 +4,9 @@ import {SessionQuery} from '../session/state/session.query'
 import {QueryService} from '../shared/services/blockchain/query.service'
 import {map, shareReplay, switchMap, tap} from 'rxjs/operators'
 import {BehaviorSubject, Observable} from 'rxjs'
-import {formatEther} from 'ethers/lib/utils'
 import {CampaignService} from '../shared/services/blockchain/campaign.service'
 import {DialogService} from '../shared/services/dialog.service'
+import {StablecoinService} from '../shared/services/blockchain/stablecoin.service'
 
 @Component({
   selector: 'app-portfolio',
@@ -25,13 +25,15 @@ export class PortfolioComponent {
 
   totalInvested$: Observable<{ value: number }> = this.portfolio$.pipe(
     map(portfolio => portfolio.length > 0 ?
-      portfolio.map(item => Number(formatEther(item.tokenValue))).reduce((prev, curr) => prev + curr) : 0),
+      portfolio.map(item => this.stablecoin.format(item.tokenValue))
+        .reduce((prev, curr) => prev + curr) : 0),
     map(v => ({value: v})),
   )
 
   constructor(private sessionQuery: SessionQuery,
               private queryService: QueryService,
               private dialogService: DialogService,
+              private stablecoin: StablecoinService,
               private campaignService: CampaignService) {
   }
 

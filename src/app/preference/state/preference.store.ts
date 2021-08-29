@@ -24,7 +24,7 @@ export function createInitialState(): PreferenceState {
     JWTRefreshToken: '',
     chainID: environment.fixed.chainID || MaticNetwork.chainID,
     issuer: {
-      address: environment.fixed.issuer || MaticNetwork.tokenizerConfig.defaultIssuer,
+      address: environment.fixed.issuer || '',
     },
   }
 }

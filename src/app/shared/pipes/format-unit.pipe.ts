@@ -1,22 +1,22 @@
 import {Pipe, PipeTransform} from '@angular/core'
-import {utils} from 'ethers'
 import {TokenPrice} from '../utils/token-price'
+import {StablecoinService} from '../services/blockchain/stablecoin.service'
 
 @Pipe({
   name: 'formatUnit',
 })
 export class FormatUnitPipe implements PipeTransform {
-  constructor() {
+  constructor(private stablecoin: StablecoinService) {
   }
 
-  public transform(value: any, operation: Operation | string) {
+  public transform(value: any, operation: Operation | string, precision?: number) {
     switch (operation) {
       case Operation.BIGNUM_TO_WEI:
         switch (typeof value) {
           case 'number':
-            return Number(utils.formatEther(BigInt(value).toString()))
+            return this.stablecoin.format(BigInt(value).toString(), precision)
           default:
-            return Number(utils.formatEther(value))
+            return this.stablecoin.format(value, precision)
         }
       case Operation.PARSE_TOKEN_PRICE:
         return TokenPrice.parse(value)

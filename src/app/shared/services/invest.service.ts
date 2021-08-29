@@ -1,7 +1,6 @@
 import {Injectable} from '@angular/core'
 import {combineLatest, Observable} from 'rxjs'
 import {map, shareReplay, take} from 'rxjs/operators'
-import {formatEther} from 'ethers/lib/utils'
 import {StablecoinService} from './blockchain/stablecoin.service'
 import {CampaignService} from './blockchain/campaign.service'
 
@@ -9,19 +8,19 @@ import {CampaignService} from './blockchain/campaign.service'
   providedIn: 'root',
 })
 export class InvestService {
-  constructor(private stablecoinService: StablecoinService,
+  constructor(private stablecoin: StablecoinService,
               private campaignService: CampaignService,
   ) {
   }
 
   preInvestData(campaignAddress: string): Observable<PreInvestData> {
     const campaign$ = this.campaignService.getCampaignWithInfo(campaignAddress).pipe(shareReplay(1))
-    const balance$ = combineLatest([this.stablecoinService.balance$]).pipe(take(1), map(([balance]) => balance))
+    const balance$ = combineLatest([this.stablecoin.balance$]).pipe(take(1), map(([balance]) => balance))
     const alreadyInvested$ = this.campaignService.alreadyInvested(campaignAddress)
 
     return combineLatest([campaign$, balance$, alreadyInvested$]).pipe(
       map(([campaign, balance, alreadyInvested]) => {
-        const walletBalance = Number(formatEther(balance))
+        const walletBalance = this.stablecoin.format(balance)
         const campaignStats = this.campaignService.stats(campaign)
 
         const userInvestGap = this.floorDecimals(campaignStats.userMax - alreadyInvested)

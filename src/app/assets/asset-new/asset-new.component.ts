@@ -5,8 +5,8 @@ import {ActivatedRoute} from '@angular/router'
 import {DialogService} from '../../shared/services/dialog.service'
 import {switchMap} from 'rxjs/operators'
 import {AssetService} from '../../shared/services/blockchain/asset.service'
-import {utils} from 'ethers'
 import {RouterService} from '../../shared/services/router.service'
+import {StablecoinService} from '../../shared/services/blockchain/stablecoin.service'
 
 @Component({
   selector: 'app-asset-new',
@@ -23,6 +23,7 @@ export class AssetNewComponent {
               private router: RouterService,
               private route: ActivatedRoute,
               private dialogService: DialogService,
+              private stablecoin: StablecoinService,
               private fb: FormBuilder) {
     this.createForm = this.fb.group({
       name: ['', Validators.required],
@@ -44,7 +45,7 @@ export class AssetNewComponent {
         issuer: this.issuer,
         ansName: this.createForm.value.ansName,
         name: this.createForm.get('name')!.value,
-        initialTokenSupply: utils.parseEther(String(this.createForm.get('initialTokenSupply')!.value)),
+        initialTokenSupply: this.stablecoin.parse(this.createForm.get('initialTokenSupply')!.value, 18),
         symbol: this.createForm.get('symbol')!.value,
         whitelistRequiredForTransfer: this.createForm.get('whitelistRequiredForTransfer')!.value,
         info: uploadRes.path,

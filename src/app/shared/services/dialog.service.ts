@@ -52,6 +52,7 @@ export class DialogService {
   loading<T>(obs$: Observable<T>, message: string): Observable<T> {
     const dialogRef = this.dialog.open(LoadingDialogComponent, {
       data: {message} as LoadingDialogData,
+      disableClose: true,
     })
 
     return obs$.pipe(

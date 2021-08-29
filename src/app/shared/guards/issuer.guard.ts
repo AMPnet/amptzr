@@ -1,12 +1,13 @@
 import {Injectable} from '@angular/core'
 import {ActivatedRouteSnapshot, CanActivate, RouterStateSnapshot, UrlTree} from '@angular/router'
-import {Observable, of} from 'rxjs'
-import {switchMap, tap} from 'rxjs/operators'
+import {combineLatest, Observable, of} from 'rxjs'
+import {switchMap, take, tap} from 'rxjs/operators'
 import {PreferenceQuery} from '../../preference/state/preference.query'
 import {PreferenceStore} from '../../preference/state/preference.store'
 import {IssuerService} from '../services/blockchain/issuer.service'
 import {SessionQuery} from '../../session/state/session.query'
 import {environment} from '../../../environments/environment'
+import {StablecoinService} from '../services/blockchain/stablecoin.service'
 
 @Injectable({
   providedIn: 'root',
@@ -15,6 +16,7 @@ export class IssuerGuard implements CanActivate {
   constructor(private preferenceQuery: PreferenceQuery,
               private preferenceStore: PreferenceStore,
               private sessionQuery: SessionQuery,
+              private stablecoin: StablecoinService,
               private issuerService: IssuerService) {
   }
 
@@ -39,6 +41,8 @@ export class IssuerGuard implements CanActivate {
           createdByAddress: issuer.createdBy,
         },
       })),
+      // this is needed to reload the latest issuer config
+      switchMap(() => combineLatest([this.stablecoin.contract$]).pipe(take(1))),
       switchMap(() => of(true)),
     )
   }

@@ -15,8 +15,11 @@ export class NetworkGuard implements CanActivate {
   }
 
   canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<boolean | UrlTree> {
-    return of(route.params.chainID).pipe(
-      map(chainID => Number(chainID) as ChainID),
+    if (!route.params.chainID) {
+      return of(true)
+    }
+
+    return of(Number(route.params.chainID) as ChainID).pipe(
       tap(chainID => this.preferenceStore.update({
         chainID: Networks[chainID].chainID,
       })),

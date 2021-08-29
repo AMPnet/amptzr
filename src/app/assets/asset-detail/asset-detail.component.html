@@ -41,7 +41,7 @@
 
         <div>
           Initial token supply:
-          {{ asset.initialTokenSupply | formatUnit:'bignumToWei' | number }}
+          {{ asset.initialTokenSupply | formatUnit:'bignumToWei':18 | number }}
         </div>
 
         <div>

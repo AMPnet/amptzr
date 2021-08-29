@@ -33,7 +33,7 @@ export class InvestComponent {
   constructor(private fb: FormBuilder,
               private campaignService: CampaignService,
               private sessionQuery: SessionQuery,
-              private stablecoinService: StablecoinService,
+              private stablecoin: StablecoinService,
               private dialogService: DialogService,
               private investService: InvestService,
               private router: RouterService,
@@ -102,7 +102,7 @@ export class InvestComponent {
 
   private getAllowance(): Observable<number> {
     return combineLatest([this.campaign$]).pipe(take(1),
-      switchMap(([campaign]) => this.stablecoinService.getAllowance(campaign.contractAddress)),
+      switchMap(([campaign]) => this.stablecoin.getAllowance(campaign.contractAddress)),
     )
   }
 
@@ -116,7 +116,7 @@ export class InvestComponent {
 
   private approveAmount(amount: number) {
     return combineLatest([this.campaign$]).pipe(take(1),
-      switchMap(([campaign]) => this.stablecoinService.approveAmount(
+      switchMap(([campaign]) => this.stablecoin.approveAmount(
         campaign.contractAddress, amount,
       )),
     )

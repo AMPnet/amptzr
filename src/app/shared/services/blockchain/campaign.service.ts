@@ -9,7 +9,7 @@ import {
 import {first, map, switchMap, take} from 'rxjs/operators'
 import {SessionQuery} from '../../../session/state/session.query'
 import {PreferenceQuery} from '../../../preference/state/preference.query'
-import {BigNumber, BigNumberish, Signer, utils} from 'ethers'
+import {BigNumber, BigNumberish, Signer} from 'ethers'
 import {Provider} from '@ethersproject/providers'
 import {IpfsService, IPFSText} from '../ipfs/ipfs.service'
 import {SignerService} from '../signer.service'
@@ -17,9 +17,9 @@ import {findLog} from '../../utils/ethersjs'
 import {IPFSAddResult} from '../ipfs/ipfs.service.types'
 import {cid, IPFSCampaign, IPFSDocument, iso8601, ReturnFrequency} from '../../../../../types/ipfs/campaign'
 import {ErrorService} from '../error.service'
-import {formatEther} from 'ethers/lib/utils'
 import {TokenPrice} from '../../utils/token-price'
 import {DialogService} from '../dialog.service'
+import {StablecoinService} from './stablecoin.service'
 
 @Injectable({
   providedIn: 'root',
@@ -36,6 +36,7 @@ export class CampaignService {
               private signerService: SignerService,
               private errorService: ErrorService,
               private dialogService: DialogService,
+              private stablecoin: StablecoinService,
               private preferenceQuery: PreferenceQuery) {
   }
 
@@ -148,7 +149,7 @@ export class CampaignService {
   invest(address: string, amount: number) {
     return this.signerService.ensureAuth.pipe(
       map(signer => this.contract(address, signer)),
-      switchMap(contract => contract.invest(utils.parseEther(amount.toString()))),
+      switchMap(contract => contract.invest(this.stablecoin.parse(amount))),
       switchMap(tx => this.dialogService.loading(
         from(this.sessionQuery.provider.waitForTransaction(tx.hash)),
         'Processing transaction...',
@@ -164,16 +165,16 @@ export class CampaignService {
     ]).pipe(
       switchMap(([contract, _signer]) =>
         contract.investments(this.sessionQuery.getValue().address!)),
-      map(res => Number(utils.formatEther(res))),
+      map(res => this.stablecoin.format(res)),
     )
   }
 
   stats(campaign: CampaignState): CampaignStats {
-    const userMin = Number(formatEther(campaign.minInvestment))
-    const userMax = Number(formatEther(campaign.maxInvestment))
-    const tokenBalance = Number(formatEther(campaign.totalTokensBalance))
-    const tokensSold = Number(formatEther(campaign.totalTokensSold))
-    const softCap = Number(formatEther(campaign.softCap))
+    const userMin = this.stablecoin.format(campaign.minInvestment)
+    const userMax = this.stablecoin.format(campaign.maxInvestment)
+    const tokenBalance = this.stablecoin.format(campaign.totalTokensBalance, 18)
+    const tokensSold = this.stablecoin.format(campaign.totalTokensSold, 18)
+    const softCap = this.stablecoin.format(campaign.softCap)
     const tokenPrice = TokenPrice.parse(campaign.tokenPrice.toNumber())
     const tokensAvailable = tokenBalance - tokensSold
 

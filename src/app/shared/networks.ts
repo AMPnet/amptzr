@@ -35,7 +35,6 @@ interface TokenizerConfig {
   deployerService: string,
   queryService: string,
   defaultWalletApprover: string,
-  defaultIssuer: string,
   defaultStableCoin: string,
 }
 
@@ -62,7 +61,6 @@ export const MaticNetwork: Network = {
     deployerService: '0x29aF1b53f2cb555B5621A9F13c24711A9EDdEC40',
     queryService: '0xF80a26Bf08AF7c8C33d6f8cFcFe9641363bA788b',
     defaultWalletApprover: '0x23B00A11F6DBbD3a850a0AE72668109133779575',
-    defaultIssuer: '0xD17574450885C1b898bc835Ff9CB5b44A3601c24',
     defaultStableCoin: '0x18D71D80087084df631f95EF29C8a11904DC47F3',
   },
   venlyConfig: {
@@ -93,8 +91,7 @@ export const MumbaiNetwork: Network = {
     deployerService: '0x9E4A2D67E1b63aB1C46000161c8288D5e4dea075',
     queryService: '0xF80a26Bf08AF7c8C33d6f8cFcFe9641363bA788b',
     defaultWalletApprover: '0x142f05565D9e0562e7caA09bAf816D263615dfe6',
-    defaultIssuer: '0xD17574450885C1b898bc835Ff9CB5b44A3601c24',
-    defaultStableCoin: '0x18D71D80087084df631f95EF29C8a11904DC47F3',
+    defaultStableCoin: '0x9733aa0fb74a01f058fbeb0ad9da3f483058908e',
   },
   venlyConfig: {
     secretType: SecretType.MATIC,
