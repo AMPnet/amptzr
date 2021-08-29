@@ -134,6 +134,7 @@ export class CampaignService {
           data.minInvestment, data.maxInvestment,
           data.whitelistRequired, data.info,
         )).pipe(
+          this.errorService.handleError(),
           switchMap(tx => this.dialogService.loading(
             from(this.sessionQuery.provider.waitForTransaction(tx.hash)),
             'Processing transaction...',
@@ -253,6 +254,7 @@ export interface CampaignState {
   createdBy: string;
   owner: string;
   asset: string;
+  assetFactory: string;
   issuer: string;
   tokenPrice: BigNumber;
   softCap: BigNumber;

@@ -1,0 +1,70 @@
+<div class="px-4 py-2 max-w-screen-lg mx-auto">
+  <div class="my-4">
+    <a routerLink="/issuers">ᐊ Back to Issuers</a>
+  </div>
+
+  <h1 class="my-2 text-2xl uppercase">
+    New Transferable Asset
+  </h1>
+
+  <form [formGroup]="createForm">
+    <div class="mt-2">
+      <label class="block" for="name">Name</label>
+      <input type="text" id="name" formControlName="name">
+    </div>
+
+    <div class="mt-2">
+      <label class="block" for="ansName">ANS Name</label>
+      <input type="text" id="ansName" formControlName="ansName">
+    </div>
+
+    <div class="mt-2">
+      <label class="block" for="logo">Logo</label>
+      <img class="p-4 max-w-xs max-h-xs"
+           *ngIf="createForm.get('logo')?.value?.[0]"
+           [src]="(createForm.get('logo')?.value?.[0] | safe:'fileUrl') | toUrlIPFS"
+           alt="Issuer Logo">
+      <input type="file" id="logo" formControlName="logo" multiple>
+    </div>
+
+    <div class="mt-2">
+      <label class="block" for="description">Description</label>
+      <textarea id="description" formControlName="description"
+                rows="4" cols="50">
+      </textarea>
+    </div>
+
+    <div class="mt-2">
+      <label class="block" for="initialTokenSupply">Initial token supply</label>
+      <input type="number" id="initialTokenSupply" formControlName="initialTokenSupply">
+    </div>
+
+    <div class="mt-2">
+      <label class="block" for="symbol">Symbol</label>
+      <input type="text" id="symbol" formControlName="symbol">
+    </div>
+
+    <div class="mt-2 flex items-center">
+      <input type="checkbox" id="whitelistRequiredForRevenueClaim"
+             formControlName="whitelistRequiredForRevenueClaim">
+      <label class="ml-2" for="whitelistRequiredForRevenueClaim">
+        Whitelist required for revenue claim
+      </label>
+    </div>
+
+    <div class="mt-2 flex items-center">
+      <input type="checkbox" id="whitelistRequiredForLiquidationClaim"
+             formControlName="whitelistRequiredForLiquidationClaim">
+      <label class="ml-2" for="whitelistRequiredForLiquidationClaim">
+        Whitelist required for liquidation claim
+      </label>
+    </div>
+
+    <button app-action-button
+            class="bg-blue-500 disabled:bg-gray-400 text-white p-2 rounded-md mt-2"
+            text="Create"
+            [disabled]="!createForm.valid"
+            [onClick]="create.bind(this)">
+    </button>
+  </form>
+</div>

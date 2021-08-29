@@ -1,0 +1,46 @@
+<div class="px-4 py-2 max-w-screen-lg mx-auto">
+  <div class="my-4">
+    <a routerLink="/ft_assets/{{ assetAddress }}">ᐊ Back to Asset</a>
+  </div>
+
+  <h1 class="my-2 text-2xl uppercase">
+    Edit Asset
+  </h1>
+
+  <ng-container *ngIf="(asset$ | async) as assetRes">
+    <ng-container *ngIf="assetRes.value as asset">
+      <form [formGroup]="updateForm">
+        <div class="mt-2">
+          <label class="block" for="logo">Logo</label>
+          <img class="p-4 max-w-xs max-h-xs"
+               [src]="((updateForm.get('logo')?.value?.[0] | safe:'fileUrl') || asset.logo) | toUrlIPFS"
+               alt="Asset Logo">
+          <input id="logo" type="file" formControlName="logo" multiple>
+        </div>
+
+        <div class="mt-2">
+          <label class="block" for="description">Description</label>
+          <textarea id="description" formControlName="description"
+                    rows="4" cols="50">
+          </textarea>
+        </div>
+
+        <button app-action-button
+                class="bg-blue-500 disabled:bg-gray-400 text-white p-2 rounded-md mt-2"
+                text="Update"
+                [disabled]="!updateForm.dirty || !updateForm.valid"
+                [onClick]="update(asset).bind(this)">
+        </button>
+      </form>
+    </ng-container>
+
+    <ng-container *ngIf="assetRes.error">
+      Cannot fetch asset.
+      <div hidden>{{ assetRes.error | json }}</div>
+    </ng-container>
+
+    <ng-container *ngIf="assetRes.loading">
+      <app-spinner type="overlay">Loading asset...</app-spinner>
+    </ng-container>
+  </ng-container>
+</div>

@@ -1,14 +1,14 @@
 import {ChangeDetectionStrategy, Component} from '@angular/core'
 import {BehaviorSubject, Observable} from 'rxjs'
-import {withStatus, WithStatus} from '../../shared/utils/observables'
 import {FormBuilder, FormGroup} from '@angular/forms'
 import {ActivatedRoute} from '@angular/router'
-import {SessionQuery} from '../../session/state/session.query'
-import {IpfsService} from '../../shared/services/ipfs/ipfs.service'
-import {SignerService} from '../../shared/services/signer.service'
-import {DialogService} from '../../shared/services/dialog.service'
 import {switchMap, tap} from 'rxjs/operators'
-import {AssetService, AssetWithInfo} from '../../shared/services/blockchain/asset.service'
+import {WithStatus, withStatus} from '../../../shared/utils/observables'
+import {IpfsService} from '../../../shared/services/ipfs/ipfs.service'
+import {DialogService} from '../../../shared/services/dialog.service'
+import {SignerService} from '../../../shared/services/signer.service'
+import {AssetService, AssetWithInfo} from '../../../shared/services/blockchain/asset.service'
+import {SessionQuery} from '../../../session/state/session.query'
 
 @Component({
   selector: 'app-asset-edit',
