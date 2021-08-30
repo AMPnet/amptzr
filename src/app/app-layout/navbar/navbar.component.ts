@@ -1,9 +1,9 @@
 import {ChangeDetectionStrategy, Component} from '@angular/core'
-import {Observable, of} from 'rxjs'
+import {combineLatest, Observable, of} from 'rxjs'
 import {SessionQuery} from '../../session/state/session.query'
 import {AppLayoutStore} from '../state/app-layout.store'
 import {AppLayoutQuery} from '../state/app-layout.query'
-import {filter, tap} from 'rxjs/operators'
+import {filter, map, tap} from 'rxjs/operators'
 import {TailwindService} from '../../shared/services/tailwind.service'
 import {UserService} from '../../shared/services/user.service'
 import {SignerService} from '../../shared/services/signer.service'
@@ -25,9 +25,9 @@ export class NavbarComponent {
   issuer$: Observable<WithStatus<IssuerWithInfo>>
 
   navbarScreenLinks: NavbarItem[] = [
-    {title: "Offers", routerLink: "/offers"},
-    {title: "Portfolio", routerLink: "/portfolio"},
-    {title: "FAQ", routerLink: "/faq"},
+    {title: 'Offers', routerLink: '/offers', showItem: of(true)},
+    {title: 'Portfolio', routerLink: '/portfolio', showItem: of(true)},
+    {title: 'FAQ', routerLink: '/faq', showItem: of(true)},
   ]
 
   constructor(private sessionQuery: SessionQuery,
@@ -45,6 +45,25 @@ export class NavbarComponent {
     )
 
     this.issuer$ = this.issuerService.issuerWithStatus$
+    this.navbarScreenLinks.push(
+      {
+        title: 'Admin',
+        routerLink: '/admin',
+        showItem: combineLatest([
+          this.isLoggedIn$,
+          this.sessionQuery.address$,
+          this.issuerService.issuer$
+        ]).pipe(
+          map(([isLoggedIn, address, issuer]) => {
+            if (!isLoggedIn || !address) {
+              return false
+            }
+
+            return address === issuer.owner
+          })
+        )
+      }
+    )
   }
 
   login(): Observable<unknown> {
@@ -61,4 +80,5 @@ export class NavbarComponent {
 interface NavbarItem {
   title: string,
   routerLink?: string,
+  showItem: Observable<boolean>,
 }
