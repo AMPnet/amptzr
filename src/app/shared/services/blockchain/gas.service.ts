@@ -2,7 +2,7 @@ import {Injectable} from '@angular/core'
 import {from, Observable, of} from 'rxjs'
 import {catchError, map} from 'rxjs/operators'
 import {PreferenceQuery} from '../../../preference/state/preference.query'
-import {Overrides} from 'ethers'
+import {BigNumber, Overrides} from 'ethers'
 import {ChainID} from '../../networks'
 import {HttpClient} from '@angular/common/http'
 import {SessionQuery} from '../../../session/state/session.query'
@@ -31,6 +31,7 @@ export class GasService {
   private maticGasStation(endpoint: string): Observable<Partial<Overrides>> {
     return this.http.get<GasStationRes>(endpoint).pipe(
       map(res => ({
+        gasLimit: BigNumber.from(10000),
         gasPrice: parseUnits(res.fast.toString(), 'gwei'),
       })),
       catchError(() => of({})),
@@ -40,6 +41,7 @@ export class GasService {
   private defaultConfig(): Observable<Partial<Overrides>> {
     return from(this.sessionQuery.provider.getGasPrice()).pipe(
       map(gasPrice => ({
+        gasLimit: BigNumber.from(10000),
         gasPrice: parseUnits(gasPrice.toString(), 'gwei'),
       })),
       catchError(() => of({})),
