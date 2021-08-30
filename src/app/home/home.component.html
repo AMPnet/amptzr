@@ -1,4 +1,4 @@
-<div class="flex bg-blue-50 min-h-full w-full">
+<div class="bg-blue-50 min-h-full w-full">
   <div class="px-4 py-2 max-w-screen-lg mx-auto">
     <div class="flex flex-col items-center gap-2 mt-8">
       <div>
@@ -119,7 +119,7 @@
       </div>
       <div class="flex text-center text-2xl text-indigo-900">Welcome to the best tokenization platform</div>
 
-      <app-select-network></app-select-network>
+      <app-select-network class="mt-4"></app-select-network>
 
       <button
         class="flex items-center gap-4 pl-3 pr-6 py-3 mt-8 border-indigo-800 border-2 rounded-full
@@ -141,7 +141,7 @@
     <div *ngIf="issuers$ | async as issuersRes">
       <ng-container *ngIf="issuersRes.value as issuers">
         <div class="flex flex-col lg:flex-row lg:flex-wrap gap-6 mt-8" *ngIf="issuers.length > 0">
-          <div class="flex flex-col w-full h-full lg:w-56 lg:min-h-64 justify-start shadow-xl hover:shadow-2xl
+          <div class="flex flex-col w-full lg:w-56 lg:min-h-64 justify-start shadow-xl hover:shadow-2xl
                       transition-all duration-300 rounded-4xl"
                *ngFor="let issuer of issuers">
             <div class="relative w-full">
@@ -151,7 +151,7 @@
                 <div class="w-full h-32 bg-gray-200 rounded-t-4xl"></div>
               </ng-template>
             </div>
-            <div class="flex flex-col gap-8 w-full h-full rounded-b-4xl bg-white p-4">
+            <div class="flex flex-col gap-8 w-full h-full rounded-b-4xl bg-white p-4 justify-between">
               <div class="flex flex-wrap text-2xl">
                 <span>{{ issuer.name ?? 'Unknown' }}</span>
               </div>
