@@ -17,12 +17,22 @@ export class SessionQuery extends Query<SessionState> {
         const newProvider = getDefaultProvider(
           EthersNetworks[this.preferenceQuery.getValue().chainID],
         )
+
         this.store.update({provider: newProvider})
         return newProvider as providers.Provider
       }
 
       return provider
     }),
+    // Use this for testing
+    // tap(provider => {
+    //   provider.on('debug', info => {
+    //     console.log(info.request.method)
+    //     console.log(info.request.params[0]?.to)
+    //     console.log(info.request.params[0]?.from)
+    //     console.log(info.request.params[0]?.data)
+    //   })
+    // })
   )
 
   isLoggedIn$ = this.select().pipe(

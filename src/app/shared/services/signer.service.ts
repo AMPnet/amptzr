@@ -66,20 +66,14 @@ export class SignerService {
     return of(this.sessionQuery.signer).pipe(
       concatMap(signer => signer ?
         from(signer.getAddress()).pipe(map(() => signer!)) :
-        this.loginRequiredProcedure.pipe(
+        this.loginDialog.pipe(
           map(() => this.sessionQuery.signer!),
         ),
       ),
     )
   }
 
-  private get loginRequiredProcedure(): Observable<any> {
-    return this.dialogService.info('Login with your wallet to proceed').pipe(
-      concatMap(confirm => confirm ? this.loginDialog() : throwError('PRE_LOGIN_MODAL_DISMISSED')),
-    )
-  }
-
-  private loginDialog() {
+  private get loginDialog() {
     return this.dialog.open(AuthComponent).afterClosed().pipe(
       concatMap(authCompleted => authCompleted ?
         this.sessionQuery.waitUntilLoggedIn() :
