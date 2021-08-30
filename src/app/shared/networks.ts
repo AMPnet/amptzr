@@ -16,6 +16,7 @@ export interface Network {
     name: string,
     symbol: string;
   },
+  maxGasPrice: number,
   rpcURLs: string[],
   explorerURLs: string[],
   tokenizerConfig: TokenizerConfig,
@@ -54,8 +55,9 @@ export const MaticNetwork: Network = {
     name: 'MATIC',
     symbol: 'MATIC',
   },
-  rpcURLs: ['https://rpc-mainnet.maticvigil.com'],
-  explorerURLs: ['https://explorer-mainnet.maticvigil.com/'],
+  maxGasPrice: 100,
+  rpcURLs: ['https://polygon-mainnet.infura.io/v3/c9625ebec3634ce3a0bd20be405bac8c'],
+  explorerURLs: ['https://polygonscan.com/'],
   tokenizerConfig: {
     apxRegistry: '0xC5C69f646E94abD4D169a0b8a4F4A493360BF7F9',
     issuerFactory: '0x153B1ae9f9cC6a8F3d1C85215F20DDb8471a5489',
@@ -87,8 +89,9 @@ export const MumbaiNetwork: Network = {
     name: 'MATIC',
     symbol: 'MATIC',
   },
-  rpcURLs: ['https://matic-mumbai.chainstacklabs.com'],
-  explorerURLs: ['https://explorer-mumbai.maticvigil.com/'],
+  maxGasPrice: 20,
+  rpcURLs: ['https://polygon-mumbai.infura.io/v3/c9625ebec3634ce3a0bd20be405bac8c'],
+  explorerURLs: ['https://mumbai.polygonscan.com/'],
   tokenizerConfig: {
     apxRegistry: '0x0BBF3325306fa959412762Ab0D9a6E895392b8FF',
     issuerFactory: '0x4d2EbC8B12E6f9d5ee6d2412e0651cB0f603C54C',
@@ -121,8 +124,10 @@ export const Networks: { [key in ChainID]: Network } = {
 const getEthersNetwork = (network: Network): providers.Network => ({
   name: network.shortName,
   chainId: network.chainID,
-  _defaultProvider: (providers: any) =>
-    new providers.JsonRpcProvider(network.rpcURLs[0]),
+  _defaultProvider: (_providers: any) =>
+    new providers.StaticJsonRpcProvider({
+      url: network.rpcURLs[0],
+    }),
 })
 
 export const EthersNetworks = Object.fromEntries(Object.entries(Networks)

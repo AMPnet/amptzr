@@ -8,6 +8,7 @@ import {AuthProvider, PreferenceStore} from '../../../preference/state/preferenc
 import {VenlyNetworks} from '../../networks'
 import {environment} from '../../../../environments/environment'
 import {DialogService} from '../dialog.service'
+import {getWindow} from '../../utils/browser'
 
 @Injectable({
   providedIn: 'root',
@@ -40,7 +41,7 @@ export class VenlySubsignerService implements Subsigner {
           environment: network.env,
         }))
       }),
-      tap(() => this.subprovider = (window as any).Arkane),
+      tap(() => this.subprovider = getWindow().Arkane),
     )
   }
 

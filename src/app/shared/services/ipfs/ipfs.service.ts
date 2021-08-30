@@ -38,7 +38,7 @@ export class IpfsService {
   get<T>(hash: string): Observable<T> {
     const cid = this.toCID(hash)
 
-    return cid ? this.http.get<T>(this.getURL(cid.toString())) : of(<T>{})
+    return cid ? this.http.get<T>(this.getURL(cid.toString()), {responseType: 'json'}) : of(<T>{})
   }
 
   getURL(hash: string): string {

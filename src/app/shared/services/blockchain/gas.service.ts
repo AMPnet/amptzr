@@ -1,12 +1,12 @@
 import {Injectable} from '@angular/core'
-import {from, Observable, of} from 'rxjs'
+import {Observable, of} from 'rxjs'
 import {catchError, map} from 'rxjs/operators'
 import {PreferenceQuery} from '../../../preference/state/preference.query'
 import {Overrides} from 'ethers'
-import {ChainID} from '../../networks'
 import {HttpClient} from '@angular/common/http'
 import {SessionQuery} from '../../../session/state/session.query'
 import {parseUnits} from 'ethers/lib/utils'
+import {ChainID} from '../../networks'
 
 @Injectable({
   providedIn: 'root',
@@ -24,24 +24,18 @@ export class GasService {
       case ChainID.MUMBAI_TESTNET:
         return this.maticGasStation('https://gasstation-mumbai.matic.today')
       default:
-        return this.defaultConfig()
+        return of({})
     }
   }
 
   private maticGasStation(endpoint: string): Observable<Partial<Overrides>> {
     return this.http.get<GasStationRes>(endpoint).pipe(
-      map(res => ({
-        gasPrice: parseUnits(res.fast.toString(), 'gwei'),
-      })),
-      catchError(() => of({})),
-    )
-  }
-
-  private defaultConfig(): Observable<Partial<Overrides>> {
-    return from(this.sessionQuery.provider.getGasPrice()).pipe(
-      map(gasPrice => ({
-        gasPrice: parseUnits(gasPrice.toString(), 'gwei'),
-      })),
+      map(res => {
+        const gasPrice = Math.min(this.preferenceQuery.network.maxGasPrice, res.fast)
+        return {
+          gasPrice: parseUnits(gasPrice.toString(), 'gwei'),
+        }
+      }),
       catchError(() => of({})),
     )
   }
