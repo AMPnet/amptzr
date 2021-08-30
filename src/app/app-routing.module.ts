@@ -33,7 +33,7 @@ import {FtAssetNewComponent} from './assets/ft-assets/ft-asset-new/ft-asset-new.
 
 const appRoutes: Routes = [
   {
-    path: '', component: AppComponent, canActivate: [IssuerGuard], children: [
+    path: '', component: AppComponent, children: [
       {path: '', pathMatch: 'full', redirectTo: 'offers'},
       {path: 'offers', component: OffersComponent},
       {path: 'offers/:id', component: OfferComponent},
@@ -49,7 +49,7 @@ const appRoutes: Routes = [
       {path: 'dev_playground', component: DevPlaygroundComponent},
     ],
   },
-  {path: '**', redirectTo: 'offers'},
+  {path: '**', redirectTo: '/offers'},
 ]
 
 const issuerRoutes: Routes = [{
@@ -63,7 +63,7 @@ const networkRoutes: Routes = [{
 }]
 
 const routes: Routes = [
-  {path: '', pathMatch: 'full', redirectTo: !environment.fixed.issuer ? 'home' : 'offers'},
+  {path: '', pathMatch: 'full', redirectTo: !environment.fixed.issuer ? '/home' : '/offers'},
   {path: 'home', component: HomeComponent},
   {path: 'issuers', component: IssuerListComponent},
   {path: 'issuers/new', component: IssuerNewComponent},
@@ -84,7 +84,7 @@ const routes: Routes = [
   {
     path: '', component: AppLayoutComponent, children: networkRoutes,
   },
-  {path: '**', redirectTo: 'home'},
+  {path: '**', redirectTo: '/home'},
 ]
 
 @NgModule({

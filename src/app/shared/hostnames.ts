@@ -3,7 +3,7 @@ import {MumbaiNetwork, Network} from './networks'
 export const Hostnames: { [host in string]: Host } = {
   'woz.eugen.work': {
     network: MumbaiNetwork,
-    issuerAddress: '0x521B0200138CeF507769F6d8E8d4999F60B6b319',
+    issuerAddress: '0xc95fcFd88C1D0b491E2F1A367a0211c6c6F35dF0',
   },
 }
 
