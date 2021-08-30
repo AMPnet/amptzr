@@ -3,7 +3,6 @@ import {from, Observable, of} from 'rxjs'
 import {catchError, map} from 'rxjs/operators'
 import {PreferenceQuery} from '../../../preference/state/preference.query'
 import {BigNumber, Overrides} from 'ethers'
-import {ChainID} from '../../networks'
 import {HttpClient} from '@angular/common/http'
 import {SessionQuery} from '../../../session/state/session.query'
 import {parseUnits} from 'ethers/lib/utils'
@@ -18,14 +17,17 @@ export class GasService {
   }
 
   get overrides(): Observable<Partial<Overrides>> {
-    switch (this.preferenceQuery.network.chainID) {
-      case ChainID.MATIC_MAINNET:
-        return this.maticGasStation('https://gasstation-mainnet.matic.network')
-      case ChainID.MUMBAI_TESTNET:
-        return this.maticGasStation('https://gasstation-mumbai.matic.today')
-      default:
-        return this.defaultConfig()
-    }
+    return of({})
+
+    // TODO: fix implementation of setting gaslimit and gasprice
+    // switch (this.preferenceQuery.network.chainID) {
+    //   case ChainID.MATIC_MAINNET:
+    //     return this.maticGasStation('https://gasstation-mainnet.matic.network')
+    //   case ChainID.MUMBAI_TESTNET:
+    //     return this.maticGasStation('https://gasstation-mumbai.matic.today')
+    //   default:
+    //     return this.defaultConfig()
+    // }
   }
 
   private maticGasStation(endpoint: string): Observable<Partial<Overrides>> {
