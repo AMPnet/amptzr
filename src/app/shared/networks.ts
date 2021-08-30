@@ -16,6 +16,7 @@ export interface Network {
     name: string,
     symbol: string;
   },
+  maxGasPrice: number,
   rpcURLs: string[],
   explorerURLs: string[],
   tokenizerConfig: TokenizerConfig,
@@ -54,6 +55,7 @@ export const MaticNetwork: Network = {
     name: 'MATIC',
     symbol: 'MATIC',
   },
+  maxGasPrice: 100,
   rpcURLs: ['https://polygon-mainnet.infura.io/v3/c9625ebec3634ce3a0bd20be405bac8c'],
   explorerURLs: ['https://polygonscan.com/'],
   tokenizerConfig: {
@@ -87,6 +89,7 @@ export const MumbaiNetwork: Network = {
     name: 'MATIC',
     symbol: 'MATIC',
   },
+  maxGasPrice: 20,
   rpcURLs: ['https://polygon-mumbai.infura.io/v3/c9625ebec3634ce3a0bd20be405bac8c'],
   explorerURLs: ['https://mumbai.polygonscan.com/'],
   tokenizerConfig: {
@@ -121,8 +124,10 @@ export const Networks: { [key in ChainID]: Network } = {
 const getEthersNetwork = (network: Network): providers.Network => ({
   name: network.shortName,
   chainId: network.chainID,
-  _defaultProvider: (providers: any) =>
-    new providers.JsonRpcProvider(network.rpcURLs[0]),
+  _defaultProvider: (_providers: any) =>
+    new providers.StaticJsonRpcProvider({
+      url: network.rpcURLs[0],
+    }),
 })
 
 export const EthersNetworks = Object.fromEntries(Object.entries(Networks)
