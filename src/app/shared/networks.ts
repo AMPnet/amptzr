@@ -54,8 +54,8 @@ export const MaticNetwork: Network = {
     name: 'MATIC',
     symbol: 'MATIC',
   },
-  rpcURLs: ['https://rpc-mainnet.maticvigil.com'],
-  explorerURLs: ['https://explorer-mainnet.maticvigil.com/'],
+  rpcURLs: ['https://polygon-mainnet.infura.io/v3/c9625ebec3634ce3a0bd20be405bac8c'],
+  explorerURLs: ['https://polygonscan.com/'],
   tokenizerConfig: {
     apxRegistry: '0xC5C69f646E94abD4D169a0b8a4F4A493360BF7F9',
     issuerFactory: '0x153B1ae9f9cC6a8F3d1C85215F20DDb8471a5489',
@@ -87,8 +87,8 @@ export const MumbaiNetwork: Network = {
     name: 'MATIC',
     symbol: 'MATIC',
   },
-  rpcURLs: ['https://matic-mumbai.chainstacklabs.com'],
-  explorerURLs: ['https://explorer-mumbai.maticvigil.com/'],
+  rpcURLs: ['https://polygon-mumbai.infura.io/v3/c9625ebec3634ce3a0bd20be405bac8c'],
+  explorerURLs: ['https://mumbai.polygonscan.com/'],
   tokenizerConfig: {
     apxRegistry: '0x0BBF3325306fa959412762Ab0D9a6E895392b8FF',
     issuerFactory: '0x4d2EbC8B12E6f9d5ee6d2412e0651cB0f603C54C',
