@@ -20,9 +20,13 @@ export class NetworkGuard implements CanActivate {
     }
 
     return of(Number(route.params.chainID) as ChainID).pipe(
-      tap(chainID => this.preferenceStore.update({
-        chainID: Networks[chainID].chainID,
-      })),
+      tap(chainID => {
+        if (chainID !== this.preferenceQuery.getValue().chainID) {
+          this.preferenceStore.update({
+            chainID: Networks[chainID].chainID,
+          })
+        }
+      }),
       switchMap(() => of(true)),
       catchError(() => of(false)),
     )
