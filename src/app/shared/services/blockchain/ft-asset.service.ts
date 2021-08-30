@@ -1,6 +1,11 @@
 import {Injectable} from '@angular/core'
 import {combineLatest, from, Observable, of} from 'rxjs'
-import {Asset, Asset__factory, AssetFactory, AssetFactory__factory} from '../../../../../types/ethers-contracts'
+import {
+  AssetTransferable,
+  AssetTransferable__factory,
+  AssetTransferableFactory,
+  AssetTransferableFactory__factory,
+} from '../../../../../types/ethers-contracts'
 import {first, map, switchMap} from 'rxjs/operators'
 import {SessionQuery} from '../../../session/state/session.query'
 import {PreferenceQuery} from '../../../preference/state/preference.query'
@@ -19,11 +24,12 @@ import {GasService} from './gas.service'
 @Injectable({
   providedIn: 'root',
 })
-export class AssetService {
-  factoryContract$: Observable<AssetFactory> = this.sessionQuery.provider$.pipe(
+export class FtAssetService {
+  factoryContract$: Observable<AssetTransferableFactory> = this.sessionQuery.provider$.pipe(
     map(provider =>
-      AssetFactory__factory.connect(this.preferenceQuery.network.tokenizerConfig.assetFactory, provider),
-    ),
+      AssetTransferableFactory__factory.connect(
+        this.preferenceQuery.network.tokenizerConfig.assetTransferableFactory, provider,
+      )),
   )
 
   constructor(private sessionQuery: SessionQuery,
@@ -36,7 +42,7 @@ export class AssetService {
               private preferenceQuery: PreferenceQuery) {
   }
 
-  getAssets(issuer: string): Observable<AssetWithInfo[]> {
+  getAssets(issuer: string): Observable<FtAssetWithInfo[]> {
     return this.factoryContract$.pipe(
       switchMap(contract => from(contract.getInstancesForIssuer(issuer)).pipe(
         switchMap(assets => assets.length === 0 ? of([]) : combineLatest(
@@ -45,17 +51,17 @@ export class AssetService {
     )
   }
 
-  contract(address: string, signerOrProvider: Signer | Provider): Asset {
-    return Asset__factory.connect(address, signerOrProvider)
+  contract(address: string, signerOrProvider: Signer | Provider): AssetTransferable {
+    return AssetTransferable__factory.connect(address, signerOrProvider)
   }
 
-  getState(address: string, signerOrProvider: Signer | Provider): Observable<AssetState> {
+  getState(address: string, signerOrProvider: Signer | Provider): Observable<FtAssetState> {
     return of(this.contract(address, signerOrProvider)).pipe(
       switchMap(contract => contract.getState()),
     )
   }
 
-  getAssetWithInfo(address: string, fullInfo = false): Observable<AssetWithInfo> {
+  getAssetWithInfo(address: string, fullInfo = false): Observable<FtAssetWithInfo> {
     return this.sessionQuery.provider$.pipe(
       switchMap(provider => this.getState(address, provider)),
       switchMap(state => this.ipfsService.get<IPFSAsset>(state.info).pipe(
@@ -109,19 +115,26 @@ export class AssetService {
       switchMap(([contract, overrides]) => {
         const creator = this.sessionQuery.getValue().address!
 
-        return from(contract.create(
-          creator, data.issuer, this.preferenceQuery.network.tokenizerConfig.apxRegistry,
-          data.ansName, data.initialTokenSupply, data.whitelistRequiredForRevenueClaim,
-          data.whitelistRequiredForLiquidationClaim,
-          data.name, data.symbol, data.info, overrides,
-        )).pipe(
+        return from(contract.create({
+          creator: creator,
+          issuer: data.issuer,
+          apxRegistry: this.preferenceQuery.network.tokenizerConfig.apxRegistry,
+          ansName: data.ansName,
+          initialTokenSupply: data.initialTokenSupply,
+          whitelistRequiredForRevenueClaim: data.whitelistRequiredForRevenueClaim,
+          whitelistRequiredForLiquidationClaim: data.whitelistRequiredForLiquidationClaim,
+          name: data.name,
+          symbol: data.symbol,
+          info: data.info,
+          childChainManager: this.preferenceQuery.network.tokenizerConfig.childChainManager,
+        }, overrides)).pipe(
           this.errorService.handleError(),
           switchMap(tx => this.dialogService.loading(
             from(this.sessionQuery.provider.waitForTransaction(tx.hash)),
             'Processing transaction...',
           )),
           map(receipt => findLog(
-            receipt, contract, contract.interface.getEvent('AssetCreated'),
+            receipt, contract, contract.interface.getEvent('AssetTransferableCreated'),
           )?.args?.asset),
         )
       }),
@@ -152,7 +165,7 @@ export class AssetService {
   }
 }
 
-export interface AssetState {
+export interface FtAssetState {
   id: BigNumber;
   contractAddress: string;
   ansName: string;
@@ -171,15 +184,14 @@ export interface AssetState {
   totalAmountRaised: BigNumber;
   totalTokensSold: BigNumber;
   highestTokenSellPrice: BigNumber;
-  totalTokensLocked: BigNumber;
-  totalTokensLockedAndLiquidated: BigNumber;
   liquidated: boolean;
   liquidationFundsTotal: BigNumber;
   liquidationTimestamp: BigNumber;
-  liquidationFundsClaimed: BigNumber
+  liquidationFundsClaimed: BigNumber;
+  childChainManager: string;
 }
 
-export type AssetWithInfo = AssetState & IPFSAsset
+export type FtAssetWithInfo = FtAssetState & IPFSAsset
 
 interface CreateAssetData {
   issuer: string,

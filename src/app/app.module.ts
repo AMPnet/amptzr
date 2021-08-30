@@ -47,10 +47,6 @@ import {SafePipe} from './shared/pipes/safe.pipe'
 import {IssuerNewComponent} from './issuers/issuer-new/issuer-new.component'
 import {IssuerListComponent} from './issuers/issuer-list/issuer-list.component'
 import {IssuerDetailComponent} from './issuers/issuer-detail/issuer-detail.component'
-import {AssetNewComponent} from './assets/asset-new/asset-new.component'
-import {AssetEditComponent} from './assets/asset-edit/asset-edit.component'
-import {AssetDetailComponent} from './assets/asset-detail/asset-detail.component'
-import {AssetCampaignNewComponent} from './assets/asset-campaign-new/asset-campaign-new.component'
 import {FormatUnitPipe} from './shared/pipes/format-unit.pipe'
 import {ToTextIpfsPipe} from './shared/pipes/to-text-ipfs.pipe'
 import {ToUrlIPFSPipe} from './shared/pipes/to-url-ipfs.pipe'
@@ -78,6 +74,13 @@ import {delay, filter} from 'rxjs/operators'
 import {LoadingDialogComponent} from './shared/components/loading-dialog/loading-dialog.component'
 import {WalletTxHistoryComponent} from './wallet/wallet-tx-history/wallet-tx-history.component'
 import {WalletTxHistoryItemComponent} from './wallet/wallet-tx-history-item/wallet-tx-history-item.component'
+import {FtAssetNewComponent} from './assets/ft-assets/ft-asset-new/ft-asset-new.component'
+import {FtAssetEditComponent} from './assets/ft-assets/ft-asset-edit/ft-asset-edit.component'
+import {FtAssetDetailComponent} from './assets/ft-assets/ft-asset-detail/ft-asset-detail.component'
+import {AssetDetailComponent} from './assets/assets/asset-detail/asset-detail.component'
+import {AssetEditComponent} from './assets/assets/asset-edit/asset-edit.component'
+import {AssetNewComponent} from './assets/assets/asset-new/asset-new.component'
+import {AssetPathSegmentPipe} from './shared/pipes/asset-path-segment.pipe'
 
 @NgModule({
   declarations: [
@@ -122,7 +125,9 @@ import {WalletTxHistoryItemComponent} from './wallet/wallet-tx-history-item/wall
     AssetNewComponent,
     AssetEditComponent,
     AssetDetailComponent,
-    AssetCampaignNewComponent,
+    FtAssetNewComponent,
+    FtAssetEditComponent,
+    FtAssetDetailComponent,
     CampaignDetailComponent,
     CampaignEditComponent,
     CampaignNewComponent,
@@ -133,6 +138,7 @@ import {WalletTxHistoryItemComponent} from './wallet/wallet-tx-history-item/wall
     DepositFlowComponent,
     TruncatePipe,
     UnescapePipe,
+    AssetPathSegmentPipe,
     SelectNetworkComponent,
     HomeComponent,
     GoogleTranslateComponent,

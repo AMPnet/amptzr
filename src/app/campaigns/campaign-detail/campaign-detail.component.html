@@ -3,7 +3,9 @@
     <ng-container *ngIf="campaignRes.value as campaign">
       <ng-container *ngIf="(address$ | async) as address">
         <div class="my-4">
-          <a routerLink="/assets/{{ campaign.asset }}">ᐊ Back to Asset</a>
+          <a routerLink="/{{ campaign.assetFactory | assetPathSegment }}/{{ campaign.asset }}">
+            ᐊ Back to Asset
+          </a>
         </div>
 
         <h1 class="my-2 text-2xl uppercase">
@@ -94,7 +96,7 @@
 
         <div>
           Total claimable tokens:
-          {{ campaign.totalClaimableTokens | formatUnit:'bignumToWei' | number }}
+          {{ campaign.totalClaimableTokens | formatUnit:'bignumToWei':18 | number }}
         </div>
 
         <div>

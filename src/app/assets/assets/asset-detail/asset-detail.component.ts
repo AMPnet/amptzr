@@ -1,11 +1,11 @@
 import {ChangeDetectionStrategy, Component} from '@angular/core'
 import {Observable} from 'rxjs'
-import {withStatus, WithStatus} from '../../shared/utils/observables'
-import {AssetService, AssetWithInfo} from '../../shared/services/blockchain/asset.service'
 import {map} from 'rxjs/operators'
 import {ActivatedRoute} from '@angular/router'
-import {SessionQuery} from '../../session/state/session.query'
-import {CampaignService, CampaignWithInfo} from '../../shared/services/blockchain/campaign.service'
+import {CampaignService, CampaignWithInfo} from '../../../shared/services/blockchain/campaign.service'
+import {WithStatus, withStatus} from '../../../shared/utils/observables'
+import {AssetService, AssetWithInfo} from '../../../shared/services/blockchain/asset.service'
+import {SessionQuery} from '../../../session/state/session.query'
 
 @Component({
   selector: 'app-asset-detail',

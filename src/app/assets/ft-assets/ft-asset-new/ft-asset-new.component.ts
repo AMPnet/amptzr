@@ -1,24 +1,24 @@
 import {ChangeDetectionStrategy, Component} from '@angular/core'
 import {FormBuilder, FormGroup, Validators} from '@angular/forms'
-import {SignerService} from '../../shared/services/signer.service'
 import {ActivatedRoute} from '@angular/router'
-import {DialogService} from '../../shared/services/dialog.service'
 import {switchMap} from 'rxjs/operators'
-import {AssetService} from '../../shared/services/blockchain/asset.service'
-import {RouterService} from '../../shared/services/router.service'
-import {StablecoinService} from '../../shared/services/blockchain/stablecoin.service'
+import {DialogService} from '../../../shared/services/dialog.service'
+import {StablecoinService} from '../../../shared/services/blockchain/stablecoin.service'
+import {SignerService} from '../../../shared/services/signer.service'
+import {RouterService} from '../../../shared/services/router.service'
+import {FtAssetService} from '../../../shared/services/blockchain/ft-asset.service'
 
 @Component({
-  selector: 'app-asset-new',
-  templateUrl: './asset-new.component.html',
-  styleUrls: ['./asset-new.component.css'],
+  selector: 'app-ft-asset-new',
+  templateUrl: './ft-asset-new.component.html',
+  styleUrls: ['./ft-asset-new.component.css'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class AssetNewComponent {
+export class FtAssetNewComponent {
   issuer = this.route.snapshot.params.id
   createForm: FormGroup
 
-  constructor(private assetService: AssetService,
+  constructor(private ftAssetService: FtAssetService,
               private signerService: SignerService,
               private router: RouterService,
               private route: ActivatedRoute,
@@ -32,26 +32,28 @@ export class AssetNewComponent {
       description: ['', Validators.required],
       initialTokenSupply: [0, Validators.required],
       symbol: ['', [Validators.required, Validators.maxLength(10)]],
-      whitelistRequiredForTransfer: [false, Validators.required],
+      whitelistRequiredForRevenueClaim: [false, Validators.required],
+      whitelistRequiredForLiquidationClaim: [false, Validators.required],
     })
   }
 
   create() {
-    return this.assetService.uploadInfo(
+    return this.ftAssetService.uploadInfo(
       this.createForm.value.logo?.[0],
       this.createForm.value.description,
     ).pipe(
-      switchMap(uploadRes => this.assetService.create({
+      switchMap(uploadRes => this.ftAssetService.create({
         issuer: this.issuer,
         ansName: this.createForm.value.ansName,
         name: this.createForm.get('name')!.value,
         initialTokenSupply: this.stablecoin.parse(this.createForm.get('initialTokenSupply')!.value, 18),
         symbol: this.createForm.get('symbol')!.value,
-        whitelistRequiredForTransfer: this.createForm.get('whitelistRequiredForTransfer')!.value,
+        whitelistRequiredForRevenueClaim: this.createForm.get('whitelistRequiredForRevenueClaim')!.value,
+        whitelistRequiredForLiquidationClaim: this.createForm.get('whitelistRequiredForLiquidationClaim')!.value,
         info: uploadRes.path,
       })),
       switchMap(assetAddress => this.dialogService.info('Asset successfully created!', false).pipe(
-        switchMap(() => this.router.router.navigate([`/assets/${assetAddress}`])),
+        switchMap(() => this.router.router.navigate([`/ft_assets/${assetAddress}`])),
       )),
     )
   }

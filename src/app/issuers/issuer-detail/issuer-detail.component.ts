@@ -6,6 +6,7 @@ import {ActivatedRoute} from '@angular/router'
 import {SessionQuery} from '../../session/state/session.query'
 import {map} from 'rxjs/operators'
 import {AssetService, AssetWithInfo} from '../../shared/services/blockchain/asset.service'
+import {FtAssetService, FtAssetWithInfo} from '../../shared/services/blockchain/ft-asset.service'
 
 @Component({
   selector: 'app-issuer-detail',
@@ -16,6 +17,7 @@ import {AssetService, AssetWithInfo} from '../../shared/services/blockchain/asse
 export class IssuerDetailComponent {
   issuer$: Observable<WithStatus<IssuerWithInfo>>
   assets$: Observable<WithStatus<AssetWithInfo[]>>
+  ftAssets$: Observable<WithStatus<FtAssetWithInfo[]>>
   address$ = this.sessionQuery.address$.pipe(
     map(value => ({value: value})),
   )
@@ -23,9 +25,11 @@ export class IssuerDetailComponent {
   constructor(private route: ActivatedRoute,
               private issuerService: IssuerService,
               private assetService: AssetService,
+              private ftAssetService: FtAssetService,
               private sessionQuery: SessionQuery) {
     const issuerAddress = this.route.snapshot.params.id
     this.issuer$ = withStatus(this.issuerService.getIssuerWithInfo(issuerAddress))
     this.assets$ = withStatus(this.assetService.getAssets(issuerAddress))
+    this.ftAssets$ = withStatus(this.ftAssetService.getAssets(issuerAddress))
   }
 }

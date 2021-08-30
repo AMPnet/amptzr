@@ -13,6 +13,7 @@ import {SignerService} from '../signer.service'
 import {findLog} from '../../utils/ethersjs'
 import {WithStatus, withStatus} from '../../utils/observables'
 import {DialogService} from '../dialog.service'
+import {GasService} from './gas.service'
 
 @Injectable({
   providedIn: 'root',
@@ -46,6 +47,7 @@ export class IssuerService {
               private preferenceQuery: PreferenceQuery,
               private signerService: SignerService,
               private dialogService: DialogService,
+              private gasService: GasService,
               private ipfsService: IpfsService) {
   }
 
@@ -90,7 +92,8 @@ export class IssuerService {
   updateInfo(issuerAddress: string, infoHash: string) {
     return this.signerService.ensureAuth.pipe(
       map(signer => this.contract(issuerAddress, signer)),
-      switchMap(contract => contract.setInfo(infoHash)),
+      switchMap(contract => combineLatest([of(contract), this.gasService.overrides])),
+      switchMap(([contract, overrides]) => contract.setInfo(infoHash, overrides)),
       switchMap(tx => this.dialogService.loading(
         from(this.sessionQuery.provider.waitForTransaction(tx.hash)),
         'Processing transaction...',
@@ -105,7 +108,8 @@ export class IssuerService {
     ]).pipe(
       first(),
       map(([signer, contract]) => contract.connect(signer)),
-      switchMap(contract => {
+      switchMap(contract => combineLatest([of(contract), this.gasService.overrides])),
+      switchMap(([contract, overrides]) => {
         const createData: CreateIssuerData = {
           owner: this.sessionQuery.getValue().address!,
           ansName: ansName,
@@ -116,7 +120,7 @@ export class IssuerService {
 
         return from(contract.functions.create(
           createData.owner, createData.ansName, createData.stablecoin,
-          createData.walletApprover, createData.info,
+          createData.walletApprover, createData.info, overrides,
         )).pipe(
           switchMap(tx => this.dialogService.loading(
             from(this.sessionQuery.provider.waitForTransaction(tx.hash)),
@@ -145,7 +149,8 @@ export class IssuerService {
   changeWalletApprover(issuerAddress: string, walletApproverAddress: string) {
     return this.signerService.ensureAuth.pipe(
       map(signer => this.contract(issuerAddress, signer)),
-      switchMap(contract => contract.changeWalletApprover(walletApproverAddress)),
+      switchMap(contract => combineLatest([of(contract), this.gasService.overrides])),
+      switchMap(([contract, overrides]) => contract.changeWalletApprover(walletApproverAddress, overrides)),
       switchMap(tx => this.dialogService.loading(
         from(this.sessionQuery.provider.waitForTransaction(tx.hash)),
         'Processing transaction...',

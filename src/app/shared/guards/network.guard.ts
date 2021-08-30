@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core'
 import {ActivatedRouteSnapshot, CanActivate, RouterStateSnapshot, UrlTree} from '@angular/router'
 import {Observable, of} from 'rxjs'
-import {catchError, map, switchMap, tap} from 'rxjs/operators'
+import {catchError, switchMap, tap} from 'rxjs/operators'
 import {PreferenceQuery} from '../../preference/state/preference.query'
 import {PreferenceStore} from '../../preference/state/preference.store'
 import {ChainID, Networks} from '../networks'
