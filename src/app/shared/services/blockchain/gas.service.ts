@@ -31,7 +31,7 @@ export class GasService {
   private maticGasStation(endpoint: string): Observable<Partial<Overrides>> {
     return this.http.get<GasStationRes>(endpoint).pipe(
       map(res => ({
-        gasLimit: BigNumber.from(21000),
+        gasLimit: BigNumber.from(5_000_000),
         gasPrice: parseUnits(res.fast.toString(), 'gwei'),
       })),
       catchError(() => of({})),
@@ -41,7 +41,7 @@ export class GasService {
   private defaultConfig(): Observable<Partial<Overrides>> {
     return from(this.sessionQuery.provider.getGasPrice()).pipe(
       map(gasPrice => ({
-        gasLimit: BigNumber.from(21000),
+        gasLimit: BigNumber.from(5_000_000),
         gasPrice: parseUnits(gasPrice.toString(), 'gwei'),
       })),
       catchError(() => of({})),
