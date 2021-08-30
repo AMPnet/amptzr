@@ -14,6 +14,7 @@ import {IPFSAddResult} from '../ipfs/ipfs.service.types'
 import {DialogService} from '../dialog.service'
 import {StablecoinService} from './stablecoin.service'
 import {ErrorService} from '../error.service'
+import {GasService} from './gas.service'
 
 @Injectable({
   providedIn: 'root',
@@ -31,6 +32,7 @@ export class AssetService {
               private dialogService: DialogService,
               private stablecoin: StablecoinService,
               private errorService: ErrorService,
+              private gasService: GasService,
               private preferenceQuery: PreferenceQuery) {
   }
 
@@ -87,7 +89,8 @@ export class AssetService {
   updateInfo(assetAddress: string, infoHash: string) {
     return this.signerService.ensureAuth.pipe(
       map(signer => this.contract(assetAddress, signer)),
-      switchMap(contract => contract.setInfo(infoHash)),
+      switchMap(contract => combineLatest([of(contract), this.gasService.overrides])),
+      switchMap(([contract, overrides]) => contract.setInfo(infoHash, overrides)),
       switchMap(tx => this.dialogService.loading(
         from(this.sessionQuery.provider.waitForTransaction(tx.hash)),
         'Processing transaction...',
@@ -102,14 +105,15 @@ export class AssetService {
     ]).pipe(
       first(),
       map(([signer, contract]) => contract.connect(signer)),
-      switchMap(contract => {
+      switchMap(contract => combineLatest([of(contract), this.gasService.overrides])),
+      switchMap(([contract, overrides]) => {
         const creator = this.sessionQuery.getValue().address!
 
-        return from(contract.functions.create(
+        return from(contract.create(
           creator, data.issuer, this.preferenceQuery.network.tokenizerConfig.apxRegistry,
           data.ansName, data.initialTokenSupply, data.whitelistRequiredForRevenueClaim,
           data.whitelistRequiredForLiquidationClaim,
-          data.name, data.symbol, data.info,
+          data.name, data.symbol, data.info, overrides,
         )).pipe(
           this.errorService.handleError(),
           switchMap(tx => this.dialogService.loading(
@@ -127,7 +131,10 @@ export class AssetService {
   transferTokensToCampaign(assetAddress: string, campaignAddress: string, amount: number) {
     return this.signerService.ensureAuth.pipe(
       map(signer => this.contract(assetAddress, signer)),
-      switchMap(contract => contract.transfer(campaignAddress, this.stablecoin.parse(amount, 18))),
+      switchMap(contract => combineLatest([of(contract), this.gasService.overrides])),
+      switchMap(([contract, overrides]) => contract.transfer(
+        campaignAddress, this.stablecoin.parse(amount, 18), overrides),
+      ),
       switchMap(tx => this.dialogService.loading(
         from(this.sessionQuery.provider.waitForTransaction(tx.hash)),
         'Processing transaction...',

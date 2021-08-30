@@ -34,6 +34,7 @@ export class DepositRampService {
             fiatValue: depositAmount.toString(),
             userAddress: address,
             url: this.preferenceQuery.network.ramp.url,
+            variant: 'auto',
           })
             .on('*', event => {
               observer.next(event as any)

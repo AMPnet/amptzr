@@ -10,6 +10,7 @@ import {SignerService} from '../signer.service'
 import {contractEvent} from '../../utils/ethersjs'
 import {DialogService} from '../dialog.service'
 import {formatUnits, parseUnits} from 'ethers/lib/utils'
+import {GasService} from './gas.service'
 
 @Injectable({
   providedIn: 'root',
@@ -56,6 +57,7 @@ export class StablecoinService {
               private preferenceQuery: PreferenceQuery,
               private signerService: SignerService,
               private dialogService: DialogService,
+              private gasService: GasService,
               private issuerService: IssuerService) {
   }
 
@@ -92,7 +94,10 @@ export class StablecoinService {
       this.signerService.ensureAuth,
     ]).pipe(
       map(([contract, signer]) => contract.connect(signer)),
-      switchMap(contract => contract.approve(campaignAddress, this.parse(amount))),
+      switchMap(contract => combineLatest([of(contract), this.gasService.overrides])),
+      switchMap(([contract, overrides]) =>
+        contract.approve(campaignAddress, this.parse(amount), overrides),
+      ),
       switchMap(tx => this.dialogService.loading(
         from(this.sessionQuery.provider.waitForTransaction(tx.hash)),
         'Processing transaction...',

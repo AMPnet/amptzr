@@ -19,6 +19,7 @@ import {IPFSAddResult} from '../ipfs/ipfs.service.types'
 import {DialogService} from '../dialog.service'
 import {StablecoinService} from './stablecoin.service'
 import {ErrorService} from '../error.service'
+import {GasService} from './gas.service'
 
 @Injectable({
   providedIn: 'root',
@@ -37,6 +38,7 @@ export class FtAssetService {
               private dialogService: DialogService,
               private stablecoin: StablecoinService,
               private errorService: ErrorService,
+              private gasService: GasService,
               private preferenceQuery: PreferenceQuery) {
   }
 
@@ -93,7 +95,8 @@ export class FtAssetService {
   updateInfo(assetAddress: string, infoHash: string) {
     return this.signerService.ensureAuth.pipe(
       map(signer => this.contract(assetAddress, signer)),
-      switchMap(contract => contract.setInfo(infoHash)),
+      switchMap(contract => combineLatest([of(contract), this.gasService.overrides])),
+      switchMap(([contract, overrides]) => contract.setInfo(infoHash, overrides)),
       switchMap(tx => this.dialogService.loading(
         from(this.sessionQuery.provider.waitForTransaction(tx.hash)),
         'Processing transaction...',
@@ -108,7 +111,8 @@ export class FtAssetService {
     ]).pipe(
       first(),
       map(([signer, contract]) => contract.connect(signer)),
-      switchMap(contract => {
+      switchMap(contract => combineLatest([of(contract), this.gasService.overrides])),
+      switchMap(([contract, overrides]) => {
         const creator = this.sessionQuery.getValue().address!
 
         return from(contract.create({
@@ -123,7 +127,7 @@ export class FtAssetService {
           symbol: data.symbol,
           info: data.info,
           childChainManager: this.preferenceQuery.network.tokenizerConfig.childChainManager,
-        })).pipe(
+        }, overrides)).pipe(
           this.errorService.handleError(),
           switchMap(tx => this.dialogService.loading(
             from(this.sessionQuery.provider.waitForTransaction(tx.hash)),
@@ -140,7 +144,10 @@ export class FtAssetService {
   transferTokensToCampaign(assetAddress: string, campaignAddress: string, amount: number) {
     return this.signerService.ensureAuth.pipe(
       map(signer => this.contract(assetAddress, signer)),
-      switchMap(contract => contract.transfer(campaignAddress, this.stablecoin.parse(amount, 18))),
+      switchMap(contract => combineLatest([of(contract), this.gasService.overrides])),
+      switchMap(([contract, overrides]) => contract.transfer(
+        campaignAddress, this.stablecoin.parse(amount, 18), overrides),
+      ),
       switchMap(tx => this.dialogService.loading(
         from(this.sessionQuery.provider.waitForTransaction(tx.hash)),
         'Processing transaction...',

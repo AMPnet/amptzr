@@ -13,7 +13,7 @@ export class AssetPathSegmentPipe implements PipeTransform {
       case this.preferenceQuery.network.tokenizerConfig.assetFactory:
         return 'assets'
       case this.preferenceQuery.network.tokenizerConfig.assetTransferableFactory:
-        return 'ft-assets'
+        return 'ft_assets'
     }
 
     return 'assets'

@@ -48,7 +48,7 @@ interface VenlyConfig {
 
 export const MaticNetwork: Network = {
   chainID: ChainID.MATIC_MAINNET,
-  name: 'Matic',
+  name: 'Polygon',
   shortName: 'matic',
   nativeCurrency: {
     name: 'MATIC',
@@ -81,7 +81,7 @@ export const MaticNetwork: Network = {
 
 export const MumbaiNetwork: Network = {
   chainID: ChainID.MUMBAI_TESTNET,
-  name: 'Mumbai (Matic Testnet)',
+  name: 'Mumbai (Polygon Testnet)',
   shortName: 'mumbai',
   nativeCurrency: {
     name: 'MATIC',

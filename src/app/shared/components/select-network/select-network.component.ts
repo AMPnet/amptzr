@@ -1,5 +1,5 @@
 import {ChangeDetectionStrategy, Component} from '@angular/core'
-import {ChainID, EthersNetworks} from '../../networks'
+import {ChainID, Networks} from '../../networks'
 import {environment} from '../../../../environments/environment'
 import {PreferenceQuery} from '../../../preference/state/preference.query'
 import {PreferenceStore} from '../../../preference/state/preference.store'
@@ -14,8 +14,8 @@ import {PreferenceStore} from '../../../preference/state/preference.store'
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SelectNetworkComponent {
-  networks = Object.values(EthersNetworks)
-  currentNetwork = EthersNetworks[this.preferenceQuery.getValue().chainID]
+  networks = Object.values(Networks)
+  currentNetwork = Networks[this.preferenceQuery.getValue().chainID]
   isNetworkFixed = !!environment.fixed.chainID
 
   constructor(private preferenceStore: PreferenceStore,
@@ -24,7 +24,7 @@ export class SelectNetworkComponent {
 
   networkChanged(e: Event): void {
     const chainID = Number((e.target as HTMLSelectElement).value) as ChainID
-    this.currentNetwork = EthersNetworks[chainID]
+    this.currentNetwork = Networks[chainID]
     this.preferenceStore.update({chainID})
   }
 }

@@ -20,6 +20,7 @@ import {ErrorService} from '../error.service'
 import {TokenPrice} from '../../utils/token-price'
 import {DialogService} from '../dialog.service'
 import {StablecoinService} from './stablecoin.service'
+import {GasService} from './gas.service'
 
 @Injectable({
   providedIn: 'root',
@@ -37,6 +38,7 @@ export class CampaignService {
               private errorService: ErrorService,
               private dialogService: DialogService,
               private stablecoin: StablecoinService,
+              private gasService: GasService,
               private preferenceQuery: PreferenceQuery) {
   }
 
@@ -110,7 +112,8 @@ export class CampaignService {
   updateInfo(campaignAddress: string, infoHash: string) {
     return this.signerService.ensureAuth.pipe(
       map(signer => this.contract(campaignAddress, signer)),
-      switchMap(contract => contract.setInfo(infoHash)),
+      switchMap(contract => combineLatest([of(contract), this.gasService.overrides])),
+      switchMap(([contract, overrides]) => contract.setInfo(infoHash, overrides)),
       switchMap(tx => this.dialogService.loading(
         from(this.sessionQuery.provider.waitForTransaction(tx.hash)),
         'Processing transaction...',
@@ -125,14 +128,15 @@ export class CampaignService {
     ]).pipe(
       first(),
       map(([signer, contract]) => contract.connect(signer)),
-      switchMap(contract => {
+      switchMap(contract => combineLatest([of(contract), this.gasService.overrides])),
+      switchMap(([contract, overrides]) => {
         const owner = this.sessionQuery.getValue().address!
 
         return from(contract.functions.create(
           owner, data.ansName, data.assetAddress,
           data.initialPricePerToken, data.softCap,
           data.minInvestment, data.maxInvestment,
-          data.whitelistRequired, data.info,
+          data.whitelistRequired, data.info, overrides,
         )).pipe(
           this.errorService.handleError(),
           switchMap(tx => this.dialogService.loading(
@@ -150,7 +154,8 @@ export class CampaignService {
   invest(address: string, amount: number) {
     return this.signerService.ensureAuth.pipe(
       map(signer => this.contract(address, signer)),
-      switchMap(contract => contract.invest(this.stablecoin.parse(amount))),
+      switchMap(contract => combineLatest([of(contract), this.gasService.overrides])),
+      switchMap(([contract, overrides]) => contract.invest(this.stablecoin.parse(amount), overrides)),
       switchMap(tx => this.dialogService.loading(
         from(this.sessionQuery.provider.waitForTransaction(tx.hash)),
         'Processing transaction...',
@@ -208,7 +213,8 @@ export class CampaignService {
   cancelInvestment(address: string) {
     return this.signerService.ensureAuth.pipe(
       map(signer => this.contract(address, signer)),
-      switchMap(contract => contract.cancelInvestment()),
+      switchMap(contract => combineLatest([of(contract), this.gasService.overrides])),
+      switchMap(([contract, overrides]) => contract.cancelInvestment(overrides)),
       switchMap(tx => this.dialogService.loading(
         from(this.sessionQuery.provider.waitForTransaction(tx.hash)),
         'Processing transaction...',
@@ -220,7 +226,8 @@ export class CampaignService {
   finalize(address: string) {
     return this.signerService.ensureAuth.pipe(
       map(signer => this.contract(address, signer)),
-      switchMap(contract => contract.finalize()),
+      switchMap(contract => combineLatest([of(contract), this.gasService.overrides])),
+      switchMap(([contract, overrides]) => contract.finalize(overrides)),
       switchMap(tx => this.dialogService.loading(
         from(this.sessionQuery.provider.waitForTransaction(tx.hash)),
         'Processing transaction...',
