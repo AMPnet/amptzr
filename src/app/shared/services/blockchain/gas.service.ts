@@ -1,11 +1,12 @@
 import {Injectable} from '@angular/core'
-import {from, Observable, of} from 'rxjs'
+import {Observable, of} from 'rxjs'
 import {catchError, map} from 'rxjs/operators'
 import {PreferenceQuery} from '../../../preference/state/preference.query'
-import {BigNumber, Overrides} from 'ethers'
+import {Overrides} from 'ethers'
 import {HttpClient} from '@angular/common/http'
 import {SessionQuery} from '../../../session/state/session.query'
 import {parseUnits} from 'ethers/lib/utils'
+import {ChainID} from '../../networks'
 
 @Injectable({
   providedIn: 'root',
@@ -17,35 +18,24 @@ export class GasService {
   }
 
   get overrides(): Observable<Partial<Overrides>> {
-    return of({})
-
-    // TODO: fix implementation of setting gaslimit and gasprice
-    // switch (this.preferenceQuery.network.chainID) {
-    //   case ChainID.MATIC_MAINNET:
-    //     return this.maticGasStation('https://gasstation-mainnet.matic.network')
-    //   case ChainID.MUMBAI_TESTNET:
-    //     return this.maticGasStation('https://gasstation-mumbai.matic.today')
-    //   default:
-    //     return this.defaultConfig()
-    // }
+    switch (this.preferenceQuery.network.chainID) {
+      case ChainID.MATIC_MAINNET:
+        return this.maticGasStation('https://gasstation-mainnet.matic.network')
+      case ChainID.MUMBAI_TESTNET:
+        return this.maticGasStation('https://gasstation-mumbai.matic.today')
+      default:
+        return of({})
+    }
   }
 
   private maticGasStation(endpoint: string): Observable<Partial<Overrides>> {
     return this.http.get<GasStationRes>(endpoint).pipe(
-      map(res => ({
-        gasLimit: BigNumber.from(21000),
-        gasPrice: parseUnits(res.fast.toString(), 'gwei'),
-      })),
-      catchError(() => of({})),
-    )
-  }
-
-  private defaultConfig(): Observable<Partial<Overrides>> {
-    return from(this.sessionQuery.provider.getGasPrice()).pipe(
-      map(gasPrice => ({
-        gasLimit: BigNumber.from(21000),
-        gasPrice: parseUnits(gasPrice.toString(), 'gwei'),
-      })),
+      map(res => {
+        const gasPrice = Math.min(this.preferenceQuery.network.maxGasPrice, res.fast)
+        return {
+          gasPrice: parseUnits(gasPrice.toString(), 'gwei'),
+        }
+      }),
       catchError(() => of({})),
     )
   }
