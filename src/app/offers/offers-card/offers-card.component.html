@@ -5,7 +5,7 @@
       <div class="relative w-full lg:w-7/12">
         <a routerLink="{{ offer.ansName | issuerPath }}">
           <img src="{{ offer.photo | toUrlIPFS }}" alt="Offer image"
-               class="w-full h-52 lg:h-full object-cover rounded-t-4xl lg:rounded-none lg:rounded-l-4xl">
+               class="w-full h-52 object-cover rounded-t-4xl lg:rounded-none lg:rounded-l-4xl lg:h-auto lg:max-h-[30rem]">
         </a>
         <app-offer-investment-info [offer]="offer" class="absolute float-left lg:top-6 left-6 lg:rounded-full
             -bottom-10 lg:bottom-auto rounded-2xl py-3 px-6 shadow-lg bg-white">
