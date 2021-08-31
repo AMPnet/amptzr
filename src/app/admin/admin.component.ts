@@ -5,6 +5,7 @@ import {StablecoinService} from '../shared/services/blockchain/stablecoin.servic
 import {AssetService, AssetWithInfo} from '../shared/services/blockchain/asset.service'
 import {withStatus, WithStatus} from '../shared/utils/observables'
 import {FtAssetService, FtAssetWithInfo} from '../shared/services/blockchain/ft-asset.service'
+import {ActivatedRoute} from '@angular/router'
 import {map, mergeMap} from 'rxjs/operators'
 
 @Component({
@@ -19,7 +20,8 @@ export class AdminComponent {
   ftAssets$: Observable<WithStatus<FtAssetWithInfo[]>>
   stableCoinSymbol: string
 
-  constructor(private issuerService: IssuerService,
+  constructor(private route: ActivatedRoute,
+              private issuerService: IssuerService,
               private stableCoinService: StablecoinService,
               private assetService: AssetService,
               private ftAssetService: FtAssetService) {
