@@ -3,7 +3,6 @@ import {Observable, of} from 'rxjs'
 import {environment} from '../../../../environments/environment'
 import {catchError, map} from "rxjs/operators"
 import {BackendHttpClient} from "./backend-http-client.service"
-import {UnescapePipe} from '../../pipes/unescape.pipe'
 
 @Injectable({
   providedIn: 'root',
@@ -11,8 +10,7 @@ import {UnescapePipe} from '../../pipes/unescape.pipe'
 export class LinkPreviewService {
   path = `${environment.backendURL}/api/link`
 
-  constructor(private http: BackendHttpClient,
-              private unescapePipe: UnescapePipe) {
+  constructor(private http: BackendHttpClient) {
   }
 
   previewLink(url: string): Observable<LinkPreviewResponse> {
@@ -21,15 +19,7 @@ export class LinkPreviewService {
         if (response.open_graph?.image?.url) {
           return {
             url: response.url,
-            open_graph: {
-              ...response.open_graph,
-              title: this.unescapePipe.transform(response.open_graph.title),
-              description: this.unescapePipe.transform(response.open_graph.description),
-              image: {
-                ...response.open_graph.image,
-                url: this.unescapePipe.transform(response.open_graph.image.url),
-              },
-            },
+            open_graph: response.open_graph,
           }
         }
         return response

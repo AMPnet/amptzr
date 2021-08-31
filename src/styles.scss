@@ -40,6 +40,9 @@ button, textarea, input, select, a {
 }
 
 .ql-editor {
+  width: 100%;
+  min-height: 400px;
+
   @apply text-base;
   font-family: 'Raleway', sans-serif;
 
@@ -54,6 +57,11 @@ button, textarea, input, select, a {
   pre.ql-syntax {
     @apply bg-blue-50 text-base font-mono #{!important};
     color: inherit !important;
+  }
+
+  .ql-video {
+    width: 100%;
+    min-height: 400px;
   }
 }
 
