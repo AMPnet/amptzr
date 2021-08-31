@@ -84,6 +84,8 @@ import {AssetPathSegmentPipe} from './shared/pipes/asset-path-segment.pipe'
 import {MatSnackBarModule} from '@angular/material/snack-bar'
 import {AdminComponent} from './admin/admin.component'
 import {AddButtonComponent} from './shared/components/add-button/add-button.component'
+import {AssetListComponent} from './admin/asset-list/asset-list.component'
+import {AssetListItemComponent} from './admin/asset-list/asset-list-item/asset-list-item.component'
 
 @NgModule({
   declarations: [
@@ -152,6 +154,8 @@ import {AddButtonComponent} from './shared/components/add-button/add-button.comp
     WalletTxHistoryItemComponent,
     AdminComponent,
     AddButtonComponent,
+    AssetListComponent,
+    AssetListItemComponent,
   ],
   imports: [
     BrowserModule,
