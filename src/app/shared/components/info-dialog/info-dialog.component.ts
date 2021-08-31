@@ -13,7 +13,7 @@ export class InfoDialogComponent implements OnInit {
 
   private dataSub = new BehaviorSubject<InfoDialogData>({
     icon: DialogIcon.INFO,
-    title: 'Info',
+    title: '',
     message: '',
     confirm_text: 'OK',
     cancel_text: 'Cancel',
