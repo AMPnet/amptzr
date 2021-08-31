@@ -56,7 +56,7 @@ export const MaticNetwork: Network = {
     symbol: 'MATIC',
   },
   maxGasPrice: 100,
-  rpcURLs: ['https://polygon-mainnet.infura.io/v3/c9625ebec3634ce3a0bd20be405bac8c'],
+  rpcURLs: ['https://polygon-rpc.com'],
   explorerURLs: ['https://polygonscan.com/'],
   tokenizerConfig: {
     apxRegistry: '0xC5C69f646E94abD4D169a0b8a4F4A493360BF7F9',
