@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core'
 import {Observable} from 'rxjs'
-import {MatDialog} from '@angular/material/dialog'
+import {MatDialog, MatDialogConfig} from '@angular/material/dialog'
 import {
   DialogIcon,
   InfoDialogComponent,
@@ -49,14 +49,24 @@ export class DialogService {
     }).afterClosed()
   }
 
-  loading<T>(obs$: Observable<T>, message: string): Observable<T> {
+  loading<T>(obs$: Observable<T>, message: string, opts?: MatDialogConfig): Observable<T> {
     const dialogRef = this.dialog.open(LoadingDialogComponent, {
+      ...opts,
       data: {message} as LoadingDialogData,
       disableClose: true,
+      minWidth: 320,
+      maxWidth: opts?.width,
     })
 
     return obs$.pipe(
       finalize(() => dialogRef.close()),
     )
+  }
+
+  overlayLoading<T>(obs$: Observable<T>, message: string): Observable<T> {
+    return this.loading(obs$, message, {
+      width: '100vw',
+      height: '100vh',
+    })
   }
 }

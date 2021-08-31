@@ -8,6 +8,7 @@ import {IssuerService} from '../services/blockchain/issuer.service'
 import {SessionQuery} from '../../session/state/session.query'
 import {environment} from '../../../environments/environment'
 import {StablecoinService} from '../services/blockchain/stablecoin.service'
+import {DialogService} from '../services/dialog.service'
 
 @Injectable({
   providedIn: 'root',
@@ -17,11 +18,12 @@ export class IssuerGuard implements CanActivate {
               private preferenceStore: PreferenceStore,
               private sessionQuery: SessionQuery,
               private stablecoin: StablecoinService,
+              private dialogService: DialogService,
               private issuerService: IssuerService) {
   }
 
   canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<boolean | UrlTree> {
-    return of(environment.fixed.issuer || route.params.issuer as string).pipe(
+    const activation$ = of(environment.fixed.issuer || route.params.issuer as string).pipe(
       // TODO: handle error cases
       // TODO: handle getting issuers also by id (number)
       switchMap(issuer => {
@@ -45,5 +47,7 @@ export class IssuerGuard implements CanActivate {
       switchMap(() => combineLatest([this.stablecoin.contract$]).pipe(take(1))),
       switchMap(() => of(true)),
     )
+
+    return this.dialogService.overlayLoading(activation$, '')
   }
 }
