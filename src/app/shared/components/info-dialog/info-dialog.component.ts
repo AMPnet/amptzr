@@ -1,6 +1,7 @@
 import {ChangeDetectionStrategy, Component, Inject, OnInit, Optional} from '@angular/core'
 import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog'
-import {BehaviorSubject} from 'rxjs'
+import {BehaviorSubject, Observable, of} from 'rxjs'
+import {catchError, tap} from 'rxjs/operators'
 
 @Component({
   selector: 'app-info-dialog',
@@ -36,12 +37,24 @@ export class InfoDialogComponent implements OnInit {
     })
   }
 
-  confirm(): void {
-    this.dialogRef.close({confirmed: true} as InfoDialogResponse)
+  confirm(onConfirm$?: Observable<any>) {
+    return () => {
+      return onConfirm$ ? onConfirm$.pipe(
+        tap(res => this.close(true, res)),
+        catchError(err => {
+          this.close(false)
+          return err
+        }),
+      ) : of(this.close(true))
+    }
   }
 
   cancel(): void {
-    this.dialogRef.close({confirmed: false} as InfoDialogResponse)
+    this.close(false)
+  }
+
+  private close<T>(confirm: boolean, result?: T) {
+    return this.dialogRef.close({confirmed: confirm, onConfirmResult: result} as InfoDialogResponse<T>)
   }
 }
 
@@ -52,12 +65,14 @@ export interface InfoDialogData {
   confirm_text: string;
   cancel_text: string;
   cancelable: boolean;
+  onConfirm?: Observable<unknown>
 }
 
 export enum DialogIcon {
   INFO, ERROR
 }
 
-export interface InfoDialogResponse {
+export interface InfoDialogResponse<T> {
   confirmed: boolean;
+  onConfirmResult: T
 }

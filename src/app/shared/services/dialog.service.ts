@@ -24,7 +24,19 @@ export class DialogService {
         cancelable,
       } as InfoDialogData,
     }).afterClosed().pipe(
-      map(res => !!(res as InfoDialogResponse)?.confirmed),
+      map(res => !!(res as InfoDialogResponse<unknown>)?.confirmed),
+    )
+  }
+
+  infoWithOnConfirm<T>(message: string, cancelable = true, onConfirm: Observable<T>): Observable<InfoDialogResponse<T>> {
+    return this.dialog.open(InfoDialogComponent, {
+      data: {
+        message,
+        cancelable,
+        onConfirm,
+      } as InfoDialogData,
+    }).afterClosed().pipe(
+      map(res => res ?? {confirmed: false}),
     )
   }
 

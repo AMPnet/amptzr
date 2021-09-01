@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core'
-import {from, Observable, of, throwError} from 'rxjs'
+import {defer, from, Observable, of, throwError} from 'rxjs'
 import {concatMap, map, switchMap, tap} from 'rxjs/operators'
 import {providers} from 'ethers'
 import {Subsigner, SubsignerLoginOpts} from './metamask-subsigner.service'
@@ -56,8 +56,11 @@ export class VenlySubsignerService implements Subsigner {
   }
 
   private authenticateProcedure(): Observable<AuthenticationResult> {
-    return this.dialogService.info('You will be redirected to Venly to authenticate.').pipe(
-      switchMap(confirm => confirm ? from(this.subprovider.authenticate()) :
+    return this.dialogService.infoWithOnConfirm(
+      'You will be redirected to Venly to authenticate.', true,
+      defer(() => this.subprovider.authenticate()),
+    ).pipe(
+      switchMap(res => res.confirmed ? of(res.onConfirmResult) :
         throwError('VENLY_AUTH_INFO_DISMISSED')),
     )
   }
