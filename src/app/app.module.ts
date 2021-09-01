@@ -86,6 +86,7 @@ import {AdminComponent} from './admin/admin.component'
 import {AddButtonComponent} from './shared/components/add-button/add-button.component'
 import {AssetListComponent} from './admin/asset-list/asset-list.component'
 import {AssetListItemComponent} from './admin/asset-list/asset-list-item/asset-list-item.component'
+import {EditIssuerComponent} from './admin/edit-issuer/edit-issuer.component'
 
 @NgModule({
   declarations: [
@@ -156,6 +157,7 @@ import {AssetListItemComponent} from './admin/asset-list/asset-list-item/asset-l
     AddButtonComponent,
     AssetListComponent,
     AssetListItemComponent,
+    EditIssuerComponent,
   ],
   imports: [
     BrowserModule,
