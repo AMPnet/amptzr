@@ -116,6 +116,9 @@ export class SignerService {
         return from(signer.sendTransaction(transaction)).pipe(
           catchError(err => {
             if (err?.message === 'Something went wrong while trying to open the popup') {
+              // Venly issue in Safari; happens sometimes when their backend requests are too long
+              // so Safari throws popup blocker. Usually doesn't happen the next time when
+              // the user clicks.
               return EMPTY
             } else {
               return throwError(err)
