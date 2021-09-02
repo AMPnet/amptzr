@@ -9,12 +9,12 @@ import {RouterService} from '../../shared/services/router.service'
 import {fromPromise} from 'rxjs/internal-compatibility'
 
 @Component({
-  selector: 'app-edit-issuer',
-  templateUrl: './edit-issuer.component.html',
-  styleUrls: ['./edit-issuer.component.css'],
+  selector: 'app-admin-issuer-edit',
+  templateUrl: './admin-issuer-edit.component.html',
+  styleUrls: ['./admin-issuer-edit.component.css'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class EditIssuerComponent {
+export class AdminIssuerEditComponent {
   issuer$: Observable<IssuerWithInfo>
   stableCoinSymbol: string
 
@@ -34,10 +34,10 @@ export class EditIssuerComponent {
       logo: [undefined],
     })
     this.updateWalletApproverAddressForm = this.fb.group({
-      walletApproverAddress: ['', [Validators.required, EditIssuerComponent.validAddress]],
+      walletApproverAddress: ['', [Validators.required, AdminIssuerEditComponent.validAddress]],
     })
     this.updateOwnerAddressForm = this.fb.group({
-      ownerAddress: ['', [Validators.required, EditIssuerComponent.validAddress]],
+      ownerAddress: ['', [Validators.required, AdminIssuerEditComponent.validAddress]],
     })
 
     this.issuer$ = this.issuerService.issuer$.pipe(

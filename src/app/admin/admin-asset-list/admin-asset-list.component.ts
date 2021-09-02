@@ -5,12 +5,12 @@ import {AssetWithInfo} from '../../shared/services/blockchain/asset.service'
 import {FtAssetWithInfo} from '../../shared/services/blockchain/ft-asset.service'
 
 @Component({
-  selector: 'app-asset-list',
-  templateUrl: './asset-list.component.html',
-  styleUrls: ['./asset-list.component.css'],
+  selector: 'app-admin-asset-list',
+  templateUrl: './admin-asset-list.component.html',
+  styleUrls: ['./admin-asset-list.component.css'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class AssetListComponent {
+export class AdminAssetListComponent {
   @Input() title!: string
   @Input() assets$!: Observable<WithStatus<(AssetWithInfo | FtAssetWithInfo)[]>>
 
