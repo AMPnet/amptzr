@@ -1,6 +1,7 @@
-<div class="flex flex-col justify-start lg:flex-row w-full my-4 shadow-xl hover:shadow-2xl rounded-4xl bg-white">
-  <div class="relative w-full lg:w-1/5 lg:mt-4 lg:ml-4">
-    <img *ngIf="asset.logo; else noImage" class="w-full lg:w-40 h-40 object-cover rounded-t-4xl lg:rounded-full"
+<div class="flex flex-col justify-start lg:flex-row w-full my-4 shadow-xl rounded-4xl bg-white"
+     [class.hover:shadow-2xl]="type === 'list-item'">
+  <div class="flex justify-center relative w-full lg:w-1/5 mt-4 lg:ml-4">
+    <img *ngIf="asset.logo; else noImage" class="w-40 h-40 object-cover rounded-full"
          src="{{ asset.logo | toUrlIPFS }}" alt="Asset logo">
     <ng-template #noImage>
       <div class="w-full lg:w-40 h-40 bg-gray-200 rounded-t-4xl lg:rounded-full"></div>
@@ -10,13 +11,36 @@
               lg:rounded-r-4xl bg-white">
     <div class="flex flex-col text-lg lg:pr-8">
       <span class="text-4xl mb-8">{{ asset.name ?? 'Unknown' }}</span>
+
       <div class="flex items-center gap-2">
         <span>Token symbol:</span><b>{{ asset.symbol }}</b>
       </div>
+
       <div class="flex items-center gap-2">
-        <span>Token supply:</span><b>{{ asset.initialTokenSupply | formatUnit:'bignumToWei':18 }}</b>
+        <span>Token supply:</span><b>{{ asset.initialTokenSupply | formatUnit:'bignumToWei':18 | number }}</b>
       </div>
-      <div class="flex items-center flex-wrap gap-2 mb-8">
+
+      <div class="flex items-center gap-2 mb-8 lg:mb-0" *ngIf="type === 'detail'">
+        <span>Description:</span>
+        <ng-container *ngIf="(asset.description | toTextIPFS | async) as descriptionRes">
+          <ng-container *ngIf="descriptionRes.value as description">
+            <div>
+              {{ description }}
+            </div>
+          </ng-container>
+
+          <ng-container *ngIf="descriptionRes.error">
+            Cannot fetch description.
+            <div hidden>{{ descriptionRes.error | json }}</div>
+          </ng-container>
+
+          <ng-container *ngIf="descriptionRes.loading">
+            <app-spinner type="overlay">Loading description...</app-spinner>
+          </ng-container>
+        </ng-container>
+      </div>
+
+      <div class="flex items-center flex-wrap gap-2 mb-8" *ngIf="type === 'list-item'">
         <span>Related campaigns:</span>
 
         <ng-container *ngIf="(campaigns$ | async) as campaignsRes">
@@ -25,6 +49,7 @@
               There are no campaigns related to this asset.
             </ng-container>
 
+            <!-- TODO: add links to campaign when the screen gets implemented -->
             <a *ngFor="let campaign of campaigns" class="px-8 py-0.5 bg-blue-200 rounded-full">
               {{ campaign.name }}
             </a>
@@ -43,8 +68,9 @@
     </div>
     <div class="flex flex-col justify-end">
       <div class="flex justify-center lg:justify-end">
-        <button class="flex items-center gap-4 px-24 py-2 rounded-full bg-indigo-800 text-white text-lg">
-          <span>Edit token</span>
+        <button class="flex items-center gap-4 px-24 py-2 rounded-full bg-indigo-800 text-white text-lg"
+                [routerLink]="routerLink">
+          <span>{{ type === 'list-item' ? 'View asset' : 'Edit asset' }}</span>
           <svg width="8" height="14" viewBox="0 0 8 14" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M1 1.16602L6.83333 6.99935L1 12.8327" stroke="white" stroke-width="2"
                   stroke-linecap="round"

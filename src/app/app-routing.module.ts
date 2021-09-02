@@ -33,6 +33,8 @@ import {FtAssetNewComponent} from './assets/ft-assets/ft-asset-new/ft-asset-new.
 import {AdminComponent} from './admin/admin.component'
 import {AdminGuard} from './shared/guards/admin.guard'
 import {AdminIssuerEditComponent} from './admin/admin-issuer-edit/admin-issuer-edit.component'
+import {AdminAssetDetailComponent} from './admin/admin-asset-detail/admin-asset-detail.component'
+import {AdminFtAssetDetailComponent} from './admin/admin-ft-asset-detail/admin-ft-asset-detail.component'
 
 const appRoutes: Routes = [
   {
@@ -53,7 +55,9 @@ const appRoutes: Routes = [
         path: 'admin', canActivate: [AuthGuard, AdminGuard], children: [
           {path: '', component: AdminComponent, pathMatch: 'full'},
           {path: 'edit', component: AdminIssuerEditComponent},
-        ],
+          {path: 'assets/:id', component: AdminAssetDetailComponent},
+          {path: 'ft_assets/:id', component: AdminFtAssetDetailComponent},
+        ]
       },
       {path: 'dev_playground', component: DevPlaygroundComponent},
     ],
