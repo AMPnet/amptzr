@@ -55,7 +55,7 @@
       <app-add-button text="NEW TRANSFERABLE ASSET"></app-add-button>
     </div>
 
-    <app-admin-asset-list title="Assets" [assets$]="assets$"></app-admin-asset-list>
-    <app-admin-asset-list title="Transferable assets" [assets$]="ftAssets$"></app-admin-asset-list>
+    <app-admin-asset-list title="Assets" [assets$]="assets$" assetType="asset"></app-admin-asset-list>
+    <app-admin-asset-list title="Transferable assets" [assets$]="ftAssets$" assetType="ft-asset"></app-admin-asset-list>
   </div>
 </div>

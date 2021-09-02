@@ -12,6 +12,7 @@ import {FtAssetWithInfo} from '../../shared/services/blockchain/ft-asset.service
 })
 export class AdminAssetListComponent {
   @Input() title!: string
+  @Input() assetType!: 'asset' | 'ft-asset'
   @Input() assets$!: Observable<WithStatus<(AssetWithInfo | FtAssetWithInfo)[]>>
 
   constructor() {

@@ -6,13 +6,15 @@ import {withStatus, WithStatus} from '../../../shared/utils/observables'
 import {CampaignService, CampaignWithInfo} from '../../../shared/services/blockchain/campaign.service'
 
 @Component({
-  selector: 'app-asset-list-item',
-  templateUrl: './asset-list-item.component.html',
-  styleUrls: ['./asset-list-item.component.css'],
+  selector: 'app-admin-asset-list-item',
+  templateUrl: './admin-asset-list-item.component.html',
+  styleUrls: ['./admin-asset-list-item.component.css'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class AssetListItemComponent implements OnInit {
+export class AdminAssetListItemComponent implements OnInit {
   @Input() asset!: AssetWithInfo | FtAssetWithInfo
+  @Input() assetType!: 'asset' | 'ft-asset'
+
   campaigns$!: Observable<WithStatus<CampaignWithInfo[]>>
 
   constructor(private campaignService: CampaignService,) {

@@ -85,7 +85,7 @@ import {MatSnackBarModule} from '@angular/material/snack-bar'
 import {AdminComponent} from './admin/admin.component'
 import {AddButtonComponent} from './shared/components/add-button/add-button.component'
 import {AdminAssetListComponent} from './admin/admin-asset-list/admin-asset-list.component'
-import {AssetListItemComponent} from './admin/admin-asset-list/asset-list-item/asset-list-item.component'
+import {AdminAssetListItemComponent} from './admin/admin-asset-list/asset-list-item/admin-asset-list-item.component'
 import {AdminIssuerEditComponent} from './admin/admin-issuer-edit/admin-issuer-edit.component'
 
 @NgModule({
@@ -156,7 +156,7 @@ import {AdminIssuerEditComponent} from './admin/admin-issuer-edit/admin-issuer-e
     AdminComponent,
     AddButtonComponent,
     AdminAssetListComponent,
-    AssetListItemComponent,
+    AdminAssetListItemComponent,
     AdminIssuerEditComponent,
   ],
   imports: [
