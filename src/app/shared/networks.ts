@@ -90,7 +90,7 @@ export const MumbaiNetwork: Network = {
     symbol: 'MATIC',
   },
   maxGasPrice: 20,
-  rpcURLs: ['https://polygon-mumbai.infura.io/v3/c9625ebec3634ce3a0bd20be405bac8c'],
+  rpcURLs: ['https://matic-mumbai.chainstacklabs.com'],
   explorerURLs: ['https://mumbai.polygonscan.com/'],
   tokenizerConfig: {
     apxRegistry: '0xb46979536849360806B48143065A10D4E309D966',
