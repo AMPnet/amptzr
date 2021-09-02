@@ -96,8 +96,9 @@ export class StablecoinService {
       map(([contract, signer]) => contract.connect(signer)),
       switchMap(contract => combineLatest([of(contract), this.gasService.overrides])),
       switchMap(([contract, overrides]) =>
-        contract.approve(campaignAddress, this.parse(amount), overrides),
+        contract.populateTransaction.approve(campaignAddress, this.parse(amount), overrides),
       ),
+      switchMap(tx => this.signerService.sendTransaction(tx)),
       switchMap(tx => this.dialogService.loading(
         from(this.sessionQuery.provider.waitForTransaction(tx.hash)),
         'Processing transaction...',

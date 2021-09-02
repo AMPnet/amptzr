@@ -1,6 +1,6 @@
 import {Injectable, NgZone} from '@angular/core'
 import {providers, utils} from 'ethers'
-import {from, fromEvent, merge, Observable, of, Subject, throwError} from 'rxjs'
+import {defer, EMPTY, from, fromEvent, merge, Observable, of, Subject, throwError} from 'rxjs'
 import {catchError, concatMap, finalize, map, switchMap, take, tap} from 'rxjs/operators'
 import {SessionStore} from '../../session/state/session.store'
 import {SessionQuery} from '../../session/state/session.query'
@@ -105,14 +105,27 @@ export class SignerService {
 
   signMessage(message: string | utils.Bytes): Observable<string> {
     return this.ensureAuth.pipe(
-      switchMap(signer => from(signer.signMessage(message))),
+      switchMap(signer => this.dialogService.withPermission(defer(() => signer.signMessage(message)))),
     )
   }
 
   sendTransaction(transaction: providers.TransactionRequest):
     Observable<providers.TransactionResponse> {
     return this.ensureAuth.pipe(
-      switchMap(signer => from(signer.sendTransaction(transaction))),
+      switchMap(signer => this.dialogService.withPermission(defer(() => {
+        return from(signer.sendTransaction(transaction)).pipe(
+          catchError(err => {
+            if (err?.message === 'Something went wrong while trying to open the popup') {
+              // Venly issue in Safari; happens sometimes when their backend requests are too long
+              // so Safari throws popup blocker. Usually doesn't happen the next time when
+              // the user clicks.
+              return EMPTY
+            } else {
+              return throwError(err)
+            }
+          }),
+        )
+      }))),
     )
   }
 

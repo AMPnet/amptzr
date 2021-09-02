@@ -90,7 +90,8 @@ export class AssetService {
     return this.signerService.ensureAuth.pipe(
       map(signer => this.contract(assetAddress, signer)),
       switchMap(contract => combineLatest([of(contract), this.gasService.overrides])),
-      switchMap(([contract, overrides]) => contract.setInfo(infoHash, overrides)),
+      switchMap(([contract, overrides]) => contract.populateTransaction.setInfo(infoHash, overrides)),
+      switchMap(tx => this.signerService.sendTransaction(tx)),
       switchMap(tx => this.dialogService.loading(
         from(this.sessionQuery.provider.waitForTransaction(tx.hash)),
         'Processing transaction...',
@@ -109,12 +110,13 @@ export class AssetService {
       switchMap(([contract, overrides]) => {
         const creator = this.sessionQuery.getValue().address!
 
-        return from(contract.create(
+        return from(contract.populateTransaction.create(
           creator, data.issuer, this.preferenceQuery.network.tokenizerConfig.apxRegistry,
           data.ansName, data.initialTokenSupply, data.whitelistRequiredForRevenueClaim,
           data.whitelistRequiredForLiquidationClaim,
           data.name, data.symbol, data.info, overrides,
         )).pipe(
+          switchMap(tx => this.signerService.sendTransaction(tx)),
           this.errorService.handleError(),
           switchMap(tx => this.dialogService.loading(
             from(this.sessionQuery.provider.waitForTransaction(tx.hash)),
@@ -132,9 +134,10 @@ export class AssetService {
     return this.signerService.ensureAuth.pipe(
       map(signer => this.contract(assetAddress, signer)),
       switchMap(contract => combineLatest([of(contract), this.gasService.overrides])),
-      switchMap(([contract, overrides]) => contract.transfer(
+      switchMap(([contract, overrides]) => contract.populateTransaction.transfer(
         campaignAddress, this.stablecoin.parse(amount, 18), overrides),
       ),
+      switchMap(tx => this.signerService.sendTransaction(tx)),
       switchMap(tx => this.dialogService.loading(
         from(this.sessionQuery.provider.waitForTransaction(tx.hash)),
         'Processing transaction...',

@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core'
-import {from, Observable, of, throwError} from 'rxjs'
-import {concatMap, map, switchMap, tap} from 'rxjs/operators'
+import {defer, from, Observable, of, throwError} from 'rxjs'
+import {concatMap, map, tap} from 'rxjs/operators'
 import {providers} from 'ethers'
 import {Subsigner, SubsignerLoginOpts} from './metamask-subsigner.service'
 import {ArkaneConnect, AuthenticationResult} from '@arkane-network/arkane-connect/dist/src/connect/connect'
@@ -56,10 +56,7 @@ export class VenlySubsignerService implements Subsigner {
   }
 
   private authenticateProcedure(): Observable<AuthenticationResult> {
-    return this.dialogService.info('You will be redirected to Venly to authenticate.').pipe(
-      switchMap(confirm => confirm ? from(this.subprovider.authenticate()) :
-        throwError('VENLY_AUTH_INFO_DISMISSED')),
-    )
+    return this.dialogService.withPermission(defer(() => this.subprovider.authenticate()))
   }
 
   private setAddress(signer: providers.JsonRpcSigner) {
