@@ -1,6 +1,6 @@
 <div class="flex flex-col justify-start lg:flex-row w-full my-4 shadow-xl hover:shadow-2xl rounded-4xl bg-white">
-  <div class="relative w-full lg:w-1/5 lg:mt-4 lg:ml-4">
-    <img *ngIf="asset.logo; else noImage" class="w-full lg:w-40 h-40 object-cover rounded-t-4xl lg:rounded-full"
+  <div class="flex justify-center relative w-full lg:w-1/5 mt-4 lg:ml-4">
+    <img *ngIf="asset.logo; else noImage" class="w-40 h-40 object-cover rounded-full"
          src="{{ asset.logo | toUrlIPFS }}" alt="Asset logo">
     <ng-template #noImage>
       <div class="w-full lg:w-40 h-40 bg-gray-200 rounded-t-4xl lg:rounded-full"></div>
