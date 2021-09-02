@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core'
-import {Observable} from 'rxjs'
+import {Observable, of, throwError} from 'rxjs'
 import {MatDialog, MatDialogConfig} from '@angular/material/dialog'
 import {
   DialogIcon,
@@ -7,7 +7,7 @@ import {
   InfoDialogData,
   InfoDialogResponse,
 } from '../components/info-dialog/info-dialog.component'
-import {finalize, map} from 'rxjs/operators'
+import {finalize, map, switchMap} from 'rxjs/operators'
 import {LoadingDialogComponent, LoadingDialogData} from '../components/loading-dialog/loading-dialog.component'
 
 @Injectable({
@@ -22,19 +22,15 @@ export class DialogService {
       data: {
         message,
         cancelable,
-      } as InfoDialogData,
+      } as InfoDialogData<unknown>,
     }).afterClosed().pipe(
       map(res => !!(res as InfoDialogResponse<unknown>)?.confirmed),
     )
   }
 
-  infoWithOnConfirm<T>(message: string, cancelable = true, onConfirm: Observable<T>): Observable<InfoDialogResponse<T>> {
+  infoWithOnConfirm<T>(data: Partial<InfoDialogData<T>>): Observable<InfoDialogResponse<T>> {
     return this.dialog.open(InfoDialogComponent, {
-      data: {
-        message,
-        cancelable,
-        onConfirm,
-      } as InfoDialogData,
+      data,
     }).afterClosed().pipe(
       map(res => res ?? {confirmed: false}),
     )
@@ -46,7 +42,7 @@ export class DialogService {
         title: 'Success',
         message,
         cancelable: false,
-      } as InfoDialogData,
+      } as InfoDialogData<unknown>,
     }).afterClosed()
   }
 
@@ -57,7 +53,7 @@ export class DialogService {
         title: 'Error',
         message,
         cancelable: false,
-      } as InfoDialogData,
+      } as InfoDialogData<unknown>,
     }).afterClosed()
   }
 
@@ -80,5 +76,17 @@ export class DialogService {
       width: '100vw',
       height: '100vh',
     })
+  }
+
+  withPermission<T>(action$: Observable<T>) {
+    return this.infoWithOnConfirm({
+      message: 'Permission required to open external window.',
+      confirm_text: 'Open',
+      cancelable: false,
+      onConfirm: action$,
+    }).pipe(
+      switchMap(res => res.confirmed ? of(res.onConfirmResult) :
+        throwError('PERMISSION_POPUP_DISMISSED')),
+    )
   }
 }

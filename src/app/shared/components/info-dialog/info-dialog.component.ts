@@ -12,7 +12,7 @@ import {catchError, tap} from 'rxjs/operators'
 export class InfoDialogComponent implements OnInit {
   iconType = DialogIcon
 
-  private dataSub = new BehaviorSubject<InfoDialogData>({
+  private dataSub = new BehaviorSubject<InfoDialogData<unknown>>({
     icon: DialogIcon.INFO,
     title: '',
     message: '',
@@ -22,7 +22,7 @@ export class InfoDialogComponent implements OnInit {
   })
   data$ = this.dataSub.asObservable()
 
-  constructor(@Inject(MAT_DIALOG_DATA) @Optional() public data: InfoDialogData,
+  constructor(@Inject(MAT_DIALOG_DATA) @Optional() public data: InfoDialogData<unknown>,
               @Optional() private dialogRef: MatDialogRef<InfoDialogComponent>) {
   }
 
@@ -58,14 +58,14 @@ export class InfoDialogComponent implements OnInit {
   }
 }
 
-export interface InfoDialogData {
+export interface InfoDialogData<T> {
   icon: DialogIcon
   title: string;
   message: string;
   confirm_text: string;
   cancel_text: string;
   cancelable: boolean;
-  onConfirm?: Observable<unknown>
+  onConfirm?: Observable<T>
 }
 
 export enum DialogIcon {

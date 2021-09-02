@@ -96,7 +96,8 @@ export class FtAssetService {
     return this.signerService.ensureAuth.pipe(
       map(signer => this.contract(assetAddress, signer)),
       switchMap(contract => combineLatest([of(contract), this.gasService.overrides])),
-      switchMap(([contract, overrides]) => contract.setInfo(infoHash, overrides)),
+      switchMap(([contract, overrides]) => contract.populateTransaction.setInfo(infoHash, overrides)),
+      switchMap(tx => this.signerService.sendTransaction(tx)),
       switchMap(tx => this.dialogService.loading(
         from(this.sessionQuery.provider.waitForTransaction(tx.hash)),
         'Processing transaction...',
@@ -115,7 +116,7 @@ export class FtAssetService {
       switchMap(([contract, overrides]) => {
         const creator = this.sessionQuery.getValue().address!
 
-        return from(contract.create({
+        return from(contract.populateTransaction.create({
           creator: creator,
           issuer: data.issuer,
           apxRegistry: this.preferenceQuery.network.tokenizerConfig.apxRegistry,
@@ -128,6 +129,7 @@ export class FtAssetService {
           info: data.info,
           childChainManager: this.preferenceQuery.network.tokenizerConfig.childChainManager,
         }, overrides)).pipe(
+          switchMap(tx => this.signerService.sendTransaction(tx)),
           this.errorService.handleError(),
           switchMap(tx => this.dialogService.loading(
             from(this.sessionQuery.provider.waitForTransaction(tx.hash)),
@@ -145,9 +147,10 @@ export class FtAssetService {
     return this.signerService.ensureAuth.pipe(
       map(signer => this.contract(assetAddress, signer)),
       switchMap(contract => combineLatest([of(contract), this.gasService.overrides])),
-      switchMap(([contract, overrides]) => contract.transfer(
+      switchMap(([contract, overrides]) => contract.populateTransaction.transfer(
         campaignAddress, this.stablecoin.parse(amount, 18), overrides),
       ),
+      switchMap(tx => this.signerService.sendTransaction(tx)),
       switchMap(tx => this.dialogService.loading(
         from(this.sessionQuery.provider.waitForTransaction(tx.hash)),
         'Processing transaction...',
