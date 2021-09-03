@@ -42,7 +42,9 @@ export class OfferInvestmentInfoComponent implements OnInit {
   }
 
   get shouldShowMin() {
-    return this.stats.userMin > 0
+    // TODO: should be set to userMin > 0
+    //  this is a workaround for campaigns that are incorrectly set.
+    return this.stats.userMin > 1
   }
 
   get shouldShowMax() {

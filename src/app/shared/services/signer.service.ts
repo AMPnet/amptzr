@@ -171,7 +171,13 @@ export class SignerService {
         // In this case, pop-up blocker must be explicitly disabled.
         // Safari. Happens sometimes when Venly backend requests are too long. Usually proceeds with
         // the second click when the request is much quicker.
-        if (err?.message === ('Something went wrong while trying to open the popup' || 'You provided an invalid object where a stream was expected. You can provide an Observable, Promise, Array, or Iterable.')) {
+
+        const popupErrors = [
+          'Something went wrong while trying to open the popup',
+          'You provided an invalid object where a stream was expected. You can provide an Observable, Promise, Array, or Iterable.'
+        ]
+
+        if (err?.message && popupErrors.some(error => err!.message.includes(error))) {
           this.snackbar.open('Pop-ups blocked. Allow pop-ups for this site and try again.', undefined, {
             duration: 3000,
           })
