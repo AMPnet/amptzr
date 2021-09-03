@@ -81,6 +81,7 @@ import {AssetDetailComponent} from './assets/assets/asset-detail/asset-detail.co
 import {AssetEditComponent} from './assets/assets/asset-edit/asset-edit.component'
 import {AssetNewComponent} from './assets/assets/asset-new/asset-new.component'
 import {AssetPathSegmentPipe} from './shared/pipes/asset-path-segment.pipe'
+import {MatSnackBarModule} from '@angular/material/snack-bar'
 
 @NgModule({
   declarations: [
@@ -158,6 +159,7 @@ import {AssetPathSegmentPipe} from './shared/pipes/asset-path-segment.pipe'
     BrowserAnimationsModule,
     MatDialogModule,
     MatTooltipModule,
+    MatSnackBarModule,
     A11yModule,
     ServiceWorkerModule.register('ngsw-worker.js', {
       enabled: environment.production,

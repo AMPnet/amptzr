@@ -10,6 +10,7 @@ import {MetamaskSubsignerService, Subsigner} from './subsigners/metamask-subsign
 import {MatDialog} from '@angular/material/dialog'
 import {AuthComponent} from '../../auth/auth.component'
 import {RouterService} from './router.service'
+import {MatSnackBar} from '@angular/material/snack-bar'
 
 @Injectable({
   providedIn: 'root',
@@ -49,6 +50,7 @@ export class SignerService {
               private ngZone: NgZone,
               private router: RouterService,
               private dialog: MatDialog,
+              private snackbar: MatSnackBar,
               private dialogService: DialogService) {
     this.subscribeToChanges()
   }
@@ -105,7 +107,11 @@ export class SignerService {
 
   signMessage(message: string | utils.Bytes): Observable<string> {
     return this.ensureAuth.pipe(
-      switchMap(signer => this.dialogService.withPermission(defer(() => signer.signMessage(message)))),
+      switchMap(signer => this.dialogService.withPermission(defer(() => {
+        return from(signer.signMessage(message)).pipe(
+          this.handleError,
+        )
+      }))),
     )
   }
 
@@ -114,16 +120,7 @@ export class SignerService {
     return this.ensureAuth.pipe(
       switchMap(signer => this.dialogService.withPermission(defer(() => {
         return from(signer.sendTransaction(transaction)).pipe(
-          catchError(err => {
-            if (err?.message === 'Something went wrong while trying to open the popup') {
-              // Venly issue in Safari; happens sometimes when their backend requests are too long
-              // so Safari throws popup blocker. Usually doesn't happen the next time when
-              // the user clicks.
-              return EMPTY
-            } else {
-              return throwError(err)
-            }
-          }),
+          this.handleError,
         )
       }))),
     )
@@ -164,6 +161,26 @@ export class SignerService {
       concatMap(isLoggedIn => isLoggedIn ? this.logout() : of(isLoggedIn)),
       concatMap(() => this.ngZone.run(() => this.router.navigate(['/offers']))),
     )
+  }
+
+  private get handleError() {
+    return <T>(source: Observable<T>): Observable<T> => {
+      return source.pipe(catchError(err => {
+        // Pop-up Venly issue in Safari and Firefox;
+        // Firefox. Happens every time when there is network request between user click and open pop-up action.
+        // In this case, pop-up blocker must be explicitly disabled.
+        // Safari. Happens sometimes when Venly backend requests are too long. Usually proceeds with
+        // the second click when the request is much quicker.
+        if (err?.message === ('Something went wrong while trying to open the popup' || 'You provided an invalid object where a stream was expected. You can provide an Observable, Promise, Array, or Iterable.')) {
+          this.snackbar.open('Pop-ups blocked. Allow pop-ups for this site and try again.', undefined, {
+            duration: 3000,
+          })
+          return EMPTY
+        } else {
+          return throwError(err)
+        }
+      }))
+    }
   }
 }
 
