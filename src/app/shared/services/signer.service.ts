@@ -1,6 +1,6 @@
 import {Injectable, NgZone} from '@angular/core'
 import {providers, utils} from 'ethers'
-import {defer, EMPTY, from, fromEvent, merge, Observable, of, Subject, throwError} from 'rxjs'
+import {defer, from, fromEvent, merge, Observable, of, Subject, throwError} from 'rxjs'
 import {catchError, concatMap, finalize, map, switchMap, take, tap} from 'rxjs/operators'
 import {SessionStore} from '../../session/state/session.store'
 import {SessionQuery} from '../../session/state/session.query'
@@ -10,7 +10,7 @@ import {MetamaskSubsignerService, Subsigner} from './subsigners/metamask-subsign
 import {MatDialog} from '@angular/material/dialog'
 import {AuthComponent} from '../../auth/auth.component'
 import {RouterService} from './router.service'
-import {MatSnackBar} from '@angular/material/snack-bar'
+import {ErrorService} from './error.service'
 
 @Injectable({
   providedIn: 'root',
@@ -50,7 +50,7 @@ export class SignerService {
               private ngZone: NgZone,
               private router: RouterService,
               private dialog: MatDialog,
-              private snackbar: MatSnackBar,
+              private errorService: ErrorService,
               private dialogService: DialogService) {
     this.subscribeToChanges()
   }
@@ -109,7 +109,7 @@ export class SignerService {
     return this.ensureAuth.pipe(
       switchMap(signer => this.dialogService.withPermission(defer(() => {
         return from(signer.signMessage(message)).pipe(
-          this.handleError,
+          this.errorService.handleError(),
         )
       }))),
     )
@@ -120,7 +120,7 @@ export class SignerService {
     return this.ensureAuth.pipe(
       switchMap(signer => this.dialogService.withPermission(defer(() => {
         return from(signer.sendTransaction(transaction)).pipe(
-          this.handleError,
+          this.errorService.handleError(),
         )
       }))),
     )
@@ -161,35 +161,6 @@ export class SignerService {
       concatMap(isLoggedIn => isLoggedIn ? this.logout() : of(isLoggedIn)),
       concatMap(() => this.ngZone.run(() => this.router.navigate(['/offers']))),
     )
-  }
-
-  private get handleError() {
-    return <T>(source: Observable<T>): Observable<T> => {
-      return source.pipe(catchError(err => {
-        // Pop-up Venly issue in Safari and Firefox;
-        // Firefox. Happens every time when there is network request between user click and open pop-up action.
-        // In this case, pop-up blocker must be explicitly disabled.
-        // Safari. Happens sometimes when Venly backend requests are too long. Usually proceeds with
-        // the second click when the request is much quicker.
-
-        const popupErrors = [
-          'Something went wrong while trying to open the popup',
-          'You provided an invalid object where a stream was expected. You can provide an Observable, Promise, Array, or Iterable.'
-        ]
-
-        console.log('err', err)
-        console.log('err.message', err?.message)
-
-        if (err?.message && popupErrors.some(error => err!.message.includes(error))) {
-          this.snackbar.open('Pop-ups blocked. Allow pop-ups for this site and try again.', undefined, {
-            duration: 3000,
-          })
-          return EMPTY
-        } else {
-          return throwError(err)
-        }
-      }))
-    }
   }
 }
 
