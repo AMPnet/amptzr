@@ -69,7 +69,7 @@ export class IssuerGuard implements CanActivate {
           start_url: `${getWindow().location.origin}${this.issuerPathPipe.transform('/')}`,
           background_color: '#fff',
           theme_color: '#3730A3FF',
-          display: 'minimal-ui',
+          display: 'standalone',
           icons: [
             {
               src: `${getWindow().location.origin}/assets/icons/icon-72x72.png`,
