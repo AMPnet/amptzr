@@ -19,6 +19,12 @@
             <div class="w-full leading-normal mt-8 lg:mt-8">
               <h1 class="text-4xl font-light tracking-wider leading-relaxed">{{ offer.name }}</h1>
 
+              <div class="mt-4">
+                <app-funding-progress [campaign]="offer"
+                                      *ngIf="(isMobileScreenSize$ | async) === true">
+                </app-funding-progress>
+              </div>
+
               <div class="mt-4 text-lg font-light text-gray-500">
                 {{ offer.about }}
               </div>
@@ -42,7 +48,9 @@
 
             <!-- RIGHT COLUMN -->
             <div class="w-full mt-8 lg:w-8/12 lg:pr-4">
-              <app-funding-progress [campaign]="offer"></app-funding-progress>
+              <app-funding-progress [campaign]="offer"
+                                    *ngIf="(isMobileScreenSize$ | async) === false">
+              </app-funding-progress>
 
               <!-- Floating Invest button -->
               <div class="fixed lg:relative lg:w-full bottom-4 right-4 lg:right-0 px-4 lg:px-0 w-7/12">
@@ -93,10 +101,10 @@
               <ng-container *ngIf="offer.newsURLs.length > 0">
                 <div class="mt-10 text-lg uppercase font-light">Related News</div>
                 <ng-container *ngIf="links$ | async as linksRes">
-                  <div class="bg-gray-100 p-4 rounded-lg">
+                  <div class="flex flex-col mt-2 px-4 bg-gray-100 rounded-lg divide-y-2">
                     <ng-container *ngIf="linksRes.value as linksRes">
                       <ng-container *ngIf="linksRes.value as links">
-                        <div *ngFor="let link of links" class="mt-4 flex flex-col">
+                        <div *ngFor="let link of links" class="py-4">
                           <a href="{{ link.url }}" class="text-lg" target="_blank" rel="noopener noreferrer">
                             <ng-container *ngIf="link.open_graph?.title; else showURL">
                               {{ link.open_graph!.title! | truncate:140:true }}
@@ -113,7 +121,7 @@
                             </a>
                           </div>
 
-                          <div *ngIf="link.open_graph?.description" class="flex p-2 text-sm">
+                          <div *ngIf="link.open_graph?.description" class="mt-2 text-sm">
                             {{ link.open_graph!.description! | truncate:280:true }}
                           </div>
                         </div>

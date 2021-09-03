@@ -93,7 +93,8 @@ export class IssuerService {
     return this.signerService.ensureAuth.pipe(
       map(signer => this.contract(issuerAddress, signer)),
       switchMap(contract => combineLatest([of(contract), this.gasService.overrides])),
-      switchMap(([contract, overrides]) => contract.setInfo(infoHash, overrides)),
+      switchMap(([contract, overrides]) => contract.populateTransaction.setInfo(infoHash, overrides)),
+      switchMap(tx => this.signerService.sendTransaction(tx)),
       switchMap(tx => this.dialogService.loading(
         from(this.sessionQuery.provider.waitForTransaction(tx.hash)),
         'Processing transaction...',
@@ -118,10 +119,11 @@ export class IssuerService {
           info: infoHash,
         }
 
-        return from(contract.functions.create(
+        return from(contract.populateTransaction.create(
           createData.owner, createData.ansName, createData.stablecoin,
           createData.walletApprover, createData.info, overrides,
         )).pipe(
+          switchMap(tx => this.signerService.sendTransaction(tx)),
           switchMap(tx => this.dialogService.loading(
             from(this.sessionQuery.provider.waitForTransaction(tx.hash)),
             'Processing transaction...',
@@ -150,7 +152,8 @@ export class IssuerService {
     return this.signerService.ensureAuth.pipe(
       map(signer => this.contract(issuerAddress, signer)),
       switchMap(contract => combineLatest([of(contract), this.gasService.overrides])),
-      switchMap(([contract, overrides]) => contract.changeWalletApprover(walletApproverAddress, overrides)),
+      switchMap(([contract, overrides]) => contract.populateTransaction.changeWalletApprover(walletApproverAddress, overrides)),
+      switchMap(tx => this.signerService.sendTransaction(tx)),
       switchMap(tx => this.dialogService.loading(
         from(this.sessionQuery.provider.waitForTransaction(tx.hash)),
         'Processing transaction...',

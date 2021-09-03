@@ -1,6 +1,6 @@
 import {Injectable, NgZone} from '@angular/core'
 import {providers, utils} from 'ethers'
-import {from, fromEvent, merge, Observable, of, Subject, throwError} from 'rxjs'
+import {defer, from, fromEvent, merge, Observable, of, Subject, throwError} from 'rxjs'
 import {catchError, concatMap, finalize, map, switchMap, take, tap} from 'rxjs/operators'
 import {SessionStore} from '../../session/state/session.store'
 import {SessionQuery} from '../../session/state/session.query'
@@ -10,6 +10,7 @@ import {MetamaskSubsignerService, Subsigner} from './subsigners/metamask-subsign
 import {MatDialog} from '@angular/material/dialog'
 import {AuthComponent} from '../../auth/auth.component'
 import {RouterService} from './router.service'
+import {ErrorService} from './error.service'
 
 @Injectable({
   providedIn: 'root',
@@ -49,6 +50,7 @@ export class SignerService {
               private ngZone: NgZone,
               private router: RouterService,
               private dialog: MatDialog,
+              private errorService: ErrorService,
               private dialogService: DialogService) {
     this.subscribeToChanges()
   }
@@ -105,14 +107,22 @@ export class SignerService {
 
   signMessage(message: string | utils.Bytes): Observable<string> {
     return this.ensureAuth.pipe(
-      switchMap(signer => from(signer.signMessage(message))),
+      switchMap(signer => this.dialogService.withPermission(defer(() => {
+        return from(signer.signMessage(message)).pipe(
+          this.errorService.handleError(),
+        )
+      }))),
     )
   }
 
   sendTransaction(transaction: providers.TransactionRequest):
     Observable<providers.TransactionResponse> {
     return this.ensureAuth.pipe(
-      switchMap(signer => from(signer.sendTransaction(transaction))),
+      switchMap(signer => this.dialogService.withPermission(defer(() => {
+        return from(signer.sendTransaction(transaction)).pipe(
+          this.errorService.handleError(),
+        )
+      }))),
     )
   }
 
