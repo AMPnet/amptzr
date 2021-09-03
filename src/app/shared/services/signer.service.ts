@@ -177,6 +177,9 @@ export class SignerService {
           'You provided an invalid object where a stream was expected. You can provide an Observable, Promise, Array, or Iterable.'
         ]
 
+        console.log('err', err)
+        console.log('err.message', err?.message)
+
         if (err?.message && popupErrors.some(error => err!.message.includes(error))) {
           this.snackbar.open('Pop-ups blocked. Allow pop-ups for this site and try again.', undefined, {
             duration: 3000,
