@@ -2,7 +2,7 @@ import {ChangeDetectionStrategy, Component} from '@angular/core'
 import {BehaviorSubject, combineLatest, Observable, of} from 'rxjs'
 import {CampaignService, CampaignWithInfo} from '../shared/services/blockchain/campaign.service'
 import {ActivatedRoute} from '@angular/router'
-import {filter, map, switchMap, tap} from 'rxjs/operators'
+import {filter, map, startWith, switchMap, tap} from 'rxjs/operators'
 import {WithStatus, withStatus} from '../shared/utils/observables'
 import {MetaService} from '../shared/services/meta.service'
 import {ToUrlIPFSPipe} from '../shared/pipes/to-url-ipfs.pipe'
@@ -13,6 +13,7 @@ import {DialogService} from '../shared/services/dialog.service'
 import {SessionQuery} from '../session/state/session.query'
 import {LinkPreviewResponse, LinkPreviewService} from '../shared/services/backend/link-preview.service'
 import {quillMods} from '../shared/utils/quill'
+import {TailwindService} from '../shared/services/tailwind.service'
 
 @Component({
   selector: 'app-offer',
@@ -28,6 +29,8 @@ export class OfferComponent {
     map(value => ({value: value})),
   )
 
+  isMobileScreenSize$: Observable<boolean>
+
   quillMods = quillMods
 
   constructor(private campaignService: CampaignService,
@@ -39,6 +42,7 @@ export class OfferComponent {
               private dialogService: DialogService,
               private router: RouterService,
               private route: ActivatedRoute,
+              private tailwindService: TailwindService,
               private linkPreviewService: LinkPreviewService) {
     const campaignID = this.route.snapshot.params.id
 
@@ -67,6 +71,11 @@ export class OfferComponent {
 
         return withStatus(combineLatest(previewLinks).pipe(map(value => ({value}))))
       }),
+    )
+
+    this.isMobileScreenSize$ = this.tailwindService.screenResize$.pipe(
+      startWith(this.tailwindService.getScreen()),
+      map(screen => screen === ('sm' || 'md')),
     )
   }
 
