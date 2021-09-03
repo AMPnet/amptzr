@@ -12,6 +12,7 @@ export class MetaService {
   setMeta(data: MetaData) {
     this.meta.addTag({property: 'og:title', content: data.title})
     this.meta.addTag({property: 'og:description', content: data.description})
+    this.meta.addTag({property: 'description', content: data.description})
     this.meta.addTag({property: 'og:image', content: data.imageURL})
     this.meta.addTag({property: 'og:url', content: data.contentURL})
     this.meta.addTag({name: 'twitter:card', content: 'summary_large_image'})

@@ -1,8 +1,9 @@
 import {PostBuildEnv, PreBuildEnv} from '../../types/env'
 import {getClientByHostname} from '../app/shared/hostnames'
+import {getWindow} from '../app/shared/utils/browser'
 
 const preBuildEnv = process.env as unknown as PreBuildEnv
-const postBuildEnv = (window as any).env as PostBuildEnv
+const postBuildEnv = getWindow().env as PostBuildEnv
 
 export const environment = {
   production: false,
