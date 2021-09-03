@@ -4,6 +4,7 @@ import {providers} from 'ethers'
 import {catchError, concatMap, map, tap} from 'rxjs/operators'
 import {MetamaskNetworks} from '../../networks'
 import {AuthProvider, PreferenceStore} from '../../../preference/state/preference.store'
+import {getWindow} from '../../utils/browser'
 
 @Injectable({
   providedIn: 'root',
@@ -21,7 +22,7 @@ export class MetamaskSubsignerService implements Subsigner {
   }
 
   private getSigner(): Observable<providers.JsonRpcSigner> {
-    return of((window as any)?.ethereum).pipe(
+    return of(getWindow()?.ethereum).pipe(
       concatMap(web3Provider => web3Provider ?
         of(new providers.Web3Provider(web3Provider, 'any')
           .getSigner()) : throwError('NO_METAMASK')),
@@ -73,7 +74,7 @@ export class MetamaskSubsignerService implements Subsigner {
     return of(null)
   }
 
-  isAvailable = (): boolean => !!(window as any)?.ethereum
+  isAvailable = (): boolean => !!getWindow()?.ethereum
 }
 
 export interface Subsigner {

@@ -38,6 +38,7 @@
 
         <!-- Toggle dropdown -->
         <button class="mx-4 py-4 text-lg font-black text-gray-700 lg:hidden"
+                aria-label="Toggle dropdown"
                 (click)="toggleDropdown()">
           <svg xmlns="http://www.w3.org/2000/svg" [class.hidden]="(isDropdownOpen$ | async) === true"
                class="w-8 h-8" fill="none"
