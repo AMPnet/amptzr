@@ -1,0 +1,80 @@
+<div class="w-full h-full flex justify-center mt-8 px-2 pb-8">
+  <div class="bg-red w-full max-w-6xl">
+    <ng-container *ngIf="(asset$ | async) as assetRes">
+      <ng-container *ngIf="assetRes.value as asset">
+        <form [formGroup]="updateForm">
+          <div class="flex flex-col lg:flex-row lg:flex-wrap gap-6 mt-8">
+            <div class="flex flex-col lg:flex-row w-full justify-start shadow-xl rounded-4xl bg-white px-3 py-6
+                        lg:p-0 lg:pl-6 lg:pt-6">
+              <div class="relative w-full lg:w-1/3">
+                <div class="flex justify-center w-full absolute top-32">
+                  <label class="flex items-center gap-4 px-8 py-2 rounded-full bg-green-600 text-white text-lg
+                                cursor-pointer">
+                    <input class="hidden" type="file" formControlName="logo" multiple>
+                    <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M6 1V6M6 6V11M6 6H11M6 6H1" stroke="white" stroke-width="2" stroke-linecap="round"
+                            stroke-linejoin="round"/>
+                    </svg>
+                    <span>Upload logo</span>
+                  </label>
+                </div>
+                <img *ngIf="asset.logo; else noImage" class="w-full h-48 lg:h-30 object-cover"
+                     [src]="((updateForm.get('logo')?.value?.[0] | safe:'fileUrl') || asset.logo) | toUrlIPFS"
+                     alt="Asset logo">
+                <ng-template #noImage>
+                  <div class="w-full h-48 lg:h-30 bg-gray-200"></div>
+                </ng-template>
+              </div>
+
+              <div class="flex flex-col gap-8 w-full h-full p-4 pt-0">
+                <div class="flex flex-col gap-2 text-lg lg:w-3/4">
+                  <span class="text-4xl mt-8 mb-4 lg:mb-8 lg:mt-0">{{ asset.name ?? 'Unknown' }}</span>
+
+                  <div class="flex items-center gap-2 text-gray-400">
+                    <span>Token symbol:</span>
+                    <span class="text-sm font-normal">{{ asset.symbol }}</span>
+                  </div>
+
+                  <div class="flex items-center gap-2 text-gray-400">
+                    <span>Token supply:</span>
+                    <span class="text-sm font-normal">
+                      {{ asset.initialTokenSupply | formatUnit:'bignumToWei':18 }}
+                    </span>
+                  </div>
+
+                  <div class="flex flex-col gap-2 mt-3 lg:mt-0">
+                    <label>Description:</label>
+                    <textarea class="border-gray-400 rounded-lg" type="text" formControlName="description">
+                    </textarea>
+                  </div>
+                </div>
+
+                <div class="flex flex-col justify-end">
+                  <div class="flex justify-center lg:justify-end mt-12 lg:mt-0">
+                    <button app-action-button
+                            class="bg-indigo-800 disabled:bg-gray-400 px-24 py-2 rounded-full text-white"
+                            text="Finish editing"
+                            [disabled]="!updateForm.valid"
+                            [onClick]="update(asset).bind(this)">
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </form>
+      </ng-container>
+
+      <ng-container *ngIf="assetRes.error">
+        <div class="flex justify-center">
+          Cannot fetch asset.
+          <div hidden>{{ assetRes.error | json }}</div>
+        </div>
+      </ng-container>
+
+      <ng-container *ngIf="assetRes.loading">
+        <app-spinner type="overlay">Loading asset...</app-spinner>
+      </ng-container>
+    </ng-container>
+  </div>
+</div>

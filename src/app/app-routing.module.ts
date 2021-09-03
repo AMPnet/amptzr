@@ -35,6 +35,8 @@ import {AdminGuard} from './shared/guards/admin.guard'
 import {AdminIssuerEditComponent} from './admin/admin-issuer-edit/admin-issuer-edit.component'
 import {AdminAssetDetailComponent} from './admin/admin-asset-detail/admin-asset-detail.component'
 import {AdminFtAssetDetailComponent} from './admin/admin-ft-asset-detail/admin-ft-asset-detail.component'
+import {AdminAssetEditComponent} from './admin/admin-asset-edit/admin-asset-edit.component'
+import {AdminFtAssetEditComponent} from './admin/admin-ft-asset-edit/admin-ft-asset-edit.component'
 
 const appRoutes: Routes = [
   {
@@ -56,7 +58,9 @@ const appRoutes: Routes = [
           {path: '', component: AdminComponent, pathMatch: 'full'},
           {path: 'edit', component: AdminIssuerEditComponent},
           {path: 'assets/:id', component: AdminAssetDetailComponent},
+          {path: 'assets/:id/edit', component: AdminAssetEditComponent},
           {path: 'ft_assets/:id', component: AdminFtAssetDetailComponent},
+          {path: 'ft_assets/:id/edit', component: AdminFtAssetEditComponent},
         ]
       },
       {path: 'dev_playground', component: DevPlaygroundComponent},
