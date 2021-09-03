@@ -90,6 +90,7 @@ import {AdminIssuerEditComponent} from './admin/admin-issuer-edit/admin-issuer-e
 import {AdminAssetDetailComponent} from './admin/admin-asset-detail/admin-asset-detail.component'
 import {AdminCampaignListComponent} from './admin/admin-campaign-list/admin-campaign-list.component'
 import {AdminFtAssetDetailComponent} from './admin/admin-ft-asset-detail/admin-ft-asset-detail.component'
+import {AdminCampaignItemComponent} from './admin/admin-campaign-item/admin-campaign-item.component'
 
 @NgModule({
   declarations: [
@@ -164,6 +165,7 @@ import {AdminFtAssetDetailComponent} from './admin/admin-ft-asset-detail/admin-f
     AdminAssetDetailComponent,
     AdminCampaignListComponent,
     AdminFtAssetDetailComponent,
+    AdminCampaignItemComponent,
   ],
   imports: [
     BrowserModule,

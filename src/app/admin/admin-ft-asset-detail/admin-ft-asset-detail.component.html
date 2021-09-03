@@ -8,7 +8,7 @@
           <app-add-button text="NEW CAMPAIGN"></app-add-button>
         </div>
 
-        <app-admin-campaign-list [campaigns$]="campaigns$"></app-admin-campaign-list>
+        <app-admin-campaign-list [asset]="assetRes.value" [campaigns$]="campaigns$"></app-admin-campaign-list>
       </ng-container>
 
       <ng-container *ngIf="assetRes.error">
