@@ -1,0 +1,15 @@
+{
+  "rewrites": [
+    {
+      "source": "/:networkID?/:issuerID?/offers/:offerID",
+      "destination": "/api/prerender",
+      "has": [
+        {
+          "type": "header",
+          "key": "user-agent",
+          "value": "yandex|slackbot"
+        }
+      ]
+    }
+  ]
+}

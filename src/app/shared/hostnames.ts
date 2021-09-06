@@ -6,9 +6,9 @@ export const Hostnames: { [host in string]: Host } = {
     network: MaticNetwork,
     issuerAddress: '0xA240868AF33f6E44d85654bBE1CA73B9b9eA7C3d',
   },
-  'woz.eugen.work': {
+  'localhost': {
     network: MumbaiNetwork,
-    issuerAddress: '0xc95fcFd88C1D0b491E2F1A367a0211c6c6F35dF0',
+    issuerAddress: '0x58d6b2e412a2495F14303AB442D2098Ac8B81F26',
   },
 }
 
