@@ -6,7 +6,6 @@ import {RouterService} from '../../shared/services/router.service'
 import {DialogService} from '../../shared/services/dialog.service'
 import {switchMap, tap} from 'rxjs/operators'
 import {ActivatedRoute} from '@angular/router'
-import {fromPromise} from 'rxjs/internal-compatibility'
 import {FtAssetService, FtAssetWithInfo} from '../../shared/services/blockchain/ft-asset.service'
 
 @Component({
@@ -53,19 +52,15 @@ export class AdminFtAssetEditComponent {
 
   update(asset: FtAssetWithInfo) {
     return () => {
-      if (this.updateForm.value.description !== asset.description || this.updateForm.value.logo?.[0]) {
-        return this.ftAssetService.uploadInfo(
-          this.updateForm.value.logo?.[0],
-          this.updateForm.value.description,
-          asset,
-        ).pipe(
-          switchMap(uploadRes => this.ftAssetService.updateInfo(asset.contractAddress, uploadRes.path)),
-          tap(() => this.routerService.navigate([`/../admin/ft_assets/${asset.ansName}`])),
-          switchMap(() => this.dialogService.info('Asset successfully updated!', false)),
-        )
-      }
-
-      return fromPromise(this.routerService.navigate([`/../admin/ft_assets/${asset.ansName}`]))
+      return this.ftAssetService.uploadInfo(
+        this.updateForm.value.logo?.[0],
+        this.updateForm.value.description,
+        asset,
+      ).pipe(
+        switchMap(uploadRes => this.ftAssetService.updateInfo(asset.contractAddress, uploadRes.path)),
+        tap(() => this.routerService.navigate([`/admin/ft_assets/${asset.ansName}`])),
+        switchMap(() => this.dialogService.info('Asset successfully updated!', false)),
+      )
     }
   }
 }
