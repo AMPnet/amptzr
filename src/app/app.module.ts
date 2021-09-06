@@ -82,6 +82,11 @@ import {AssetEditComponent} from './assets/assets/asset-edit/asset-edit.componen
 import {AssetNewComponent} from './assets/assets/asset-new/asset-new.component'
 import {AssetPathSegmentPipe} from './shared/pipes/asset-path-segment.pipe'
 import {MatSnackBarModule} from '@angular/material/snack-bar'
+import {AdminComponent} from './admin/admin.component'
+import {AddButtonComponent} from './shared/components/add-button/add-button.component'
+import {AdminAssetListComponent} from './admin/admin-asset-list/admin-asset-list.component'
+import {AdminAssetListItemComponent} from './admin/admin-asset-list/asset-list-item/admin-asset-list-item.component'
+import {AdminIssuerEditComponent} from './admin/admin-issuer-edit/admin-issuer-edit.component'
 
 @NgModule({
   declarations: [
@@ -148,6 +153,11 @@ import {MatSnackBarModule} from '@angular/material/snack-bar'
     LoadingDialogComponent,
     WalletTxHistoryComponent,
     WalletTxHistoryItemComponent,
+    AdminComponent,
+    AddButtonComponent,
+    AdminAssetListComponent,
+    AdminAssetListItemComponent,
+    AdminIssuerEditComponent,
   ],
   imports: [
     BrowserModule,

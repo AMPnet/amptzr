@@ -160,6 +160,18 @@ export class IssuerService {
       )),
     )
   }
+
+  changeOwner(issuerAddress: string, ownerAddress: string) {
+    return this.signerService.ensureAuth.pipe(
+      map(signer => this.contract(issuerAddress, signer)),
+      switchMap(contract => combineLatest([of(contract), this.gasService.overrides])),
+      switchMap(([contract, overrides]) => contract.changeOwnership(ownerAddress, overrides)),
+      switchMap(tx => this.dialogService.loading(
+        from(this.sessionQuery.provider.waitForTransaction(tx.hash)),
+        'Processing transaction...',
+      )),
+    )
+  }
 }
 
 export interface IssuerState {

@@ -17,13 +17,15 @@
 
       <!-- Navbar items -->
       <div class="flex justify-end items-center">
-        <button *ngFor="let navbarItem of navbarScreenLinks"
-                class="mx-2 px-4 py-2 text-gray-700 text-sm border-b-4 font-semibold
-                border-transparent tracking-wider whitespace-nowrap hidden lg:inline"
-                [routerLink]="navbarItem.routerLink | issuerPath"
-                routerLinkActive="!text-indigo-800 !border-indigo-800">
-          {{ navbarItem.title }}
-        </button>
+        <ng-container *ngFor="let navbarItem of navbarScreenLinks">
+          <button *ngIf="(navbarItem.showItem | async) === true"
+                  class="mx-2 px-4 py-2 text-gray-700 text-sm border-b-4 font-semibold
+                  border-transparent tracking-wider whitespace-nowrap hidden lg:inline"
+                  [routerLink]="navbarItem.routerLink | issuerPath"
+                  routerLinkActive="!text-indigo-800 !border-indigo-800">
+            {{ navbarItem.title }}
+          </button>
+        </ng-container>
 
         <app-wallet-button *ngIf="(isLoggedIn$ | async) === true" class="hidden lg:flex"></app-wallet-button>
         <button app-action-button class="transition-all lg:mx-4 px-4 py-1 border-2 border-indigo-800

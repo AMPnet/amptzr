@@ -3,7 +3,7 @@
   <div class="w-full h-2/6 rounded-t-md flex justify-center items-center">
     <ng-container *ngIf="(issuer$ | async) as issuerRes">
       <ng-container *ngIf="issuerRes.value as issuer">
-        <img src="{{ issuer.logo | toUrlIPFS }}" class="w-30" alt="Logo image">
+        <img src="{{ issuer.logo | toUrlIPFS }}" class="w-60 h-20 object-contain" alt="Logo image">
       </ng-container>
     </ng-container>
   </div>
