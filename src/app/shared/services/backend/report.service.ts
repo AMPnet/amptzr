@@ -50,6 +50,21 @@ export class ReportService {
     )
   }
 
+  downloadAdminInvestorsReport(): Observable<void> {
+    return this.http.http.get(
+      `${this.path}/admin/${this.preferenceQuery.network.chainID}/${this.preferenceQuery.issuer.address}/report/xlsx`,
+      {
+        headers: this.http.authHttpOptions(false).headers,
+        responseType: 'arraybuffer',
+      },
+    ).pipe(
+      this.errorService.handleError(),
+      map(data => {
+        ReportService.downloadFile(data, 'InvestorsReport.xlsx')
+      }),
+    )
+  }
+
   private createFromToDateParams(from?: Date, to?: Date): DateFromToParams {
     const params: DateFromToParams = {}
     const format = 'yyyy-MM-dd'
