@@ -20,7 +20,7 @@
         <ng-container *ngFor="let navbarItem of navbarScreenLinks">
           <button *ngIf="(navbarItem.showItem | async) === true"
                   class="mx-2 px-4 py-2 text-gray-700 text-sm border-b-4 font-semibold
-                  border-transparent tracking-wider whitespace-nowrap hidden lg:inline"
+                         border-transparent tracking-wider whitespace-nowrap hidden lg:inline"
                   [routerLink]="navbarItem.routerLink | issuerPath"
                   routerLinkActive="!text-indigo-800 !border-indigo-800">
             {{ navbarItem.title }}
@@ -29,9 +29,9 @@
 
         <app-wallet-button *ngIf="(isLoggedIn$ | async) === true" class="hidden lg:flex"></app-wallet-button>
         <button app-action-button class="transition-all lg:mx-4 px-4 py-1 border-2 border-indigo-800
-      rounded-full text-sm font-semibold
-      text-indigo-800 whitespace-nowrap inline
-      hover:bg-indigo-800 hover:text-white"
+                                         rounded-full text-sm font-semibold
+                                         text-indigo-800 whitespace-nowrap inline
+                                         hover:bg-indigo-800 hover:text-white"
                 *ngIf="(isLoggedIn$ | async) === false"
                 [onClick]="login.bind(this)"
                 text="Log in"></button>
@@ -60,13 +60,15 @@
          class="flex flex-col justify-start items-center h-full transition-all lg:hidden">
 
       <!-- Navigation links -->
-      <button *ngFor="let navbarItem of navbarScreenLinks" (click)="toggleDropdown()"
-              class="pt-8 pb-4 text-gray-700 text-3xl text-left whitespace-nowrap
-              border-b-8 border-transparent font-semibold"
-              [routerLink]="navbarItem.routerLink | issuerPath"
-              routerLinkActive="!text-indigo-800 !border-indigo-800">
-        {{ navbarItem.title }}
-      </button>
+      <ng-container *ngFor="let navbarItem of navbarScreenLinks">
+        <button *ngIf="(navbarItem.showItem | async) === true" (click)="toggleDropdown()"
+                class="pt-8 pb-4 text-gray-700 text-3xl text-left whitespace-nowrap
+                       border-b-8 border-transparent font-semibold"
+                [routerLink]="navbarItem.routerLink | issuerPath"
+                routerLinkActive="!text-indigo-800 !border-indigo-800">
+          {{ navbarItem.title }}
+        </button>
+      </ng-container>
       <app-wallet-button *ngIf="(isLoggedIn$ | async) === true"
                          (click)="toggleDropdown()"
                          class="mt-6">
