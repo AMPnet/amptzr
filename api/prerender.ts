@@ -13,7 +13,7 @@ export default (request: VercelRequest, response: VercelResponse) => {
 
   if (!xPrerender) {
     return prerenderRequest(url.toString())
-      .then((res: any) => response.status(200).send(res))
+      .then((res: any) => response.send(res))
   }
 
   return fetch(url)
