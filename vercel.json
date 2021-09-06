@@ -7,7 +7,7 @@
         {
           "type": "header",
           "key": "user-agent",
-          "value": "googlebot|bingbot|yandex|baiduspider|facebookexternalhit|twitterbot|rogerbot|linkedinbot|embedly|quora link preview|slackbot|vkshare|w3c_validator|redditbot|applebot|whatsapp|flipboard|tumblr|bitlybot|skypeuripreview|nuzzel|discordbot|google page speed|qwantify|pinterestbot|bitrix link preview|xing-contenttabreceiver|chrome-lighthouse|showyoubot|outbrain"
+          "value": "Googlebot|Bingbot|Yandex|Baiduspider|facebookexternalhit|Twitterbot|rogerbot|LinkedInBot|Embedly|Quora Link Preview|Slackbot|vkShare|W3C_Validator|redditbot|Applebot|WhatsApp|Flipboard|Tumblr|bitlybot|SkypeUriPreview|Nuzzel|Discordbot|Google Page Speed|Qwantify|Pinterestbot|Bitrix link preview|XING-contenttabreceiver|Chrome-Lighthouse|ShowyouBot"
         }
       ]
     }

@@ -8,16 +8,10 @@ export default (request: VercelRequest, response: VercelResponse) => {
   const url = new URL(extractURL(request))
   const xPrerender = request.headers['x-prerender'] as string
 
-  console.log('url', url)
-  console.log('xPrerender', xPrerender)
-
   if (!xPrerender) {
     return prerenderRequest(url.toString())
       .then((res: any) => res.text())
-      .then((res: any) => {
-        console.log(res)
-        response.status(200).send(res)
-      })
+      .then((res: any) => response.status(200).send(res))
   }
 
   return fetch(url)
@@ -25,8 +19,7 @@ export default (request: VercelRequest, response: VercelResponse) => {
 }
 
 function extractURL(request: VercelRequest) {
-  const origin = 'https://amptzr-git-sd-360-prerender-vercel-ampnetx.vercel.app'
-  // const origin = `${request.headers['x-forwarded-proto']}://${request.headers['x-forwarded-host']}`
+  const origin = `${request.headers['x-forwarded-proto']}://${request.headers['x-forwarded-host']}`
   const networkID = request.query?.networkID as string
   const issuerID = request.query?.issuerID as string
   const offerID = request.query.offerID as string
@@ -34,7 +27,6 @@ function extractURL(request: VercelRequest) {
   if (issuerID) path = `/${issuerID}`.concat(path)
   if (networkID) path = `/${networkID}`.concat(path)
 
-  console.log('path', `${origin}${path}`)
   return `${origin}${path}`
 }
 
