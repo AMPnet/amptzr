@@ -32,20 +32,13 @@ export class ReportService {
       `${this.path}/report/${this.preferenceQuery.network.chainID}/user/transactions`,
       {
         params: params,
-        headers: this.http.authHttpOptions(false).headers,
+        headers: this.http.authHttpOptions().headers,
         responseType: 'arraybuffer',
       },
     ).pipe(
       this.errorService.handleError(),
       map(data => {
-        const fileName = [
-          'UserTransactions',
-          this.datePipe.transform(new Date(), 'yMdhhmmss'),
-          `${!!from ? 'from' + params['from'] : ''}`,
-          `${!!to ? 'to' + params['to'] : ''}`,
-        ].filter(text => !!text).join('_') + '.pdf'
-
-        ReportService.downloadFile(data, fileName)
+        ReportService.downloadFile(data, this.timestampedFileName('UserTransactions', 'pdf', params))
       }),
     )
   }
@@ -54,13 +47,13 @@ export class ReportService {
     return this.http.http.get(
       `${this.path}/admin/${this.preferenceQuery.network.chainID}/${this.preferenceQuery.issuer.address}/report/xlsx`,
       {
-        headers: this.http.authHttpOptions(false).headers,
+        headers: this.http.authHttpOptions().headers,
         responseType: 'arraybuffer',
       },
     ).pipe(
       this.errorService.handleError(),
       map(data => {
-        ReportService.downloadFile(data, 'InvestorsReport.xlsx')
+        ReportService.downloadFile(data, this.timestampedFileName('InvestorsReport', 'xlsx'))
       }),
     )
   }
@@ -78,6 +71,15 @@ export class ReportService {
     }
 
     return params
+  }
+
+  private timestampedFileName(prefix: string, extension: string, params?: DateFromToParams): string {
+    return [
+      prefix,
+      this.datePipe.transform(new Date(), 'yMdhhmmss'),
+      `${!!params?.['from'] ? 'from' + params['from'] : ''}`,
+      `${!!params?.['to'] ? 'to' + params['to'] : ''}`,
+    ].filter(text => !!text).join('_') + '.' + extension
   }
 
   private static downloadFile(data: ArrayBuffer, fileName: string): void {
