@@ -2,14 +2,7 @@
   "rewrites": [
     {
       "source": "/:networkID?/:issuerID?/offers/:offerID",
-      "destination": "/api/prerender",
-      "has": [
-        {
-          "type": "header",
-          "key": "user-agent",
-          "value": "googlebot|bingbot|yandex|baiduspider|facebookexternalhit|twitterbot|rogerbot|linkedinbot|embedly|quora link preview|slackbot|vkshare|w3c_validator|redditbot|applebot|whatsapp|flipboard|tumblr|bitlybot|skypeuripreview|nuzzel|discordbot|google page speed|qwantify|pinterestbot|bitrix link preview|xing-contenttabreceiver|chrome-lighthouse|showyoubot|outbrain"
-        }
-      ]
+      "destination": "/api/prerender"
     }
   ]
 }
