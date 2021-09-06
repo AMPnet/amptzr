@@ -9,11 +9,11 @@ import {map, mergeMap} from 'rxjs/operators'
 
 @Component({
   selector: 'app-admin',
-  templateUrl: './admin.component.html',
-  styleUrls: ['./admin.component.css'],
+  templateUrl: './admin-issuer.component.html',
+  styleUrls: ['./admin-issuer.component.css'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class AdminComponent {
+export class AdminIssuerComponent {
   issuer$: Observable<IssuerWithInfo>
   assets$: Observable<WithStatus<AssetWithInfo[]>>
   ftAssets$: Observable<WithStatus<FtAssetWithInfo[]>>

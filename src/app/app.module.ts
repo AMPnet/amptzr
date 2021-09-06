@@ -82,7 +82,7 @@ import {AssetEditComponent} from './assets/assets/asset-edit/asset-edit.componen
 import {AssetNewComponent} from './assets/assets/asset-new/asset-new.component'
 import {AssetPathSegmentPipe} from './shared/pipes/asset-path-segment.pipe'
 import {MatSnackBarModule} from '@angular/material/snack-bar'
-import {AdminComponent} from './admin/admin.component'
+import {AdminIssuerComponent} from './admin/admin-issuer.component'
 import {AddButtonComponent} from './shared/components/add-button/add-button.component'
 import {AdminAssetListComponent} from './admin/admin-asset-list/admin-asset-list.component'
 import {AdminAssetItemComponent} from './admin/admin-asset-item/admin-asset-item.component'
@@ -159,7 +159,7 @@ import {AdminFtAssetEditComponent} from './admin/admin-ft-asset-edit/admin-ft-as
     LoadingDialogComponent,
     WalletTxHistoryComponent,
     WalletTxHistoryItemComponent,
-    AdminComponent,
+    AdminIssuerComponent,
     AddButtonComponent,
     AdminAssetListComponent,
     AdminAssetItemComponent,
