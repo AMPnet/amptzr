@@ -21,7 +21,6 @@ export default (request: VercelRequest, response: VercelResponse) => {
   }
 
   return fetch(url)
-    .then((res: any) => res.text())
     .then((res: any) => response.send(res))
 }
 
