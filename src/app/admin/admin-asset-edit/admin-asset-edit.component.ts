@@ -58,8 +58,8 @@ export class AdminAssetEditComponent {
         asset,
       ).pipe(
         switchMap(uploadRes => this.assetService.updateInfo(asset.contractAddress, uploadRes.path)),
-        tap(() => this.routerService.navigate([`/admin/assets/${asset.ansName}`])),
         switchMap(() => this.dialogService.info('Asset successfully updated!', false)),
+        tap(() => this.routerService.navigate([`/admin/assets/${asset.ansName}`])),
       )
     }
   }

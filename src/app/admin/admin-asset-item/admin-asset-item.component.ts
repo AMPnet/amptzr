@@ -14,7 +14,7 @@ import {CampaignService, CampaignWithInfo} from '../../shared/services/blockchai
 export class AdminAssetItemComponent implements OnInit {
   @Input() asset!: AssetWithInfo | FtAssetWithInfo
   @Input() assetType!: 'asset' | 'ft-asset'
-  @Input() type!: 'list-item' | 'detail'
+  @Input() type!: 'view-screen' | 'edit-screen'
 
   campaigns$!: Observable<WithStatus<CampaignWithInfo[]>>
 
@@ -26,10 +26,10 @@ export class AdminAssetItemComponent implements OnInit {
   }
 
   get routerLink(): string {
-    if (this.type === 'detail') {
+    if (this.type === 'edit-screen') {
       return 'edit'
     }
 
-    return this.assetType === 'asset' ? `assets/${this.asset.ansName}` : `ft_assets/${this.asset.ansName}`
+    return this.assetType === 'asset' ? `/admin/assets/${this.asset.ansName}` : `/admin/ft_assets/${this.asset.ansName}`
   }
 }

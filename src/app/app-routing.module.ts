@@ -55,8 +55,9 @@ const appRoutes: Routes = [
       {path: 'faq', component: FaqComponent},
       {
         path: 'admin', canActivate: [AuthGuard, AdminGuard], children: [
-          {path: '', component: AdminComponent, pathMatch: 'full'},
-          {path: 'edit', component: AdminIssuerEditComponent},
+          {path: '', pathMatch: 'full', redirectTo: 'issuer'},
+          {path: 'issuer', component: AdminComponent},
+          {path: 'issuer/edit', component: AdminIssuerEditComponent},
           {path: 'assets/:id', component: AdminAssetDetailComponent},
           {path: 'assets/:id/edit', component: AdminAssetEditComponent},
           {path: 'ft_assets/:id', component: AdminFtAssetDetailComponent},

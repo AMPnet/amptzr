@@ -58,8 +58,8 @@ export class AdminFtAssetEditComponent {
         asset,
       ).pipe(
         switchMap(uploadRes => this.ftAssetService.updateInfo(asset.contractAddress, uploadRes.path)),
-        tap(() => this.routerService.navigate([`/admin/ft_assets/${asset.ansName}`])),
         switchMap(() => this.dialogService.info('Asset successfully updated!', false)),
+        tap(() => this.routerService.navigate([`/admin/ft_assets/${asset.ansName}`])),
       )
     }
   }
