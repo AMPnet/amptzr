@@ -14,7 +14,7 @@ export class AdminGuard implements CanActivate {
   constructor(private sessionQuery: SessionQuery,
               private preferenceQuery: PreferenceQuery,
               private issuerService: IssuerService,
-              private router: RouterService,) {
+              private router: RouterService) {
   }
 
   canActivate(next: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<boolean | UrlTree> {
@@ -25,14 +25,12 @@ export class AdminGuard implements CanActivate {
       map(([address, issuer]) => {
         if (!address || address !== issuer.owner) {
           return this.router.router.createUrlTree([
-            `/${this.preferenceQuery.network.chainID}`,
-            issuer.ansName,
-            'offers'
+            `/${this.preferenceQuery.network.chainID}/${issuer.ansName}/offers`,
           ])
         }
 
         return true
-      })
+      }),
     )
   }
 }

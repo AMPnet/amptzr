@@ -14,7 +14,7 @@
         <span>Token symbol:</span><b>{{ asset.symbol }}</b>
       </div>
       <div class="flex items-center gap-2">
-        <span>Token supply:</span><b>{{ asset.initialTokenSupply | formatUnit:'bignumToWei':18 }}</b>
+        <span>Token supply:</span><b>{{ asset.initialTokenSupply | formatUnit:'bignumToWei':18 | number }}</b>
       </div>
       <div class="flex items-center flex-wrap gap-2 mb-8">
         <span>Related campaigns:</span>
@@ -25,6 +25,7 @@
               There are no campaigns related to this asset.
             </ng-container>
 
+            <!-- TODO: add links to campaign when the screen gets implemented -->
             <a *ngFor="let campaign of campaigns" class="px-8 py-0.5 bg-blue-200 rounded-full">
               {{ campaign.name }}
             </a>
@@ -43,8 +44,9 @@
     </div>
     <div class="flex flex-col justify-end">
       <div class="flex justify-center lg:justify-end">
+        <!-- TODO: add link to asset when the screen gets implemented -->
         <button class="flex items-center gap-4 px-24 py-2 rounded-full bg-indigo-800 text-white text-lg">
-          <span>View token</span>
+          <span>View asset</span>
           <svg width="8" height="14" viewBox="0 0 8 14" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M1 1.16602L6.83333 6.99935L1 12.8327" stroke="white" stroke-width="2"
                   stroke-linecap="round"

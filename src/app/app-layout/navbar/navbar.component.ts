@@ -3,14 +3,13 @@ import {combineLatest, Observable, of} from 'rxjs'
 import {SessionQuery} from '../../session/state/session.query'
 import {AppLayoutStore} from '../state/app-layout.store'
 import {AppLayoutQuery} from '../state/app-layout.query'
-import {filter, map, tap} from 'rxjs/operators'
+import {distinctUntilChanged, filter, map, shareReplay, tap} from 'rxjs/operators'
 import {TailwindService} from '../../shared/services/tailwind.service'
 import {UserService} from '../../shared/services/user.service'
 import {SignerService} from '../../shared/services/signer.service'
 import {PreferenceQuery} from '../../preference/state/preference.query'
 import {RouterService} from '../../shared/services/router.service'
-import {IssuerService, IssuerWithInfo} from '../../shared/services/blockchain/issuer.service'
-import {WithStatus} from '../../shared/utils/observables'
+import {IssuerService} from '../../shared/services/blockchain/issuer.service'
 
 @Component({
   selector: 'app-navbar',
@@ -21,13 +20,30 @@ import {WithStatus} from '../../shared/utils/observables'
 export class NavbarComponent {
   isLoggedIn$ = this.sessionQuery.isLoggedIn$
   isDropdownOpen$ = this.appLayoutQuery.isDropdownMenuOpen$
+  issuer$ = this.issuerService.issuerWithStatus$
   dropdownCloser$: Observable<unknown>
-  issuer$: Observable<WithStatus<IssuerWithInfo>>
+
+  isAdmin$ = combineLatest([
+    this.isLoggedIn$,
+    this.sessionQuery.address$,
+    this.issuerService.issuer$,
+  ]).pipe(
+    map(([isLoggedIn, address, issuer]) => {
+      if (!isLoggedIn || !address) {
+        return false
+      }
+
+      return address === issuer.owner
+    }),
+    distinctUntilChanged(),
+    shareReplay(1),
+  )
 
   navbarScreenLinks: NavbarItem[] = [
     {title: 'Offers', routerLink: '/offers', showItem: of(true)},
-    {title: 'Portfolio', routerLink: '/portfolio', showItem: of(true)},
+    {title: 'Portfolio', routerLink: '/portfolio', showItem: this.isLoggedIn$},
     {title: 'FAQ', routerLink: '/faq', showItem: of(true)},
+    {title: 'Admin', routerLink: '/admin', showItem: this.isAdmin$},
   ]
 
   constructor(private sessionQuery: SessionQuery,
@@ -42,27 +58,6 @@ export class NavbarComponent {
     this.dropdownCloser$ = this.tailwindService.screenResize$.pipe(
       filter(screen => screen !== ('sm' || 'md')),
       tap(() => this.appLayoutStore.closeDropdownMenu()),
-    )
-
-    this.issuer$ = this.issuerService.issuerWithStatus$
-    this.navbarScreenLinks.push(
-      {
-        title: 'Admin',
-        routerLink: '/admin',
-        showItem: combineLatest([
-          this.isLoggedIn$,
-          this.sessionQuery.address$,
-          this.issuerService.issuer$
-        ]).pipe(
-          map(([isLoggedIn, address, issuer]) => {
-            if (!isLoggedIn || !address) {
-              return false
-            }
-
-            return address === issuer.owner
-          })
-        )
-      }
     )
   }
 

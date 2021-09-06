@@ -53,7 +53,7 @@ const appRoutes: Routes = [
         path: 'admin', canActivate: [AuthGuard, AdminGuard], children: [
           {path: '', component: AdminComponent, pathMatch: 'full'},
           {path: 'edit', component: AdminIssuerEditComponent},
-        ]
+        ],
       },
       {path: 'dev_playground', component: DevPlaygroundComponent},
     ],

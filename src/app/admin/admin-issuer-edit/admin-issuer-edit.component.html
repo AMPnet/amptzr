@@ -26,8 +26,8 @@
             </div>
 
             <div class="flex flex-col gap-8 w-full h-full p-4 pt-0">
-              <div class="flex flex-col gap-2 text-lg font-extrabold lg:w-1/2">
-                <div class="flex flex-col gap-2 mt-3 lg:mt-0">
+              <div class="flex flex-col gap-2 font-semibold lg:w-1/2">
+                <div class="flex flex-col gap-1 mt-3 lg:mt-0">
                   <label>ISSUER/COMPANY NAME:</label>
                   <input class="border-gray-400 rounded-lg" type="text" formControlName="name">
                 </div>
@@ -45,38 +45,38 @@
                   <app-value-copy [value]="issuer.stablecoin"></app-value-copy>
                 </div>
 
-                <div class="flex flex-col gap-2 mt-6">
-                  <form [formGroup]="updateWalletApproverAddressForm">
+                <form [formGroup]="updateWalletApproverAddressForm">
+                  <div class="flex flex-col gap-2 mt-6">
                     <label>WALLET APPROVER ADDRESS:</label>
                     <div class="flex gap-2">
                       <input class="flex-grow border-gray-400 rounded-lg" type="text"
                              formControlName="walletApproverAddress">
                       <button app-action-button
-                              class="bg-blue-500 disabled:bg-gray-400 text-white rounded-full px-6"
+                              class="bg-indigo-800 disabled:bg-gray-400 text-white rounded-full px-6"
                               text="Update"
                               [disabled]="!updateWalletApproverAddressForm.dirty ||
                                           !updateWalletApproverAddressForm.valid"
                               [onClick]="updateWalletApproverAddress(issuer).bind(this)">
                       </button>
                     </div>
-                  </form>
-                </div>
+                  </div>
+                </form>
 
-                <div class="flex flex-col gap-2 mt-6 lg:mt-0">
-                  <form [formGroup]="updateOwnerAddressForm">
+                <form [formGroup]="updateOwnerAddressForm">
+                  <div class="flex flex-col gap-1 mt-6 lg:mt-0">
                     <label>OWNER ADDRESS:</label>
                     <div class="flex gap-2">
                       <input class="flex-grow border-gray-400 rounded-lg" type="text" formControlName="ownerAddress">
                       <button app-action-button
-                              class="bg-blue-500 disabled:bg-gray-400 text-white rounded-full px-6"
+                              class="bg-indigo-800 disabled:bg-gray-400 text-white rounded-full px-6"
                               text="Update"
                               [disabled]="!updateOwnerAddressForm.dirty ||
                                           !updateOwnerAddressForm.valid"
                               [onClick]="updateOwnerAddress(issuer).bind(this)">
                       </button>
                     </div>
-                  </form>
-                </div>
+                  </div>
+                </form>
               </div>
 
               <div class="flex flex-col justify-end">

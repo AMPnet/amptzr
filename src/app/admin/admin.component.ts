@@ -11,7 +11,7 @@ import {map, mergeMap} from 'rxjs/operators'
   selector: 'app-admin',
   templateUrl: './admin.component.html',
   styleUrls: ['./admin.component.css'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AdminComponent {
   issuer$: Observable<IssuerWithInfo>
@@ -22,18 +22,18 @@ export class AdminComponent {
   constructor(private issuerService: IssuerService,
               private stableCoinService: StablecoinService,
               private assetService: AssetService,
-              private ftAssetService: FtAssetService,) {
+              private ftAssetService: FtAssetService) {
     this.issuer$ = this.issuerService.issuer$
     this.stableCoinSymbol = this.stableCoinService.symbol
 
     const issuerContractAddress$ = this.issuer$.pipe(
-      map(issuer => issuer.contractAddress)
+      map(issuer => issuer.contractAddress),
     )
     this.assets$ = issuerContractAddress$.pipe(
-      mergeMap(issuerContractAddress => withStatus(this.assetService.getAssets(issuerContractAddress)))
+      mergeMap(issuerContractAddress => withStatus(this.assetService.getAssets(issuerContractAddress))),
     )
     this.ftAssets$ = issuerContractAddress$.pipe(
-      mergeMap(issuerContractAddress => withStatus(this.ftAssetService.getAssets(issuerContractAddress)))
+      mergeMap(issuerContractAddress => withStatus(this.ftAssetService.getAssets(issuerContractAddress))),
     )
   }
 }

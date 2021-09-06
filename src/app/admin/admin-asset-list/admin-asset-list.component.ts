@@ -8,7 +8,7 @@ import {FtAssetWithInfo} from '../../shared/services/blockchain/ft-asset.service
   selector: 'app-admin-asset-list',
   templateUrl: './admin-asset-list.component.html',
   styleUrls: ['./admin-asset-list.component.css'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AdminAssetListComponent {
   @Input() title!: string
