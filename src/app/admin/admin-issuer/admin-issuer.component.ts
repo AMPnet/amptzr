@@ -6,6 +6,7 @@ import {AssetService, AssetWithInfo} from '../../shared/services/blockchain/asse
 import {withStatus, WithStatus} from '../../shared/utils/observables'
 import {FtAssetService, FtAssetWithInfo} from '../../shared/services/blockchain/ft-asset.service'
 import {map, mergeMap} from 'rxjs/operators'
+import {ReportService} from '../../shared/services/backend/report.service'
 
 @Component({
   selector: 'app-admin',
@@ -22,7 +23,8 @@ export class AdminIssuerComponent {
   constructor(private issuerService: IssuerService,
               private stableCoinService: StablecoinService,
               private assetService: AssetService,
-              private ftAssetService: FtAssetService) {
+              private ftAssetService: FtAssetService,
+              private reportService: ReportService) {
     this.issuer$ = this.issuerService.issuer$
     this.stableCoinSymbol = this.stableCoinService.symbol
 
@@ -35,5 +37,9 @@ export class AdminIssuerComponent {
     this.ftAssets$ = issuerContractAddress$.pipe(
       mergeMap(issuerContractAddress => withStatus(this.ftAssetService.getAssets(issuerContractAddress))),
     )
+  }
+
+  downloadAdminInvestorsReport() {
+    return this.reportService.downloadAdminInvestorsReport()
   }
 }

@@ -4,7 +4,7 @@ import {BackendHttpClient} from './backend-http-client.service'
 import {DatePipe} from '@angular/common'
 import {Observable} from 'rxjs'
 import {ErrorService} from '../error.service'
-import {map} from 'rxjs/operators'
+import {map, switchMap} from 'rxjs/operators'
 import {PreferenceQuery} from '../../../preference/state/preference.query'
 
 @Injectable({
@@ -23,29 +23,42 @@ export class ReportService {
     const params = this.createFromToDateParams(from, to)
     const chainID = this.preferenceQuery.network.chainID
     const issuer = this.preferenceQuery.issuer.address
-    return this.http.get<TransactionHistory>(`${this.path}/tx_history/${chainID}/${issuer}`, params)
+    return this.http.ensureAuth.pipe(
+      switchMap(() => this.http.get<TransactionHistory>(`${this.path}/tx_history/${chainID}/${issuer}`, params)),
+      this.errorService.handleError(),
+    )
   }
 
   downloadTransactionHistoryReport(from?: Date, to?: Date): Observable<void> {
     const params = this.createFromToDateParams(from, to)
-    return this.http.http.get(
-      `${this.path}/report/${this.preferenceQuery.network.chainID}/user/transactions`,
-      {
-        params: params,
-        headers: this.http.authHttpOptions(false).headers,
-        responseType: 'arraybuffer',
-      },
-    ).pipe(
+    return this.http.ensureAuth.pipe(
+      switchMap(() => this.http.http.get(
+        `${this.path}/report/${this.preferenceQuery.network.chainID}/user/transactions`,
+        {
+          params: params,
+          headers: this.http.authHttpOptions().headers,
+          responseType: 'arraybuffer',
+        },
+      )),
       this.errorService.handleError(),
       map(data => {
-        const fileName = [
-          'UserTransactions',
-          this.datePipe.transform(new Date(), 'yMdhhmmss'),
-          `${!!from ? 'from' + params['from'] : ''}`,
-          `${!!to ? 'to' + params['to'] : ''}`,
-        ].filter(text => !!text).join('_') + '.pdf'
+        ReportService.downloadFile(data, this.timestampedFileName('UserTransactions', 'pdf', params))
+      }),
+    )
+  }
 
-        ReportService.downloadFile(data, fileName)
+  downloadAdminInvestorsReport(): Observable<void> {
+    return this.http.ensureAuth.pipe(
+      switchMap(() => this.http.http.get(
+        `${this.path}/admin/${this.preferenceQuery.network.chainID}/${this.preferenceQuery.issuer.address}/report/xlsx`,
+        {
+          headers: this.http.authHttpOptions().headers,
+          responseType: 'arraybuffer',
+        },
+      )),
+      this.errorService.handleError(),
+      map(data => {
+        ReportService.downloadFile(data, this.timestampedFileName('InvestorsReport', 'xlsx'))
       }),
     )
   }
@@ -63,6 +76,15 @@ export class ReportService {
     }
 
     return params
+  }
+
+  private timestampedFileName(prefix: string, extension: string, params?: DateFromToParams): string {
+    return [
+      prefix,
+      this.datePipe.transform(new Date(), 'yMdhhmmss'),
+      `${!!params?.['from'] ? 'from' + params['from'] : ''}`,
+      `${!!params?.['to'] ? 'to' + params['to'] : ''}`,
+    ].filter(text => !!text).join('_') + '.' + extension
   }
 
   private static downloadFile(data: ArrayBuffer, fileName: string): void {
