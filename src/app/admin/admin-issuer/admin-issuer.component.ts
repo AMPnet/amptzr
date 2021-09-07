@@ -1,10 +1,10 @@
 import {ChangeDetectionStrategy, Component} from '@angular/core'
-import {IssuerService, IssuerWithInfo} from '../shared/services/blockchain/issuer.service'
+import {IssuerService, IssuerWithInfo} from '../../shared/services/blockchain/issuer.service'
 import {Observable} from 'rxjs'
-import {StablecoinService} from '../shared/services/blockchain/stablecoin.service'
-import {AssetService, AssetWithInfo} from '../shared/services/blockchain/asset.service'
-import {withStatus, WithStatus} from '../shared/utils/observables'
-import {FtAssetService, FtAssetWithInfo} from '../shared/services/blockchain/ft-asset.service'
+import {StablecoinService} from '../../shared/services/blockchain/stablecoin.service'
+import {AssetService, AssetWithInfo} from '../../shared/services/blockchain/asset.service'
+import {withStatus, WithStatus} from '../../shared/utils/observables'
+import {FtAssetService, FtAssetWithInfo} from '../../shared/services/blockchain/ft-asset.service'
 import {map, mergeMap} from 'rxjs/operators'
 
 @Component({
