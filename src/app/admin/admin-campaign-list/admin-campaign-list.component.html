@@ -1,29 +1,29 @@
 <div class="flex flex-col">
-  <span class="text-2xl text-indigo-800">{{ title }}:</span>
-  <ng-container *ngIf="(assets$ | async) as assetsRes">
+  <span class="text-3xl text-indigo-800">Related campaigns:</span>
+  <ng-container *ngIf="(campaigns$ | async) as campaignsRes">
 
-    <ng-container *ngIf="assetsRes.value as assets">
-      <ng-container *ngIf="assets.length === 0">
+    <ng-container *ngIf="campaignsRes.value as campaigns">
+      <ng-container *ngIf="campaigns.length === 0">
         <div class="flex flex-col items-center justify-center lg:flex-row w-full h-36 mt-4 mb-8 shadow-xl rounded-4xl
                     bg-white text-indigo-800">
-          No {{ title | lowercase }}.
+          No related campaigns.
         </div>
       </ng-container>
 
-      <ng-container *ngFor="let asset of assets">
-        <app-admin-asset-item [asset]="asset" [assetType]="assetType" type="view-screen"></app-admin-asset-item>
+      <ng-container *ngFor="let campaign of campaigns">
+        <app-admin-campaign-item [asset]="asset" [campaign]="campaign" type="view-screen"></app-admin-campaign-item>
       </ng-container>
     </ng-container>
 
-    <ng-container *ngIf="assetsRes.error">
+    <ng-container *ngIf="campaignsRes.error">
       <div class="flex flex-col items-center justify-center lg:flex-row w-full h-36 mt-4 mb-8 shadow-xl rounded-4xl
                   bg-white text-indigo-800">
-        Cannot fetch {{ title | lowercase }}.
-        <div hidden>{{ assetsRes.error | json }}</div>
+        Cannot fetch related campaigns.
+        <div hidden>{{ campaignsRes.error | json }}</div>
       </div>
     </ng-container>
 
-    <ng-container *ngIf="assetsRes.loading">
+    <ng-container *ngIf="campaignsRes.loading">
       <div class="flex flex-col items-center justify-center lg:flex-row w-full h-36 mt-4 mb-8 shadow-xl rounded-4xl
                   bg-white text-indigo-800">
         <app-spinner type="inline-base"></app-spinner>

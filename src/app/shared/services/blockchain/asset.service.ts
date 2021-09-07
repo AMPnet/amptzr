@@ -49,6 +49,12 @@ export class AssetService {
     return Asset__factory.connect(address, signerOrProvider)
   }
 
+  getAddressByName(ansName: string): Observable<string> {
+    return this.factoryContract$.pipe(
+      switchMap(contract => contract.namespace(this.preferenceQuery.issuer.address, ansName))
+    )
+  }
+
   getState(address: string, signerOrProvider: Signer | Provider): Observable<AssetState> {
     return of(this.contract(address, signerOrProvider)).pipe(
       switchMap(contract => contract.getState()),

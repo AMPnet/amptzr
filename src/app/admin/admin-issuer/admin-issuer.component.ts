@@ -1,19 +1,19 @@
 import {ChangeDetectionStrategy, Component} from '@angular/core'
-import {IssuerService, IssuerWithInfo} from '../shared/services/blockchain/issuer.service'
+import {IssuerService, IssuerWithInfo} from '../../shared/services/blockchain/issuer.service'
 import {Observable} from 'rxjs'
-import {StablecoinService} from '../shared/services/blockchain/stablecoin.service'
-import {AssetService, AssetWithInfo} from '../shared/services/blockchain/asset.service'
-import {withStatus, WithStatus} from '../shared/utils/observables'
-import {FtAssetService, FtAssetWithInfo} from '../shared/services/blockchain/ft-asset.service'
+import {StablecoinService} from '../../shared/services/blockchain/stablecoin.service'
+import {AssetService, AssetWithInfo} from '../../shared/services/blockchain/asset.service'
+import {withStatus, WithStatus} from '../../shared/utils/observables'
+import {FtAssetService, FtAssetWithInfo} from '../../shared/services/blockchain/ft-asset.service'
 import {map, mergeMap} from 'rxjs/operators'
 
 @Component({
   selector: 'app-admin',
-  templateUrl: './admin.component.html',
-  styleUrls: ['./admin.component.css'],
+  templateUrl: './admin-issuer.component.html',
+  styleUrls: ['./admin-issuer.component.css'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class AdminComponent {
+export class AdminIssuerComponent {
   issuer$: Observable<IssuerWithInfo>
   assets$: Observable<WithStatus<AssetWithInfo[]>>
   ftAssets$: Observable<WithStatus<FtAssetWithInfo[]>>
