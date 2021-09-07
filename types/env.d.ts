@@ -24,4 +24,5 @@ interface PostBuildEnv {
   BACKEND_URL: string
   FIXED_CHAIN_ID: string
   FIXED_ISSUER: string
+  PRERENDER_API_KEY: string
 }

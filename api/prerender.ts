@@ -1,8 +1,9 @@
 import {VercelRequest, VercelResponse} from '@vercel/node'
 // @ts-ignore
 import fetch from 'node-fetch'
+import {environment} from '../src/environments/environment'
 
-const API_KEY = 'zD7SoiYBUUJmDHCY3hKO'
+const API_KEY = environment.prerenderApiKey
 
 export default (request: VercelRequest, response: VercelResponse) => {
   const url = new URL(extractURL(request))
