@@ -1,28 +1,28 @@
 declare var process: Process
 
 interface Process {
-  // prebuild-time env variables
-  env: PreBuildEnv;
+    // prebuild-time env variables
+    env: PreBuildEnv;
 }
 
 interface PreBuildEnv {
-  COMMIT_HASH: string
-  APP_VERSION: string
+    COMMIT_HASH: string
+    APP_VERSION: string
+    PRERENDER_API_KEY: string
 }
 
 export interface Window {
-  // postbuild-time env variables, loaded on start-up
-  env: PostBuildEnv
+    // postbuild-time env variables, loaded on start-up
+    env: PostBuildEnv
 }
 
 interface PostBuildEnv {
-  ARKANE_ID: string
-  ARKANE_ENV: string
-  IPFS_API_URL: string
-  IPFS_GATEWAY_URL: string
-  IPFS_PINATA_API_URL: string
-  BACKEND_URL: string
-  FIXED_CHAIN_ID: string
-  FIXED_ISSUER: string
-  PRERENDER_API_KEY: string
+    ARKANE_ID: string
+    ARKANE_ENV: string
+    IPFS_API_URL: string
+    IPFS_GATEWAY_URL: string
+    IPFS_PINATA_API_URL: string
+    BACKEND_URL: string
+    FIXED_CHAIN_ID: string
+    FIXED_ISSUER: string
 }
