@@ -6,7 +6,7 @@ import {AssetService, AssetWithInfo} from '../../shared/services/blockchain/asse
 import {withStatus, WithStatus} from '../../shared/utils/observables'
 import {FtAssetService, FtAssetWithInfo} from '../../shared/services/blockchain/ft-asset.service'
 import {map, mergeMap} from 'rxjs/operators'
-import {ReportService} from '../shared/services/backend/report.service'
+import {ReportService} from '../../shared/services/backend/report.service'
 
 @Component({
   selector: 'app-admin',
