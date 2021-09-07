@@ -1,14 +1,12 @@
 import {ChangeDetectionStrategy, Component} from '@angular/core'
-import {combineLatest, Observable, of} from 'rxjs'
+import {Observable, of} from 'rxjs'
 import {SessionQuery} from '../../session/state/session.query'
 import {AppLayoutStore} from '../state/app-layout.store'
 import {AppLayoutQuery} from '../state/app-layout.query'
-import {distinctUntilChanged, filter, map, shareReplay, tap} from 'rxjs/operators'
+import {filter, tap} from 'rxjs/operators'
 import {TailwindService} from '../../shared/services/tailwind.service'
 import {UserService} from '../../shared/services/user.service'
 import {SignerService} from '../../shared/services/signer.service'
-import {PreferenceQuery} from '../../preference/state/preference.query'
-import {RouterService} from '../../shared/services/router.service'
 import {IssuerService} from '../../shared/services/blockchain/issuer.service'
 
 @Component({
@@ -22,22 +20,7 @@ export class NavbarComponent {
   isDropdownOpen$ = this.appLayoutQuery.isDropdownMenuOpen$
   issuer$ = this.issuerService.issuerWithStatus$
   dropdownCloser$: Observable<unknown>
-
-  isAdmin$ = combineLatest([
-    this.isLoggedIn$,
-    this.sessionQuery.address$,
-    this.issuerService.issuer$,
-  ]).pipe(
-    map(([isLoggedIn, address, issuer]) => {
-      if (!isLoggedIn || !address) {
-        return false
-      }
-
-      return address === issuer.owner
-    }),
-    distinctUntilChanged(),
-    shareReplay(1),
-  )
+  isAdmin$ = this.userService.isAdmin$
 
   navbarScreenLinks: NavbarItem[] = [
     {title: 'Offers', routerLink: '/offers', showItem: of(true)},
@@ -47,12 +30,10 @@ export class NavbarComponent {
   ]
 
   constructor(private sessionQuery: SessionQuery,
-              private preferenceQuery: PreferenceQuery,
               private issuerService: IssuerService,
               private appLayoutStore: AppLayoutStore,
               private appLayoutQuery: AppLayoutQuery,
               private userService: UserService,
-              private router: RouterService,
               private signerService: SignerService,
               private tailwindService: TailwindService) {
     this.dropdownCloser$ = this.tailwindService.screenResize$.pipe(
