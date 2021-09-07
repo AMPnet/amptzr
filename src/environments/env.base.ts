@@ -23,4 +23,5 @@ export const environment = {
       (postBuildEnv?.FIXED_CHAIN_ID ? Number(postBuildEnv?.FIXED_CHAIN_ID) : undefined),
     issuer: getClientByHostname()?.issuerAddress || (postBuildEnv?.FIXED_ISSUER ?? undefined),
   },
+  prerenderApiKey: preBuildEnv?.PRERENDER_API_KEY || '',
 }
