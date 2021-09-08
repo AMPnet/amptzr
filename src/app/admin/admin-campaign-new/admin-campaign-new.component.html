@@ -1,0 +1,111 @@
+<div class="w-full h-full flex justify-center mt-8 px-2 pb-8">
+  <div class="w-full max-w-6xl">
+    <div class="flex flex-col w-full justify-start bg-white shadow-xl rounded-4xl p-4 pt-8">
+      <div class="flex flex-col gap-4 lg:w-2/3">
+        <span class="text-2xl text-indigo-900">Creating campaign</span>
+
+        <div class="flex flex-col gap-2 pt-6">
+          <label class="text-lg font-semibold">Name your campaign</label>
+          <input class="border-gray-400 rounded-lg" type="text" placeholder="CAMPAIGN TITLE">
+        </div>
+
+        <div class="flex flex-col gap-2">
+          <label class="text-lg font-semibold">Campaign URL</label>
+          <div class="flex flex-col lg:flex-row lg:items-center gap-2">
+            <span class="text-sm">https://ampnet.io/redsparrow/offers/</span><!-- TODO actual URL -->
+            <input class="border-gray-400 rounded-lg" type="text">
+          </div>
+        </div>
+      </div>
+
+      <div class="flex flex-col lg:flex-row bg-gray-100 rounded-lg my-8 p-4">
+        <div class="flex flex-col gap-4 pb-2 lg:w-2/3 lg:p-6 border-b-2 lg:border-b-0 lg:border-r-2 border-gray-200">
+          <div class="flex flex-col gap-4">
+            <span class="text-lg font-semibold">Maximum amount you want to raise</span>
+            <div class="flex flex-col lg:flex-row lg:items-center gap-2">
+              <span class="text-sm">To raise</span>
+              <input class="border-gray-400 rounded-lg" type="number">
+
+              <div class="flex flex-row gap-2 items-center">
+                <span class="text-sm">I will sell</span>
+                <input class="border-gray-400 rounded-lg w-1/3 lg:w-32" type="number">
+              </div>
+
+              <span class="text-sm">of my TOKEN NAME tokens</span><!-- TODO actual token name -->
+            </div>
+          </div>
+
+          <div class="flex flex-col gap-4">
+            <span class="text-lg font-semibold">Minimum target for successful campaign (Soft cap)</span>
+            <div class="flex flex-col lg:flex-row lg:items-center gap-2">
+              <span class="text-sm">To raise</span>
+              <input class="border-gray-400 rounded-lg" type="number">
+
+              <div class="flex flex-row gap-2 items-center lg:justify-around">
+                <span class="text-sm">I will sell</span>
+                <b class="lg:text-center lg:w-32">0 %</b><!-- TODO show percentage -->
+              </div>
+
+              <span class="text-sm">of my TOKEN NAME tokens</span><!-- TODO actual token name -->
+            </div>
+          </div>
+        </div>
+
+        <div class="flex flex-row lg:flex-col gap-4 pt-2 lg:p-6 lg:w-1/3">
+          <span class="text-sm">The price per token for raising:</span>
+          <b class="text-sm">$ 0</b><!-- TODO price -->
+        </div>
+      </div>
+
+      <div class="flex flex-col gap-6 lg:w-2/3">
+        <div class="flex flex-col gap-2">
+          <span class="text-lg font-semibold">Do you want to set up minimum & maximum amount to invest?</span>
+          <div class="flex flex-col lg:flex-row gap-4">
+            <app-form-yes-no-buttons></app-form-yes-no-buttons>
+            <div class="flex flex-row gap-4">
+              <input class="border-gray-400 rounded-lg w-1/2" type="number" placeholder="Min">
+              <input class="border-gray-400 rounded-lg w-1/2" type="number" placeholder="Max">
+            </div>
+          </div>
+        </div>
+
+        <div class="flex flex-col gap-2">
+          <span class="text-lg font-semibold">Will you be returning profits to your investors?</span>
+          <div class="flex flex-col lg:flex-row gap-4">
+            <app-form-yes-no-buttons></app-form-yes-no-buttons>
+            <div class="flex flex-col lg:flex-row lg:items-center gap-4">
+              <label class="font-semibold lg:w-32">How often?</label>
+              <input class="border-gray-400 rounded-lg lg:w-64" type="number">
+            </div>
+          </div>
+        </div>
+
+        <div class="flex flex-col gap-2">
+          <span class="text-lg font-semibold">Is your return value fixed?</span>
+          <div class="flex flex-col lg:flex-row gap-4">
+            <app-form-yes-no-buttons></app-form-yes-no-buttons>
+            <div class="flex flex-row gap-4">
+              <input class="border-gray-400 rounded-lg w-1/2" type="number" placeholder="From">
+              <input class="border-gray-400 rounded-lg w-1/2" type="number" placeholder="To">
+            </div>
+          </div>
+        </div>
+
+        <div class="flex flex-col gap-2">
+          <span class="text-lg font-semibold">Do you require ID verification for your investors?</span>
+          <app-form-yes-no-buttons></app-form-yes-no-buttons>
+        </div>
+      </div>
+
+      <div class="flex justify-center lg:justify-end mt-8">
+        <button app-action-button
+                class="flex items-center justify-center gap-4 bg-indigo-800 disabled:bg-gray-400 text-white
+                       px-24 py-2 rounded-full"
+                text="Next">
+          <!--                [disabled]="!createForm.valid"-->
+          <!--                [onClick]="create.bind(this)">-->
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

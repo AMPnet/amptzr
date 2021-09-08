@@ -96,6 +96,7 @@ import {AdminIssuerComponent} from './admin/admin-issuer/admin-issuer.component'
 import {AdminAssetNewComponent} from './admin/admin-asset-new/admin-asset-new.component'
 import {AdminFtAssetNewComponent} from './admin/admin-ft-asset-new/admin-ft-asset-new.component'
 import {FormYesNoButtonsComponent} from './shared/components/form-yes-no-buttons/form-yes-no-buttons.component'
+import {AdminCampaignNewComponent} from './admin/admin-campaign-new/admin-campaign-new.component'
 
 @NgModule({
   declarations: [
@@ -176,6 +177,7 @@ import {FormYesNoButtonsComponent} from './shared/components/form-yes-no-buttons
     AdminAssetNewComponent,
     AdminFtAssetNewComponent,
     FormYesNoButtonsComponent,
+    AdminCampaignNewComponent,
   ],
   imports: [
     BrowserModule,

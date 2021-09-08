@@ -38,6 +38,7 @@ import {AdminFtAssetEditComponent} from './admin/admin-ft-asset-edit/admin-ft-as
 import {AdminIssuerComponent} from './admin/admin-issuer/admin-issuer.component'
 import {AdminAssetNewComponent} from './admin/admin-asset-new/admin-asset-new.component'
 import {AdminFtAssetNewComponent} from './admin/admin-ft-asset-new/admin-ft-asset-new.component'
+import {AdminCampaignNewComponent} from './admin/admin-campaign-new/admin-campaign-new.component'
 
 const appRoutes: Routes = [
   {
@@ -62,9 +63,11 @@ const appRoutes: Routes = [
           {path: 'assets/new', component: AdminAssetNewComponent},
           {path: 'assets/:id', component: AdminAssetDetailComponent},
           {path: 'assets/:id/edit', component: AdminAssetEditComponent},
+          {path: 'assets/:id/campaigns/new', component: AdminCampaignNewComponent},
           {path: 'ft_assets/new', component: AdminFtAssetNewComponent},
           {path: 'ft_assets/:id', component: AdminFtAssetDetailComponent},
           {path: 'ft_assets/:id/edit', component: AdminFtAssetEditComponent},
+          {path: 'ft_assets/:id/campaigns/new', component: AdminCampaignNewComponent},
         ],
       },
       {path: 'dev_playground', component: DevPlaygroundComponent},
