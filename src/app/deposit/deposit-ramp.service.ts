@@ -29,6 +29,7 @@ export class DepositRampService {
           new RampInstantSDK({
             hostAppName: issuer.name,
             hostLogoUrl: this.toUrlIpfsPipe.transform(issuer.logo),
+            hostApiKey: issuer.rampApiKey,
             swapAsset: this.preferenceQuery.network.ramp.swapAsset,
             fiatCurrency: this.preferenceQuery.network.ramp.fiatCurrency,
             fiatValue: depositAmount.toString(),
