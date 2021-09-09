@@ -32,8 +32,12 @@
             Raising: <b>{{ campaignData.total | currencyDefault }}</b>
           </span>
 
-          <span *ngIf="campaignData.tokensPercentage > 0">
+          <span *ngIf="campaignData.tokensPercentage >= 0.01">
             Selling <b>{{ campaignData.tokensPercentage | percent }}</b> of token shares
+          </span>
+
+          <span *ngIf="campaignData.tokensPercentage > 0 && campaignData.tokensPercentage < 0.01">
+            Selling <b>< 1%</b> of token shares
           </span>
 
           <span *ngIf="campaignData.tokensPercentage === 0">

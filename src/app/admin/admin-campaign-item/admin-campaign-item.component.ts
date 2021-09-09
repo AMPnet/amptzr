@@ -4,6 +4,7 @@ import {AssetWithInfo} from '../../shared/services/blockchain/asset.service'
 import {FtAssetWithInfo} from '../../shared/services/blockchain/ft-asset.service'
 import {IssuerPathPipe} from '../../shared/pipes/issuer-path.pipe'
 import {getWindow} from '../../shared/utils/browser'
+import {StablecoinService} from '../../shared/services/blockchain/stablecoin.service'
 
 @Component({
   selector: 'app-admin-campaign-item',
@@ -19,6 +20,7 @@ export class AdminCampaignItemComponent implements OnInit {
   campaignData!: CampaignData
 
   constructor(private campaignService: CampaignService,
+              private stablecoinService: StablecoinService,
               private issuerPathPipe: IssuerPathPipe) {
   }
 
@@ -30,7 +32,7 @@ export class AdminCampaignItemComponent implements OnInit {
       url: campaignUrl,
       total: stats.valueTotal,
       tokenPrice: stats.tokenPrice,
-      tokensPercentage: this.campaign.totalTokensBalance.div(this.asset.initialTokenSupply).toNumber()
+      tokensPercentage: stats.tokenBalance / this.stablecoinService.format(this.asset.initialTokenSupply, 18)
     }
   }
 }
