@@ -7,6 +7,8 @@ export interface IPFSIssuer {
 
   name: string
   logo: url | cid
+
+  rampApiKey: string
 }
 
 type url = string

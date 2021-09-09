@@ -77,7 +77,7 @@ export class IssuerService {
     )
   }
 
-  uploadInfo(name: string, logo: File, issuer?: IPFSIssuer): Observable<IPFSAddResult> {
+  uploadInfo(name: string, logo: File, rampApiKey: string, issuer?: IPFSIssuer): Observable<IPFSAddResult> {
     return combineLatest([
       logo ? this.ipfsService.addFile(logo) : of(undefined),
     ]).pipe(
@@ -85,6 +85,7 @@ export class IssuerService {
         version: 0.1,
         name: name || issuer?.name || '',
         logo: logo?.path || issuer?.logo || '',
+        rampApiKey: rampApiKey || issuer?.rampApiKey || '',
       })),
     )
   }
