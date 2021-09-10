@@ -93,6 +93,9 @@ import {AdminCampaignItemComponent} from './admin/admin-campaign-item/admin-camp
 import {AdminAssetEditComponent} from './admin/admin-asset-edit/admin-asset-edit.component'
 import {AdminFtAssetEditComponent} from './admin/admin-ft-asset-edit/admin-ft-asset-edit.component'
 import {AdminIssuerComponent} from './admin/admin-issuer/admin-issuer.component'
+import {AdminAssetNewComponent} from './admin/admin-asset-new/admin-asset-new.component'
+import {AdminFtAssetNewComponent} from './admin/admin-ft-asset-new/admin-ft-asset-new.component'
+import {FormYesNoButtonsComponent} from './shared/components/form-yes-no-buttons/form-yes-no-buttons.component'
 
 @NgModule({
   declarations: [
@@ -170,6 +173,9 @@ import {AdminIssuerComponent} from './admin/admin-issuer/admin-issuer.component'
     AdminCampaignItemComponent,
     AdminAssetEditComponent,
     AdminFtAssetEditComponent,
+    AdminAssetNewComponent,
+    AdminFtAssetNewComponent,
+    FormYesNoButtonsComponent,
   ],
   imports: [
     BrowserModule,

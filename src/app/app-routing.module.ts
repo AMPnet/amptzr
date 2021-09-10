@@ -37,6 +37,8 @@ import {AdminFtAssetDetailComponent} from './admin/admin-ft-asset-detail/admin-f
 import {AdminAssetEditComponent} from './admin/admin-asset-edit/admin-asset-edit.component'
 import {AdminFtAssetEditComponent} from './admin/admin-ft-asset-edit/admin-ft-asset-edit.component'
 import {AdminIssuerComponent} from './admin/admin-issuer/admin-issuer.component'
+import {AdminAssetNewComponent} from './admin/admin-asset-new/admin-asset-new.component'
+import {AdminFtAssetNewComponent} from './admin/admin-ft-asset-new/admin-ft-asset-new.component'
 
 const appRoutes: Routes = [
   {
@@ -58,8 +60,10 @@ const appRoutes: Routes = [
           {path: '', pathMatch: 'full', redirectTo: 'issuer'},
           {path: 'issuer', component: AdminIssuerComponent},
           {path: 'issuer/edit', component: AdminIssuerEditComponent},
+          {path: 'assets/new', component: AdminAssetNewComponent},
           {path: 'assets/:id', component: AdminAssetDetailComponent},
           {path: 'assets/:id/edit', component: AdminAssetEditComponent},
+          {path: 'ft_assets/new', component: AdminFtAssetNewComponent},
           {path: 'ft_assets/:id', component: AdminFtAssetDetailComponent},
           {path: 'ft_assets/:id/edit', component: AdminFtAssetEditComponent},
         ],
