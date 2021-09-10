@@ -82,6 +82,20 @@ import {AssetEditComponent} from './assets/assets/asset-edit/asset-edit.componen
 import {AssetNewComponent} from './assets/assets/asset-new/asset-new.component'
 import {AssetPathSegmentPipe} from './shared/pipes/asset-path-segment.pipe'
 import {MatSnackBarModule} from '@angular/material/snack-bar'
+import {AddButtonComponent} from './shared/components/add-button/add-button.component'
+import {AdminAssetListComponent} from './admin/admin-asset-list/admin-asset-list.component'
+import {AdminAssetItemComponent} from './admin/admin-asset-item/admin-asset-item.component'
+import {AdminIssuerEditComponent} from './admin/admin-issuer-edit/admin-issuer-edit.component'
+import {AdminAssetDetailComponent} from './admin/admin-asset-detail/admin-asset-detail.component'
+import {AdminCampaignListComponent} from './admin/admin-campaign-list/admin-campaign-list.component'
+import {AdminFtAssetDetailComponent} from './admin/admin-ft-asset-detail/admin-ft-asset-detail.component'
+import {AdminCampaignItemComponent} from './admin/admin-campaign-item/admin-campaign-item.component'
+import {AdminAssetEditComponent} from './admin/admin-asset-edit/admin-asset-edit.component'
+import {AdminFtAssetEditComponent} from './admin/admin-ft-asset-edit/admin-ft-asset-edit.component'
+import {AdminIssuerComponent} from './admin/admin-issuer/admin-issuer.component'
+import {AdminAssetNewComponent} from './admin/admin-asset-new/admin-asset-new.component'
+import {AdminFtAssetNewComponent} from './admin/admin-ft-asset-new/admin-ft-asset-new.component'
+import {FormYesNoButtonsComponent} from './shared/components/form-yes-no-buttons/form-yes-no-buttons.component'
 
 @NgModule({
   declarations: [
@@ -148,6 +162,20 @@ import {MatSnackBarModule} from '@angular/material/snack-bar'
     LoadingDialogComponent,
     WalletTxHistoryComponent,
     WalletTxHistoryItemComponent,
+    AdminIssuerComponent,
+    AddButtonComponent,
+    AdminAssetListComponent,
+    AdminAssetItemComponent,
+    AdminIssuerEditComponent,
+    AdminAssetDetailComponent,
+    AdminCampaignListComponent,
+    AdminFtAssetDetailComponent,
+    AdminCampaignItemComponent,
+    AdminAssetEditComponent,
+    AdminFtAssetEditComponent,
+    AdminAssetNewComponent,
+    AdminFtAssetNewComponent,
+    FormYesNoButtonsComponent,
   ],
   imports: [
     BrowserModule,

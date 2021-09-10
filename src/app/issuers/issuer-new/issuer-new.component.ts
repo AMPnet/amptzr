@@ -33,6 +33,7 @@ export class IssuerNewComponent {
     return this.issuerService.uploadInfo(
       this.createForm.value.name,
       this.createForm.value.logo?.[0],
+      '',
     ).pipe(
       switchMap(uploadRes => this.issuerService.create(
         this.createForm.value.ansName,

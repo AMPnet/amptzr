@@ -55,6 +55,12 @@ export class FtAssetService {
     return AssetTransferable__factory.connect(address, signerOrProvider)
   }
 
+  getAddressByName(ansName: string): Observable<string> {
+    return this.factoryContract$.pipe(
+      switchMap(contract => contract.namespace(this.preferenceQuery.issuer.address, ansName))
+    )
+  }
+
   getState(address: string, signerOrProvider: Signer | Provider): Observable<FtAssetState> {
     return of(this.contract(address, signerOrProvider)).pipe(
       switchMap(contract => contract.getState()),

@@ -60,6 +60,7 @@ export class IssuerEditComponent {
       return this.issuerService.uploadInfo(
         this.updateForm.value.name,
         this.updateForm.value.logo?.[0],
+        '',
         issuer,
       ).pipe(
         switchMap(uploadRes => this.issuerService.updateInfo(this.issuerAddress, uploadRes.path)),

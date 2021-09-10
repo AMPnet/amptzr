@@ -77,7 +77,7 @@ export class IssuerService {
     )
   }
 
-  uploadInfo(name: string, logo: File, issuer?: IPFSIssuer): Observable<IPFSAddResult> {
+  uploadInfo(name: string, logo: File, rampApiKey: string, issuer?: IPFSIssuer): Observable<IPFSAddResult> {
     return combineLatest([
       logo ? this.ipfsService.addFile(logo) : of(undefined),
     ]).pipe(
@@ -85,6 +85,7 @@ export class IssuerService {
         version: 0.1,
         name: name || issuer?.name || '',
         logo: logo?.path || issuer?.logo || '',
+        rampApiKey: rampApiKey || issuer?.rampApiKey || '',
       })),
     )
   }
@@ -154,6 +155,18 @@ export class IssuerService {
       switchMap(contract => combineLatest([of(contract), this.gasService.overrides])),
       switchMap(([contract, overrides]) => contract.populateTransaction.changeWalletApprover(walletApproverAddress, overrides)),
       switchMap(tx => this.signerService.sendTransaction(tx)),
+      switchMap(tx => this.dialogService.loading(
+        from(this.sessionQuery.provider.waitForTransaction(tx.hash)),
+        'Processing transaction...',
+      )),
+    )
+  }
+
+  changeOwner(issuerAddress: string, ownerAddress: string) {
+    return this.signerService.ensureAuth.pipe(
+      map(signer => this.contract(issuerAddress, signer)),
+      switchMap(contract => combineLatest([of(contract), this.gasService.overrides])),
+      switchMap(([contract, overrides]) => contract.changeOwnership(ownerAddress, overrides)),
       switchMap(tx => this.dialogService.loading(
         from(this.sessionQuery.provider.waitForTransaction(tx.hash)),
         'Processing transaction...',

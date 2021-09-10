@@ -7,10 +7,7 @@ import {filter, tap} from 'rxjs/operators'
 import {TailwindService} from '../../shared/services/tailwind.service'
 import {UserService} from '../../shared/services/user.service'
 import {SignerService} from '../../shared/services/signer.service'
-import {PreferenceQuery} from '../../preference/state/preference.query'
-import {RouterService} from '../../shared/services/router.service'
-import {IssuerService, IssuerWithInfo} from '../../shared/services/blockchain/issuer.service'
-import {WithStatus} from '../../shared/utils/observables'
+import {IssuerService} from '../../shared/services/blockchain/issuer.service'
 
 @Component({
   selector: 'app-navbar',
@@ -21,30 +18,28 @@ import {WithStatus} from '../../shared/utils/observables'
 export class NavbarComponent {
   isLoggedIn$ = this.sessionQuery.isLoggedIn$
   isDropdownOpen$ = this.appLayoutQuery.isDropdownMenuOpen$
+  issuer$ = this.issuerService.issuerWithStatus$
   dropdownCloser$: Observable<unknown>
-  issuer$: Observable<WithStatus<IssuerWithInfo>>
+  isAdmin$ = this.userService.isAdmin$
 
   navbarScreenLinks: NavbarItem[] = [
-    {title: "Offers", routerLink: "/offers"},
-    {title: "Portfolio", routerLink: "/portfolio"},
-    {title: "FAQ", routerLink: "/faq"},
+    {title: 'Offers', routerLink: '/offers', showItem: of(true)},
+    {title: 'Portfolio', routerLink: '/portfolio', showItem: this.isLoggedIn$},
+    {title: 'FAQ', routerLink: '/faq', showItem: of(true)},
+    {title: 'Admin', routerLink: '/admin', showItem: this.isAdmin$},
   ]
 
   constructor(private sessionQuery: SessionQuery,
-              private preferenceQuery: PreferenceQuery,
               private issuerService: IssuerService,
               private appLayoutStore: AppLayoutStore,
               private appLayoutQuery: AppLayoutQuery,
               private userService: UserService,
-              private router: RouterService,
               private signerService: SignerService,
               private tailwindService: TailwindService) {
     this.dropdownCloser$ = this.tailwindService.screenResize$.pipe(
       filter(screen => screen !== ('sm' || 'md')),
       tap(() => this.appLayoutStore.closeDropdownMenu()),
     )
-
-    this.issuer$ = this.issuerService.issuerWithStatus$
   }
 
   login(): Observable<unknown> {
@@ -61,4 +56,5 @@ export class NavbarComponent {
 interface NavbarItem {
   title: string,
   routerLink?: string,
+  showItem: Observable<boolean>,
 }

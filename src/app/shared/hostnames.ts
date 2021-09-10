@@ -1,4 +1,5 @@
 import {MaticNetwork, MumbaiNetwork, Network} from './networks'
+import {getWindow} from './utils/browser'
 
 export const Hostnames: { [host in string]: Host } = {
   'token.mining4mining.io': {
@@ -7,12 +8,12 @@ export const Hostnames: { [host in string]: Host } = {
   },
   'woz.eugen.work': {
     network: MumbaiNetwork,
-    issuerAddress: '0xc95fcFd88C1D0b491E2F1A367a0211c6c6F35dF0',
+    issuerAddress: '0x58d6b2e412a2495F14303AB442D2098Ac8B81F26',
   },
 }
 
 export function getClientByHostname(): Host | undefined {
-  return Hostnames[(window as any).location.hostname]
+  return Hostnames[getWindow()?.location?.hostname]
 }
 
 interface Host {
