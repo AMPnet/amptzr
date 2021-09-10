@@ -21,24 +21,32 @@
           </div>
 
           <div class="flex flex-col lg:flex-row bg-gray-100 rounded-lg my-8 p-4">
-            <div
-              class="flex flex-col gap-4 pb-2 lg:w-2/3 lg:p-6 border-b-2 lg:border-b-0 lg:border-r-2 border-gray-200">
+            <div class="flex flex-col gap-4 pb-2 lg:p-6">
               <div class="flex flex-col gap-4">
                 <span class="text-lg font-semibold">Maximum amount you want to raise</span>
                 <div class="flex flex-col lg:flex-row lg:items-center gap-2">
                   <div class="flex flex-row gap-2 items-center">
                     <span class="text-sm">To raise</span>
-                    <input appCurrencyMask class="border-gray-400 rounded-lg" type="text" formControlName="hardCap">
+                    <input appCurrencyMask class="border-gray-400 rounded-lg" type="text" formControlName="hardCap"
+                           (ngModelChange)="onHardCapChange()">
                   </div>
 
                   <div class="flex flex-row gap-2 items-center">
                     <span class="text-sm">I will sell</span>
                     <input appPercentageMask class="border-gray-400 rounded-lg w-1/3 lg:w-32" type="text"
-                           formControlName="hardCapTokensPercentage">
+                           formControlName="hardCapTokensPercentage"
+                           (ngModelChange)="onHardCapTokensPercentageChange()">
                   </div>
 
-                  <span class="text-sm mt-2 lg:mt-0">of my {{ assetData.asset.name | uppercase }}
-                    tokens <b>(max {{ maxTokensPercentage | percent }})</b></span>
+                  <span class="text-sm my-2 lg:my-0">
+                    of my {{ assetData.asset.name | uppercase }} tokens <b>(max {{ maxTokensPercentage | percent }})</b>
+                  </span>
+
+                  <div class="flex flex-row items-center gap-2">
+                    <span class="text-sm">with price per token:</span>
+                    <input appCurrencyMask class="border-gray-400 rounded-lg w-1/3 lg:w-32" type="text"
+                           formControlName="tokenPrice" (ngModelChange)="onTokenPriceChange()">
+                  </div>
                 </div>
               </div>
 
@@ -58,11 +66,6 @@
                   <span class="text-sm mt-4 lg:mt-0">of my {{ assetData.asset.name | uppercase }} tokens</span>
                 </div>
               </div>
-            </div>
-
-            <div class="flex flex-col gap-4 p-8 lg:w-1/3">
-              <span class="text-sm">The price per token for raising:</span>
-              <b class="text-sm">{{ pricePerToken | currencyDefault }}</b>
             </div>
           </div>
 
@@ -136,7 +139,7 @@
             </div>
           </div>
 
-          <div class="flex justify-center lg:justify-end mt-8">
+          <div class="flex flex-col lg:flex-row justify-center lg:justify-end mt-8">
             <button class="flex items-center justify-center gap-4 bg-indigo-800 disabled:bg-gray-400 text-white
                            px-24 py-2 rounded-full"
                     [disabled]="!createForm1.valid"
@@ -189,16 +192,18 @@
 
           <div class="flex flex-col gap-2 lg:pr-2">
             <label class="text-lg font-semibold">Write a short description of your project</label>
-            <textarea class="border-gray-400 rounded-lg" placeholder="Short description"></textarea>
+            <textarea class="border-gray-400 rounded-lg" placeholder="Short description" formControlName="about">
+            </textarea>
           </div>
         </div>
 
         <label class="text-lg font-semibold mt-4">Describe your project</label>
 
         <div class="flex flex-col gap-2 lg:flex-row mt-2 lg:h-[36rem]">
-          <quill-editor class="lg:w-2/3 lg:h-[30rem]">
-            <!--                        (onEditorCreated)="quillMods($event)"-->
-            <!--                        (onContentChanged)="markDescriptionAsDirty()">-->
+          <quill-editor class="lg:w-2/3 lg:h-[30rem]"
+                        formControlName="description"
+                        (onEditorCreated)="quillMods($event)"
+                        (onContentChanged)="markDescriptionAsDirty()">
           </quill-editor>
 
           <div class="flex flex-row bg-gray-100 gap-2 p-4 my-4 lg:my-0 rounded-lg lg:w-1/3 lg:h-20">
@@ -227,26 +232,30 @@
         <div class="flex flex-col gap-2">
           <label class="text-lg font-semibold">What is the duration of your project?</label>
           <div class="flex flex-col lg:flex-row gap-4">
-            <input class="border-gray-400 rounded-lg" type="text" placeholder="From">
-            <input class="border-gray-400 rounded-lg" type="text" placeholder="To">
+            <input appDateMask class="border-gray-400 rounded-lg" type="text" placeholder="From"
+                   formControlName="startDate">
+            <input appDateMask class="border-gray-400 rounded-lg" type="text" placeholder="To"
+                   formControlName="endDate">
           </div>
         </div>
 
         <label class="text-2xl text-indigo-900 mt-16 mb-8">Project documents</label>
 
         <div class="lg:flex lg:justify-start">
-          <button class="flex items-center justify-center w-full lg:w-auto gap-4 px-8 py-2 rounded-full bg-green-600
-                         text-white text-lg">
+          <label class="flex items-center justify-center w-full lg:w-auto gap-4 px-8 py-2 rounded-full bg-green-600
+                        text-white text-lg cursor-pointer">
+            <input class="hidden" type="file" formControlName="documentUpload"
+                   (ngModelChange)="onDocumentFilesAdded($event)" multiple>
             <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path d="M6 1V6M6 6V11M6 6H11M6 6H1" stroke="white" stroke-width="2" stroke-linecap="round"
                     stroke-linejoin="round"/>
             </svg>
-            <span>Upload document</span>
-          </button>
+            <span>Upload documents</span>
+          </label>
         </div>
 
         <div class="flex flex-col lg:flex-row lg:flex-wrap gap-4 mt-4">
-          <ng-container *ngFor="let i of [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]">
+          <ng-container *ngFor="let document of createForm2.get('documents')?.value; let i = index">
             <div class="flex flex-row justify-between items-center border-2 border-gray-300 rounded-full
                         pl-4 pr-2 py-2 gap-2">
               <svg width="22" height="26" viewBox="0 0 22 26" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -258,8 +267,8 @@
                          24.719 18.3742 25 17.667 25Z"
                       stroke="#3F3F46" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
               </svg>
-              <span class="text-sm">Business plan</span>
-              <button class="rounded-full bg-red-500 p-2">
+              <span class="text-sm">{{ document.name }}</span>
+              <button class="rounded-full bg-red-500 p-2" (click)="removeDocumentFile(i)">
                 <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
                   <path d="M1.5 1.5L10.5 10.5M1.5 10.5L10.5 1.5L1.5 10.5Z" stroke="white" stroke-width="2"
                         stroke-linecap="round" stroke-linejoin="round"/>
@@ -271,23 +280,26 @@
 
         <label class="text-2xl text-indigo-900 mt-16 mb-8">Links to related news</label>
 
-        <ng-container *ngFor="let i of [0, 1, 2, 3, 4]">
-          <div class="flex flex-row items-center gap-4 mb-2">
-            <input class="border-gray-400 rounded-lg w-full lg:w-2/3" type="text">
-            <div>
-              <button class="rounded-full bg-red-500 p-2">
-                <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M1.5 1.5L10.5 10.5M1.5 10.5L10.5 1.5L1.5 10.5Z" stroke="white" stroke-width="2"
-                        stroke-linecap="round" stroke-linejoin="round"/>
-                </svg>
-              </button>
+        <div formArrayName="newsUrls">
+          <ng-container *ngFor="let control of newsUrlsControls(); let i = index">
+            <div class="flex flex-row items-center gap-4 mb-2">
+              <input class="border-gray-400 rounded-lg w-full lg:w-2/3" type="text" [formControl]="control">
+              <div>
+                <button class="rounded-full bg-red-500 p-2" (click)="removeNewsUrl(i)">
+                  <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M1.5 1.5L10.5 10.5M1.5 10.5L10.5 1.5L1.5 10.5Z" stroke="white" stroke-width="2"
+                          stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </button>
+              </div>
             </div>
-          </div>
-        </ng-container>
+          </ng-container>
+        </div>
 
         <div class="lg:flex lg:justify-start">
           <button class="flex items-center justify-center w-full lg:w-auto gap-4 px-8 py-2 rounded-full bg-green-600
-                         text-white text-lg">
+                         text-white text-lg"
+                  (click)="addNewsUrl()">
             <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path d="M6 1V6M6 6V11M6 6H11M6 6H1" stroke="white" stroke-width="2" stroke-linecap="round"
                     stroke-linejoin="round"/>
@@ -305,8 +317,8 @@
           <button app-action-button
                   class="flex items-center justify-center gap-4 bg-indigo-800 disabled:bg-gray-400 text-white
                          px-24 py-2 rounded-full"
-                  text="Create campaign">
-            <!--                [disabled]="!createForm.valid"-->
+                  text="Create campaign"
+                  [disabled]="!createForm2.valid">
             <!--                [onClick]="create.bind(this)">-->
           </button>
         </div>

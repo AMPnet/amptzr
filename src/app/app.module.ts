@@ -99,6 +99,7 @@ import {FormYesNoButtonsComponent} from './shared/components/form-yes-no-buttons
 import {AdminCampaignNewComponent} from './admin/admin-campaign-new/admin-campaign-new.component'
 import {AdminAssetCampaignNewComponent} from './admin/admin-asset-campaign-new/admin-asset-campaign-new.component'
 import {AdminFtAssetCampaignNewComponent} from './admin/admin-ft-asset-campaign-new/admin-ft-asset-campaign-new.component'
+import {DateMaskDirective} from './shared/directives/date-mask.directive'
 
 @NgModule({
   declarations: [
@@ -182,6 +183,7 @@ import {AdminFtAssetCampaignNewComponent} from './admin/admin-ft-asset-campaign-
     AdminCampaignNewComponent,
     AdminAssetCampaignNewComponent,
     AdminFtAssetCampaignNewComponent,
+    DateMaskDirective,
   ],
   imports: [
     BrowserModule,
