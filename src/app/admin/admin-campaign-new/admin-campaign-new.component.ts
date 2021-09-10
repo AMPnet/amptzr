@@ -14,7 +14,7 @@ import {ViewportScroller} from '@angular/common'
 })
 export class AdminCampaignNewComponent {
   assetInfo: AssetInfo = {name: 'INSERTED NAME'} // TODO
-  creationStep: 1 | 2 = 2
+  creationStep: 1 | 2 = 1
   createForm1: FormGroup
   createForm2: FormGroup
 
@@ -40,7 +40,7 @@ export class AdminCampaignNewComponent {
       minInvestment: [{value: undefined, disabled: true}, Validators.required],
       maxInvestment: [{value: undefined, disabled: true}, Validators.required],
       isReturningProfitsToInvestors: [false, Validators.required],
-      returnFrequency: [{value: undefined, disabled: true}, Validators.required],
+      returnFrequency: [{value: '', disabled: true}, Validators.required],
       isReturnValueFixed: [false, Validators.required],
       returnFrom: [{value: undefined, disabled: true}, Validators.required],
       returnTo: [{value: undefined, disabled: true}, Validators.required],
