@@ -5,7 +5,7 @@
         <app-admin-asset-item [asset]="assetRes.value" assetType="asset" type="edit-screen"></app-admin-asset-item>
 
         <div class="flex flex-col lg:flex-row justify-center items-center gap-4 my-8">
-          <app-add-button text="NEW CAMPAIGN"></app-add-button>
+          <app-add-button text="NEW CAMPAIGN" [routerLink]="'campaigns/new'"></app-add-button>
         </div>
 
         <app-admin-campaign-list [asset]="assetRes.value" [campaigns$]="campaigns$"></app-admin-campaign-list>

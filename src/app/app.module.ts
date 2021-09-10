@@ -97,6 +97,8 @@ import {AdminAssetNewComponent} from './admin/admin-asset-new/admin-asset-new.co
 import {AdminFtAssetNewComponent} from './admin/admin-ft-asset-new/admin-ft-asset-new.component'
 import {FormYesNoButtonsComponent} from './shared/components/form-yes-no-buttons/form-yes-no-buttons.component'
 import {AdminCampaignNewComponent} from './admin/admin-campaign-new/admin-campaign-new.component'
+import {AdminAssetCampaignNewComponent} from './admin/admin-asset-campaign-new/admin-asset-campaign-new.component'
+import {AdminFtAssetCampaignNewComponent} from './admin/admin-ft-asset-campaign-new/admin-ft-asset-campaign-new.component'
 
 @NgModule({
   declarations: [
@@ -178,6 +180,8 @@ import {AdminCampaignNewComponent} from './admin/admin-campaign-new/admin-campai
     AdminFtAssetNewComponent,
     FormYesNoButtonsComponent,
     AdminCampaignNewComponent,
+    AdminAssetCampaignNewComponent,
+    AdminFtAssetCampaignNewComponent,
   ],
   imports: [
     BrowserModule,
