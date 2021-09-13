@@ -19,7 +19,7 @@ export class AdminAssetCampaignNewComponent {
   }>>
 
   constructor(private route: ActivatedRoute,
-              private assetService: AssetService) {
+              public assetService: AssetService) {
     const assetId = this.route.snapshot.params.id
     const asset$ = this.assetService.getAddressByName(assetId).pipe(
       switchMap(address => this.assetService.getAssetWithInfo(address, true)),

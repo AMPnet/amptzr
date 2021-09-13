@@ -19,7 +19,7 @@ export class AdminFtAssetCampaignNewComponent {
   }>>
 
   constructor(private route: ActivatedRoute,
-              private ftAssetService: FtAssetService) {
+              public ftAssetService: FtAssetService) {
     const assetId = this.route.snapshot.params.id
     const asset$ = this.ftAssetService.getAddressByName(assetId).pipe(
       switchMap(address => this.ftAssetService.getAssetWithInfo(address, true)),

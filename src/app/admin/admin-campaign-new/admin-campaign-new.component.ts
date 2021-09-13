@@ -3,13 +3,18 @@ import {FormArray, FormBuilder, FormControl, FormGroup, ValidationErrors, Valida
 import {PreferenceQuery} from '../../preference/state/preference.query'
 import {getWindow} from '../../shared/utils/browser'
 import {IssuerPathPipe} from '../../shared/pipes/issuer-path.pipe'
-import {ReturnFrequencies} from 'types/ipfs/campaign'
+import {ReturnFrequencies, ReturnFrequency} from 'types/ipfs/campaign'
 import {ViewportScroller} from '@angular/common'
 import {BigNumber} from 'ethers'
-import {AssetWithInfo} from '../../shared/services/blockchain/asset.service'
-import {FtAssetWithInfo} from '../../shared/services/blockchain/ft-asset.service'
+import {AssetService, AssetWithInfo} from '../../shared/services/blockchain/asset.service'
+import {FtAssetService, FtAssetWithInfo} from '../../shared/services/blockchain/ft-asset.service'
 import {StablecoinService} from '../../shared/services/blockchain/stablecoin.service'
 import {quillMods} from '../../shared/utils/quill'
+import {CampaignService} from '../../shared/services/blockchain/campaign.service'
+import {switchMap} from 'rxjs/operators'
+import {TokenPrice} from '../../shared/utils/token-price'
+import {RouterService} from '../../shared/services/router.service'
+import {DialogService} from '../../shared/services/dialog.service'
 
 @Component({
   selector: 'app-admin-campaign-new',
@@ -22,6 +27,7 @@ export class AdminCampaignNewComponent {
     asset: AssetWithInfo | FtAssetWithInfo,
     balance: BigNumber,
   }
+  @Input() assetService!: AssetService | FtAssetService
 
   creationStep: 1 | 2 = 1
   createForm1: FormGroup
@@ -38,10 +44,13 @@ export class AdminCampaignNewComponent {
     'annual': 'Annualy',
   }
 
-  constructor(private viewportScroller: ViewportScroller,
+  constructor(private campaignService: CampaignService,
+              private viewportScroller: ViewportScroller,
               private preferenceQuery: PreferenceQuery,
               private issuerPathPipe: IssuerPathPipe,
               private stablecoinService: StablecoinService,
+              private routerService: RouterService,
+              private dialogService: DialogService,
               private fb: FormBuilder) {
     this.createForm1 = this.fb.group({
       name: ['', Validators.required],
@@ -208,6 +217,43 @@ export class AdminCampaignNewComponent {
     this.newsUrls.markAsDirty()
   }
 
+  create() {
+    const ansName = this.createForm1.value.ansName
+    return this.campaignService.uploadInfo({
+      name: this.createForm1.value.name,
+      photo: this.createForm2.value.logo?.[0],
+      about: this.createForm2.value.about,
+      description: this.createForm2.value.description,
+      startDate: new Date(this.createForm2.value.startDate).toISOString(),
+      endDate: new Date(this.createForm2.value.endDate).toISOString(),
+      return: this.createCampaignReturnObject(),
+      newDocuments: this.createForm2.value.documents,
+      newsURLs: this.newsUrls.value,
+    }).pipe(
+      switchMap(uploadRes => this.campaignService.create({
+        ansName: ansName,
+        assetAddress: this.assetData.asset.contractAddress,
+        initialPricePerToken: TokenPrice.format(this.createForm1.value.tokenPrice),
+        softCap: this.stablecoinService.parse(this.createForm1.value.softCap),
+        minInvestment: this.getInvestmentValue(this.createForm1.value.minInvestment),
+        maxInvestment: this.getInvestmentValue(this.createForm1.value.maxInvestment),
+        whitelistRequired: this.createForm1.value.isIdVerificationRequired,
+        info: uploadRes.path,
+      })),
+      switchMap(campaignAddress =>
+        this.dialogService.info(
+          'Campaign successfully created! You will be asked to sign a transaction to transfer' +
+          ' your ' + this.assetData.asset.symbol + ' tokens to your campaign.',
+          false
+        ).pipe(
+          switchMap(() => this.addTokensToCampaign(campaignAddress!)),
+          switchMap(() => this.dialogService.info('Tokens added to campaign.', false)),
+          switchMap(() => this.routerService.router.navigate([`../${ansName}`])), // TODO navigate correctly
+        )
+      ),
+    )
+  }
+
   private tokenPercentage(pricePerToken: number, totalValue: number) {
     if (pricePerToken === 0) {
       return 0
@@ -285,5 +331,45 @@ export class AdminCampaignNewComponent {
     }
 
     return null
+  }
+
+  private createCampaignReturnObject(): { frequency?: ReturnFrequency, from?: number, to?: number } {
+    if (this.createForm1.value.isReturningProfitsToInvestors) {
+      if (this.createForm1.value.isReturnValueFixed) {
+        return {
+          frequency: this.createForm1.value.returnFrequency,
+          from: this.createForm1.value.returnFrom,
+        }
+      }
+
+      return {
+        frequency: this.createForm1.value.returnFrequency,
+        from: this.createForm1.value.returnFrom,
+        to: this.createForm1.value.returnTo,
+      }
+    }
+
+    return {}
+  }
+
+  private getInvestmentValue(value: number) {
+    if (this.createForm1.value.hasMinAndMaxInvestment) {
+      return this.stablecoinService.parse(value)
+    }
+
+    return BigNumber.from(1)
+  }
+
+  private addTokensToCampaign(campaignAddress: string) {
+    const tokenBalance = this.stablecoinService.format(this.assetData.balance)
+    // Due to possible rounding errors, we use min(specifiedCampaignTokens, assetTokenBalance) to ensure that valid
+    // amount is always sent here.
+    const tokenAmount = Math.min(this.createForm1.value.hardCap / this.createForm1.value.tokenPrice, tokenBalance)
+
+    return this.assetService.transferTokensToCampaign(
+      this.assetData.asset.contractAddress,
+      campaignAddress,
+      tokenAmount
+    )
   }
 }

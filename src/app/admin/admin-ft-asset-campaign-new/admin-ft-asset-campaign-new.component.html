@@ -1,6 +1,6 @@
 <ng-container *ngIf="(assetData$ | async) as assetDataRes">
   <ng-container *ngIf="assetDataRes.value as assetData">
-    <app-admin-campaign-new [assetData]="assetData"></app-admin-campaign-new>
+    <app-admin-campaign-new [assetData]="assetData" [assetService]="ftAssetService"></app-admin-campaign-new>
   </ng-container>
 
   <ng-container *ngIf="assetDataRes.error">
