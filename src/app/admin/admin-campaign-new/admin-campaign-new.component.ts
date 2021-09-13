@@ -105,7 +105,8 @@ export class AdminCampaignNewComponent {
       return 0
     }
 
-    return this.createForm1.value.hardCap / numOfTokensToSell
+    const pricePerToken = this.createForm1.value.hardCap / numOfTokensToSell
+    return Math.round(pricePerToken * 10_000) / 10_000
   }
 
   get softCapTokensPercentage() {
@@ -123,24 +124,17 @@ export class AdminCampaignNewComponent {
     return numOfTokensToSell / totalTokens
   }
 
-  onHardCapChange() {
-    this.createForm1.controls.tokenPrice.setValue(
-      this.pricePerToken,
-      {emitModelToViewChange: true, emitViewToModelChange: false}
-    )
+  onHardCapBlur() {
+    this.createForm1.controls.tokenPrice.setValue(this.pricePerToken)
   }
 
-  onHardCapTokensPercentageChange() {
-    this.createForm1.controls.tokenPrice.setValue(
-      this.pricePerToken,
-      {emitModelToViewChange: true, emitViewToModelChange: false}
-    )
+  onHardCapTokensPercentageBlur() {
+    this.createForm1.controls.tokenPrice.setValue(this.pricePerToken)
   }
 
-  onTokenPriceChange() {
+  onTokenPriceBlur() {
     this.createForm1.controls.hardCapTokensPercentage.setValue(
-      this.tokenPercentage(this.createForm1.value.tokenPrice, this.createForm1.value.hardCap),
-      {emitModelToViewChange: true, emitViewToModelChange: false}
+      this.tokenPercentage(this.createForm1.value.tokenPrice, this.createForm1.value.hardCap)
     )
   }
 
