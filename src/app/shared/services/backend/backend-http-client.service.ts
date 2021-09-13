@@ -84,7 +84,7 @@ export class BackendHttpClient {
         )),
         switchMap(signedPayload => this.jwtTokenService.authJWT(address, signedPayload)),
         this.errorService.handleError(false, true),
-      ))
+      )),
     )
   }
 

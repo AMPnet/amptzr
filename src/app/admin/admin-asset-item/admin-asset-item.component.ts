@@ -9,7 +9,7 @@ import {CampaignService, CampaignWithInfo} from '../../shared/services/blockchai
   selector: 'app-admin-asset-item',
   templateUrl: './admin-asset-item.component.html',
   styleUrls: ['./admin-asset-item.component.css'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AdminAssetItemComponent implements OnInit {
   @Input() asset!: AssetWithInfo | FtAssetWithInfo
@@ -18,7 +18,7 @@ export class AdminAssetItemComponent implements OnInit {
 
   campaigns$!: Observable<WithStatus<CampaignWithInfo[]>>
 
-  constructor(private campaignService: CampaignService,) {
+  constructor(private campaignService: CampaignService) {
   }
 
   ngOnInit(): void {

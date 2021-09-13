@@ -10,7 +10,7 @@ import {StablecoinService} from '../../shared/services/blockchain/stablecoin.ser
   selector: 'app-admin-campaign-item',
   templateUrl: './admin-campaign-item.component.html',
   styleUrls: ['./admin-campaign-item.component.css'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AdminCampaignItemComponent implements OnInit {
   @Input() asset!: AssetWithInfo | FtAssetWithInfo
@@ -35,7 +35,7 @@ export class AdminCampaignItemComponent implements OnInit {
       tokenPrice: stats.tokenPrice,
       campaignTokens: stats.tokenBalance,
       assetTokens: assetTokens,
-      tokensPercentage: stats.tokenBalance / assetTokens
+      tokensPercentage: stats.tokenBalance / assetTokens,
     }
   }
 }

@@ -9,7 +9,7 @@ import {FtAssetWithInfo} from '../../shared/services/blockchain/ft-asset.service
   selector: 'app-admin-campaign-list',
   templateUrl: './admin-campaign-list.component.html',
   styleUrls: ['./admin-campaign-list.component.css'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AdminCampaignListComponent {
   @Input() asset!: AssetWithInfo | FtAssetWithInfo
