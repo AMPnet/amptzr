@@ -3,7 +3,7 @@ import {Observable, of} from 'rxjs'
 import {SessionQuery} from '../../session/state/session.query'
 import {AppLayoutStore} from '../state/app-layout.store'
 import {AppLayoutQuery} from '../state/app-layout.query'
-import {filter, tap} from 'rxjs/operators'
+import {filter, map, tap} from 'rxjs/operators'
 import {TailwindService} from '../../shared/services/tailwind.service'
 import {UserService} from '../../shared/services/user.service'
 import {SignerService} from '../../shared/services/signer.service'
@@ -19,6 +19,7 @@ export class NavbarComponent {
   isLoggedIn$ = this.sessionQuery.isLoggedIn$
   isDropdownOpen$ = this.appLayoutQuery.isDropdownMenuOpen$
   issuer$ = this.issuerService.issuerWithStatus$
+  isMobileScreen$: Observable<boolean>
   dropdownCloser$: Observable<unknown>
   isAdmin$ = this.userService.isAdmin$
 
@@ -36,8 +37,11 @@ export class NavbarComponent {
               private userService: UserService,
               private signerService: SignerService,
               private tailwindService: TailwindService) {
-    this.dropdownCloser$ = this.tailwindService.screenResize$.pipe(
-      filter(screen => screen !== ('sm' || 'md')),
+    this.isMobileScreen$ = this.tailwindService.screenResize$.pipe(
+      map(screen => screen === ('sm' || 'md')),
+    )
+    this.dropdownCloser$ = this.isMobileScreen$.pipe(
+      filter(isMobile => !isMobile),
       tap(() => this.appLayoutStore.closeDropdownMenu()),
     )
   }

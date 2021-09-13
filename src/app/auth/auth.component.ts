@@ -1,5 +1,5 @@
-import {ChangeDetectionStrategy, Component, Optional} from '@angular/core'
-import {Observable} from 'rxjs'
+import {ChangeDetectionStrategy, Component, OnInit, Optional} from '@angular/core'
+import {defer, Observable, of} from 'rxjs'
 import {tap} from 'rxjs/operators'
 import {PreferenceQuery} from '../preference/state/preference.query'
 import {PreferenceStore} from '../preference/state/preference.store'
@@ -10,6 +10,7 @@ import {WalletConnectSubsignerService} from '../shared/services/subsigners/walle
 import {MatDialogRef} from '@angular/material/dialog'
 import {RouterService} from '../shared/services/router.service'
 import {IssuerService} from '../shared/services/blockchain/issuer.service'
+import {getWindow} from '../shared/utils/browser'
 
 @Component({
   selector: 'app-auth',
@@ -19,6 +20,7 @@ import {IssuerService} from '../shared/services/blockchain/issuer.service'
 })
 export class AuthComponent {
   issuer$ = this.issuerService.issuerWithStatus$
+  injectedWeb3$: Observable<any> = defer(() => of(getWindow()?.ethereum))
 
   constructor(private signer: SignerService,
               private preferenceStore: PreferenceStore,
@@ -46,6 +48,4 @@ export class AuthComponent {
       tap(() => this.afterLoginActions()),
     )
   }
-
-  isMetamaskAvailable = () => this.metamaskSubsignerService.isAvailable()
 }
