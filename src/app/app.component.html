@@ -1,5 +1,7 @@
 <router-outlet>
 </router-outlet>
 
+<ng-container *ngIf="checkForUpdate$ | async"></ng-container>
 <ng-container *ngIf="appUpdate$ | async"></ng-container>
+<ng-container *ngIf="unrecoverable$ | async"></ng-container>
 <ng-container *ngIf="issuerTitle$ | async"></ng-container>

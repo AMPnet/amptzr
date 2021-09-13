@@ -42,7 +42,7 @@ import {AdminFtAssetNewComponent} from './admin/admin-ft-asset-new/admin-ft-asse
 
 const appRoutes: Routes = [
   {
-    path: '', component: AppComponent, children: [
+    path: '', children: [
       {path: '', pathMatch: 'full', redirectTo: 'offers'},
       {path: 'offers', component: OffersComponent},
       {path: 'offers/:id', component: OfferComponent},
