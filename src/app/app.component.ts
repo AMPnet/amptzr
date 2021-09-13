@@ -12,34 +12,29 @@ import {Title} from '@angular/platform-browser'
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AppComponent {
-  constructor(private updates: SwUpdate,
+  constructor(public updates: SwUpdate,
               private appRef: ApplicationRef,
               private issuerService: IssuerService,
               private title: Title,
               private dialog: DialogService) {
-    console.log('isenabled', updates.isEnabled)
-    updates.available.subscribe(() => console.log('available'))
-    updates.activated.subscribe(() => console.log('activated'))
   }
 
   checkForUpdate$ = defer(() => {
     const appIsStable$ = this.appRef.isStable.pipe(first(isStable => isStable))
-    const interval$ = interval(15 * 1000)
+    const interval$ = interval(20 * 60 * 1000)
     return concat(appIsStable$, interval$)
   }).pipe(
-    tap(() => console.log('check for update')),
     tap(() => this.updates.checkForUpdate()),
   )
 
   appUpdate$ = this.updates.available.pipe(
-    tap(() => console.log('update available')),
     switchMap(() => this.dialog.info('New version available. The app will be reloaded.', false)),
     switchMap(() => from(this.updates.activateUpdate())),
     tap(() => document.location.reload()),
   )
 
   unrecoverable$ = this.updates.unrecoverable.pipe(
-    tap(event => console.log('unrecoverable', event.reason)),
+    tap(event => console.error('unrecoverable', event.reason)),
     tap(() => document.location.reload()),
   )
 
