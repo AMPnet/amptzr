@@ -73,8 +73,6 @@ export class MetamaskSubsignerService implements Subsigner {
   logout(): Observable<unknown> {
     return of(null)
   }
-
-  isAvailable = (): boolean => !!getWindow()?.ethereum
 }
 
 export interface Subsigner {

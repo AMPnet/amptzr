@@ -16,7 +16,7 @@
       </div>
 
       <!-- Navbar items -->
-      <div class="flex justify-end items-center">
+      <div class="flex justify-end items-center lg:pr-4">
         <ng-container *ngFor="let navbarItem of navbarScreenLinks">
           <button *ngIf="(navbarItem.showItem | async) === true"
                   class="mx-2 px-4 py-2 text-gray-700 text-sm border-b-4 font-semibold
@@ -35,6 +35,9 @@
                 *ngIf="(isLoggedIn$ | async) === false"
                 [onClick]="login.bind(this)"
                 text="Log in"></button>
+
+        <app-google-translate *ngIf="(isMobileScreen$ | async) === false">
+        </app-google-translate>
 
         <!-- Toggle dropdown -->
         <button class="mx-4 py-4 text-lg font-black text-gray-700 lg:hidden"
@@ -69,10 +72,13 @@
           {{ navbarItem.title }}
         </button>
       </ng-container>
+
       <app-wallet-button *ngIf="(isLoggedIn$ | async) === true"
                          (click)="toggleDropdown()"
                          class="mt-6">
       </app-wallet-button>
+
+      <app-google-translate class="py-8"></app-google-translate>
     </div>
   </ng-container>
 </div>

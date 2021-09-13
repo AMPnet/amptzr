@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core'
 import {fromEvent} from 'rxjs'
-import {debounceTime, distinctUntilChanged, map} from 'rxjs/operators'
+import {debounceTime, distinctUntilChanged, map, startWith} from 'rxjs/operators'
 import resolveConfig from 'tailwindcss/resolveConfig'
 // @ts-ignore
 import tailwindConfig from '../../../../tailwind.config.js'
@@ -12,6 +12,7 @@ export class TailwindService {
   readonly screens: { name: string, width: number }[] = []
 
   screenResize$ = fromEvent(window, 'resize').pipe(
+    startWith(this.getScreen()),
     debounceTime(300),
     map(() => this.getScreen()),
     distinctUntilChanged(),
