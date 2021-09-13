@@ -280,7 +280,7 @@ export class AdminCampaignNewComponent {
   }
 
   private static validDateRange(formGroup: FormGroup): ValidationErrors | null {
-    if (formGroup.value.startDate >= formGroup.value.endDate) {
+    if (formGroup.value.startDate > formGroup.value.endDate) {
       return {invalidDateRange: true}
     }
 
