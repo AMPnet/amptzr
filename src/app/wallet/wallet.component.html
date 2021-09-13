@@ -49,8 +49,11 @@
 
       <!-- Wallet Info - User Identity, Provider, Address -->
       <div class="flex flex-col lg:flex-row text-xs lg:items-center justify-between mt-4">
-        <!-- TODO: fetch actual user name -->
-        <p class="flex-grow invisible">{{ userIdentity$ | async }}</p>
+        <p class="flex-grow">
+          <ng-container *ngIf="(user$ | async) as user">
+            {{ user.email ?? '' }}
+          </ng-container>
+        </p>
         <div class="flex items-center mt-2 lg:mt-0">
           <ng-container *ngIf="(address$ | async) as address">
             <span class="flex-grow-0 mr-6">Wallet address: {{ address | addrShort }}</span>

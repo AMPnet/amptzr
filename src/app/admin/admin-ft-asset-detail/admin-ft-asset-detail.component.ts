@@ -11,7 +11,7 @@ import {FtAssetService, FtAssetWithInfo} from '../../shared/services/blockchain/
   selector: 'app-admin-ft-asset-detail',
   templateUrl: './admin-ft-asset-detail.component.html',
   styleUrls: ['./admin-ft-asset-detail.component.css'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AdminFtAssetDetailComponent {
   assetSub = new BehaviorSubject<void>(undefined)
@@ -21,20 +21,20 @@ export class AdminFtAssetDetailComponent {
   constructor(private ftAssetService: FtAssetService,
               private campaignService: CampaignService,
               private metaService: MetaService,
-              private route: ActivatedRoute,) {
+              private route: ActivatedRoute) {
     const assetId = this.route.snapshot.params.id
 
     this.asset$ = this.assetSub.asObservable().pipe(
       switchMap(() => withStatus(
         this.ftAssetService.getAddressByName(assetId).pipe(
           switchMap(address => this.ftAssetService.getAssetWithInfo(address)),
-        )
-      ))
+        ),
+      )),
     )
     this.campaigns$ = this.asset$.pipe(
       filter(asset => !!asset.value),
       map(asset => asset.value!.contractAddress),
-      mergeMap(assetContractAddress => withStatus(this.campaignService.getCampaigns(assetContractAddress)))
+      mergeMap(assetContractAddress => withStatus(this.campaignService.getCampaigns(assetContractAddress))),
     )
   }
 }

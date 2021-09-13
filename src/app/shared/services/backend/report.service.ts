@@ -33,7 +33,7 @@ export class ReportService {
     const params = this.createFromToDateParams(from, to)
     return this.http.ensureAuth.pipe(
       switchMap(() => this.http.http.get(
-        `${this.path}/report/${this.preferenceQuery.network.chainID}/user/transactions`,
+        `${this.path}/report/${this.preferenceQuery.network.chainID}/${this.preferenceQuery.issuer.address}/user/transactions`,
         {
           params: params,
           headers: this.http.authHttpOptions().headers,

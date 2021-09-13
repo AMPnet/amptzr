@@ -1,6 +1,10 @@
 import {ChangeDetectionStrategy, Component} from '@angular/core'
 import {ReportService} from '../../shared/services/backend/report.service'
 import {withStatus} from '../../shared/utils/observables'
+import {BackendHttpClient} from '../../shared/services/backend/backend-http-client.service'
+import {PreferenceQuery} from '../../preference/state/preference.query'
+import {switchMap} from 'rxjs/operators'
+import {of} from 'rxjs'
 
 @Component({
   selector: 'app-wallet-tx-history',
@@ -9,9 +13,22 @@ import {withStatus} from '../../shared/utils/observables'
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class WalletTxHistoryComponent {
-  transactionHistory$ = withStatus(this.reportService.transactionHistory())
+  isBackendAuthorized$ = this.preferenceQuery.isBackendAuthorized$
 
-  constructor(private reportService: ReportService) {
+  transactionHistory$ = this.isBackendAuthorized$.pipe(
+    switchMap(isAuth => withStatus(isAuth ?
+      this.reportService.transactionHistory() :
+      of({transactions: []})),
+    ),
+  )
+
+  constructor(private reportService: ReportService,
+              private http: BackendHttpClient,
+              private preferenceQuery: PreferenceQuery) {
+  }
+
+  backendAuthorize() {
+    return this.http.ensureAuth
   }
 
   downloadTransactionHistory() {

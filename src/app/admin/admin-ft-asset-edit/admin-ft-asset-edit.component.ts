@@ -12,7 +12,7 @@ import {FtAssetService, FtAssetWithInfo} from '../../shared/services/blockchain/
   selector: 'app-ft-admin-asset-edit',
   templateUrl: './admin-ft-asset-edit.component.html',
   styleUrls: ['./admin-ft-asset-edit.component.css'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AdminFtAssetEditComponent {
   assetSub = new BehaviorSubject<void>(undefined)
@@ -24,7 +24,7 @@ export class AdminFtAssetEditComponent {
               private routerService: RouterService,
               private ftAssetService: FtAssetService,
               private dialogService: DialogService,
-              private fb: FormBuilder,) {
+              private fb: FormBuilder) {
     this.updateForm = this.fb.group({
       logo: [undefined],
       description: [''],
@@ -36,7 +36,7 @@ export class AdminFtAssetEditComponent {
       switchMap(() => withStatus(
         this.ftAssetService.getAddressByName(assetId).pipe(
           switchMap(address => this.ftAssetService.getAssetWithInfo(address, true)),
-        )
+        ),
       )),
       tap(asset => {
         if (asset.value) {

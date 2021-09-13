@@ -2,7 +2,7 @@ import {ChangeDetectionStrategy, Component} from '@angular/core'
 import {SessionQuery} from '../session/state/session.query'
 import {SignerService} from '../shared/services/signer.service'
 import {finalize, switchMap} from 'rxjs/operators'
-import {BehaviorSubject, EMPTY, Observable} from 'rxjs'
+import {EMPTY, Observable, of} from 'rxjs'
 import {VenlySubsignerService} from '../shared/services/subsigners/venly-subsigner.service'
 import {AuthProvider} from '../preference/state/preference.store'
 import {withStatus} from '../shared/utils/observables'
@@ -11,6 +11,8 @@ import {StablecoinService} from '../shared/services/blockchain/stablecoin.servic
 import {UserService} from '../shared/services/user.service'
 import {TransactionType} from '../shared/services/backend/report.service'
 import {BackendHttpClient} from '../shared/services/backend/backend-http-client.service'
+import {PreferenceQuery} from '../preference/state/preference.query'
+import {BackendUser, BackendUserService} from '../shared/services/backend/backend-user.service'
 
 @Component({
   selector: 'app-wallet',
@@ -24,8 +26,9 @@ export class WalletComponent {
 
   authProvider$ = this.sessionQuery.authProvider$
 
-  userIdentitySub = new BehaviorSubject<string>('John Smith')
-  userIdentity$ = this.userIdentitySub.asObservable()
+  user$: Observable<Partial<BackendUser>> = this.preferenceQuery.isBackendAuthorized$.pipe(
+    switchMap(isAuth => isAuth ? this.backendUserService.getUser() : of({})),
+  )
 
   address$ = this.sessionQuery.address$
   balance$ = withStatus(this.stablecoin.balance$)
@@ -40,9 +43,11 @@ export class WalletComponent {
   // )
 
   constructor(private sessionQuery: SessionQuery,
+              private preferenceQuery: PreferenceQuery,
               private signerService: SignerService,
               private stablecoin: StablecoinService,
               private userService: UserService,
+              private backendUserService: BackendUserService,
               private venly: VenlySubsignerService,
               private http: BackendHttpClient,
               private router: RouterService) {
