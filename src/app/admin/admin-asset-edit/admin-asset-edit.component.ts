@@ -12,7 +12,7 @@ import {ActivatedRoute} from '@angular/router'
   selector: 'app-admin-asset-edit',
   templateUrl: './admin-asset-edit.component.html',
   styleUrls: ['./admin-asset-edit.component.css'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AdminAssetEditComponent {
   assetSub = new BehaviorSubject<void>(undefined)
@@ -24,7 +24,7 @@ export class AdminAssetEditComponent {
               private routerService: RouterService,
               private assetService: AssetService,
               private dialogService: DialogService,
-              private fb: FormBuilder,) {
+              private fb: FormBuilder) {
     this.updateForm = this.fb.group({
       logo: [undefined],
       description: [''],
@@ -36,7 +36,7 @@ export class AdminAssetEditComponent {
       switchMap(() => withStatus(
         this.assetService.getAddressByName(assetId).pipe(
           switchMap(address => this.assetService.getAssetWithInfo(address, true)),
-        )
+        ),
       )),
       tap(asset => {
         if (asset.value) {

@@ -1,4 +1,4 @@
-import {ChangeDetectionStrategy, Component, OnInit, Optional} from '@angular/core'
+import {ChangeDetectionStrategy, Component, Optional} from '@angular/core'
 import {defer, Observable, of} from 'rxjs'
 import {tap} from 'rxjs/operators'
 import {PreferenceQuery} from '../preference/state/preference.query'

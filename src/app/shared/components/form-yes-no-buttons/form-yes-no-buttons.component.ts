@@ -10,8 +10,8 @@ import {ControlValueAccessor, NG_VALUE_ACCESSOR} from '@angular/forms'
     {
       provide: NG_VALUE_ACCESSOR,
       multi: true,
-      useExisting: FormYesNoButtonsComponent
-    }
+      useExisting: FormYesNoButtonsComponent,
+    },
   ],
 })
 export class FormYesNoButtonsComponent implements ControlValueAccessor {

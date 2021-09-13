@@ -12,12 +12,12 @@ export class BackendUserService {
   constructor(private http: BackendHttpClient) {
   }
 
-  getUser(): Observable<User> {
-    return this.http.get<User>(`${this.path}/user`)
+  getUser(): Observable<BackendUser> {
+    return this.http.get<BackendUser>(`${this.path}/user`)
   }
 
-  updateUser(userUpdate: UserUpdate): Observable<User> {
-    return this.http.put<User>(`${this.path}/user`, userUpdate)
+  updateUser(userUpdate: UserUpdate): Observable<BackendUser> {
+    return this.http.put<BackendUser>(`${this.path}/user`, userUpdate)
   }
 
   whitelistUser(data: WhitelistUserData): Observable<void> {
@@ -25,7 +25,7 @@ export class BackendUserService {
   }
 }
 
-interface User {
+export interface BackendUser {
   address: string;
   email: string | null;
   email_verified: boolean;

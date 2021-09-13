@@ -57,7 +57,7 @@ export class FtAssetService {
 
   getAddressByName(ansName: string): Observable<string> {
     return this.factoryContract$.pipe(
-      switchMap(contract => contract.namespace(this.preferenceQuery.issuer.address, ansName))
+      switchMap(contract => contract.namespace(this.preferenceQuery.issuer.address, ansName)),
     )
   }
 
