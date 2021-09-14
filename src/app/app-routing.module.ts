@@ -22,7 +22,6 @@ import {IssuerGuard} from './shared/guards/issuer.guard'
 import {IssuerEditAdvancedComponent} from './issuers/issuer-edit-advanced/issuer-edit-advanced.component'
 import {environment} from '../environments/environment'
 import {NetworkGuard} from './shared/guards/network.guard'
-import {AppComponent} from './app.component'
 import {HomeComponent} from './home/home.component'
 import {FtAssetDetailComponent} from './assets/ft-assets/ft-asset-detail/ft-asset-detail.component'
 import {FtAssetEditComponent} from './assets/ft-assets/ft-asset-edit/ft-asset-edit.component'
@@ -42,7 +41,7 @@ import {AdminFtAssetNewComponent} from './admin/admin-ft-asset-new/admin-ft-asse
 
 const appRoutes: Routes = [
   {
-    path: '', component: AppComponent, children: [
+    path: '', children: [
       {path: '', pathMatch: 'full', redirectTo: 'offers'},
       {path: 'offers', component: OffersComponent},
       {path: 'offers/:id', component: OfferComponent},
