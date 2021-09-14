@@ -27,7 +27,7 @@ export class AdminAssetCampaignViewComponent {
     const campaignId = this.route.snapshot.params.campaignId
     this.campaign$ = withStatus(
       this.campaignService.getAddressByName(campaignId).pipe(
-        switchMap(address => this.campaignService.getCampaignWithInfo(address))
+        switchMap(address => this.campaignService.getCampaignWithInfo(address, true))
       )
     )
   }
