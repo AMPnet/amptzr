@@ -42,7 +42,7 @@ export class ReportService {
       )),
       this.errorService.handleError(),
       map(data => {
-        ReportService.downloadFile(data, this.timestampedFileName('UserTransactions', 'pdf', params))
+        ReportService.downloadFile(data, this.timestampedFileName('UserTransactions', 'pdf', params), 'application/pdf')
       }),
     )
   }
@@ -58,7 +58,10 @@ export class ReportService {
       )),
       this.errorService.handleError(),
       map(data => {
-        ReportService.downloadFile(data, this.timestampedFileName('InvestorsReport', 'xlsx'))
+        ReportService.downloadFile(
+          data, this.timestampedFileName('InvestorsReport', 'xlsx'),
+          'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+        )
       }),
     )
   }
@@ -87,8 +90,8 @@ export class ReportService {
     ].filter(text => !!text).join('_') + '.' + extension
   }
 
-  private static downloadFile(data: ArrayBuffer, fileName: string): void {
-    const file = new Blob([data], {type: 'application/pdf'})
+  private static downloadFile(data: ArrayBuffer, fileName: string, type: string): void {
+    const file = new Blob([data], {type})
     const fileURL = URL.createObjectURL(file)
     const link = document.createElement('a')
     link.href = fileURL
