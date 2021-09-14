@@ -1,0 +1,21 @@
+<ng-container *ngIf="(campaign$ | async) as campaignRes">
+  <ng-container *ngIf="(asset$ | async) as assetRes">
+    <ng-container *ngIf="campaignRes.value && assetRes.value">
+      <ng-container *ngIf="assetRes.value as asset">
+        <ng-container *ngIf="campaignRes.value as campaign">
+          <app-admin-campaign-view [asset]="asset" [campaign]="campaign"></app-admin-campaign-view>
+        </ng-container>
+      </ng-container>
+    </ng-container>
+
+    <ng-container *ngIf="campaignRes.error || assetRes.error">
+      <div class="w-full text-center mt-8">Cannot fetch campaign.</div>
+      <div hidden>Campaign errors: {{ campaignRes.error | json }}</div>
+      <div hidden>Asset errors: {{ assetRes.error | json }}</div>
+    </ng-container>
+
+    <ng-container *ngIf="campaignRes.loading && assetRes.loading">
+      <app-spinner type="overlay">Loading campaign...</app-spinner>
+    </ng-container>
+  </ng-container>
+</ng-container>

@@ -32,4 +32,12 @@ export class AdminAssetItemComponent implements OnInit {
 
     return this.assetType === 'asset' ? `/admin/assets/${this.asset.ansName}` : `/admin/ft_assets/${this.asset.ansName}`
   }
+
+  get assetTypePath() {
+    if (this.assetType === 'asset') {
+      return 'assets'
+    }
+
+    return 'ft_assets'
+  }
 }

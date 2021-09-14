@@ -47,8 +47,10 @@
               There are no campaigns related to this asset.
             </ng-container>
 
-            <!-- TODO: add links to campaign when the screen gets implemented -->
-            <a *ngFor="let campaign of campaigns" class="px-8 py-0.5 bg-blue-200 rounded-full">
+            <a *ngFor="let campaign of campaigns"
+               [routerLink]="('/admin/' + assetTypePath + '/' + asset.ansName + '/campaigns/' +
+                             campaign.ansName) | issuerPath"
+               class="px-8 py-0.5 bg-blue-200  hover:bg-indigo-800 hover:text-white rounded-full">
               {{ campaign.name }}
             </a>
           </ng-container>
