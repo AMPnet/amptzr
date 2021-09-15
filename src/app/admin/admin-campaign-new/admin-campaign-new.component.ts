@@ -15,6 +15,7 @@ import {switchMap} from 'rxjs/operators'
 import {TokenPrice} from '../../shared/utils/token-price'
 import {RouterService} from '../../shared/services/router.service'
 import {DialogService} from '../../shared/services/dialog.service'
+import {ActivatedRoute} from '@angular/router'
 
 @Component({
   selector: 'app-admin-campaign-new',
@@ -49,6 +50,7 @@ export class AdminCampaignNewComponent {
               private preferenceQuery: PreferenceQuery,
               private issuerPathPipe: IssuerPathPipe,
               private stablecoinService: StablecoinService,
+              private route: ActivatedRoute,
               private routerService: RouterService,
               private dialogService: DialogService,
               private fb: FormBuilder) {
@@ -167,7 +169,7 @@ export class AdminCampaignNewComponent {
     }
   }
 
-  toggleReturnFrequency(value: boolean) {
+  toggleReturnFrequencyControls(value: boolean) {
     if (value) {
       this.createForm1.controls.returnFrequency.enable()
       this.createForm1.controls.returnFrom.enable()
@@ -182,7 +184,7 @@ export class AdminCampaignNewComponent {
     }
   }
 
-  toggleReturnTo(value: boolean) {
+  toggleReturnToControls(value: boolean) {
     if (!value && this.createForm1.value.isReturningProfitsToInvestors) {
       this.createForm1.controls.returnTo.enable()
     } else {
@@ -258,7 +260,7 @@ export class AdminCampaignNewComponent {
         ).pipe(
           switchMap(() => this.addTokensToCampaign(campaignAddress!)),
           switchMap(() => this.dialogService.info('Tokens added to campaign.', false)),
-          switchMap(() => this.routerService.router.navigate([`../${ansName}`])), // TODO navigate correctly
+          switchMap(() => this.routerService.navigate([`../${ansName}`], {relativeTo: this.route})),
         )
       ),
     )

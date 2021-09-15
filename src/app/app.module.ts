@@ -103,6 +103,7 @@ import {DateMaskDirective} from './shared/directives/date-mask.directive'
 import {AdminCampaignViewComponent} from './admin/admin-campaign-view/admin-campaign-view.component'
 import {AdminAssetCampaignViewComponent} from './admin/admin-asset-campaign-view/admin-asset-campaign-view.component'
 import {AdminFtAssetCampaignViewComponent} from './admin/admin-ft-asset-campaign-view/admin-ft-asset-campaign-view.component'
+import {AdminCampaignEditComponent} from './admin/admin-campaign-edit/admin-campaign-edit.component'
 
 @NgModule({
   declarations: [
@@ -190,6 +191,7 @@ import {AdminFtAssetCampaignViewComponent} from './admin/admin-ft-asset-campaign
     AdminCampaignViewComponent,
     AdminAssetCampaignViewComponent,
     AdminFtAssetCampaignViewComponent,
+    AdminCampaignEditComponent,
   ],
   imports: [
     BrowserModule,

@@ -92,7 +92,7 @@
               <span class="text-lg font-semibold">Will you be returning profits to your investors?</span>
               <div class="flex flex-col lg:flex-row gap-4">
                 <app-form-yes-no-buttons formControlName="isReturningProfitsToInvestors"
-                                         (ngModelChange)="toggleReturnFrequency($event)">
+                                         (ngModelChange)="toggleReturnFrequencyControls($event)">
                 </app-form-yes-no-buttons>
                 <div class="flex flex-row items-center gap-4 overflow-hidden transition-all ease-in-out duration-300"
                      [class]="createForm1.get('isReturningProfitsToInvestors')?.value ?
@@ -116,7 +116,7 @@
               <span class="text-lg font-semibold whitespace-nowrap">Is your return value fixed?</span>
               <div class="flex flex-col lg:flex-row gap-4">
                 <app-form-yes-no-buttons formControlName="isReturnValueFixed"
-                                         (ngModelChange)="toggleReturnTo($event)">
+                                         (ngModelChange)="toggleReturnToControls($event)">
                 </app-form-yes-no-buttons>
                 <div class="flex flex-row gap-4">
                   <input appPercentageMask

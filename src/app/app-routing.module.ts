@@ -42,6 +42,7 @@ import {AdminFtAssetCampaignNewComponent} from './admin/admin-ft-asset-campaign-
 import {AdminAssetCampaignNewComponent} from './admin/admin-asset-campaign-new/admin-asset-campaign-new.component'
 import {AdminAssetCampaignViewComponent} from './admin/admin-asset-campaign-view/admin-asset-campaign-view.component'
 import {AdminFtAssetCampaignViewComponent} from './admin/admin-ft-asset-campaign-view/admin-ft-asset-campaign-view.component'
+import {AdminCampaignEditComponent} from './admin/admin-campaign-edit/admin-campaign-edit.component'
 
 const appRoutes: Routes = [
   {
@@ -68,11 +69,13 @@ const appRoutes: Routes = [
           {path: 'assets/:id/edit', component: AdminAssetEditComponent},
           {path: 'assets/:id/campaigns/new', component: AdminAssetCampaignNewComponent},
           {path: 'assets/:assetId/campaigns/:campaignId', component: AdminAssetCampaignViewComponent},
+          {path: 'assets/:assetId/campaigns/:campaignId/edit', component: AdminCampaignEditComponent},
           {path: 'ft_assets/new', component: AdminFtAssetNewComponent},
           {path: 'ft_assets/:id', component: AdminFtAssetDetailComponent},
           {path: 'ft_assets/:id/edit', component: AdminFtAssetEditComponent},
           {path: 'ft_assets/:id/campaigns/new', component: AdminFtAssetCampaignNewComponent},
           {path: 'ft_assets/:assetId/campaigns/:campaignId', component: AdminFtAssetCampaignViewComponent},
+          {path: 'ft_assets/:assetId/campaigns/:campaignId/edit', component: AdminCampaignEditComponent},
         ],
       },
       {path: 'dev_playground', component: DevPlaygroundComponent},
