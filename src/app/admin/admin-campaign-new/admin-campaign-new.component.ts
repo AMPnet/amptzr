@@ -142,9 +142,19 @@ export class AdminCampaignNewComponent {
   }
 
   onTokenPriceBlur() {
-    this.createForm1.controls.hardCapTokensPercentage.setValue(
-      this.tokenPercentage(this.createForm1.value.tokenPrice, this.createForm1.value.hardCap)
-    )
+    const tokenPercentage = this.tokenPercentage(this.createForm1.value.tokenPrice, this.createForm1.value.hardCap)
+    const maxTokensPercentage = this.maxTokensPercentage
+
+    if (tokenPercentage < maxTokensPercentage) {
+      this.createForm1.controls.hardCapTokensPercentage.setValue(
+        this.tokenPercentage(this.createForm1.value.tokenPrice, this.createForm1.value.hardCap)
+      )
+    } else {
+      this.createForm1.controls.hardCapTokensPercentage.setValue(maxTokensPercentage)
+      this.createForm1.controls.hardCap.setValue(
+        this.stablecoinService.format(this.assetData.balance, 18) * this.createForm1.value.tokenPrice
+      )
+    }
   }
 
   toggleMinAndMaxInvestmentControls(value: boolean) {
@@ -326,6 +336,15 @@ export class AdminCampaignNewComponent {
   }
 
   private static validDateRange(formGroup: FormGroup): ValidationErrors | null {
+    const today = new Date().toISOString().split('T')[0]
+    if (formGroup.value.startDate < today) {
+      return {invalidStartDate: true}
+    }
+
+    if (formGroup.value.endDate < today) {
+      return {invalidEndDate: true}
+    }
+
     if (formGroup.value.startDate > formGroup.value.endDate) {
       return {invalidDateRange: true}
     }
