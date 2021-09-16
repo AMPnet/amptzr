@@ -1,11 +1,8 @@
 <ng-container *ngIf="(campaign$ | async) as campaignRes">
   <ng-container *ngIf="(assetData$ | async) as assetDataRes">
     <ng-container *ngIf="campaignRes.value && assetDataRes.value">
-      <ng-container *ngIf="assetDataRes.value as assetData">
-        <ng-container *ngIf="campaignRes.value as campaign">
-          <app-admin-campaign-view [assetData]="assetData" [campaign]="campaign"></app-admin-campaign-view>
-        </ng-container>
-      </ng-container>
+      <app-admin-campaign-view [assetData]="assetDataRes.value"
+                               [campaign]="campaignRes.value"></app-admin-campaign-view>
     </ng-container>
 
     <ng-container *ngIf="campaignRes.error || assetDataRes.error">
@@ -14,7 +11,7 @@
       <div hidden>Asset errors: {{ assetDataRes.error | json }}</div>
     </ng-container>
 
-    <ng-container *ngIf="campaignRes.loading && assetDataRes.loading">
+    <ng-container *ngIf="(campaignRes.loading || assetDataRes.loading) && !campaignRes.error && !assetDataRes.error">
       <app-spinner type="overlay">Loading campaign...</app-spinner>
     </ng-container>
   </ng-container>

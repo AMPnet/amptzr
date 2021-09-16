@@ -7,7 +7,7 @@
 
           <app-funding-progress class="lg:w-2/3" [campaign]="campaign"></app-funding-progress>
 
-          <div *ngIf="!campaign.finalized && !campaign.cancelled">
+          <div>
             <button class="flex items-center justify-between gap-4 px-4 py-0.5 mt-4 bg-blue-200 text-sm
                            hover:bg-indigo-800 hover:text-white break-all rounded-full transition-all duration-300"
                     routerLink="edit">
