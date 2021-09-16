@@ -114,14 +114,19 @@ export class AssetService {
       map(([signer, contract]) => contract.connect(signer)),
       switchMap(contract => combineLatest([of(contract), this.gasService.overrides])),
       switchMap(([contract, overrides]) => {
-        const creator = this.sessionQuery.getValue().address!
-
-        return from(contract.populateTransaction.create(
-          creator, data.issuer, this.preferenceQuery.network.tokenizerConfig.apxRegistry,
-          data.ansName, data.initialTokenSupply, data.whitelistRequiredForRevenueClaim,
-          data.whitelistRequiredForLiquidationClaim,
-          data.name, data.symbol, data.info, overrides,
-        )).pipe(
+        return from(contract.populateTransaction.create({
+          creator: this.sessionQuery.getValue().address!,
+          issuer: data.issuer,
+          apxRegistry: this.preferenceQuery.network.tokenizerConfig.apxRegistry,
+          ansName: data.ansName,
+          initialTokenSupply: data.initialTokenSupply,
+          transferable: false,
+          whitelistRequiredForRevenueClaim: data.whitelistRequiredForLiquidationClaim,
+          whitelistRequiredForLiquidationClaim: data.whitelistRequiredForLiquidationClaim,
+          name: data.name,
+          symbol: data.symbol,
+          info: data.info,
+        }, overrides)).pipe(
           switchMap(tx => this.signerService.sendTransaction(tx)),
           this.errorService.handleError(),
           switchMap(tx => this.dialogService.loading(

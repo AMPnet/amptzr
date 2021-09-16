@@ -65,9 +65,9 @@
 
       <div *ngIf="isVerificationStartable(session)" class="self-center mt-4">
         <button app-action-button
-                class="bg-blue-500 disabled:bg-gray-400 text-white p-2 rounded-md my-2"
-                [onClick]="startVerification(session.verification_url)"
-                text="Start verification">
+                class="bg-indigo-800 text-white px-4 py-2 rounded-full disabled:bg-gray-400"
+                text="Start verification"
+                [onClick]="startVerification(session.verification_url)">
         </button>
       </div>
 
