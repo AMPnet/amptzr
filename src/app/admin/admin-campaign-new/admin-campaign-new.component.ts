@@ -247,8 +247,8 @@ export class AdminCampaignNewComponent {
         assetAddress: this.assetData.asset.contractAddress,
         initialPricePerToken: TokenPrice.format(this.createForm1.value.tokenPrice),
         softCap: this.stablecoinService.parse(this.createForm1.value.softCap),
-        minInvestment: this.getInvestmentValue(this.createForm1.value.minInvestment),
-        maxInvestment: this.getInvestmentValue(this.createForm1.value.maxInvestment),
+        minInvestment: this.getMinInvestmentValue(),
+        maxInvestment: this.getMaxInvestmentValue(),
         whitelistRequired: this.createForm1.value.isIdVerificationRequired,
         info: uploadRes.path,
       })),
@@ -373,12 +373,22 @@ export class AdminCampaignNewComponent {
     return {}
   }
 
-  private getInvestmentValue(value: number) {
+  private getMinInvestmentValue() {
     if (this.createForm1.value.hasMinAndMaxInvestment) {
-      return this.stablecoinService.parse(value)
+      return this.stablecoinService.parse(this.createForm1.value.minInvestment)
     }
 
     return BigNumber.from(1)
+  }
+
+  private getMaxInvestmentValue() {
+    if (this.createForm1.value.hasMinAndMaxInvestment) {
+      return this.stablecoinService.parse(this.createForm1.value.maxInvestment)
+    }
+
+    return this.stablecoinService.parse(
+      this.stablecoinService.format(this.assetData.asset.initialTokenSupply, 18) * this.createForm1.value.tokenPrice
+    )
   }
 
   private addTokensToCampaign(campaignAddress: string) {

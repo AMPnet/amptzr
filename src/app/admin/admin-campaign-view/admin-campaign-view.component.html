@@ -7,7 +7,7 @@
 
           <app-funding-progress class="lg:w-2/3" [campaign]="campaign"></app-funding-progress>
 
-          <div>
+          <div [class.hidden]="campaign.finalized || campaign.cancelled">
             <button class="flex items-center justify-between gap-4 px-4 py-0.5 mt-4 bg-blue-200 text-sm
                          hover:bg-indigo-800 hover:text-white break-all rounded-full transition-all duration-300"
                     routerLink="edit">
@@ -22,7 +22,7 @@
             </button>
           </div>
 
-          <div>
+          <div [class.hidden]="campaign.finalized || campaign.cancelled">
             <button class="flex items-center justify-between gap-4 px-4 py-0.5 bg-blue-200 text-sm hover:bg-indigo-800
                          hover:text-white break-all rounded-full transition-all duration-300">
               <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -82,17 +82,20 @@
         <div class="flex flex-col gap-4 mt-4 lg:mt-0 order-2">
           <button app-action-button
                   class="flex items-center justify-center gap-4 bg-indigo-800 disabled:bg-gray-400 text-white
-                       mt-2 px-24 py-2 rounded-full"
+                         mt-2 px-24 py-2 rounded-full"
                   text="Finalize campaign"
-                  [disabled]="true">
+                  [onClick]="finalize.bind(this)"
+                  [class.hidden]="campaign.finalized || campaign.cancelled"
+                  [disabled]="campaign.cancelled || campaign.finalized ||
+                              campaign.totalFundsRaised.lt(campaign.softCap)">
           </button>
 
           <div class="flex flex-col gap-2 text-sm p-4 mt-2 bg-gray-100 rounded-lg">
             <span class="text-2xl text-indigo-900 my-2">Asset & Token</span>
             <span>Asset: <b>{{ asset.name }}</b></span>
             <span>Price per token: <b>{{ campaignData.stats.tokenPrice | currencyDefault }}</b></span>
-            <span>Tokens sold: <b>{{ campaignData.stats.tokensSold }}</b></span>
-            <span>Token balance: <b>{{ campaignData.stats.tokensAvailable}}</b></span>
+            <span>Tokens sold: <b>{{ campaignData.stats.tokensSold | number }}</b></span>
+            <span>Token balance: <b>{{ campaignData.stats.tokensAvailable | number }}</b></span>
 
             <span class="text-2xl text-indigo-900 my-2">Investors</span>
             <span *ngIf="shouldShowMin">
@@ -106,8 +109,8 @@
             <span>
             ID verification for investors: <b>{{ campaign.whitelistRequired ? 'Required' : 'Not Required' }}</b>
           </span>
-            <span>Total investor count: <b>{{ campaign.totalInvestorsCount }}</b></span>
-            <span>Total claim count: <b>{{ campaign.totalClaimsCount }}</b></span>
+            <span>Total investor count: <b>{{ campaign.totalInvestorsCount.toNumber() | number }}</b></span>
+            <span>Total claim count: <b>{{ campaign.totalClaimsCount.toNumber() | number }}</b></span>
 
             <span class="text-2xl text-indigo-900 my-2">Addresses</span>
             <span>

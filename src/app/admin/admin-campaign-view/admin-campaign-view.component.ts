@@ -8,9 +8,10 @@ import {quillMods} from 'src/app/shared/utils/quill'
 import {combineLatest, Observable, of} from 'rxjs'
 import {withStatus, WithStatus} from '../../shared/utils/observables'
 import {LinkPreviewResponse, LinkPreviewService} from '../../shared/services/backend/link-preview.service'
-import {map, switchMap} from 'rxjs/operators'
+import {map, switchMap, tap} from 'rxjs/operators'
 import {PercentPipe} from '@angular/common'
 import {StablecoinService} from '../../shared/services/blockchain/stablecoin.service'
+import {DialogService} from '../../shared/services/dialog.service'
 
 @Component({
   selector: 'app-admin-campaign-view',
@@ -31,6 +32,7 @@ export class AdminCampaignViewComponent implements OnInit {
               private percentPipe: PercentPipe,
               private linkPreviewService: LinkPreviewService,
               private stablecoinService: StablecoinService,
+              private dialogService: DialogService,
               private campaignService: CampaignService) {
   }
 
@@ -123,6 +125,13 @@ export class AdminCampaignViewComponent implements OnInit {
     }
 
     return this.percentPipe.transform(this.campaign.return?.from?.toString())
+  }
+
+  finalize() {
+    return this.campaignService.finalize(this.campaign.contractAddress).pipe(
+      switchMap(() => this.dialogService.success('The project has been finalized successfully.')),
+      tap(() => this.campaign.finalized = true),
+    )
   }
 }
 
