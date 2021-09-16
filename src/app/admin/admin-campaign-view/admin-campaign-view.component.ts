@@ -12,6 +12,7 @@ import {map, switchMap, tap} from 'rxjs/operators'
 import {PercentPipe} from '@angular/common'
 import {StablecoinService} from '../../shared/services/blockchain/stablecoin.service'
 import {DialogService} from '../../shared/services/dialog.service'
+import {BigNumber} from 'ethers'
 
 @Component({
   selector: 'app-admin-campaign-view',
@@ -21,7 +22,10 @@ import {DialogService} from '../../shared/services/dialog.service'
 })
 export class AdminCampaignViewComponent implements OnInit {
   @Input() campaign!: CampaignWithInfo
-  @Input() asset!: AssetWithInfo | FtAssetWithInfo
+  @Input() assetData!: {
+    asset: AssetWithInfo | FtAssetWithInfo,
+    balance: BigNumber,
+  }
 
   links$!: Observable<WithStatus<{ value: LinkPreviewResponse[] }>>
   campaignData!: CampaignData
@@ -69,7 +73,7 @@ export class AdminCampaignViewComponent implements OnInit {
       return 0
     }
 
-    const totalTokens = this.stablecoinService.format(this.asset.initialTokenSupply, 18)
+    const totalTokens = this.stablecoinService.format(this.assetData.asset.initialTokenSupply, 18)
     return numOfTokensToSell / totalTokens
   }
 
@@ -84,7 +88,7 @@ export class AdminCampaignViewComponent implements OnInit {
       return 0
     }
 
-    const totalTokens = this.stablecoinService.format(this.asset.initialTokenSupply, 18)
+    const totalTokens = this.stablecoinService.format(this.assetData.asset.initialTokenSupply, 18)
     return numOfTokensToSell / totalTokens
   }
 

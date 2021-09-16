@@ -5,22 +5,22 @@ import {AssetService, AssetWithInfo} from '../../shared/services/blockchain/asse
 import {CampaignService, CampaignWithInfo} from '../../shared/services/blockchain/campaign.service'
 import {ActivatedRoute} from '@angular/router'
 import {map, switchMap} from 'rxjs/operators'
-import {BigNumber} from 'ethers'
+import {BigNumber} from "ethers"
 
 @Component({
-  selector: 'app-admin-asset-campaign-view',
-  templateUrl: './admin-asset-campaign-view.component.html',
-  styleUrls: ['./admin-asset-campaign-view.component.css'],
+  selector: 'app-admin-asset-campaign-add-tokens',
+  templateUrl: './admin-asset-campaign-add-tokens.component.html',
+  styleUrls: ['./admin-asset-campaign-add-tokens.component.css'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class AdminAssetCampaignViewComponent {
+export class AdminAssetCampaignAddTokensComponent {
   assetData$: Observable<WithStatus<{
     asset: AssetWithInfo,
     balance: BigNumber,
   }>>
   campaign$: Observable<WithStatus<CampaignWithInfo>>
 
-  constructor(private assetService: AssetService,
+  constructor(public assetService: AssetService,
               private campaignService: CampaignService,
               private route: ActivatedRoute,) {
     const assetId = this.route.snapshot.params.assetId
@@ -30,6 +30,7 @@ export class AdminAssetCampaignViewComponent {
     const tokenBalance$ = asset$.pipe(
       switchMap(asset => this.assetService.balance(asset.contractAddress)),
     )
+
     this.assetData$ = withStatus(
       combineLatest([
         asset$,

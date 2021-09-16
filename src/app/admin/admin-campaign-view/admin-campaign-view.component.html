@@ -7,9 +7,9 @@
 
           <app-funding-progress class="lg:w-2/3" [campaign]="campaign"></app-funding-progress>
 
-          <div [class.hidden]="campaign.finalized || campaign.cancelled">
+          <div *ngIf="!campaign.finalized && !campaign.cancelled">
             <button class="flex items-center justify-between gap-4 px-4 py-0.5 mt-4 bg-blue-200 text-sm
-                         hover:bg-indigo-800 hover:text-white break-all rounded-full transition-all duration-300"
+                           hover:bg-indigo-800 hover:text-white break-all rounded-full transition-all duration-300"
                     routerLink="edit">
               <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path d="M11.6933 3.36027L14.64 6.30694M12.9433 2.11027C13.3341 1.71952 13.8641 1.5 14.4167
@@ -22,9 +22,10 @@
             </button>
           </div>
 
-          <div [class.hidden]="campaign.finalized || campaign.cancelled">
+          <div *ngIf="!campaign.finalized && !campaign.cancelled && assetData.balance.gt(0)">
             <button class="flex items-center justify-between gap-4 px-4 py-0.5 bg-blue-200 text-sm hover:bg-indigo-800
-                         hover:text-white break-all rounded-full transition-all duration-300">
+                           hover:text-white break-all rounded-full transition-all duration-300"
+                    routerLink="add-tokens">
               <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path d="M6 1V6M6 6V11M6 6H11M6 6H1" stroke="currentColor" stroke-width="2" stroke-linecap="round"
                       stroke-linejoin="round"/>
@@ -59,10 +60,10 @@
             <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"
                  class="inline">
               <path d="M6.3335 3.00065H3.00016C2.55814 3.00065 2.13421 3.17625 1.82165 3.48881C1.50909 3.80137 1.3335
-                     4.22529 1.3335 4.66732V13.0006C1.3335 13.4427 1.50909 13.8666 1.82165 14.1792C2.13421 14.4917
-                     2.55814 14.6673 3.00016 14.6673H11.3335C11.7755 14.6673 12.1994 14.4917 12.512 14.1792C12.8246
-                     13.8666 13.0002 13.4427 13.0002 13.0006V9.66732M9.66683 1.33398H14.6668M14.6668
-                     1.33398V6.33398M14.6668 1.33398L6.3335 9.66732"
+                       4.22529 1.3335 4.66732V13.0006C1.3335 13.4427 1.50909 13.8666 1.82165 14.1792C2.13421 14.4917
+                       2.55814 14.6673 3.00016 14.6673H11.3335C11.7755 14.6673 12.1994 14.4917 12.512 14.1792C12.8246
+                       13.8666 13.0002 13.4427 13.0002 13.0006V9.66732M9.66683 1.33398H14.6668M14.6668
+                       1.33398V6.33398M14.6668 1.33398L6.3335 9.66732"
                     stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
             </svg>
           </a>
@@ -92,7 +93,7 @@
 
           <div class="flex flex-col gap-2 text-sm p-4 mt-2 bg-gray-100 rounded-lg">
             <span class="text-2xl text-indigo-900 my-2">Asset & Token</span>
-            <span>Asset: <b>{{ asset.name }}</b></span>
+            <span>Asset: <b>{{ assetData.asset.name }}</b></span>
             <span>Price per token: <b>{{ campaignData.stats.tokenPrice | currencyDefault }}</b></span>
             <span>Tokens sold: <b>{{ campaignData.stats.tokensSold | number }}</b></span>
             <span>Token balance: <b>{{ campaignData.stats.tokensAvailable | number }}</b></span>
@@ -127,11 +128,11 @@
               <app-value-copy [value]="campaign.asset"></app-value-copy>
           </span>
             <span>
-            Owner address: {{ asset.owner | addrShort }}
+            Owner address: {{ assetData.asset.owner | addrShort }}
               <app-value-copy [value]="campaign.owner"></app-value-copy>
           </span>
             <span>
-            Created by address: {{ asset.createdBy | addrShort }}
+            Created by address: {{ assetData.asset.createdBy | addrShort }}
               <app-value-copy [value]="campaign.createdBy"></app-value-copy>
           </span>
           </div>

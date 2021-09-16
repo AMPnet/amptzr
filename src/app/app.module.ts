@@ -104,6 +104,9 @@ import {AdminCampaignViewComponent} from './admin/admin-campaign-view/admin-camp
 import {AdminAssetCampaignViewComponent} from './admin/admin-asset-campaign-view/admin-asset-campaign-view.component'
 import {AdminFtAssetCampaignViewComponent} from './admin/admin-ft-asset-campaign-view/admin-ft-asset-campaign-view.component'
 import {AdminCampaignEditComponent} from './admin/admin-campaign-edit/admin-campaign-edit.component'
+import {AdminAssetCampaignAddTokensComponent} from './admin/admin-asset-campaign-add-tokens/admin-asset-campaign-add-tokens.component'
+import {AdminFtAssetCampaignAddTokensComponent} from './admin/admin-ft-asset-campaign-add-tokens/admin-ft-asset-campaign-add-tokens.component'
+import {AdminCampaignAddTokensComponent} from './admin/admin-campaign-add-tokens/admin-campaign-add-tokens.component'
 
 @NgModule({
   declarations: [
@@ -192,6 +195,9 @@ import {AdminCampaignEditComponent} from './admin/admin-campaign-edit/admin-camp
     AdminAssetCampaignViewComponent,
     AdminFtAssetCampaignViewComponent,
     AdminCampaignEditComponent,
+    AdminAssetCampaignAddTokensComponent,
+    AdminFtAssetCampaignAddTokensComponent,
+    AdminCampaignAddTokensComponent,
   ],
   imports: [
     BrowserModule,

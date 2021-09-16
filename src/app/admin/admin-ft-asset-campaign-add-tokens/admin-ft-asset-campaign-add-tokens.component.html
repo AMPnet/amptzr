@@ -3,7 +3,8 @@
     <ng-container *ngIf="campaignRes.value && assetDataRes.value">
       <ng-container *ngIf="assetDataRes.value as assetData">
         <ng-container *ngIf="campaignRes.value as campaign">
-          <app-admin-campaign-view [assetData]="assetData" [campaign]="campaign"></app-admin-campaign-view>
+          <app-admin-campaign-add-tokens [assetData]="assetData" [campaign]="campaign" [assetService]="ftAssetService">
+          </app-admin-campaign-add-tokens>
         </ng-container>
       </ng-container>
     </ng-container>
