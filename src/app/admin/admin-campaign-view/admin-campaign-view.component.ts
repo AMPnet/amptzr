@@ -2,7 +2,6 @@ import {ChangeDetectionStrategy, Component, Input, OnInit} from '@angular/core'
 import {CampaignService, CampaignStats, CampaignWithInfo} from '../../shared/services/blockchain/campaign.service'
 import {AssetWithInfo} from '../../shared/services/blockchain/asset.service'
 import {FtAssetWithInfo} from '../../shared/services/blockchain/ft-asset.service'
-import {getWindow} from '../../shared/utils/browser'
 import {IssuerPathPipe} from '../../shared/pipes/issuer-path.pipe'
 import {quillMods} from 'src/app/shared/utils/quill'
 import {combineLatest, Observable, of} from 'rxjs'
@@ -28,7 +27,7 @@ export class AdminCampaignViewComponent implements OnInit {
   }
 
   links$!: Observable<WithStatus<{ value: LinkPreviewResponse[] }>>
-  campaignData!: CampaignData
+  stats!: CampaignStats
 
   quillMods = quillMods
 
@@ -41,12 +40,7 @@ export class AdminCampaignViewComponent implements OnInit {
   }
 
   ngOnInit() {
-    const campaignUrl = getWindow().location.origin + this.issuerPathPipe.transform(`/offers/${this.campaign.ansName}`)
-
-    this.campaignData = {
-      url: campaignUrl,
-      stats: this.campaignService.stats(this.campaign),
-    }
+    this.stats = this.campaignService.stats(this.campaign)
 
     this.links$ = of(this.campaign).pipe(
       switchMap((campaign) => {
@@ -62,12 +56,12 @@ export class AdminCampaignViewComponent implements OnInit {
   }
 
   get hardCapTokensPercentage() {
-    const pricePerToken = this.campaignData.stats.tokenPrice
+    const pricePerToken = this.stats.tokenPrice
     if (pricePerToken === 0) {
       return 0
     }
 
-    const numOfTokensToSell = this.campaignData.stats.valueTotal / pricePerToken
+    const numOfTokensToSell = this.stats.valueTotal / pricePerToken
     if (numOfTokensToSell === 0) {
       return 0
     }
@@ -77,12 +71,12 @@ export class AdminCampaignViewComponent implements OnInit {
   }
 
   get softCapTokensPercentage() {
-    const pricePerToken = this.campaignData.stats.tokenPrice
+    const pricePerToken = this.stats.tokenPrice
     if (pricePerToken === 0) {
       return 0
     }
 
-    const numOfTokensToSell = this.campaignData.stats.softCap / pricePerToken
+    const numOfTokensToSell = this.stats.softCap / pricePerToken
     if (numOfTokensToSell === 0) {
       return 0
     }
@@ -94,11 +88,11 @@ export class AdminCampaignViewComponent implements OnInit {
   get shouldShowMin() {
     // TODO: should be set to userMin > 0
     //  this is a workaround for campaigns that are incorrectly set.
-    return this.campaignData.stats.userMin > 1
+    return this.stats.userMin > 1
   }
 
   get shouldShowMax() {
-    return this.campaignData.stats.userMax < this.campaignData.stats.valueTotal
+    return this.stats.userMax < this.stats.valueTotal
   }
 
   get returnFrequency() {
@@ -136,9 +130,4 @@ export class AdminCampaignViewComponent implements OnInit {
       tap(() => this.campaign.finalized = true),
     )
   }
-}
-
-interface CampaignData {
-  url: string
-  stats: CampaignStats
 }

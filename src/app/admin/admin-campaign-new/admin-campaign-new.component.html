@@ -78,18 +78,15 @@
                            type="text" formControlName="softCap">
                   </div>
 
-                  <div class="flex flex-row gap-2 items-center mt-2 lg:mt-0 lg:justify-around">
+                  <div class="mt-2">
                     <span class="text-sm">
                       I will sell
+                      <b class="px-2">
+                        {{ softCapTokensPercentage | percent }}
+                      </b>
+                      of my {{ assetData.asset.name | uppercase }} tokens
                     </span>
-                    <b class="px-2">
-                      {{ softCapTokensPercentage | percent }}
-                    </b>
                   </div>
-
-                  <span class="text-sm mt-4 lg:mt-0">
-                    of my {{ assetData.asset.name | uppercase }} tokens
-                  </span>
                 </div>
               </div>
             </div>
