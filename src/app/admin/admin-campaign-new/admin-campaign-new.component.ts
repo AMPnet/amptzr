@@ -16,6 +16,7 @@ import {TokenPrice} from '../../shared/utils/token-price'
 import {RouterService} from '../../shared/services/router.service'
 import {DialogService} from '../../shared/services/dialog.service'
 import {ActivatedRoute} from '@angular/router'
+import {BehaviorSubject} from 'rxjs'
 
 @Component({
   selector: 'app-admin-campaign-new',
@@ -30,7 +31,9 @@ export class AdminCampaignNewComponent {
   }
   @Input() assetService!: AssetService | FtAssetService
 
-  creationStep: 1 | 2 = 1
+  stepType = Step
+  step$ = new BehaviorSubject<Step>(Step.FIRST)
+
   createForm1: FormGroup
   createForm2: FormGroup
   newsUrls: FormArray
@@ -41,8 +44,8 @@ export class AdminCampaignNewComponent {
   readonly ReturnFrequencyNames = {
     'monthly': 'Monthly',
     'quarterly': 'Quarterly',
-    'semi-annual': 'Semi-annualy',
-    'annual': 'Annualy',
+    'semi-annual': 'Semi-annually',
+    'annual': 'Annually',
   }
 
   constructor(private campaignService: CampaignService,
@@ -74,7 +77,7 @@ export class AdminCampaignNewComponent {
       validators: [
         this.validMonetaryValues.bind(this),
         AdminCampaignNewComponent.validReturnFromTo,
-      ]
+      ],
     })
 
     this.createForm2 = this.fb.group({
@@ -87,7 +90,7 @@ export class AdminCampaignNewComponent {
       documents: [[]],
       newsUrls: this.fb.array([]),
     }, {
-      validators: [AdminCampaignNewComponent.validDateRange]
+      validators: [AdminCampaignNewComponent.validDateRange],
     })
 
     this.newsUrls = this.createForm2.get('newsUrls') as FormArray
@@ -149,12 +152,12 @@ export class AdminCampaignNewComponent {
 
     if (tokenPercentage < maxTokensPercentage) {
       this.createForm1.controls.hardCapTokensPercentage.setValue(
-        this.tokenPercentage(this.createForm1.value.tokenPrice, this.createForm1.value.hardCap)
+        this.tokenPercentage(this.createForm1.value.tokenPrice, this.createForm1.value.hardCap),
       )
     } else {
       this.createForm1.controls.hardCapTokensPercentage.setValue(maxTokensPercentage)
       this.createForm1.controls.hardCap.setValue(
-        this.stablecoinService.format(this.assetData.balance, 18) * this.createForm1.value.tokenPrice
+        this.stablecoinService.format(this.assetData.balance, 18) * this.createForm1.value.tokenPrice,
       )
     }
   }
@@ -193,12 +196,12 @@ export class AdminCampaignNewComponent {
   }
 
   nextCreationStep() {
-    this.creationStep = 2
+    this.step$.next(Step.SECOND)
     this.viewportScroller.scrollToPosition([0, 0])
   }
 
   previousCreationStep() {
-    this.creationStep = 1
+    this.step$.next(Step.FIRST)
     this.viewportScroller.scrollToPosition([0, 0])
   }
 
@@ -256,12 +259,12 @@ export class AdminCampaignNewComponent {
         this.dialogService.info(
           'Campaign successfully created! You will be asked to sign a transaction to transfer' +
           ' your ' + this.assetData.asset.symbol + ' tokens to your campaign.',
-          false
+          false,
         ).pipe(
           switchMap(() => this.addTokensToCampaign(campaignAddress!)),
           switchMap(() => this.dialogService.info('Tokens added to campaign.', false)),
           switchMap(() => this.routerService.navigate([`../${ansName}`], {relativeTo: this.route})),
-        )
+        ),
       ),
     )
   }
@@ -387,7 +390,7 @@ export class AdminCampaignNewComponent {
     }
 
     return this.stablecoinService.parse(
-      this.stablecoinService.format(this.assetData.asset.initialTokenSupply, 18) * this.createForm1.value.tokenPrice
+      this.stablecoinService.format(this.assetData.asset.initialTokenSupply, 18) * this.createForm1.value.tokenPrice,
     )
   }
 
@@ -400,7 +403,11 @@ export class AdminCampaignNewComponent {
     return this.assetService.transferTokensToCampaign(
       this.assetData.asset.contractAddress,
       campaignAddress,
-      tokenAmount
+      tokenAmount,
     )
   }
+}
+
+enum Step {
+  FIRST, SECOND
 }

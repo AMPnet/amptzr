@@ -9,6 +9,7 @@ import {ReturnFrequencies, ReturnFrequency} from 'types/ipfs/campaign'
 import {quillMods} from 'src/app/shared/utils/quill'
 import {DialogService} from '../../shared/services/dialog.service'
 import {RouterService} from '../../shared/services/router.service'
+import {resolveAddress} from '../../shared/utils/ethersjs'
 
 @Component({
   selector: 'app-admin-campaign-edit',
@@ -62,7 +63,7 @@ export class AdminCampaignEditComponent {
     this.newsUrls = this.updateForm.get('newsUrls') as FormArray
 
     const campaignId = this.route.snapshot.params.campaignId
-    this.campaign$ = this.campaignService.getAddressByName(campaignId).pipe(
+    this.campaign$ = resolveAddress(campaignId, this.campaignService.getAddressByName(campaignId)).pipe(
       switchMap(address => withStatus(this.campaignService.getCampaignWithInfo(address, true))),
       tap(campaign => {
         if (campaign.value) {

@@ -20,24 +20,6 @@
         <span>Token supply:</span><b>{{ asset.initialTokenSupply | formatUnit:'bignumToWei':18 | number }}</b>
       </div>
 
-      <div class="flex items-center gap-2 mb-8 lg:mb-0" *ngIf="type === 'edit-screen'">
-        <span>Description:</span>
-        <ng-container *ngIf="(asset.description | toTextIPFS | async) as descriptionRes">
-          <ng-container *ngIf="descriptionRes.value as description">
-            {{ description }}
-          </ng-container>
-
-          <ng-container *ngIf="descriptionRes.error">
-            Cannot fetch description.
-            <div hidden>{{ descriptionRes.error | json }}</div>
-          </ng-container>
-
-          <ng-container *ngIf="descriptionRes.loading">
-            <app-spinner type="inline-base">Loading description...</app-spinner>
-          </ng-container>
-        </ng-container>
-      </div>
-
       <div class="flex items-center flex-wrap gap-2 mb-8" *ngIf="type === 'view-screen'">
         <span>Related campaigns:</span>
 

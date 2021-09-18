@@ -50,7 +50,6 @@ export class AdminCampaignViewComponent implements OnInit {
 
     this.links$ = of(this.campaign).pipe(
       switchMap((campaign) => {
-        console.log(campaign)
         if (!campaign.newsURLs) {
           return withStatus(of({value: []}))
         }

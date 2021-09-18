@@ -7,6 +7,7 @@ import {RouterService} from '../../shared/services/router.service'
 import {DialogService} from '../../shared/services/dialog.service'
 import {switchMap, tap} from 'rxjs/operators'
 import {ActivatedRoute} from '@angular/router'
+import {resolveAddress} from '../../shared/utils/ethersjs'
 
 @Component({
   selector: 'app-admin-asset-edit',
@@ -27,14 +28,13 @@ export class AdminAssetEditComponent {
               private fb: FormBuilder) {
     this.updateForm = this.fb.group({
       logo: [undefined],
-      description: [''],
     })
 
     const assetId = this.route.snapshot.params.id
 
     this.asset$ = this.assetSub.asObservable().pipe(
       switchMap(() => withStatus(
-        this.assetService.getAddressByName(assetId).pipe(
+        resolveAddress(assetId, this.assetService.getAddressByName(assetId)).pipe(
           switchMap(address => this.assetService.getAssetWithInfo(address, true)),
         ),
       )),
@@ -43,7 +43,6 @@ export class AdminAssetEditComponent {
           this.updateForm.reset()
           this.updateForm.setValue({
             ...this.updateForm.value,
-            description: asset.value.description || '',
           })
         }
       }),
@@ -53,9 +52,7 @@ export class AdminAssetEditComponent {
   update(asset: AssetWithInfo) {
     return () => {
       return this.assetService.uploadInfo(
-        this.updateForm.value.logo?.[0],
-        this.updateForm.value.description,
-        asset,
+        this.updateForm.value.logo?.[0], '', asset,
       ).pipe(
         switchMap(uploadRes => this.assetService.updateInfo(asset.contractAddress, uploadRes.path)),
         switchMap(() => this.dialogService.info('Asset successfully updated!', false)),

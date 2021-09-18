@@ -6,8 +6,8 @@ import {StablecoinService} from '../../shared/services/blockchain/stablecoin.ser
 import {RouterService} from '../../shared/services/router.service'
 import {DialogService} from '../../shared/services/dialog.service'
 import {FtAssetService} from '../../shared/services/blockchain/ft-asset.service'
-import {getWindow} from '../../shared/utils/browser'
 import {IssuerPathPipe} from '../../shared/pipes/issuer-path.pipe'
+import {v4 as uuidV4} from 'uuid'
 
 @Component({
   selector: 'app-admin-ft-asset-new',
@@ -27,9 +27,7 @@ export class AdminFtAssetNewComponent {
               private fb: FormBuilder) {
     this.createForm = this.fb.group({
       name: ['', Validators.required],
-      ansName: ['', [Validators.required, Validators.pattern('[A-Za-z0-9][A-Za-z0-9_-]*')]],
       logo: [undefined, Validators.required],
-      description: [''],
       initialTokenSupply: [0, [Validators.required, Validators.min(1)]],
       symbol: ['', [Validators.required, Validators.maxLength(10), Validators.pattern('[A-Za-z0-9]*')]],
       whitelistRequiredForRevenueClaim: [false, Validators.required],
@@ -37,18 +35,13 @@ export class AdminFtAssetNewComponent {
     })
   }
 
-  get assetUrl() {
-    return getWindow().location.origin + this.issuerPathPipe.transform(`/ft_assets/`)
-  }
-
   create() {
     return this.ftAssetService.uploadInfo(
       this.createForm.value.logo?.[0],
-      this.createForm.value.description || '',
     ).pipe(
       switchMap(uploadRes => this.ftAssetService.create({
         issuer: this.preferenceQuery.issuer.address,
-        ansName: this.createForm.value.ansName,
+        ansName: uuidV4(),
         name: this.createForm.value.name,
         initialTokenSupply: this.stablecoinService.parse(this.createForm.value.initialTokenSupply, 18),
         symbol: this.createForm.value.symbol,

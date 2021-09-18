@@ -7,6 +7,7 @@ import {DialogService} from '../../shared/services/dialog.service'
 import {switchMap, tap} from 'rxjs/operators'
 import {ActivatedRoute} from '@angular/router'
 import {FtAssetService, FtAssetWithInfo} from '../../shared/services/blockchain/ft-asset.service'
+import {resolveAddress} from '../../shared/utils/ethersjs'
 
 @Component({
   selector: 'app-ft-admin-asset-edit',
@@ -27,14 +28,12 @@ export class AdminFtAssetEditComponent {
               private fb: FormBuilder) {
     this.updateForm = this.fb.group({
       logo: [undefined],
-      description: [''],
     })
 
     const assetId = this.route.snapshot.params.id
-
     this.asset$ = this.assetSub.asObservable().pipe(
       switchMap(() => withStatus(
-        this.ftAssetService.getAddressByName(assetId).pipe(
+        resolveAddress(assetId, this.ftAssetService.getAddressByName(assetId)).pipe(
           switchMap(address => this.ftAssetService.getAssetWithInfo(address, true)),
         ),
       )),
@@ -43,7 +42,6 @@ export class AdminFtAssetEditComponent {
           this.updateForm.reset()
           this.updateForm.setValue({
             ...this.updateForm.value,
-            description: asset.value.description || '',
           })
         }
       }),
@@ -53,9 +51,7 @@ export class AdminFtAssetEditComponent {
   update(asset: FtAssetWithInfo) {
     return () => {
       return this.ftAssetService.uploadInfo(
-        this.updateForm.value.logo?.[0],
-        this.updateForm.value.description,
-        asset,
+        this.updateForm.value.logo?.[0], '', asset,
       ).pipe(
         switchMap(uploadRes => this.ftAssetService.updateInfo(asset.contractAddress, uploadRes.path)),
         switchMap(() => this.dialogService.info('Asset successfully updated!', false)),

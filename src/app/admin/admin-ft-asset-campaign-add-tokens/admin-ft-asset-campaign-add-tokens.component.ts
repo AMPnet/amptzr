@@ -6,6 +6,7 @@ import {ActivatedRoute} from '@angular/router'
 import {map, switchMap} from 'rxjs/operators'
 import {FtAssetService, FtAssetWithInfo} from '../../shared/services/blockchain/ft-asset.service'
 import {BigNumber} from "ethers"
+import {resolveAddress} from '../../shared/utils/ethersjs'
 
 @Component({
   selector: 'app-admin-ft-asset-campaign-add-tokens',
@@ -22,9 +23,9 @@ export class AdminFtAssetCampaignAddTokensComponent {
 
   constructor(public ftAssetService: FtAssetService,
               private campaignService: CampaignService,
-              private route: ActivatedRoute,) {
+              private route: ActivatedRoute) {
     const assetId = this.route.snapshot.params.assetId
-    const asset$ = this.ftAssetService.getAddressByName(assetId).pipe(
+    const asset$ = resolveAddress(assetId, this.ftAssetService.getAddressByName(assetId)).pipe(
       switchMap(address => this.ftAssetService.getAssetWithInfo(address, true)),
     )
     const tokenBalance$ = asset$.pipe(
@@ -41,9 +42,9 @@ export class AdminFtAssetCampaignAddTokensComponent {
     )
     const campaignId = this.route.snapshot.params.campaignId
     this.campaign$ = withStatus(
-      this.campaignService.getAddressByName(campaignId).pipe(
-        switchMap(address => this.campaignService.getCampaignWithInfo(address, true))
-      )
+      resolveAddress(campaignId, this.campaignService.getAddressByName(campaignId)).pipe(
+        switchMap(address => this.campaignService.getCampaignWithInfo(address, true)),
+      ),
     )
   }
 }

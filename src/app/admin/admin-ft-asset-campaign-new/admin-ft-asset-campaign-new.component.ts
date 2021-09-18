@@ -5,6 +5,7 @@ import {BigNumber} from 'ethers'
 import {ActivatedRoute} from '@angular/router'
 import {map, switchMap} from 'rxjs/operators'
 import {FtAssetService, FtAssetWithInfo} from '../../shared/services/blockchain/ft-asset.service'
+import {resolveAddress} from '../../shared/utils/ethersjs'
 
 @Component({
   selector: 'app-admin-ft-asset-campaign-new',
@@ -21,7 +22,7 @@ export class AdminFtAssetCampaignNewComponent {
   constructor(private route: ActivatedRoute,
               public ftAssetService: FtAssetService) {
     const assetId = this.route.snapshot.params.id
-    const asset$ = this.ftAssetService.getAddressByName(assetId).pipe(
+    const asset$ = resolveAddress(assetId, this.ftAssetService.getAddressByName(assetId)).pipe(
       switchMap(address => this.ftAssetService.getAssetWithInfo(address, true)),
     )
     const tokenBalance$ = asset$.pipe(

@@ -78,10 +78,10 @@ export class AssetService {
     )
   }
 
-  uploadInfo(logo: File, description: string, asset?: IPFSAsset): Observable<IPFSAddResult> {
+  uploadInfo(logo: File, description?: string, asset?: IPFSAsset): Observable<IPFSAddResult> {
     return combineLatest([
       logo ? this.ipfsService.addFile(logo) : of(undefined),
-      this.ipfsService.addText(description),
+      description ? this.ipfsService.addText(description) : of({} as Partial<IPFSAddResult>),
     ]).pipe(
       switchMap(([logoIPFS, descriptionIPFS]) => this.ipfsService.addObject<IPFSAsset>({
         version: 0.1,

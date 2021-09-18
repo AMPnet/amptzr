@@ -6,6 +6,7 @@ import {CampaignService, CampaignWithInfo} from '../../shared/services/blockchai
 import {ActivatedRoute} from '@angular/router'
 import {map, switchMap} from 'rxjs/operators'
 import {BigNumber} from 'ethers'
+import {resolveAddress} from '../../shared/utils/ethersjs'
 
 @Component({
   selector: 'app-admin-asset-campaign-view',
@@ -22,9 +23,9 @@ export class AdminAssetCampaignViewComponent {
 
   constructor(private assetService: AssetService,
               private campaignService: CampaignService,
-              private route: ActivatedRoute,) {
+              private route: ActivatedRoute) {
     const assetId = this.route.snapshot.params.assetId
-    const asset$ = this.assetService.getAddressByName(assetId).pipe(
+    const asset$ = resolveAddress(assetId, this.assetService.getAddressByName(assetId)).pipe(
       switchMap(address => this.assetService.getAssetWithInfo(address, true)),
     )
     const tokenBalance$ = asset$.pipe(
@@ -39,11 +40,11 @@ export class AdminAssetCampaignViewComponent {
       ),
     )
 
-    const campaignId = this.route.snapshot.params.campaignId
+    const campaignID = this.route.snapshot.params.campaignId
     this.campaign$ = withStatus(
-      this.campaignService.getAddressByName(campaignId).pipe(
-        switchMap(address => this.campaignService.getCampaignWithInfo(address, true))
-      )
+      resolveAddress(campaignID, this.campaignService.getAddressByName(campaignID)).pipe(
+        switchMap(address => this.campaignService.getCampaignWithInfo(address, true)),
+      ),
     )
   }
 }

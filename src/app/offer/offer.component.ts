@@ -14,6 +14,7 @@ import {SessionQuery} from '../session/state/session.query'
 import {LinkPreviewResponse, LinkPreviewService} from '../shared/services/backend/link-preview.service'
 import {quillMods} from '../shared/utils/quill'
 import {TailwindService} from '../shared/services/tailwind.service'
+import {resolveAddress} from '../shared/utils/ethersjs'
 
 @Component({
   selector: 'app-offer',
@@ -44,11 +45,11 @@ export class OfferComponent {
               private route: ActivatedRoute,
               private tailwindService: TailwindService,
               private linkPreviewService: LinkPreviewService) {
-    const campaignID = this.route.snapshot.params.id
+    const campaignId = this.route.snapshot.params.id
 
     this.campaign$ = this.campaignSub.asObservable().pipe(
       switchMap(() => withStatus(
-        this.campaignService.getAddressByName(campaignID).pipe(
+        resolveAddress(campaignId, this.campaignService.getAddressByName(campaignId)).pipe(
           switchMap(address => this.campaignService.getCampaignWithInfo(address)),
           tap(campaign => this.metaService.setMeta({
             title: campaign.name,

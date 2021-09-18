@@ -1,7 +1,7 @@
 import {BaseContract, providers} from 'ethers'
 import {EventFragment} from '@ethersproject/abi'
 import {TypedEventFilter, TypedListener} from '../../../../types/ethers-contracts/commons'
-import {fromEventPattern, Observable} from 'rxjs'
+import {fromEventPattern, Observable, of} from 'rxjs'
 
 export function findLog(
   receipt: providers.TransactionReceipt,
@@ -26,4 +26,14 @@ export function contractEvent<T1 extends Array<any>, T2>(
     handler => contract.on(eventFilter, handler),
     handler => contract.off(eventFilter, handler),
   )
+}
+
+export function resolveAddress(
+  id: string, resolveByName$: Observable<string>,
+): Observable<string> {
+  if (id.startsWith('0x')) {
+    return of(id)
+  } else {
+    return resolveByName$
+  }
 }
