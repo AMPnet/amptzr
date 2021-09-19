@@ -20,24 +20,6 @@
         <span>Token supply:</span><b>{{ asset.initialTokenSupply | formatUnit:'bignumToWei':18 | number }}</b>
       </div>
 
-      <div class="flex items-center gap-2 mb-8 lg:mb-0" *ngIf="type === 'edit-screen'">
-        <span>Description:</span>
-        <ng-container *ngIf="(asset.description | toTextIPFS | async) as descriptionRes">
-          <ng-container *ngIf="descriptionRes.value as description">
-            {{ description }}
-          </ng-container>
-
-          <ng-container *ngIf="descriptionRes.error">
-            Cannot fetch description.
-            <div hidden>{{ descriptionRes.error | json }}</div>
-          </ng-container>
-
-          <ng-container *ngIf="descriptionRes.loading">
-            <app-spinner type="inline-base">Loading description...</app-spinner>
-          </ng-container>
-        </ng-container>
-      </div>
-
       <div class="flex items-center flex-wrap gap-2 mb-8" *ngIf="type === 'view-screen'">
         <span>Related campaigns:</span>
 
@@ -47,8 +29,10 @@
               There are no campaigns related to this asset.
             </ng-container>
 
-            <!-- TODO: add links to campaign when the screen gets implemented -->
-            <a *ngFor="let campaign of campaigns" class="px-8 py-0.5 bg-blue-200 rounded-full">
+            <a *ngFor="let campaign of campaigns"
+               [routerLink]="('/admin/' + assetTypePath + '/' + asset.ansName + '/campaigns/' +
+                             campaign.ansName) | issuerPath"
+               class="px-8 py-0.5 bg-blue-200  hover:bg-indigo-800 hover:text-white rounded-full">
               {{ campaign.name }}
             </a>
           </ng-container>

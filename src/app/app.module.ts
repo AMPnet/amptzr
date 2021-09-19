@@ -96,6 +96,17 @@ import {AdminIssuerComponent} from './admin/admin-issuer/admin-issuer.component'
 import {AdminAssetNewComponent} from './admin/admin-asset-new/admin-asset-new.component'
 import {AdminFtAssetNewComponent} from './admin/admin-ft-asset-new/admin-ft-asset-new.component'
 import {FormYesNoButtonsComponent} from './shared/components/form-yes-no-buttons/form-yes-no-buttons.component'
+import {AdminCampaignNewComponent} from './admin/admin-campaign-new/admin-campaign-new.component'
+import {AdminAssetCampaignNewComponent} from './admin/admin-asset-campaign-new/admin-asset-campaign-new.component'
+import {AdminFtAssetCampaignNewComponent} from './admin/admin-ft-asset-campaign-new/admin-ft-asset-campaign-new.component'
+import {DateMaskDirective} from './shared/directives/date-mask.directive'
+import {AdminCampaignViewComponent} from './admin/admin-campaign-view/admin-campaign-view.component'
+import {AdminAssetCampaignViewComponent} from './admin/admin-asset-campaign-view/admin-asset-campaign-view.component'
+import {AdminFtAssetCampaignViewComponent} from './admin/admin-ft-asset-campaign-view/admin-ft-asset-campaign-view.component'
+import {AdminCampaignEditComponent} from './admin/admin-campaign-edit/admin-campaign-edit.component'
+import {AdminAssetCampaignAddTokensComponent} from './admin/admin-asset-campaign-add-tokens/admin-asset-campaign-add-tokens.component'
+import {AdminFtAssetCampaignAddTokensComponent} from './admin/admin-ft-asset-campaign-add-tokens/admin-ft-asset-campaign-add-tokens.component'
+import {AdminCampaignAddTokensComponent} from './admin/admin-campaign-add-tokens/admin-campaign-add-tokens.component'
 
 @NgModule({
   declarations: [
@@ -176,6 +187,17 @@ import {FormYesNoButtonsComponent} from './shared/components/form-yes-no-buttons
     AdminAssetNewComponent,
     AdminFtAssetNewComponent,
     FormYesNoButtonsComponent,
+    AdminCampaignNewComponent,
+    AdminAssetCampaignNewComponent,
+    AdminFtAssetCampaignNewComponent,
+    DateMaskDirective,
+    AdminCampaignViewComponent,
+    AdminAssetCampaignViewComponent,
+    AdminFtAssetCampaignViewComponent,
+    AdminCampaignEditComponent,
+    AdminAssetCampaignAddTokensComponent,
+    AdminFtAssetCampaignAddTokensComponent,
+    AdminCampaignAddTokensComponent,
   ],
   imports: [
     BrowserModule,

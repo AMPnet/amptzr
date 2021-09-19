@@ -35,7 +35,8 @@
           <div *ngFor="let item of portfolio" class="w-full rounded-3xl shadow-lg flex flex-col lg:flex-row mt-4">
             <div class="w-full lg:w-4/12">
               <a routerLink="{{ '/offers/' + item.campaign.ansName | issuerPath }}">
-                <img class="w-full h-32 object-cover rounded-t-3xl lg:h-full lg:rounded-tr-none lg:rounded-l-3xl"
+                <img class="w-full h-32 object-cover rounded-t-3xl lg:h-full lg:rounded-tr-none lg:rounded-l-3xl
+                bg-white"
                      src="{{ item.campaign.photo | toUrlIPFS }}" alt="Project image">
               </a>
             </div>

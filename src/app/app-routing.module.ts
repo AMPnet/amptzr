@@ -38,6 +38,13 @@ import {AdminFtAssetEditComponent} from './admin/admin-ft-asset-edit/admin-ft-as
 import {AdminIssuerComponent} from './admin/admin-issuer/admin-issuer.component'
 import {AdminAssetNewComponent} from './admin/admin-asset-new/admin-asset-new.component'
 import {AdminFtAssetNewComponent} from './admin/admin-ft-asset-new/admin-ft-asset-new.component'
+import {AdminFtAssetCampaignNewComponent} from './admin/admin-ft-asset-campaign-new/admin-ft-asset-campaign-new.component'
+import {AdminAssetCampaignNewComponent} from './admin/admin-asset-campaign-new/admin-asset-campaign-new.component'
+import {AdminAssetCampaignViewComponent} from './admin/admin-asset-campaign-view/admin-asset-campaign-view.component'
+import {AdminFtAssetCampaignViewComponent} from './admin/admin-ft-asset-campaign-view/admin-ft-asset-campaign-view.component'
+import {AdminCampaignEditComponent} from './admin/admin-campaign-edit/admin-campaign-edit.component'
+import {AdminAssetCampaignAddTokensComponent} from './admin/admin-asset-campaign-add-tokens/admin-asset-campaign-add-tokens.component'
+import {AdminFtAssetCampaignAddTokensComponent} from './admin/admin-ft-asset-campaign-add-tokens/admin-ft-asset-campaign-add-tokens.component'
 
 const appRoutes: Routes = [
   {
@@ -62,9 +69,20 @@ const appRoutes: Routes = [
           {path: 'assets/new', component: AdminAssetNewComponent},
           {path: 'assets/:id', component: AdminAssetDetailComponent},
           {path: 'assets/:id/edit', component: AdminAssetEditComponent},
+          {path: 'assets/:id/campaigns/new', component: AdminAssetCampaignNewComponent},
+          {path: 'assets/:assetId/campaigns/:campaignId', component: AdminAssetCampaignViewComponent},
+          {path: 'assets/:assetId/campaigns/:campaignId/edit', component: AdminCampaignEditComponent},
+          {path: 'assets/:assetId/campaigns/:campaignId/add-tokens', component: AdminAssetCampaignAddTokensComponent},
           {path: 'ft_assets/new', component: AdminFtAssetNewComponent},
           {path: 'ft_assets/:id', component: AdminFtAssetDetailComponent},
           {path: 'ft_assets/:id/edit', component: AdminFtAssetEditComponent},
+          {path: 'ft_assets/:id/campaigns/new', component: AdminFtAssetCampaignNewComponent},
+          {path: 'ft_assets/:assetId/campaigns/:campaignId', component: AdminFtAssetCampaignViewComponent},
+          {path: 'ft_assets/:assetId/campaigns/:campaignId/edit', component: AdminCampaignEditComponent},
+          {
+            path: 'ft_assets/:assetId/campaigns/:campaignId/add-tokens',
+            component: AdminFtAssetCampaignAddTokensComponent
+          },
         ],
       },
       {path: 'dev_playground', component: DevPlaygroundComponent},

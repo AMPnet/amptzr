@@ -95,14 +95,6 @@
             <input class="border-gray-400 rounded-lg" type="number" min="0" formControlName="initialTokenSupply">
           </div>
 
-          <div class="flex flex-col gap-1">
-            <label class="text-lg font-semibold">Transferable asset URL</label>
-            <div class="flex flex-col lg:flex-row gap-2 lg:items-center">
-              <span class="text-xs">{{ assetUrl }}</span>
-              <input class="border-gray-400 rounded-lg lg:w-full" type="text" formControlName="ansName">
-            </div>
-          </div>
-
           <div class="flex flex-col gap-4 mb-4">
             <span class="text-lg font-semibold">Is wallet whitelisting required for revenue claim?</span>
             <app-form-yes-no-buttons formControlName="whitelistRequiredForRevenueClaim"></app-form-yes-no-buttons>
@@ -111,12 +103,6 @@
           <div class="flex flex-col gap-4 mb-4">
             <span class="text-lg font-semibold">Is wallet whitelisting required for liquidation claim?</span>
             <app-form-yes-no-buttons formControlName="whitelistRequiredForLiquidationClaim"></app-form-yes-no-buttons>
-          </div>
-
-          <div class="flex flex-col gap-1">
-            <label class="text-lg font-semibold">Description</label>
-            <span class="text-xs">Describe your token and the asset it relates to (Optional content)</span>
-            <textarea class="border-gray-400 rounded-lg" formControlName="description"></textarea>
           </div>
         </div>
 

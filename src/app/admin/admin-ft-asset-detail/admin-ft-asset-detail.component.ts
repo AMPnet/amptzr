@@ -6,6 +6,7 @@ import {filter, map, mergeMap, switchMap} from 'rxjs/operators'
 import {MetaService} from '../../shared/services/meta.service'
 import {CampaignService, CampaignWithInfo} from '../../shared/services/blockchain/campaign.service'
 import {FtAssetService, FtAssetWithInfo} from '../../shared/services/blockchain/ft-asset.service'
+import {resolveAddress} from '../../shared/utils/ethersjs'
 
 @Component({
   selector: 'app-admin-ft-asset-detail',
@@ -26,7 +27,7 @@ export class AdminFtAssetDetailComponent {
 
     this.asset$ = this.assetSub.asObservable().pipe(
       switchMap(() => withStatus(
-        this.ftAssetService.getAddressByName(assetId).pipe(
+        resolveAddress(assetId, this.ftAssetService.getAddressByName(assetId)).pipe(
           switchMap(address => this.ftAssetService.getAssetWithInfo(address)),
         ),
       )),
