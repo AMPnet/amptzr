@@ -49,8 +49,9 @@ export class AdminFtAssetNewComponent {
         whitelistRequiredForLiquidationClaim: this.createForm.value.whitelistRequiredForLiquidationClaim,
         info: uploadRes.path,
       })),
-      switchMap(() => this.dialogService.info('Transferable asset successfully created!', false)),
-      tap(() => this.routerService.navigate([`/admin/ft_assets/${this.createForm.value.ansName}`])),
+      switchMap(assetAddress => this.dialogService.info('Transferable asset successfully created!', false).pipe(
+        tap(() => this.routerService.navigate([`/admin/ft_assets/${assetAddress}`])),
+      )),
     )
   }
 }
