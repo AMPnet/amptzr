@@ -63,6 +63,7 @@ export class AdminCampaignEditComponent {
     this.newsUrls = this.updateForm.get('newsUrls') as FormArray
 
     const campaignId = this.route.snapshot.params.campaignId
+    // TODO: fix resolving address from name service
     this.campaign$ = resolveAddress(campaignId, this.campaignService.getAddressByName(campaignId)).pipe(
       switchMap(address => withStatus(this.campaignService.getCampaignWithInfo(address, true))),
       tap(campaign => {
@@ -238,15 +239,6 @@ export class AdminCampaignEditComponent {
   }
 
   private static validDateRange(formGroup: FormGroup): ValidationErrors | null {
-    const today = new Date().toISOString().split('T')[0]
-    if (formGroup.value.startDate < today && formGroup.controls.startDate.dirty) {
-      return {invalidStartDate: true}
-    }
-
-    if (formGroup.value.endDate < today && formGroup.controls.startDate.dirty) {
-      return {invalidEndDate: true}
-    }
-
     if (formGroup.value.startDate > formGroup.value.endDate) {
       return {invalidDateRange: true}
     }

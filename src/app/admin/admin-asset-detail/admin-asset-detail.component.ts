@@ -27,6 +27,7 @@ export class AdminAssetDetailComponent {
 
     this.asset$ = this.assetSub.asObservable().pipe(
       switchMap(() => withStatus(
+        // TODO: fix resolve address via name service
         resolveAddress(assetId, this.assetService.getAddressByName(assetId)).pipe(
           switchMap(address => this.assetService.getAssetWithInfo(address)),
         ),
@@ -35,6 +36,7 @@ export class AdminAssetDetailComponent {
     this.campaigns$ = this.asset$.pipe(
       filter(asset => !!asset.value),
       map(asset => asset.value!.contractAddress),
+      // TODO: fetch campaigns from query service
       mergeMap(assetContractAddress => withStatus(this.campaignService.getCampaigns(assetContractAddress))),
     )
   }

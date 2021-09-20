@@ -25,7 +25,7 @@ export class QueryService {
     this.preferenceQuery.network$,
   ]).pipe(
     switchMap(([contract, issuer, network]) =>
-      contract.getCampaignsForIssuer(issuer.address, network.tokenizerConfig.cfManagerFactory)),
+      contract.getCampaignsForIssuer(issuer.address, network.tokenizerConfig.cfManagerFactory.basic)),
   )
 
   portfolio$: Observable<PortfolioItem[]> = combineLatest([
@@ -37,7 +37,7 @@ export class QueryService {
     filter(([_contract, _issuer, _network, address]) => !!address),
     switchMap(([contract, issuer, network, address]) =>
       contract.getCampaignsForIssuerInvestor(issuer.address, address!,
-        network.tokenizerConfig.cfManagerFactory) as Promise<PortfolioStateItem[]>),
+        network.tokenizerConfig.cfManagerFactory.basic) as Promise<PortfolioStateItem[]>),
     switchMap(portfolio => portfolio.length === 0 ? of([]) : combineLatest(
       portfolio.map(portfolio => this.campaignService.getCampaignInfo(portfolio.campaign).pipe(
         map(campaignWithInfo => ({...portfolio, campaign: campaignWithInfo})),

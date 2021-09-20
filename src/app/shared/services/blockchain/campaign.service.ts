@@ -28,7 +28,7 @@ import {GasService} from './gas.service'
 export class CampaignService {
   factoryContract$: Observable<CfManagerSoftcapFactory> = this.sessionQuery.provider$.pipe(
     map(provider => CfManagerSoftcapFactory__factory.connect(
-      this.preferenceQuery.network.tokenizerConfig.cfManagerFactory, provider,
+      this.preferenceQuery.network.tokenizerConfig.cfManagerFactory.basic, provider,
     )),
   )
 

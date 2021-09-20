@@ -1,7 +1,7 @@
 import {Inject, Injectable} from '@angular/core'
 import {ActivatedRouteSnapshot, CanActivate, RouterStateSnapshot, UrlTree} from '@angular/router'
 import {combineLatest, Observable, of} from 'rxjs'
-import {switchMap, take, tap} from 'rxjs/operators'
+import {map, switchMap, take, tap} from 'rxjs/operators'
 import {PreferenceQuery} from '../../preference/state/preference.query'
 import {PreferenceStore} from '../../preference/state/preference.store'
 import {IssuerService} from '../services/blockchain/issuer.service'
@@ -14,6 +14,7 @@ import {IssuerPathPipe} from '../pipes/issuer-path.pipe'
 import {getWindow} from '../utils/browser'
 import {DOCUMENT} from '@angular/common'
 import {resolveAddress} from '../utils/ethersjs'
+import {NameService} from '../services/blockchain/name.service'
 
 @Injectable({
   providedIn: 'root',
@@ -21,6 +22,7 @@ import {resolveAddress} from '../utils/ethersjs'
 export class IssuerGuard implements CanActivate {
   constructor(private preferenceQuery: PreferenceQuery,
               private preferenceStore: PreferenceStore,
+              private nameService: NameService,
               private sessionQuery: SessionQuery,
               private stablecoin: StablecoinService,
               private dialogService: DialogService,
@@ -34,7 +36,7 @@ export class IssuerGuard implements CanActivate {
     const activation$ = of(environment.fixed.issuer || route.params.issuer as string).pipe(
       // TODO: handle error cases
       // TODO: handle getting issuers also by id (number)
-      switchMap(issuer => resolveAddress(issuer, this.issuerService.getAddressByName(issuer))),
+      switchMap(issuer => this.nameService.getIssuer(issuer).pipe(map(i => i.contractAddress))),
       switchMap(issuerAddress => this.issuerService.getState(issuerAddress, this.sessionQuery.provider)),
       tap(issuer => this.preferenceStore.update({
         issuer: {

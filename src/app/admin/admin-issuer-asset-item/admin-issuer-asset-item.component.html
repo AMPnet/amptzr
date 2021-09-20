@@ -1,5 +1,4 @@
-<div class="flex flex-col justify-start lg:flex-row w-full my-4 shadow-xl rounded-4xl bg-white"
-     [class.hover:shadow-2xl]="type === 'view-screen'">
+<div class="flex flex-col justify-start lg:flex-row w-full my-4 shadow-xl rounded-4xl bg-white">
   <div class="flex justify-center relative w-full lg:w-1/5 mt-4 lg:ml-4">
     <img *ngIf="asset.logo; else noImage" class="w-40 h-40 object-cover rounded-full"
          src="{{ asset.logo | toUrlIPFS }}" alt="Asset logo">
@@ -20,7 +19,7 @@
         <span>Token supply:</span><b>{{ asset.initialTokenSupply | formatUnit:'bignumToWei':18 | number }}</b>
       </div>
 
-      <div class="flex items-center flex-wrap gap-2 mb-8" *ngIf="type === 'view-screen'">
+      <div class="flex items-center flex-wrap gap-2 mb-8">
         <span>Related campaigns:</span>
 
         <ng-container *ngIf="(campaigns$ | async) as campaignsRes">
@@ -30,8 +29,7 @@
             </ng-container>
 
             <a *ngFor="let campaign of campaigns"
-               [routerLink]="('/admin/' + assetTypePath + '/' + asset.ansName + '/campaigns/' +
-                             campaign.ansName) | issuerPath"
+               [routerLink]="('/admin/campaigns/' + campaign.contractAddress) | issuerPath"
                class="px-8 py-0.5 bg-blue-200  hover:bg-indigo-800 hover:text-white rounded-full">
               {{ campaign.name }}
             </a>
@@ -51,8 +49,8 @@
     <div class="flex flex-col justify-end">
       <div class="flex justify-center lg:justify-end">
         <button class="flex items-center gap-4 px-24 py-2 rounded-full bg-indigo-800 text-white text-lg"
-                [routerLink]="routerLink | issuerPath">
-          <span>{{ type === 'view-screen' ? 'View asset' : 'Edit asset' }}</span>
+                [routerLink]="asset.contractAddress | issuerPath">
+          <span>View asset</span>
           <svg width="8" height="14" viewBox="0 0 8 14" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M1 1.16602L6.83333 6.99935L1 12.8327" stroke="white" stroke-width="2"
                   stroke-linecap="round"

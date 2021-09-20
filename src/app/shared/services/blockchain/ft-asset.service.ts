@@ -28,7 +28,7 @@ export class FtAssetService {
   factoryContract$: Observable<AssetTransferableFactory> = this.sessionQuery.provider$.pipe(
     map(provider =>
       AssetTransferableFactory__factory.connect(
-        this.preferenceQuery.network.tokenizerConfig.assetTransferableFactory, provider,
+        this.preferenceQuery.network.tokenizerConfig.assetFactory.transferable, provider,
       )),
   )
 

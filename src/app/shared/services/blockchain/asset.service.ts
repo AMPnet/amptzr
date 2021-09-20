@@ -22,7 +22,7 @@ import {GasService} from './gas.service'
 export class AssetService {
   factoryContract$: Observable<AssetFactory> = this.sessionQuery.provider$.pipe(
     map(provider =>
-      AssetFactory__factory.connect(this.preferenceQuery.network.tokenizerConfig.assetFactory, provider),
+      AssetFactory__factory.connect(this.preferenceQuery.network.tokenizerConfig.assetFactory.basic, provider),
     ),
   )
 

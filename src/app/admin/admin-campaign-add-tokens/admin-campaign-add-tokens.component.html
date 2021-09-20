@@ -1,43 +1,57 @@
 <div class="w-full h-full flex justify-center mt-8 px-2 pb-8">
   <div class="w-full max-w-6xl">
     <div class="flex flex-col w-full bg-white shadow-xl rounded-4xl p-4 pt-8">
-      <span class="text-2xl text-indigo-900">Funding {{ campaign.name | uppercase }}</span>
+      <ng-container *ngIf="(campaignData$ | async) as campaignDataRes">
+        <ng-container *ngIf="campaignDataRes.value as campaignData">
+          <span class="text-2xl text-indigo-900">Funding {{ campaignData.campaign.name | uppercase }}</span>
 
-      <div class="flex flex-col gap-4 mt-4 mb-8 lg:mb-0">
-        <div class="flex flex-col lg:flex-row lg:items-center gap-2">
-          <div class="flex flex-row gap-2 items-center">
-            <span class="text-sm">To raise</span>
-            <form [formGroup]="fundingForm">
-              <input appCurrencyMask class="border-gray-400 rounded-lg" type="text" formControlName="amount">
-            </form>
+          <div class="flex flex-col gap-4 mt-4 mb-8 lg:mb-0">
+            <div class="flex flex-col lg:flex-row lg:items-center gap-2">
+              <div class="flex flex-row gap-2 items-center">
+                <span class="text-sm">To raise</span>
+                <form [formGroup]="fundingForm">
+                  <input appCurrencyMask class="border-gray-400 rounded-lg" type="text" formControlName="amount">
+                </form>
+              </div>
+
+              <b class="text-sm mt-2 lg:mt-0">
+                (min {{ minAmountToReachSoftCap(campaignData.stats) | currencyDefault }},
+                max {{ maxFundingAmount(campaignData) | currencyDefault }})
+              </b>
+
+              <div class="flex flex-row gap-2 items-center mt-2 lg:mt-0 lg:justify-around">
+                <span class="text-sm">I will sell</span>
+                <b class="lg:text-center">{{ tokensPercentage(campaignData) | percent }}</b>
+                <span class="text-sm">of my {{ campaignData.asset.name | uppercase }} tokens</span>
+              </div>
+
+              <div class="flex flex-row gap-2 items-center mt-2 lg:mt-0 lg:justify-around">
+                <span class="text-sm">with price per token:</span>
+                <b class="lg:text-center">{{ campaignData.stats.tokenPrice | currencyDefault }}</b>
+              </div>
+            </div>
           </div>
 
-          <b class="text-sm mt-2 lg:mt-0">
-            (min {{ minAmountToReachSoftCap | currencyDefault }}, max {{ maxFundingAmount | currencyDefault }})
-          </b>
-
-          <div class="flex flex-row gap-2 items-center mt-2 lg:mt-0 lg:justify-around">
-            <span class="text-sm">I will sell</span>
-            <b class="lg:text-center">{{ tokensPercentage | percent }}</b>
-            <span class="text-sm">of my {{ assetData.asset.name | uppercase }} tokens</span>
-          </div>
-
-          <div class="flex flex-row gap-2 items-center mt-2 lg:mt-0 lg:justify-around">
-            <span class="text-sm">with price per token:</span>
-            <b class="lg:text-center">{{ campaignStats.tokenPrice | currencyDefault }}</b>
-          </div>
-        </div>
-      </div>
-
-      <div class="flex flex-col lg:flex-row justify-center lg:justify-end mt-8">
-        <button app-action-button
-                class="flex items-center justify-center gap-4 bg-indigo-800 disabled:bg-gray-400 text-white
+          <div class="flex flex-col lg:flex-row justify-center lg:justify-end mt-8">
+            <button app-action-button
+                    class="flex items-center justify-center gap-4 bg-indigo-800 disabled:bg-gray-400 text-white
                        px-24 py-2 rounded-full"
-                text="Fund campaign"
-                [disabled]="!fundingForm.valid"
-                [onClick]="addTokens.bind(this)">
-        </button>
-      </div>
+                    text="Fund campaign"
+                    [disabled]="!fundingForm.valid"
+                    [onClick]="addTokens.bind(this)">
+            </button>
+          </div>
+        </ng-container>
+
+        <ng-container *ngIf="campaignDataRes.error">
+          Cannot fetch campaign data.
+          <div hidden>{{ campaignDataRes.error | json }}</div>
+        </ng-container>
+
+        <ng-container *ngIf="campaignDataRes.loading">
+          Loading campaign data...
+        </ng-container>
+      </ng-container>
     </div>
   </div>
 </div>

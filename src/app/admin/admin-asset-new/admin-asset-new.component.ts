@@ -35,6 +35,7 @@ export class AdminAssetNewComponent {
     })
   }
 
+  // TODO: create two methods for this depending on asset type
   create() {
     return this.assetService.uploadInfo(
       this.createForm.value.logo?.[0],

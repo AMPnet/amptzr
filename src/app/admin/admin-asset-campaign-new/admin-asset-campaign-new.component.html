@@ -1,14 +1,396 @@
-<ng-container *ngIf="(assetData$ | async) as assetDataRes">
-  <ng-container *ngIf="assetDataRes.value as assetData">
-    <app-admin-campaign-new [assetData]="assetData" [assetService]="assetService"></app-admin-campaign-new>
-  </ng-container>
+<div class="w-full h-full flex justify-center mt-8 px-2 pb-8">
+  <div class="w-full max-w-6xl">
+    <div class="flex flex-col w-full justify-start bg-white shadow-xl rounded-4xl p-4 pt-8">
+      <h1 class="text-2xl text-indigo-900">
+        Create your campaign
+      </h1>
 
-  <ng-container *ngIf="assetDataRes.error">
-    <div class="w-full text-center mt-8">Cannot fetch asset.</div>
-    <div hidden>{{ assetDataRes.error | json }}</div>
-  </ng-container>
+      <ng-container *ngIf="(assetData$ | async) as assetDataRes">
+        <ng-container *ngIf="assetDataRes.value as assetData">
+          <ng-container *ngIf="(step$ | async) === stepType.FIRST">
+            <form class="contents" [formGroup]="createForm1">
+              <div class="flex flex-col gap-4 lg:w-2/3">
+                <div class="flex flex-col gap-2 pt-6">
+                  <label class="text-lg font-semibold">
+                    Name your campaign
+                  </label>
+                  <input class="border-gray-400 rounded-lg" type="text"
+                         placeholder="CAMPAIGN TITLE" formControlName="name">
+                </div>
 
-  <ng-container *ngIf="assetDataRes.loading">
-    <app-spinner type="overlay">Loading asset...</app-spinner>
-  </ng-container>
-</ng-container>
+                <div class="flex flex-col gap-2">
+                  <label class="text-lg font-semibold">
+                    Campaign URL
+                  </label>
+                  <div class="flex flex-col lg:flex-row lg:items-center gap-2">
+                    <div class="text-sm">
+                      {{ campaignUrl }}
+                    </div>
+                    <input class="border-gray-400 rounded-lg"
+                           type="text" formControlName="ansName">
+                  </div>
+                </div>
+              </div>
+
+              <div class="flex flex-col lg:flex-row bg-gray-100 rounded-lg my-8 p-4">
+                <div class="flex flex-col gap-4 pb-2 lg:p-6">
+                  <div class="flex flex-col gap-4">
+                    <h3 class="text-lg font-semibold">
+                      Maximum amount you want to raise
+                    </h3>
+                    <div class="flex flex-col lg:flex-row lg:items-center gap-2">
+                      <div class="flex flex-row gap-2 items-center">
+                        <span class="text-sm">To raise</span>
+                        <input appCurrencyMask class="border-gray-400 rounded-lg"
+                               type="text" formControlName="hardCap"
+                               (blur)="onHardCapBlur()">
+                      </div>
+
+                      <div class="flex flex-row gap-2 items-center">
+                        <span class="text-sm">I will sell</span>
+                        <input appPercentageMask class="border-gray-400 rounded-lg w-1/3 lg:w-32" type="text"
+                               formControlName="hardCapTokensPercentage"
+                               (blur)="onHardCapTokensPercentageBlur()">
+                      </div>
+
+                      <div class="text-sm my-2 lg:my-0">
+                        of my {{ assetData.asset.name | uppercase }}
+                        tokens <b>(max {{ maxTokensPercentage(assetData) | percent }})</b>
+                      </div>
+
+                      <div class="flex flex-row items-center gap-2">
+                        <div class="text-sm">
+                          with price per token:
+                        </div>
+                        <input appCurrencyMask class="border-gray-400 rounded-lg w-1/3 lg:w-32" type="text"
+                               formControlName="tokenPrice" (blur)="onTokenPriceBlur(assetData)">
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="flex flex-col gap-4 mt-4 lg:mt-0 mb-8 lg:mb-0">
+                    <h3 class="text-lg font-semibold">
+                      Minimum target for successful campaign (Soft cap)
+                    </h3>
+                    <div class="flex flex-col lg:flex-row lg:items-center gap-2">
+                      <div class="flex flex-row gap-2 items-center">
+                        <div class="text-sm">
+                          To raise
+                        </div>
+                        <input appCurrencyMask class="border-gray-400 rounded-lg"
+                               type="text" formControlName="softCap">
+                      </div>
+
+                      <div class="mt-2">
+                        <div class="text-sm">
+                          I will sell
+                          <b class="px-2">
+                            {{ softCapTokensPercentage(assetData) | percent }}
+                          </b>
+                          of my {{ assetData.asset.name | uppercase }} tokens
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="flex flex-col gap-6 lg:w-2/3">
+                <div class="flex flex-col gap-2">
+                  <h3 class="text-lg font-semibold">
+                    Do you want to set up minimum & maximum amount to invest?
+                  </h3>
+                  <div class="flex flex-col lg:flex-row gap-4">
+                    <app-form-yes-no-buttons formControlName="hasMinAndMaxInvestment"
+                                             (ngModelChange)="toggleMinAndMaxInvestmentControls($event)">
+                    </app-form-yes-no-buttons>
+                    <div class="flex flex-row gap-4 overflow-hidden transition-all ease-in-out duration-300"
+                         [class]="createForm1.get('hasMinAndMaxInvestment')?.value ?
+                              'max-w-full max-h-full' :
+                              'max-w-0 max-h-0 lg:max-h-full invisible'">
+                      <input appCurrencyMask type="text" placeholder="Min" formControlName="minInvestment"
+                             class="border-gray-400 disabled:bg-gray-100 rounded-lg w-1/2">
+                      <input appCurrencyMask type="text" placeholder="Max" formControlName="maxInvestment"
+                             class="border-gray-400 disabled:bg-gray-100 rounded-lg w-1/2">
+                    </div>
+                  </div>
+                </div>
+
+                <div class="flex flex-col gap-2">
+                  <h3 class="text-lg font-semibold">
+                    Will you be returning profits to your investors?
+                  </h3>
+                  <div class="flex flex-col lg:flex-row gap-4">
+                    <app-form-yes-no-buttons formControlName="isReturningProfitsToInvestors"
+                                             (ngModelChange)="toggleReturnFrequencyControls($event)">
+                    </app-form-yes-no-buttons>
+                    <div
+                      class="flex flex-row items-center gap-4 overflow-hidden transition-all ease-in-out duration-300"
+                      [class]="createForm1.get('isReturningProfitsToInvestors')?.value ?
+                              'max-w-full max-h-full' :
+                              'max-w-0 max-h-0 lg:max-h-full invisible'">
+                      <label class="font-semibold lg:w-32 whitespace-nowrap">
+                        How often?
+                      </label>
+                      <select class="border-gray-400 rounded-lg w-full lg:w-64 disabled:bg-gray-100"
+                              formControlName="returnFrequency">
+                        <option value="" disabled selected hidden>
+                          Select answer
+                        </option>
+                        <option *ngFor="let item of ReturnFrequencies" value="{{ item }}">
+                          {{ ReturnFrequencyNames[item] }}
+                        </option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="flex flex-col gap-2 overflow-hidden transition-all ease-in-out duration-300"
+                     [class]="createForm1.get('isReturningProfitsToInvestors')?.value ?
+                          'max-w-full max-h-full' : 'max-w-0 max-h-0 -mt-6 invisible'">
+                  <h3 class="text-lg font-semibold whitespace-nowrap">
+                    Is your return value fixed?
+                  </h3>
+                  <div class="flex flex-col lg:flex-row gap-4">
+                    <app-form-yes-no-buttons formControlName="isReturnValueFixed"
+                                             (ngModelChange)="toggleReturnToControls($event)">
+                    </app-form-yes-no-buttons>
+                    <div class="flex flex-row gap-4">
+                      <input appPercentageMask
+                             class="border-gray-400 disabled:bg-gray-100 rounded-lg transition-all ease-in-out duration-300"
+                             [class]="createForm1.get('isReturnValueFixed')?.value ? 'lg:w-48 w-full' : 'lg:w-48 w-1/2'"
+                             [placeholder]="createForm1.get('isReturnValueFixed')?.value ? 'Return' : 'From'"
+                             type="text" formControlName="returnFrom">
+                      <div class="flex overflow-hidden transition-all ease-in-out duration-300"
+                           [class]="createForm1.get('isReturnValueFixed')?.value ? '-ml-4 w-0 invisible' : 'ml-0 w-1/2'">
+                        <input appPercentageMask class="w-full border-gray-400 disabled:bg-gray-100 rounded-lg"
+                               type="text"
+                               placeholder="To" formControlName="returnTo">
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="flex flex-col gap-2">
+                  <h3 class="text-lg font-semibold">
+                    Do you require ID verification for your investors?
+                  </h3>
+                  <app-form-yes-no-buttons formControlName="isIdVerificationRequired">
+                  </app-form-yes-no-buttons>
+                </div>
+              </div>
+
+              <div class="flex flex-col lg:flex-row justify-center lg:justify-end mt-8">
+                <button class="flex items-center justify-center gap-4 bg-indigo-800 disabled:bg-gray-400 text-white
+                           px-24 py-2 rounded-full"
+                        [disabled]="!createForm1.valid"
+                        (click)="nextCreationStep()">
+                  Next
+                </button>
+              </div>
+            </form>
+          </ng-container>
+
+          <ng-container *ngIf="(step$ | async) === stepType.SECOND">
+            <form class="contents" [formGroup]="createForm2">
+              <div class="flex flex-col gap-4 lg:w-2/3">
+                <div class="flex flex-col gap-2 pt-6">
+                  <h3 class="text-lg font-semibold">
+                    Select a main image
+                  </h3>
+                  <div class="relative w-full lg:w-2/3">
+                    <div class="flex justify-center w-full absolute top-32">
+                      <label class="flex items-center gap-4 px-8 py-2 rounded-full bg-green-600 text-white text-lg
+                              cursor-pointer">
+                        <input class="hidden" type="file" formControlName="logo" multiple>
+                        <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                          <path d="M6 1V6M6 6V11M6 6H11M6 6H1" stroke="white" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round"/>
+                        </svg>
+                        <span>Upload image</span>
+                      </label>
+                    </div>
+                    <img *ngIf="createForm2.get('logo')?.value?.[0]; else noImage" class="w-full h-72 object-cover"
+                         [src]="(createForm2.get('logo')?.value?.[0] | safe:'fileUrl') | toUrlIPFS"
+                         alt="Campaign image">
+                    <ng-template #noImage>
+                      <div class="w-full h-72 bg-gray-100 border-gray-500 border-2 border-dashed">
+                        <svg class="w-full h-full" width="490" height="284" viewBox="0 0 490 284" fill="none"
+                             xmlns="http://www.w3.org/2000/svg">
+                          <path
+                            d="M47 251.231L186.36 36.4102L273.348 136.43L323.944 87.159L442 251.231H393.874H109.726H47Z"
+                            fill="white" fill-opacity="0.5"/>
+                          <path d="M381 85.8594C395.912 85.8594 408 73.7711 408 58.8594C408 43.9477 395.912 31.8594 381
+                           31.8594C366.088 31.8594 354 43.9477 354 58.8594C354 73.7711 366.088 85.8594 381 85.8594Z"
+                                fill="white" fill-opacity="0.5" stroke="#9CA3AF" stroke-width="4"
+                                stroke-miterlimit="10"/>
+                          <path d="M68.2383 250.473H409.018" stroke="#9CA3AF" stroke-width="4" stroke-miterlimit="10"
+                                stroke-linecap="round"/>
+                          <path d="M429 234.846L323.567 89.629L274.528 137.982L187.607 39.1406L77 205.688"
+                                stroke="#9CA3AF"
+                                stroke-width="4" stroke-miterlimit="10" stroke-linecap="round"/>
+                        </svg>
+                      </div>
+                    </ng-template>
+                  </div>
+                </div>
+
+                <div class="flex flex-col gap-2 lg:pr-2">
+                  <label class="text-lg font-semibold">
+                    Write a short description of your project
+                  </label>
+                  <textarea class="border-gray-400 rounded-lg" placeholder="Short description" formControlName="about">
+            </textarea>
+                </div>
+              </div>
+
+              <label class="text-lg font-semibold mt-4">
+                Describe your project
+              </label>
+              <div class="flex flex-col gap-2 lg:flex-row mt-2 lg:h-[36rem]">
+                <quill-editor class="lg:w-2/3 lg:h-[30rem]"
+                              formControlName="description"
+                              (onEditorCreated)="quillMods($event)"
+                              (onContentChanged)="markDescriptionAsDirty()">
+                </quill-editor>
+
+                <div class="flex flex-row bg-gray-100 gap-2 p-4 my-4 lg:my-0 rounded-lg lg:w-1/3 lg:h-20">
+                  <div>
+                    <svg width="26" height="26" viewBox="0 0 26 26" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M9.884 19.6667H16.1147M13 1V2.33333M21.4853 4.51467L20.5427 5.45733M25 13H23.6667M2.33333
+                         13H1M5.45733 5.45733L4.51467 4.51467M8.28533 17.7147C7.35316 16.7822 6.7184 15.5944 6.4613
+                         14.3012C6.20421 13.008 6.33634 11.6677 6.84097 10.4496C7.34561 9.23154 8.20009 8.19046
+                         9.29638 7.45799C10.3927 6.72553 11.6815 6.33458 13 6.33458C14.3185 6.33458 15.6073 6.72553
+                         16.7036 7.45799C17.7999 8.19046 18.6544 9.23154 19.159 10.4496C19.6637 11.6677 19.7958
+                         13.008 19.5387 14.3012C19.2816 15.5944 18.6468 16.7822 17.7147 17.7147L16.984
+                         18.444C16.5663 18.8618 16.2349 19.3578 16.0089 19.9036C15.7829 20.4495 15.6666 21.0345
+                         15.6667 21.6253V22.3333C15.6667 23.0406 15.3857 23.7189 14.8856 24.219C14.3855 24.719
+                         13.7072 25 13 25C12.2928 25 11.6145 24.719 11.1144 24.219C10.6143 23.7189 10.3333 23.0406
+                         10.3333 22.3333V21.6253C10.3333 20.432 9.85867 19.2867 9.016 18.444L8.28533 17.7147Z"
+                            stroke="#3F3F46" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                  </div>
+                  <div class="flex flex-col text-sm gap-2">
+                    <span>QUICK TIP:</span>
+                    <span>Try not to use too many font styles and sizes.</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="flex flex-col gap-2">
+                <label class="text-lg font-semibold">
+                  What is the duration of your project?
+                </label>
+                <div class="flex flex-col lg:flex-row gap-4">
+                  <input appDateMask class="border-gray-400 rounded-lg" type="text" placeholder="From"
+                         formControlName="startDate">
+                  <input appDateMask class="border-gray-400 rounded-lg" type="text" placeholder="To"
+                         formControlName="endDate">
+                </div>
+              </div>
+
+              <label class="text-2xl text-indigo-900 mt-16 mb-8">
+                Project documents
+              </label>
+
+              <div class="lg:flex lg:justify-start">
+                <label class="flex items-center justify-center w-full lg:w-auto gap-4 px-8 py-2 rounded-full bg-green-600
+                        text-white text-lg cursor-pointer">
+                  <input class="hidden" type="file" formControlName="documentUpload"
+                         (ngModelChange)="onDocumentFilesAdded($event)" multiple>
+                  <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M6 1V6M6 6V11M6 6H11M6 6H1" stroke="white" stroke-width="2" stroke-linecap="round"
+                          stroke-linejoin="round"/>
+                  </svg>
+                  <span>Upload documents</span>
+                </label>
+              </div>
+
+              <div class="flex flex-col lg:flex-row lg:flex-wrap gap-4 mt-4">
+                <ng-container *ngFor="let document of createForm2.get('documents')?.value; let i = index">
+                  <div class="flex flex-row justify-between items-center border-2 border-gray-300 rounded-full
+                        pl-4 pr-2 py-2 gap-2">
+                    <svg width="22" height="26" viewBox="0 0 22 26" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M7.00033 19.6667V17M11.0003 19.6667V14.3333M15.0003 19.6667V11.6667M17.667 25H4.33366C3.62641
+                         25 2.94814 24.719 2.44804 24.219C1.94794 23.7189 1.66699 23.0406 1.66699
+                         22.3333V3.66667C1.66699 2.95942 1.94794 2.28115 2.44804 1.78105C2.94814 1.28095 3.62641 1
+                         4.33366 1H11.7817C12.1353 1.00008 12.4743 1.1406 12.7243 1.39067L19.943 8.60933C20.1931 8.85932
+                         20.3336 9.19841 20.3337 9.552V22.3333C20.3337 23.0406 20.0527 23.7189 19.5526 24.219C19.0525
+                         24.719 18.3742 25 17.667 25Z"
+                            stroke="#3F3F46" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                    <div class="text-sm">
+                      {{ document.name }}
+                    </div>
+                    <button class="rounded-full bg-red-500 p-2" (click)="removeDocumentFile(i)">
+                      <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M1.5 1.5L10.5 10.5M1.5 10.5L10.5 1.5L1.5 10.5Z" stroke="white" stroke-width="2"
+                              stroke-linecap="round" stroke-linejoin="round"/>
+                      </svg>
+                    </button>
+                  </div>
+                </ng-container>
+              </div>
+
+              <label class="text-2xl text-indigo-900 mt-16 mb-8">
+                Links to related news
+              </label>
+
+              <div formArrayName="newsUrls">
+                <ng-container *ngFor="let control of newsUrlsControls(); let i = index">
+                  <div class="flex flex-row items-center gap-4 mb-2">
+                    <input class="border-gray-400 rounded-lg w-full lg:w-2/3" type="text" [formControl]="control">
+                    <div>
+                      <button class="rounded-full bg-red-500 p-2" (click)="removeNewsUrl(i)">
+                        <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                          <path d="M1.5 1.5L10.5 10.5M1.5 10.5L10.5 1.5L1.5 10.5Z" stroke="white" stroke-width="2"
+                                stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                      </button>
+                    </div>
+                  </div>
+                </ng-container>
+              </div>
+
+              <div class="lg:flex lg:justify-start">
+                <button class="flex items-center justify-center w-full lg:w-auto gap-4 px-8 py-2 rounded-full bg-green-600
+                         text-white text-lg"
+                        (click)="addNewsUrl()">
+                  <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M6 1V6M6 6V11M6 6H11M6 6H1" stroke="white" stroke-width="2" stroke-linecap="round"
+                          stroke-linejoin="round"/>
+                  </svg>
+                  <span>Add link</span>
+                </button>
+              </div>
+
+              <div class="flex flex-col lg:flex-row justify-center lg:justify-between mt-8 gap-4">
+                <button class="flex items-center justify-center gap-4 bg-indigo-800 disabled:bg-gray-400 text-white
+                         px-24 py-2 rounded-full"
+                        (click)="previousCreationStep()">
+                  Back
+                </button>
+                <button app-action-button
+                        class="flex items-center justify-center gap-4 bg-indigo-800 disabled:bg-gray-400 text-white
+                         px-24 py-2 rounded-full"
+                        text="Create campaign"
+                        [disabled]="!createForm2.valid"
+                        [onClick]="create(assetData).bind(this)">
+                </button>
+              </div>
+            </form>
+          </ng-container>
+        </ng-container>
+
+        <ng-container *ngIf="assetDataRes.error">
+          Cannot fetch assetData.
+          <div hidden>{{ assetDataRes.error | json }}</div>
+        </ng-container>
+
+        <ng-container *ngIf="assetDataRes.loading">
+          Loading assetData...
+        </ng-container>
+      </ng-container>
+    </div>
+  </div>
+</div>

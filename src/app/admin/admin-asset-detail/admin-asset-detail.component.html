@@ -1,14 +1,81 @@
 <div class="w-full h-full flex justify-center mt-8 px-2 pb-8">
   <div class="bg-red w-full max-w-6xl">
     <ng-container *ngIf="(asset$ | async) as assetRes">
-      <ng-container *ngIf="assetRes.value">
-        <app-admin-asset-item [asset]="assetRes.value" assetType="asset" type="edit-screen"></app-admin-asset-item>
+      <ng-container *ngIf="assetRes.value as asset">
+        <div class="flex justify-center relative w-full lg:w-1/5 mt-4 lg:ml-4">
+          <img *ngIf="asset.logo; else noImage" class="w-40 h-40 object-cover rounded-full"
+               src="{{ asset.logo | toUrlIPFS }}" alt="Asset logo">
+          <ng-template #noImage>
+            <div class="w-full lg:w-40 h-40 bg-gray-200 rounded-t-4xl lg:rounded-full"></div>
+          </ng-template>
+        </div>
+        <div class="flex flex-col justify-between m-4 h-full lg:w-full rounded-b-4xl lg:rounded-none
+              lg:rounded-r-4xl bg-white">
+          <div class="flex flex-col text-lg lg:pr-8">
+            <span class="text-4xl mb-8">{{ asset.name ?? 'Unknown' }}</span>
+
+            <div class="flex items-center gap-2">
+              <span>Token symbol:</span><b>{{ asset.symbol }}</b>
+            </div>
+
+            <div class="flex items-center gap-2">
+              <span>Token supply:</span><b>{{ asset.initialTokenSupply | formatUnit:'bignumToWei':18 | number }}</b>
+            </div>
+          </div>
+          <div class="flex flex-col justify-end">
+            <div class="flex justify-center lg:justify-end">
+              <button class="flex items-center gap-4 px-24 py-2 rounded-full bg-indigo-800 text-white text-lg"
+                      [routerLink]="asset.contractAddress | issuerPath">
+                <span>View asset</span>
+                <svg width="8" height="14" viewBox="0 0 8 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M1 1.16602L6.83333 6.99935L1 12.8327" stroke="white" stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"/>
+                </svg>
+              </button>
+            </div>
+          </div>
+        </div>
 
         <div class="flex flex-col lg:flex-row justify-center items-center gap-4 my-8">
           <app-add-button text="NEW CAMPAIGN" routerLink="campaigns/new"></app-add-button>
         </div>
 
-        <app-admin-campaign-list [asset]="assetRes.value" [campaigns$]="campaigns$"></app-admin-campaign-list>
+        <div class="flex flex-col">
+          <span class="text-2xl text-indigo-800">Related campaigns</span>
+          <ng-container *ngIf="(campaigns$ | async) as campaignsRes">
+
+            <ng-container *ngIf="campaignsRes.value as campaigns">
+              <ng-container *ngIf="campaigns.length === 0">
+                <div class="flex flex-col items-center justify-center lg:flex-row w-full h-36 mt-4 mb-8 shadow-xl rounded-4xl
+                    bg-white text-indigo-800">
+                  No related campaigns.
+                </div>
+              </ng-container>
+
+              <div class="flex flex-col gap-2 mt-4">
+                <app-admin-campaign-item *ngFor="let campaign of campaigns"
+                                         [asset]="asset" [campaign]="campaign" type="view-screen">
+                </app-admin-campaign-item>
+              </div>
+            </ng-container>
+
+            <ng-container *ngIf="campaignsRes.error">
+              <div class="flex flex-col items-center justify-center lg:flex-row w-full h-36 mt-4 mb-8 shadow-xl rounded-4xl
+                  bg-white text-indigo-800">
+                Cannot fetch related campaigns.
+                <div hidden>{{ campaignsRes.error | json }}</div>
+              </div>
+            </ng-container>
+
+            <ng-container *ngIf="campaignsRes.loading">
+              <div class="flex flex-col items-center justify-center lg:flex-row w-full h-36 mt-4 mb-8 shadow-xl rounded-4xl
+                  bg-white text-indigo-800">
+                <app-spinner type="inline-base"></app-spinner>
+              </div>
+            </ng-container>
+          </ng-container>
+        </div>
       </ng-container>
 
       <ng-container *ngIf="assetRes.error">

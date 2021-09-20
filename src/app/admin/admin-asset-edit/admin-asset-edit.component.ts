@@ -34,6 +34,7 @@ export class AdminAssetEditComponent {
 
     this.asset$ = this.assetSub.asObservable().pipe(
       switchMap(() => withStatus(
+        // TODO: fix resolving address via name service
         resolveAddress(assetId, this.assetService.getAddressByName(assetId)).pipe(
           switchMap(address => this.assetService.getAssetWithInfo(address, true)),
         ),
@@ -56,7 +57,7 @@ export class AdminAssetEditComponent {
       ).pipe(
         switchMap(uploadRes => this.assetService.updateInfo(asset.contractAddress, uploadRes.path)),
         switchMap(() => this.dialogService.info('Asset successfully updated!', false)),
-        tap(() => this.routerService.navigate([`/admin/assets/${asset.ansName}`])),
+        tap(() => this.routerService.navigate([`/admin/assets/${asset.contractAddress}`])),
       )
     }
   }
