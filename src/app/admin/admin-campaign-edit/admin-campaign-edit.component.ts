@@ -58,7 +58,7 @@ export class AdminCampaignEditComponent {
       validators: [
         AdminCampaignEditComponent.validReturnFromTo,
         AdminCampaignEditComponent.validDateRange,
-      ]
+      ],
     })
     this.newsUrls = this.updateForm.get('newsUrls') as FormArray
 
