@@ -1,8 +1,7 @@
 import {ChangeDetectionStrategy, Component, Input, OnInit} from '@angular/core'
 import {CampaignService, CampaignWithInfo} from '../../shared/services/blockchain/campaign.service'
-import {AssetWithInfo} from '../../shared/services/blockchain/asset.service'
-import {FtAssetWithInfo} from '../../shared/services/blockchain/ft-asset.service'
 import {StablecoinService} from '../../shared/services/blockchain/stablecoin.service'
+import {AssetWithInfo} from '../../shared/services/blockchain/asset/asset.service'
 
 @Component({
   selector: 'app-admin-campaign-item',
@@ -11,7 +10,7 @@ import {StablecoinService} from '../../shared/services/blockchain/stablecoin.ser
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AdminCampaignItemComponent implements OnInit {
-  @Input() asset!: AssetWithInfo | FtAssetWithInfo
+  @Input() asset!: AssetWithInfo
   @Input() campaign!: CampaignWithInfo
   @Input() type!: 'view-screen' | 'edit-screen'
 

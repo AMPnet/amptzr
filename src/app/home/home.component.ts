@@ -23,6 +23,6 @@ export class HomeComponent {
   }
 
   openIssuer(issuer: IssuerWithInfo) {
-    this.router.navigateIssuer(issuer.ansName)
+    this.router.navigateIssuer(issuer.contractAddress)
   }
 }

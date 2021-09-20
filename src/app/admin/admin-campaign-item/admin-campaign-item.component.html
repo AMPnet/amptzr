@@ -1,7 +1,7 @@
 <div class="flex flex-col lg:flex-row lg:flex-wrap gap-6">
   <div class="flex flex-col lg:flex-row w-full justify-start shadow-xl rounded-4xl bg-white">
     <div class="relative w-full lg:w-1/3">
-      <a routerLink="campaigns/{{campaign.ansName}}">
+      <a routerLink="campaigns/{{campaign.contractAddress}}">
         <img *ngIf="campaign.photo; else noImage"
              class="w-full h-60 lg:h-full object-cover rounded-t-4xl lg:rounded-none lg:rounded-l-4xl"
              src="{{ campaign.photo | toUrlIPFS }}" alt="Issuer logo">
@@ -13,7 +13,7 @@
     <div class="flex flex-col lg:flex-row gap-8 w-full h-full rounded-b-4xl lg:rounded-none lg:rounded-r-4xl
                 p-4 justify-between">
       <div class="flex flex-col flex-1 text-sm">
-        <a routerLink="campaigns/{{campaign.ansName}}">
+        <a routerLink="campaigns/{{campaign.contractAddress}}">
           <span class="text-4xl mb-8">{{ campaign.name ?? 'Unknown' }}</span>
         </a>
 
@@ -42,7 +42,7 @@
         <div class="flex justify-center lg:justify-end">
           <button class="flex flex-shrink-0 items-center gap-4 px-24 py-2 lg:px-8 rounded-full bg-indigo-800
                          text-white text-lg"
-                  routerLink="campaigns/{{campaign.ansName}}">
+                  [routerLink]="('/admin/campaigns/' + campaign.contractAddress) | issuerPath">
             <span>View campaign</span>
             <svg width="8" height="14" viewBox="0 0 8 14" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path d="M1 1.16602L6.83333 6.99935L1 12.8327" stroke="white" stroke-width="2"

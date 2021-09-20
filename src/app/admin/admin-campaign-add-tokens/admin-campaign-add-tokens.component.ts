@@ -1,6 +1,5 @@
 import {ChangeDetectionStrategy, Component, ɵmarkDirty} from '@angular/core'
 import {CampaignService, CampaignStats, CampaignWithInfo} from '../../shared/services/blockchain/campaign.service'
-import {AssetService, AssetWithInfo} from '../../shared/services/blockchain/asset.service'
 import {AbstractControl, FormBuilder, FormGroup, ValidationErrors, Validators} from '@angular/forms'
 import {PreferenceQuery} from '../../preference/state/preference.query'
 import {IssuerPathPipe} from '../../shared/pipes/issuer-path.pipe'
@@ -13,6 +12,7 @@ import {filter, map, switchMap, take, tap} from 'rxjs/operators'
 import {combineLatest, Observable} from 'rxjs'
 import {withStatus, WithStatus} from '../../shared/utils/observables'
 import {resolveAddress} from '../../shared/utils/ethersjs'
+import {AssetService, AssetWithInfo} from '../../shared/services/blockchain/asset/asset.service'
 
 @Component({
   selector: 'app-admin-campaign-add-tokens',
@@ -89,14 +89,16 @@ export class AdminCampaignAddTokensComponent {
   }
 
   addTokens(data: CampaignData) {
-    return this.assetService.transferTokensToCampaign(
-      data.asset.contractAddress,
-      data.campaign.contractAddress,
-      this.fundingTokensAmount(this.fundingForm.value.amount, data),
-    ).pipe(
-      switchMap(() => this.dialogService.info('Tokens added to campaign.', false)),
-      switchMap(() => this.routerService.navigate(['..'], {relativeTo: this.route})),
-    )
+    return () => {
+      return this.assetService.transferTokensToCampaign(
+        data.asset.contractAddress,
+        data.campaign.contractAddress,
+        this.fundingTokensAmount(this.fundingForm.value.amount, data),
+      ).pipe(
+        switchMap(() => this.dialogService.info('Tokens added to campaign.', false)),
+        switchMap(() => this.routerService.navigate(['..'], {relativeTo: this.route})),
+      )
+    }
   }
 
   private validAmount(control: AbstractControl): Observable<ValidationErrors | null> {

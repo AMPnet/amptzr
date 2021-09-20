@@ -38,7 +38,7 @@
                        px-24 py-2 rounded-full"
                     text="Fund campaign"
                     [disabled]="!fundingForm.valid"
-                    [onClick]="addTokens.bind(this)">
+                    [onClick]="addTokens(campaignData).bind(this)">
             </button>
           </div>
         </ng-container>
@@ -49,7 +49,7 @@
         </ng-container>
 
         <ng-container *ngIf="campaignDataRes.loading">
-          Loading campaign data...
+          <app-spinner type="overlay">Loading campaign data</app-spinner>
         </ng-container>
       </ng-container>
     </div>

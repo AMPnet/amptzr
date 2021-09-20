@@ -3,6 +3,7 @@ import {QueryService} from './query.service'
 import {Observable, of} from 'rxjs'
 import {map} from 'rxjs/operators'
 import {PreferenceQuery} from '../../../preference/state/preference.query'
+import {AssetFlavor, IssuerFlavor} from './flavors'
 
 @Injectable({
   providedIn: 'root',
@@ -49,7 +50,7 @@ export class NameService {
     // )
     return of([{
       contractAddress: ids[0],
-      flavor: IssuerFlavor.ISSUER,
+      flavor: AssetFlavor.ASSET,
       version: '1.0.3',
       name: 'asset-name',
     }])
@@ -69,18 +70,4 @@ interface IssuerCommonStateWithName {
   flavor: IssuerFlavor,
   contractAddress: string,
   name: string
-}
-
-enum IssuerFlavor {
-  ISSUER = 'issuer'
-}
-
-enum AssetFlavor {
-  ASSET = 'asset',
-  TRANSFERABLE = 'ft_asset'
-}
-
-enum CampaignFlavor {
-  CAMPAIGN = 'campaign',
-  VESTABLE = 'vestable'
 }

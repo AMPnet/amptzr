@@ -34,7 +34,7 @@
         <section class="w-full mt-8">
           <div *ngFor="let item of portfolio" class="w-full rounded-3xl shadow-lg flex flex-col lg:flex-row mt-4">
             <div class="w-full lg:w-4/12">
-              <a routerLink="{{ '/offers/' + item.campaign.ansName | issuerPath }}">
+              <a routerLink="{{ '/offers/' + item.campaign.contractAddress | issuerPath }}">
                 <img class="w-full h-32 object-cover rounded-t-3xl lg:h-full lg:rounded-tr-none lg:rounded-l-3xl
                 bg-white"
                      src="{{ item.campaign.photo | toUrlIPFS }}" alt="Project image">
@@ -48,7 +48,7 @@
                 </div>
               </div>
               <div class="text-3xl mt-4 lg:text-4xl tracking-wider font-light uppercase">
-                <a routerLink="{{ '/offers/' + item.campaign.ansName | issuerPath }}">
+                <a routerLink="{{ '/offers/' + item.campaign.contractAddress | issuerPath }}">
                   {{ item.campaign.name }}
                 </a>
               </div>

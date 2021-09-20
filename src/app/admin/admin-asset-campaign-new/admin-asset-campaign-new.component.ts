@@ -6,7 +6,6 @@ import {IssuerPathPipe} from '../../shared/pipes/issuer-path.pipe'
 import {ReturnFrequencies, ReturnFrequency} from 'types/ipfs/campaign'
 import {ViewportScroller} from '@angular/common'
 import {BigNumber} from 'ethers'
-import {AssetService, AssetWithInfo} from '../../shared/services/blockchain/asset.service'
 import {StablecoinService} from '../../shared/services/blockchain/stablecoin.service'
 import {quillMods} from '../../shared/utils/quill'
 import {CampaignService} from '../../shared/services/blockchain/campaign.service'
@@ -18,6 +17,7 @@ import {ActivatedRoute} from '@angular/router'
 import {BehaviorSubject, combineLatest, Observable} from 'rxjs'
 import {withStatus, WithStatus} from '../../shared/utils/observables'
 import {resolveAddress} from '../../shared/utils/ethersjs'
+import {AssetService, AssetWithInfo} from '../../shared/services/blockchain/asset/asset.service'
 
 @Component({
   selector: 'app-admin-asset-campaign-new',
@@ -153,12 +153,12 @@ export class AdminAssetCampaignNewComponent {
     return numOfTokensToSell / totalTokens
   }
 
-  onHardCapBlur() {
-    this.createForm1.controls.tokenPrice.setValue(this.pricePerToken)
+  onHardCapBlur(data: AssetData) {
+    this.createForm1.controls.tokenPrice.setValue(this.pricePerToken(data))
   }
 
-  onHardCapTokensPercentageBlur() {
-    this.createForm1.controls.tokenPrice.setValue(this.pricePerToken)
+  onHardCapTokensPercentageBlur(data: AssetData) {
+    this.createForm1.controls.tokenPrice.setValue(this.pricePerToken(data))
   }
 
   onTokenPriceBlur(data: AssetData) {
@@ -281,7 +281,7 @@ export class AdminAssetCampaignNewComponent {
           ).pipe(
             switchMap(() => this.addTokensToCampaign(campaignAddress!, data)),
             switchMap(() => this.dialogService.info('Tokens added to campaign.', false)),
-            switchMap(() => this.routerService.navigate([`../${campaignAddress}`], {relativeTo: this.route})),
+            switchMap(() => this.routerService.navigate([`/admin/campaigns/${campaignAddress}`])),
           ),
         ),
       )

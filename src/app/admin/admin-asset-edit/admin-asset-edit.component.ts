@@ -1,13 +1,13 @@
 import {ChangeDetectionStrategy, Component} from '@angular/core'
 import {FormBuilder, FormGroup} from '@angular/forms'
 import {BehaviorSubject, Observable} from 'rxjs'
-import {AssetService, AssetWithInfo} from '../../shared/services/blockchain/asset.service'
 import {withStatus, WithStatus} from '../../shared/utils/observables'
 import {RouterService} from '../../shared/services/router.service'
 import {DialogService} from '../../shared/services/dialog.service'
 import {switchMap, tap} from 'rxjs/operators'
 import {ActivatedRoute} from '@angular/router'
 import {resolveAddress} from '../../shared/utils/ethersjs'
+import {AssetService, AssetWithInfo} from '../../shared/services/blockchain/asset/asset.service'
 
 @Component({
   selector: 'app-admin-asset-edit',

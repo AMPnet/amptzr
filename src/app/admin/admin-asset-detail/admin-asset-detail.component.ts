@@ -1,5 +1,4 @@
 import {ChangeDetectionStrategy, Component} from '@angular/core'
-import {AssetService, AssetWithInfo} from '../../shared/services/blockchain/asset.service'
 import {BehaviorSubject, Observable} from 'rxjs'
 import {withStatus, WithStatus} from '../../shared/utils/observables'
 import {ActivatedRoute} from '@angular/router'
@@ -7,6 +6,7 @@ import {filter, map, mergeMap, switchMap} from 'rxjs/operators'
 import {MetaService} from '../../shared/services/meta.service'
 import {CampaignService, CampaignWithInfo} from '../../shared/services/blockchain/campaign.service'
 import {resolveAddress} from '../../shared/utils/ethersjs'
+import {AssetService, AssetWithInfo} from '../../shared/services/blockchain/asset/asset.service'
 
 @Component({
   selector: 'app-admin-asset-detail',

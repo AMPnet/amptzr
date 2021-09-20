@@ -1,7 +1,6 @@
 import {ChangeDetectionStrategy, Component} from '@angular/core'
 import {combineLatest, Observable, of} from 'rxjs'
 import {withStatus, WithStatus} from '../../shared/utils/observables'
-import {AssetService, AssetWithInfo} from '../../shared/services/blockchain/asset.service'
 import {BigNumber} from 'ethers'
 import {CampaignService, CampaignStats, CampaignWithInfo} from '../../shared/services/blockchain/campaign.service'
 import {ActivatedRoute} from '@angular/router'
@@ -12,6 +11,7 @@ import {PercentPipe} from '@angular/common'
 import {LinkPreviewResponse, LinkPreviewService} from '../../shared/services/backend/link-preview.service'
 import {StablecoinService} from '../../shared/services/blockchain/stablecoin.service'
 import {DialogService} from '../../shared/services/dialog.service'
+import {AssetService, AssetWithInfo} from '../../shared/services/blockchain/asset/asset.service'
 
 @Component({
   selector: 'app-admin-campaign-detail',

@@ -1,8 +1,8 @@
 import {ChangeDetectionStrategy, Component, Input, OnInit} from '@angular/core'
-import {AssetWithInfo} from '../../shared/services/blockchain/asset.service'
 import {Observable} from 'rxjs'
 import {withStatus, WithStatus} from '../../shared/utils/observables'
 import {CampaignService, CampaignWithInfo} from '../../shared/services/blockchain/campaign.service'
+import {AssetWithInfo} from '../../shared/services/blockchain/asset/asset.service'
 
 @Component({
   selector: 'app-admin-issuer-asset-item',

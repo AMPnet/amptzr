@@ -13,7 +13,6 @@ import {IpfsService} from '../services/ipfs/ipfs.service'
 import {IssuerPathPipe} from '../pipes/issuer-path.pipe'
 import {getWindow} from '../utils/browser'
 import {DOCUMENT} from '@angular/common'
-import {resolveAddress} from '../utils/ethersjs'
 import {NameService} from '../services/blockchain/name.service'
 
 @Injectable({

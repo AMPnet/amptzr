@@ -18,7 +18,7 @@ export class IssuerPathPipe implements PipeTransform {
     path = Array.isArray(value) ? value.join('/') : String(value)
 
     if (path.startsWith('/')) {
-      const identifier = this.preferenceQuery.issuer.slug
+      const identifier = this.preferenceQuery.issuer.address
       if (identifier && !environment.fixed.issuer) {
         path = `/${identifier}`.concat(path)
       }
