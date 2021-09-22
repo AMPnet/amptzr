@@ -24,6 +24,7 @@ import {AdminAssetCampaignNewComponent} from './admin/admin-asset-campaign-new/a
 import {AdminCampaignEditComponent} from './admin/admin-campaign-edit/admin-campaign-edit.component'
 import {AdminCampaignDetailComponent} from './admin/admin-campaign-detail/admin-campaign-detail.component'
 import {AdminCampaignAddTokensComponent} from './admin/admin-campaign-add-tokens/admin-campaign-add-tokens.component'
+import {AdminIssuerNewComponent} from './admin/admin-issuer-new/admin-issuer-new.component'
 
 const appRoutes: Routes = [
   {
@@ -40,6 +41,7 @@ const appRoutes: Routes = [
         ],
       },
       {path: 'faq', component: FaqComponent},
+      {path: 'admin/issuer/new', component: AdminIssuerNewComponent},
       {
         path: 'admin', canActivate: [AuthGuard, AdminGuard], children: [
           {path: '', pathMatch: 'full', redirectTo: 'issuer'},

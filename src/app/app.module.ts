@@ -81,6 +81,7 @@ import {AdminCampaignEditComponent} from './admin/admin-campaign-edit/admin-camp
 import {AdminCampaignAddTokensComponent} from './admin/admin-campaign-add-tokens/admin-campaign-add-tokens.component'
 import {AdminCampaignDetailComponent} from './admin/admin-campaign-detail/admin-campaign-detail.component'
 import {AdminAssetCampaignNewComponent} from './admin/admin-asset-campaign-new/admin-asset-campaign-new.component'
+import {AdminIssuerNewComponent} from './admin/admin-issuer-new/admin-issuer-new.component'
 
 @NgModule({
   declarations: [
@@ -145,6 +146,7 @@ import {AdminAssetCampaignNewComponent} from './admin/admin-asset-campaign-new/a
     AdminCampaignEditComponent,
     AdminCampaignAddTokensComponent,
     AdminCampaignDetailComponent,
+    AdminIssuerNewComponent,
   ],
   imports: [
     BrowserModule,
