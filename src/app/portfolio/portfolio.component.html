@@ -40,17 +40,20 @@
                      src="{{ item.campaign.infoData.photo | toUrlIPFS }}" alt="Project image">
               </a>
             </div>
-            <div class="w-full bg-white rounded-b-3xl lg:rounded-none lg:rounded-r-3xl p-6">
-              <div class="flex">
-                <div class="bg-gray-200 px-8 rounded-full py-2 flex items-center">
-                  <span class="font-bold">{{ item.tokenValue | formatUnit:'bignumToWei' | currencyDefault }}</span>
-                  <span class="ml-2">Invested</span>
+            <div class="flex flex-col justify-between w-full bg-white rounded-b-3xl lg:rounded-none lg:rounded-r-3xl
+                        p-6">
+              <div>
+                <div class="flex">
+                  <div class="bg-gray-200 px-8 rounded-full py-2 flex items-center">
+                    <span class="font-bold">{{ item.tokenValue | formatUnit:'bignumToWei' | currencyDefault }}</span>
+                    <span class="ml-2">Invested</span>
+                  </div>
                 </div>
-              </div>
-              <div class="text-3xl mt-4 lg:text-4xl tracking-wider font-light uppercase">
-                <a routerLink="{{ '/offers/' + item.campaign.contractAddress | issuerPath }}">
-                  {{ item.campaign.infoData.name }}
-                </a>
+                <div class="text-3xl mt-4 lg:text-4xl tracking-wider font-light uppercase">
+                  <a routerLink="{{ '/offers/' + item.campaign.contractAddress | issuerPath }}">
+                    {{ item.campaign.infoData.name }}
+                  </a>
+                </div>
               </div>
               <div class="mt-2 flex flex-col lg:flex-row justify-start lg:justify-between">
                 <div class="w-full lg:mr-16">
@@ -58,8 +61,8 @@
                 </div>
                 <div class="flex items-end">
                   <button *ngIf="!item.campaign.finalized" app-action-button
-                          class="w-full lg:w-52 lg:px-20 lg:ml-8 mt-8 lg:mt-0 py-2 bg-transparent
-                          text-black font-semibold rounded-full whitespace-nowrap"
+                          class="w-full lg:w-52 lg:px-20 lg:ml-8 mt-8 lg:mt-0 py-2 bg-red-500
+                                 text-white rounded-full whitespace-nowrap"
                           [onClick]="cancel(item.campaign.contractAddress, item.campaign.flavor).bind(this)"
                           text="Cancel Investment">
                   </button>
