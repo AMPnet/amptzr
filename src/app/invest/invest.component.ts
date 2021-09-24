@@ -2,7 +2,6 @@ import {ChangeDetectionStrategy, Component, ɵmarkDirty} from '@angular/core'
 import {AbstractControl, FormBuilder, FormGroup, ValidationErrors} from '@angular/forms'
 import {BehaviorSubject, combineLatest, Observable, of, throwError} from 'rxjs'
 import {withStatus, WithStatus} from '../shared/utils/observables'
-import {CampaignService, CampaignWithInfo} from '../shared/services/blockchain/campaign.service'
 import {map, shareReplay, switchMap, take, tap} from 'rxjs/operators'
 import {ActivatedRoute} from '@angular/router'
 import {StablecoinService} from '../shared/services/blockchain/stablecoin.service'
@@ -10,7 +9,9 @@ import {DialogService} from '../shared/services/dialog.service'
 import {RouterService} from '../shared/services/router.service'
 import {SessionQuery} from '../session/state/session.query'
 import {InvestService, PreInvestData} from '../shared/services/invest.service'
-import {resolveAddress} from '../shared/utils/ethersjs'
+import {CampaignService, CampaignWithInfo} from '../shared/services/blockchain/campaign/campaign.service'
+import {NameService} from '../shared/services/blockchain/name.service'
+import {CampaignFlavor} from '../shared/services/blockchain/flavors'
 
 @Component({
   selector: 'app-invest',
@@ -33,6 +34,7 @@ export class InvestComponent {
 
   constructor(private fb: FormBuilder,
               private campaignService: CampaignService,
+              private nameService: NameService,
               private sessionQuery: SessionQuery,
               private stablecoin: StablecoinService,
               private dialogService: DialogService,
@@ -40,18 +42,18 @@ export class InvestComponent {
               private router: RouterService,
               private route: ActivatedRoute) {
     const campaignId = this.route.snapshot.params.id
-    const campaignAddress$ = resolveAddress(campaignId, this.campaignService.getAddressByName(campaignId)).pipe(
+    const campaignCommon$ = this.nameService.getCampaign(campaignId).pipe(
       shareReplay(1),
     )
 
-    this.campaign$ = campaignAddress$.pipe(
-      switchMap(address => this.campaignService.getCampaignWithInfo(address)),
+    this.campaign$ = campaignCommon$.pipe(
+      switchMap(campaignCommon => this.campaignService.getCampaignInfo(campaignCommon.campaign)),
       shareReplay(1),
     )
 
     this.campaignWithStatus$ = withStatus(this.campaign$)
 
-    this.preInvestData$ = campaignAddress$.pipe(
+    this.preInvestData$ = campaignCommon$.pipe(
       switchMap(address => this.investService.preInvestData(address)),
       tap(stats => {
         if (stats.min === stats.max) this.investmentForm.setValue({amount: stats.min})
@@ -130,6 +132,7 @@ export class InvestComponent {
     return combineLatest([this.campaign$]).pipe(take(1),
       switchMap(([campaign]) => this.campaignService.invest(
         campaign.contractAddress,
+        campaign.flavor as CampaignFlavor,
         this.investmentForm.value.amount,
       )),
       switchMap(() => this.router.navigate(['/portfolio'])),

@@ -8,7 +8,6 @@ import {ViewportScroller} from '@angular/common'
 import {BigNumber} from 'ethers'
 import {StablecoinService} from '../../shared/services/blockchain/stablecoin.service'
 import {quillMods} from '../../shared/utils/quill'
-import {CampaignService} from '../../shared/services/blockchain/campaign.service'
 import {map, switchMap} from 'rxjs/operators'
 import {TokenPrice} from '../../shared/utils/token-price'
 import {RouterService} from '../../shared/services/router.service'
@@ -18,6 +17,7 @@ import {BehaviorSubject, combineLatest, Observable} from 'rxjs'
 import {withStatus, WithStatus} from '../../shared/utils/observables'
 import {resolveAddress} from '../../shared/utils/ethersjs'
 import {AssetService, AssetWithInfo} from '../../shared/services/blockchain/asset/asset.service'
+import {CampaignService} from '../../shared/services/blockchain/campaign/campaign.service'
 
 @Component({
   selector: 'app-admin-asset-campaign-new',

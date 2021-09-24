@@ -1,73 +1,58 @@
 import {Injectable} from '@angular/core'
-import {QueryService} from './query.service'
-import {Observable, of} from 'rxjs'
-import {map} from 'rxjs/operators'
+import {
+  AssetCommonStateWithName,
+  CampaignCommonStateWithName,
+  IssuerCommonStateWithName,
+  QueryService,
+} from './query.service'
+import {Observable} from 'rxjs'
 import {PreferenceQuery} from '../../../preference/state/preference.query'
-import {AssetFlavor, IssuerFlavor} from './flavors'
 
 @Injectable({
   providedIn: 'root',
 })
 export class NameService {
-  // contract$ = combineLatest([
-  //   this.queryService.contract$,
-  //   this.preferenceQuery.network$.pipe(
-  //     map(network => network.tokenizerConfig.nameRegistry),
-  //   ),
-  // ])
-
   constructor(private queryService: QueryService,
               private preferenceQuery: PreferenceQuery) {
   }
 
-  getIssuers(ids: string[]): Observable<IssuerCommonStateWithName[]> {
-    // return this.contract$.pipe(
-    //   switchMap(([contract, nameRegistry]) =>
-    //     this.isAddress(ids[0]) ?
-    //       contract.getIssuersByAddress(ids, nameRegistry) :
-    //       contract.getIssuersByAddress(ids, nameRegistry)
-    //   ),
-    // )
-    return of([{
-      contractAddress: ids[0],
-      flavor: IssuerFlavor.ISSUER,
-      version: '1.0.3',
-      name: 'issuer-name',
-    }])
-  }
-
   getIssuer(id: string): Observable<IssuerCommonStateWithName> {
-    return this.getIssuers([id]).pipe(map(res => res[0]))
+    return this.isAddress(id) ?
+      this.queryService.getIssuerForAddress(id) :
+      this.queryService.getIssuerForName(id)
   }
 
-  getAssets(ids: string[]) {
-    // return this.contract$.pipe(
-    //   switchMap(([contract, nameRegistry]) =>
-    //     this.isAddress(ids[0]) ?
-    //       contract.getAssetsByAddress(ids, nameRegistry) :
-    //       contract.getAssetsByAddress(ids, nameRegistry)
-    //   ),
-    // )
-    return of([{
-      contractAddress: ids[0],
-      flavor: AssetFlavor.ASSET,
-      version: '1.0.3',
-      name: 'asset-name',
-    }])
+  getAsset(id: string): Observable<AssetCommonStateWithName> {
+    return this.isAddress(id) ?
+      this.queryService.getAssetForAddress(id) :
+      this.queryService.getAssetForName(id)
   }
 
-  getCampaigns(ids: string[]) {
+  getCampaign(id: string): Observable<CampaignCommonStateWithName> {
+    return this.isAddress(id) ?
+      this.queryService.getCampaignForAddress(id) :
+      this.queryService.getCampaignForName(id)
+  }
 
+  getAssetsForIssuer(id: string): Observable<AssetCommonStateWithName[]> {
+    return this.isAddress(id) ?
+      this.queryService.getAssetsForIssuerAddress(id) :
+      this.queryService.getAssetsForIssuerName(id)
+  }
+
+  getCampaignsForIssuer(id: string) {
+    return this.isAddress(id) ?
+      this.queryService.getCampaignsForIssuerAddress(id) :
+      this.queryService.getCampaignsForIssuerName(id)
+  }
+
+  getCampaignsForAsset(id: string) {
+    return this.isAddress(id) ?
+      this.queryService.getCampaignsForAssetAddress(id) :
+      this.queryService.getCampaignsForAssetName(id)
   }
 
   private isAddress(value: string): boolean {
     return value.startsWith('0x')
   }
-}
-
-interface IssuerCommonStateWithName {
-  version: string,
-  flavor: IssuerFlavor,
-  contractAddress: string,
-  name: string
 }

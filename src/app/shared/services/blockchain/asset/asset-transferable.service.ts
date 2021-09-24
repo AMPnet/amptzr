@@ -57,7 +57,8 @@ export class AssetTransferableService {
           creator: creator,
           issuer: data.issuer,
           apxRegistry: this.preferenceQuery.network.tokenizerConfig.apxRegistry,
-          ansName: data.ansName,
+          nameRegistry: this.preferenceQuery.network.tokenizerConfig.nameRegistry,
+          mappedName: data.slug,
           initialTokenSupply: data.initialTokenSupply,
           whitelistRequiredForRevenueClaim: data.whitelistRequiredForRevenueClaim,
           whitelistRequiredForLiquidationClaim: data.whitelistRequiredForLiquidationClaim,
@@ -89,7 +90,7 @@ export class AssetTransferableService {
 
 interface CreateTransferableAssetData {
   issuer: string,
-  ansName: string,
+  slug: string,
   initialTokenSupply: BigNumberish,
   whitelistRequiredForRevenueClaim: boolean,
   whitelistRequiredForLiquidationClaim: boolean,
@@ -99,11 +100,9 @@ interface CreateTransferableAssetData {
 }
 
 export interface TransferableAssetState {
-  id: BigNumber;
+  flavor: string;
+  version: string;
   contractAddress: string;
-  ansName: string;
-  ansId: BigNumber;
-  createdBy: string;
   owner: string;
   initialTokenSupply: BigNumber;
   whitelistRequiredForRevenueClaim: boolean;

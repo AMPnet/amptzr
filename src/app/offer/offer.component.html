@@ -5,7 +5,7 @@
         <div class=" w-full rounded-3xl pb-12 shadow-md mx-2 lg:mx-auto max-w-6xl h-full bg-white flex flex-col">
           <div class="relative">
             <img class="rounded-t-3xl lg:h-96 lg:mx-auto w-full object-cover"
-                 [src]="offer.photo | toUrlIPFS"
+                 [src]="offer.infoData.photo | toUrlIPFS"
                  alt="Offer photo">
             <app-offer-investment-info
               [offer]="offer" display="wide"
@@ -17,7 +17,7 @@
 
             <!-- LEFT COLUMN -->
             <div class="w-full leading-normal mt-8 lg:mt-8">
-              <h1 class="text-4xl font-light tracking-wider leading-relaxed">{{ offer.name }}</h1>
+              <h1 class="text-4xl font-light tracking-wider leading-relaxed">{{ offer.infoData.name }}</h1>
 
               <div class="mt-4">
                 <app-funding-progress [campaign]="offer"
@@ -26,10 +26,10 @@
               </div>
 
               <div class="mt-4 text-lg font-light text-gray-500">
-                {{ offer.about }}
+                {{ offer.infoData.about }}
               </div>
 
-              <ng-container *ngIf="(offer.description | toTextIPFS | async) as descriptionRes">
+              <ng-container *ngIf="(offer.infoData.description | toTextIPFS | async) as descriptionRes">
                 <div *ngIf="descriptionRes.value as description" class="mt-4 font-light text-gray-700">
                   <quill-view [content]="description" format="html" (onEditorCreated)="quillMods($event)">
                   </quill-view>
@@ -56,7 +56,7 @@
               <div class="fixed lg:relative lg:w-full bottom-4 right-4 lg:right-0 px-4 lg:px-0 w-7/12">
                 <button app-action-button
                         [onClick]="goToInvest(offer.contractAddress).bind(this)"
-                        [disabled]="offer.finalized || offer.cancelled"
+                        [disabled]="offer.finalized || offer.canceled"
                         text="Invest"
                         class="w-full mr-8 lg:mr-0 py-3 shadow-xl rounded-full bg-indigo-800
                       text-white mt-12 flex items-center justify-center disabled:bg-gray-400">
@@ -75,17 +75,18 @@
               </div>
 
               <button app-action-button
-                      *ngIf="!offer.cancelled && !offer.finalized &&
-                              offer.totalFundsRaised.gte(offer.softCap) &&
+                      *ngIf="!offer.canceled && !offer.finalized &&
+                              offer.fundsRaised.gte(offer.softCap) &&
+                              offer.flavor === 'CfManagerSoftcapV1' &&
                               offer.owner === address.value"
                       [onClick]="finalize(offer.contractAddress).bind(this)"
                       text="Finalize"
                       class="w-full py-2 mt-2 shadow-xl rounded-full bg-green-600 text-white disabled:bg-gray-400">
               </button>
 
-              <ng-container *ngIf="offer.documents.length > 0">
+              <ng-container *ngIf="offer.infoData.documents.length > 0">
                 <div class="mt-10 text-lg uppercase font-light">Project Documents</div>
-                <div *ngFor="let document of offer.documents" class="mt-4 flex items-center">
+                <div *ngFor="let document of offer.infoData.documents" class="mt-4 flex items-center">
                   <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path
                       d="M8 20V21C8 21.7956 8.31607 22.5587 8.87868 23.1213C9.44129 23.6839 10.2044 24 11 24H21C21.7956 24 22.5587 23.6839 23.1213 23.1213C23.6839 22.5587 24 21.7956 24 21V20M20 16L16 20M16 20L12 16M16 20V8"
@@ -98,7 +99,7 @@
                 </div>
               </ng-container>
 
-              <ng-container *ngIf="offer.newsURLs.length > 0">
+              <ng-container *ngIf="offer.infoData.newsURLs.length > 0">
                 <div class="mt-10 text-lg uppercase font-light">Related News</div>
                 <ng-container *ngIf="links$ | async as linksRes">
                   <div class="flex flex-col mt-2 px-4 bg-gray-100 rounded-lg divide-y-2">

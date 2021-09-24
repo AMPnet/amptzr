@@ -15,6 +15,7 @@ import {AssetBasicService, AssetState} from './asset-basic.service'
 import {Provider} from '@ethersproject/providers'
 import {AssetTransferableService, TransferableAssetState} from './asset-transferable.service'
 import {AssetFlavor} from '../flavors'
+import {AssetCommonState} from './asset.common'
 
 @Injectable({
   providedIn: 'root',
@@ -34,25 +35,25 @@ export class AssetService {
   }
 
   // TODO: remove this and use query service
-  getAssets(issuer: string): Observable<AssetWithInfo[]> {
-    return this.assetBasicService.factoryContract$.pipe(
-      switchMap(contract => from(contract.getInstancesForIssuer(issuer)).pipe(
-        switchMap(assets => assets.length === 0 ? of([]) : combineLatest(
-          assets.map(asset => this.getAssetWithInfo(asset))),
-        ))),
-    )
-  }
+  // getAssets(issuer: string): Observable<AssetWithInfo[]> {
+  //   return this.assetBasicService.factoryContract$.pipe(
+  //     switchMap(contract => from(contract.getInstancesForIssuer(issuer)).pipe(
+  //       switchMap(assets => assets.length === 0 ? of([]) : combineLatest(
+  //         assets.map(asset => this.getAssetWithInfo(asset))),
+  //       ))),
+  //   )
+  // }
 
   // TODO: remove this and use query service
-  getAddressByName(ansName: string): Observable<string> {
-    return this.assetBasicService.factoryContract$.pipe(
-      switchMap(contract => contract.namespace(this.preferenceQuery.issuer.address, ansName)),
-    )
-  }
+  // getAddressByName(ansName: string): Observable<string> {
+  //   return this.assetBasicService.factoryContract$.pipe(
+  //     switchMap(contract => contract.namespace(this.preferenceQuery.issuer.address, ansName)),
+  //   )
+  // }
 
-  getCommonState(address: string, signerOrProvider: Signer | Provider): Observable<AssetState> {
+  getCommonState(address: string, signerOrProvider: Signer | Provider): Observable<AssetCommonState> {
     return of(this.assetBasicService.contract(address, signerOrProvider)).pipe(
-      switchMap(contract => contract.getState()), // TODO: set to getBasicState
+      switchMap(contract => contract.commonState()),
     )
   }
 
@@ -62,9 +63,9 @@ export class AssetService {
     return of(address).pipe(
       switchMap(address => {
         switch (flavor) {
-          case AssetFlavor.TRANSFERABLE:
+          case 'AssetTransferableV1':
             return this.assetTransferableService.getState(address, signerOrProvider)
-          case AssetFlavor.ASSET:
+          case 'AssetV1':
           default:
             return this.assetBasicService.getState(address, signerOrProvider)
         }
@@ -72,18 +73,21 @@ export class AssetService {
     )
   }
 
-  getAssetWithInfo(address: string, fullInfo = false): Observable<AssetWithInfo> {
+  getAssetWithInfo(address: string, fullInfo = false): Observable<CommonAssetWithInfo> {
     return this.sessionQuery.provider$.pipe(
       switchMap(provider => this.getCommonState(address, provider)),
       switchMap(state => this.ipfsService.get<IPFSAsset>(state.info).pipe(
-        map(info => ({...state, ...info})),
+        map(info => ({...state, infoData: info})),
       )),
       switchMap(asset => fullInfo ? combineLatest([
-        this.ipfsService.get<IPFSText>(asset.description),
+        this.ipfsService.get<IPFSText>(asset.infoData.description),
       ]).pipe(
         map(([descriptionRes]) => ({
           ...asset,
-          description: descriptionRes.content,
+          infoData: {
+            ...asset.infoData,
+            descriptionData: descriptionRes.content,
+          },
         })),
       ) : of(asset)),
     )
@@ -120,9 +124,9 @@ export class AssetService {
     return of(data).pipe(
       switchMap(data => {
         switch (flavor) {
-          case AssetFlavor.TRANSFERABLE:
+          case 'AssetTransferableV1':
             return this.assetTransferableService.create(data)
-          case AssetFlavor.ASSET:
+          case 'AssetV1':
           default:
             return this.assetBasicService.create(data)
         }
@@ -155,12 +159,14 @@ export class AssetService {
   }
 }
 
-export type AssetWithInfo = AssetState & IPFSAsset
-export type TransferableAssetWithInfo = TransferableAssetState & IPFSAsset
+export type AssetInfo = { infoData: IPFSAsset }
+export type CommonAssetWithInfo = AssetCommonState & AssetInfo
+export type AssetWithInfo = AssetState & AssetInfo
+export type TransferableAssetWithInfo = TransferableAssetState & AssetInfo
 
 interface CreateAssetData {
   issuer: string,
-  ansName: string,
+  slug: string,
   initialTokenSupply: BigNumberish,
   whitelistRequiredForRevenueClaim: boolean,
   whitelistRequiredForLiquidationClaim: boolean,

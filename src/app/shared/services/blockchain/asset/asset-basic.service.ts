@@ -50,7 +50,8 @@ export class AssetBasicService {
           creator: this.sessionQuery.getValue().address!,
           issuer: data.issuer,
           apxRegistry: this.preferenceQuery.network.tokenizerConfig.apxRegistry,
-          ansName: data.ansName,
+          nameRegistry: this.preferenceQuery.network.tokenizerConfig.nameRegistry,
+          mappedName: data.slug,
           initialTokenSupply: data.initialTokenSupply,
           transferable: false,
           whitelistRequiredForRevenueClaim: data.whitelistRequiredForLiquidationClaim,
@@ -82,7 +83,7 @@ export class AssetBasicService {
 
 interface CreateBasicAssetData {
   issuer: string,
-  ansName: string,
+  slug: string,
   initialTokenSupply: BigNumberish,
   whitelistRequiredForRevenueClaim: boolean,
   whitelistRequiredForLiquidationClaim: boolean,
@@ -93,13 +94,12 @@ interface CreateBasicAssetData {
 
 
 export interface AssetState {
-  id: BigNumber;
+  flavor: string;
+  version: string;
   contractAddress: string;
-  ansName: string;
-  ansId: BigNumber;
-  createdBy: string;
   owner: string;
   initialTokenSupply: BigNumber;
+  transferable: boolean;
   whitelistRequiredForRevenueClaim: boolean;
   whitelistRequiredForLiquidationClaim: boolean;
   assetApprovedByIssuer: boolean;
@@ -116,5 +116,5 @@ export interface AssetState {
   liquidated: boolean;
   liquidationFundsTotal: BigNumber;
   liquidationTimestamp: BigNumber;
-  liquidationFundsClaimed: BigNumber
+  liquidationFundsClaimed: BigNumber;
 }
