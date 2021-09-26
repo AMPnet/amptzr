@@ -1,7 +1,7 @@
 <div class="flex flex-col justify-start lg:flex-row w-full my-4 shadow-xl rounded-4xl bg-white">
   <div class="flex justify-center relative w-full lg:w-1/5 mt-4 lg:ml-4">
-    <img *ngIf="asset.logo; else noImage" class="w-40 h-40 object-cover rounded-full"
-         src="{{ asset.logo | toUrlIPFS }}" alt="Asset logo">
+    <img *ngIf="asset.infoData.logo; else noImage" class="w-40 h-40 object-cover rounded-full"
+         src="{{ asset.infoData.logo | toUrlIPFS }}" alt="Asset logo">
     <ng-template #noImage>
       <div class="w-full lg:w-40 h-40 bg-gray-200 rounded-t-4xl lg:rounded-full"></div>
     </ng-template>
@@ -16,7 +16,7 @@
       </div>
 
       <div class="flex items-center gap-2">
-        <span>Token supply:</span><b>{{ asset.initialTokenSupply | formatUnit:'bignumToWei':18 | number }}</b>
+        <span>Token supply:</span><b>{{ asset.totalSupply | formatUnit:'bignumToWei':18 | number }}</b>
       </div>
 
       <div class="flex items-center flex-wrap gap-2 mb-8">
@@ -31,7 +31,7 @@
             <a *ngFor="let campaign of campaigns"
                [routerLink]="('/admin/campaigns/' + campaign.contractAddress) | issuerPath"
                class="px-8 py-0.5 bg-blue-200  hover:bg-indigo-800 hover:text-white rounded-full">
-              {{ campaign.name }}
+              {{ campaign.infoData.name }}
             </a>
           </ng-container>
 

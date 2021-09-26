@@ -55,7 +55,7 @@
               <!-- Floating Invest button -->
               <div class="fixed lg:relative lg:w-full bottom-4 right-4 lg:right-0 px-4 lg:px-0 w-7/12">
                 <button app-action-button
-                        [onClick]="goToInvest(offer.contractAddress).bind(this)"
+                        [onClick]="goToInvest(offer).bind(this)"
                         [disabled]="offer.finalized || offer.canceled"
                         text="Invest"
                         class="w-full mr-8 lg:mr-0 py-3 shadow-xl rounded-full bg-indigo-800
@@ -79,7 +79,7 @@
                               offer.fundsRaised.gte(offer.softCap) &&
                               offer.flavor === 'CfManagerSoftcapV1' &&
                               offer.owner === address.value"
-                      [onClick]="finalize(offer.contractAddress).bind(this)"
+                      [onClick]="finalize(offer).bind(this)"
                       text="Finalize"
                       class="w-full py-2 mt-2 shadow-xl rounded-full bg-green-600 text-white disabled:bg-gray-400">
               </button>

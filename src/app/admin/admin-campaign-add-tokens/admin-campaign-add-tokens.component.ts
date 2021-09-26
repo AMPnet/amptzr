@@ -1,5 +1,4 @@
 import {ChangeDetectionStrategy, Component, ɵmarkDirty} from '@angular/core'
-import {CampaignService, CampaignStats, CampaignWithInfo} from '../../shared/services/blockchain/campaign.service'
 import {AbstractControl, FormBuilder, FormGroup, ValidationErrors, Validators} from '@angular/forms'
 import {PreferenceQuery} from '../../preference/state/preference.query'
 import {IssuerPathPipe} from '../../shared/pipes/issuer-path.pipe'
@@ -11,8 +10,14 @@ import {BigNumber} from 'ethers'
 import {filter, map, switchMap, take, tap} from 'rxjs/operators'
 import {combineLatest, Observable} from 'rxjs'
 import {withStatus, WithStatus} from '../../shared/utils/observables'
-import {resolveAddress} from '../../shared/utils/ethersjs'
-import {AssetService, AssetWithInfo} from '../../shared/services/blockchain/asset/asset.service'
+import {AssetService, CommonAssetWithInfo} from '../../shared/services/blockchain/asset/asset.service'
+import {
+  CampaignService,
+  CampaignStats,
+  CampaignWithInfo,
+} from '../../shared/services/blockchain/campaign/campaign.service'
+import {NameService} from '../../shared/services/blockchain/name.service'
+import {CampaignFlavor} from '../../shared/services/blockchain/flavors'
 
 @Component({
   selector: 'app-admin-campaign-add-tokens',
@@ -26,6 +31,7 @@ export class AdminCampaignAddTokensComponent {
   fundingForm: FormGroup
 
   constructor(private campaignService: CampaignService,
+              private nameService: NameService,
               private preferenceQuery: PreferenceQuery,
               private issuerPathPipe: IssuerPathPipe,
               private stablecoinService: StablecoinService,
@@ -35,8 +41,8 @@ export class AdminCampaignAddTokensComponent {
               private dialogService: DialogService,
               private fb: FormBuilder) {
     const campaignId = this.route.snapshot.params.campaignId
-    const campaign$ = resolveAddress(campaignId, this.campaignService.getAddressByName(campaignId)).pipe(
-      switchMap(address => this.campaignService.getCampaignWithInfo(address, true)),
+    const campaign$ = this.nameService.getCampaign(campaignId).pipe(
+      switchMap(campaign => this.campaignService.getCampaignWithInfo(campaign.campaign.contractAddress, true)),
     )
 
     this.campaignData$ = withStatus(
@@ -44,12 +50,13 @@ export class AdminCampaignAddTokensComponent {
         switchMap(campaign => combineLatest([
           this.assetService.getAssetWithInfo(campaign.asset, true),
           this.assetService.balance(campaign.asset),
+          this.campaignService.stats(campaign.contractAddress, campaign.flavor as CampaignFlavor),
         ]).pipe(
-          map(([asset, assetBalance]) => ({
+          map(([asset, assetBalance, stats]) => ({
             asset,
             assetBalance,
             campaign,
-            stats: this.campaignService.stats(campaign),
+            stats,
           })),
         )),
       ),
@@ -84,7 +91,7 @@ export class AdminCampaignAddTokensComponent {
       return 0
     }
 
-    const totalTokens = this.stablecoinService.format(data.asset.initialTokenSupply, 18)
+    const totalTokens = this.stablecoinService.format(data.asset.totalSupply, 18)
     return numOfTokensToSell / totalTokens
   }
 
@@ -135,7 +142,7 @@ export class AdminCampaignAddTokensComponent {
 }
 
 interface CampaignData {
-  asset: AssetWithInfo,
+  asset: CommonAssetWithInfo,
   assetBalance: BigNumber,
   campaign: CampaignWithInfo,
   stats: CampaignStats,

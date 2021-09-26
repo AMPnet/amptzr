@@ -9,8 +9,8 @@ import {VenlySubsignerService} from '../shared/services/subsigners/venly-subsign
 import {WalletConnectSubsignerService} from '../shared/services/subsigners/walletconnect-subsigner.service'
 import {MatDialogRef} from '@angular/material/dialog'
 import {RouterService} from '../shared/services/router.service'
-import {IssuerService} from '../shared/services/blockchain/issuer.service'
 import {getWindow} from '../shared/utils/browser'
+import {IssuerService} from '../shared/services/blockchain/issuer/issuer.service'
 
 @Component({
   selector: 'app-auth',

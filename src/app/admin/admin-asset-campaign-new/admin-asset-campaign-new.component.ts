@@ -15,9 +15,9 @@ import {DialogService} from '../../shared/services/dialog.service'
 import {ActivatedRoute} from '@angular/router'
 import {BehaviorSubject, combineLatest, Observable} from 'rxjs'
 import {withStatus, WithStatus} from '../../shared/utils/observables'
-import {resolveAddress} from '../../shared/utils/ethersjs'
-import {AssetService, AssetWithInfo} from '../../shared/services/blockchain/asset/asset.service'
+import {AssetService, CommonAssetWithInfo} from '../../shared/services/blockchain/asset/asset.service'
 import {CampaignService} from '../../shared/services/blockchain/campaign/campaign.service'
+import {NameService} from '../../shared/services/blockchain/name.service'
 
 @Component({
   selector: 'app-admin-asset-campaign-new',
@@ -46,6 +46,7 @@ export class AdminAssetCampaignNewComponent {
   }
 
   constructor(private campaignService: CampaignService,
+              private nameService: NameService,
               private viewportScroller: ViewportScroller,
               private preferenceQuery: PreferenceQuery,
               private issuerPathPipe: IssuerPathPipe,
@@ -56,8 +57,8 @@ export class AdminAssetCampaignNewComponent {
               private dialogService: DialogService,
               private fb: FormBuilder) {
     const assetId = this.route.snapshot.params.id
-    const asset$ = resolveAddress(assetId, this.assetService.getAddressByName(assetId)).pipe(
-      switchMap(address => this.assetService.getAssetWithInfo(address, true)),
+    const asset$ = this.nameService.getAsset(assetId).pipe(
+      switchMap(asset => this.assetService.getAssetWithInfo(asset.asset.contractAddress, true)),
     )
     const tokenBalance$ = asset$.pipe(
       switchMap(asset => this.assetService.balance(asset.contractAddress)),
@@ -74,7 +75,7 @@ export class AdminAssetCampaignNewComponent {
 
     this.createForm1 = this.fb.group({
       name: ['', Validators.required],
-      ansName: ['', [Validators.required, Validators.pattern('[A-Za-z0-9][A-Za-z0-9_-]*')]],
+      slug: ['', [Validators.required, Validators.pattern('[A-Za-z0-9][A-Za-z0-9_-]*')]],
       hardCap: [0, Validators.required],
       softCap: [0, Validators.required],
       hardCapTokensPercentage: [0, Validators.required],
@@ -121,12 +122,12 @@ export class AdminAssetCampaignNewComponent {
     }
 
     const currentSupply = this.stablecoinService.format(data.balance, 18)
-    const initialSupply = this.stablecoinService.format(data.asset.initialTokenSupply, 18)
+    const initialSupply = this.stablecoinService.format(data.asset.totalSupply, 18)
     return currentSupply / initialSupply
   }
 
   pricePerToken(data: AssetData) {
-    const totalTokens = this.stablecoinService.format(data.asset.initialTokenSupply, 18)
+    const totalTokens = this.stablecoinService.format(data.asset.totalSupply, 18)
     const percentage = this.createForm1.value.hardCapTokensPercentage
     const numOfTokensToSell = (totalTokens * percentage)
 
@@ -149,7 +150,7 @@ export class AdminAssetCampaignNewComponent {
       return 0
     }
 
-    const totalTokens = this.stablecoinService.format(data.asset.initialTokenSupply, 18)
+    const totalTokens = this.stablecoinService.format(data.asset.totalSupply, 18)
     return numOfTokensToSell / totalTokens
   }
 
@@ -251,7 +252,6 @@ export class AdminAssetCampaignNewComponent {
 
   create(data: AssetData) {
     return () => {
-      const ansName = this.createForm1.value.ansName
       return this.campaignService.uploadInfo({
         name: this.createForm1.value.name,
         photo: this.createForm2.value.logo?.[0],
@@ -264,7 +264,7 @@ export class AdminAssetCampaignNewComponent {
         newsURLs: this.newsUrls.value,
       }).pipe(
         switchMap(uploadRes => this.campaignService.create({
-          ansName: ansName,
+          slug: this.createForm1.value.slug,
           assetAddress: data.asset.contractAddress,
           initialPricePerToken: TokenPrice.format(this.createForm1.value.tokenPrice),
           softCap: this.stablecoinService.parse(this.createForm1.value.softCap),
@@ -272,7 +272,7 @@ export class AdminAssetCampaignNewComponent {
           maxInvestment: this.getMaxInvestmentValue(data),
           whitelistRequired: this.createForm1.value.isIdVerificationRequired,
           info: uploadRes.path,
-        })),
+        }, 'CfManagerSoftcapV1')), // TODO: set a correct campaign type from dropdown
         switchMap(campaignAddress =>
           this.dialogService.info(
             'Campaign successfully created! You will be asked to sign a transaction to transfer' +
@@ -298,7 +298,7 @@ export class AdminAssetCampaignNewComponent {
       return 0
     }
 
-    const totalTokens = this.stablecoinService.format(data.asset.initialTokenSupply, 18)
+    const totalTokens = this.stablecoinService.format(data.asset.totalSupply, 18)
     return numOfTokensToSell / totalTokens
   }
 
@@ -409,7 +409,7 @@ export class AdminAssetCampaignNewComponent {
     }
 
     return this.stablecoinService.parse(
-      this.stablecoinService.format(data.asset.initialTokenSupply, 18) * this.createForm1.value.tokenPrice,
+      this.stablecoinService.format(data.asset.totalSupply, 18) * this.createForm1.value.tokenPrice,
     )
   }
 
@@ -432,6 +432,6 @@ enum Step {
 }
 
 interface AssetData {
-  asset: AssetWithInfo,
+  asset: CommonAssetWithInfo,
   balance: BigNumber,
 }

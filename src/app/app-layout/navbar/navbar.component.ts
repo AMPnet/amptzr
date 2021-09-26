@@ -7,7 +7,7 @@ import {filter, map, tap} from 'rxjs/operators'
 import {TailwindService} from '../../shared/services/tailwind.service'
 import {UserService} from '../../shared/services/user.service'
 import {SignerService} from '../../shared/services/signer.service'
-import {IssuerService} from '../../shared/services/blockchain/issuer.service'
+import {IssuerService} from '../../shared/services/blockchain/issuer/issuer.service'
 
 @Component({
   selector: 'app-navbar',

@@ -1,12 +1,14 @@
 import {ChangeDetectionStrategy, Component} from '@angular/core'
-import {IssuerService, IssuerWithInfo} from '../../shared/services/blockchain/issuer.service'
 import {StablecoinService} from '../../shared/services/blockchain/stablecoin.service'
-import {Observable} from 'rxjs'
+import {combineLatest, Observable} from 'rxjs'
 import {AbstractControl, FormBuilder, FormGroup, ValidationErrors, Validators} from '@angular/forms'
-import {switchMap, tap} from 'rxjs/operators'
+import {map, switchMap, tap} from 'rxjs/operators'
 import {DialogService} from '../../shared/services/dialog.service'
 import {RouterService} from '../../shared/services/router.service'
 import {PreferenceStore} from '../../preference/state/preference.store'
+import {IssuerService, IssuerWithInfo} from '../../shared/services/blockchain/issuer/issuer.service'
+import {IssuerBasicService, IssuerBasicState} from '../../shared/services/blockchain/issuer/issuer-basic.service'
+import {WithStatus} from '../../shared/utils/observables'
 
 @Component({
   selector: 'app-admin-issuer-edit',
@@ -15,7 +17,7 @@ import {PreferenceStore} from '../../preference/state/preference.store'
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AdminIssuerEditComponent {
-  issuer$: Observable<IssuerWithInfo>
+  issuer$: Observable<IssuerView>
   stableCoinSymbol = this.stableCoinService.symbol
 
   updateForm: FormGroup
@@ -24,6 +26,7 @@ export class AdminIssuerEditComponent {
 
   constructor(private routerService: RouterService,
               private issuerService: IssuerService,
+              private issuerBasicService: IssuerBasicService,
               private stableCoinService: StablecoinService,
               private preferenceStore: PreferenceStore,
               private dialogService: DialogService,
@@ -40,18 +43,22 @@ export class AdminIssuerEditComponent {
       ownerAddress: ['', [Validators.required, AdminIssuerEditComponent.validAddress]],
     })
 
+
     this.issuer$ = this.issuerService.issuer$.pipe(
+      switchMap(issuer => this.issuerBasicService.getStateFromCommon(issuer).pipe(
+        map(issuerBasic => ({...issuer, issuerBasic})),
+      )),
       tap(issuer => {
         this.updateForm.reset()
         this.updateForm.setValue({
           ...this.updateForm.value,
-          name: issuer.name || '',
-          rampApiKey: issuer.rampApiKey || '',
+          name: issuer.infoData.name || '',
+          rampApiKey: issuer.infoData.rampApiKey || '',
         })
 
         this.updateWalletApproverAddressForm.reset()
         this.updateWalletApproverAddressForm.setValue({
-          walletApproverAddress: issuer.walletApprover || '',
+          walletApproverAddress: issuer.issuerBasic?.walletApprover || '',
         })
 
         this.updateOwnerAddressForm.reset()
@@ -68,7 +75,7 @@ export class AdminIssuerEditComponent {
         this.updateForm.value.name,
         this.updateForm.value.logo?.[0],
         this.updateForm.value.rampApiKey,
-        issuer,
+        issuer.infoData,
       ).pipe(
         switchMap(uploadRes => this.issuerService.updateInfo(issuer.contractAddress, uploadRes.path)),
         switchMap(() => this.dialogService.info('Issuer successfully updated!', false)),
@@ -117,3 +124,5 @@ export class AdminIssuerEditComponent {
     return {invalidAddress: true}
   }
 }
+
+type IssuerView = IssuerWithInfo & { issuerBasic: IssuerBasicState | undefined }

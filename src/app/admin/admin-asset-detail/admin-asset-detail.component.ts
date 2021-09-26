@@ -1,12 +1,13 @@
 import {ChangeDetectionStrategy, Component} from '@angular/core'
-import {BehaviorSubject, Observable} from 'rxjs'
+import {BehaviorSubject, combineLatest, Observable} from 'rxjs'
 import {withStatus, WithStatus} from '../../shared/utils/observables'
 import {ActivatedRoute} from '@angular/router'
 import {filter, map, mergeMap, switchMap} from 'rxjs/operators'
 import {MetaService} from '../../shared/services/meta.service'
-import {CampaignService, CampaignWithInfo} from '../../shared/services/blockchain/campaign.service'
-import {resolveAddress} from '../../shared/utils/ethersjs'
-import {AssetService, AssetWithInfo} from '../../shared/services/blockchain/asset/asset.service'
+import {AssetService, CommonAssetWithInfo} from '../../shared/services/blockchain/asset/asset.service'
+import {CampaignService, CampaignWithInfo} from '../../shared/services/blockchain/campaign/campaign.service'
+import {NameService} from '../../shared/services/blockchain/name.service'
+import {QueryService} from '../../shared/services/blockchain/query.service'
 
 @Component({
   selector: 'app-admin-asset-detail',
@@ -16,28 +17,33 @@ import {AssetService, AssetWithInfo} from '../../shared/services/blockchain/asse
 })
 export class AdminAssetDetailComponent {
   assetSub = new BehaviorSubject<void>(undefined)
-  asset$: Observable<WithStatus<AssetWithInfo>>
+  asset$: Observable<WithStatus<CommonAssetWithInfo>>
   campaigns$: Observable<WithStatus<CampaignWithInfo[]>>
 
   constructor(private assetService: AssetService,
               private campaignService: CampaignService,
+              private nameService: NameService,
+              private queryService: QueryService,
               private metaService: MetaService,
               private route: ActivatedRoute) {
     const assetId = this.route.snapshot.params.id
 
-    this.asset$ = this.assetSub.asObservable().pipe(
-      switchMap(() => withStatus(
-        // TODO: fix resolve address via name service
-        resolveAddress(assetId, this.assetService.getAddressByName(assetId)).pipe(
-          switchMap(address => this.assetService.getAssetWithInfo(address)),
-        ),
-      )),
+    this.asset$ = withStatus(
+      this.nameService.getAsset(assetId).pipe(
+        switchMap(asset => this.assetService.getAssetWithInfo(asset.asset.contractAddress, true)),
+      ),
     )
+
     this.campaigns$ = this.asset$.pipe(
       filter(asset => !!asset.value),
       map(asset => asset.value!.contractAddress),
-      // TODO: fetch campaigns from query service
-      mergeMap(assetContractAddress => withStatus(this.campaignService.getCampaigns(assetContractAddress))),
+      mergeMap(address => withStatus(
+          this.queryService.getCampaignsForAssetAddress(address).pipe(
+            switchMap(campaigns => combineLatest(
+              campaigns.map(campaign => this.campaignService.getCampaignInfo(campaign.campaign))),
+            )),
+        ),
+      ),
     )
   }
 }

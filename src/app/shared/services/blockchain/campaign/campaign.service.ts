@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core'
-import {combineLatest, from, Observable, of} from 'rxjs'
+import {combineLatest, from, Observable, of, throwError} from 'rxjs'
 import {IpfsService, IPFSText} from '../../ipfs/ipfs.service'
 import {PreferenceQuery} from '../../../../preference/state/preference.query'
 import {StablecoinService} from '../stablecoin.service'
@@ -13,7 +13,7 @@ import {SessionQuery} from '../../../../session/state/session.query'
 import {ErrorService} from '../../error.service'
 import {IPFSAddResult} from '../../ipfs/ipfs.service.types'
 import {Provider} from '@ethersproject/providers'
-import {CampaignBasicService, CampaignState} from './campaign-basic.service'
+import {CampaignBasicService} from './campaign-basic.service'
 import {CampaignFlavor} from '../flavors'
 import {CampaignCommonState} from './campaign.common'
 
@@ -29,18 +29,8 @@ export class CampaignService {
               private dialogService: DialogService,
               private stablecoin: StablecoinService,
               private campaignBasicService: CampaignBasicService,
-              private gasService: GasService,
-              private preferenceQuery: PreferenceQuery) {
+              private gasService: GasService) {
   }
-
-  // getCampaigns(asset: string): Observable<CampaignWithInfo[]> {
-  //   return this.campaignBasicService.factoryContract$.pipe(
-  //     switchMap(contract => from(contract.getInstancesForAsset(asset)).pipe(
-  //       switchMap(campaigns => campaigns.length === 0 ? of([]) : combineLatest(
-  //         campaigns.map(campaign => this.getCampaignWithInfo(campaign))),
-  //       ))),
-  //   )
-  // }
 
   getCommonState(address: string, signerOrProvider: Signer | Provider): Observable<CampaignCommonState> {
     return of(this.campaignBasicService.contract(address, signerOrProvider)).pipe(
@@ -48,24 +38,16 @@ export class CampaignService {
     )
   }
 
-  getState(
-    address: string, flavor: CampaignFlavor, signerOrProvider: Signer | Provider,
-  ): Observable<CampaignState> {
-    return of(address).pipe(
-      switchMap(address => {
-        switch (flavor) {
-          case 'CfManagerSoftcapV1':
-          default:
-            return this.campaignBasicService.getState(address, signerOrProvider)
-        }
-      }),
-    )
-  }
-
   getCampaignWithInfo(address: string, fullInfo = false): Observable<CampaignWithInfo> {
     return this.sessionQuery.provider$.pipe(
       switchMap(provider => this.getCommonState(address, provider)),
-      switchMap(state => this.getCampaignInfo(state)),
+      switchMap(state => this.getCampaignInfo(state, fullInfo)),
+    )
+  }
+
+  getCampaignInfo(state: CampaignCommonState, fullInfo = false): Observable<CampaignWithInfo> {
+    return this.ipfsService.get<IPFSCampaign>(state.info).pipe(
+      map(info => ({...state, infoData: info})),
       switchMap(campaign => fullInfo ? combineLatest([
         this.ipfsService.get<IPFSText>(campaign.infoData.description),
       ]).pipe(
@@ -77,12 +59,6 @@ export class CampaignService {
           },
         })),
       ) : of(campaign)),
-    )
-  }
-
-  getCampaignInfo(state: CampaignCommonState) {
-    return this.ipfsService.get<IPFSCampaign>(state.info).pipe(
-      map(info => ({...state, infoData: info})),
     )
   }
 
@@ -135,8 +111,27 @@ export class CampaignService {
   invest(address: string, flavor: CampaignFlavor, amount: number) {
     switch (flavor) {
       case 'CfManagerSoftcapV1':
-      default:
         return this.campaignBasicService.invest(address, amount)
+      default:
+        return throwError(`invest not implemented for campaign flavor ${flavor}`)
+    }
+  }
+
+  cancelInvestment(address: string, flavor: CampaignFlavor) {
+    switch (flavor) {
+      case 'CfManagerSoftcapV1':
+        return this.campaignBasicService.cancelInvestment(address)
+      default:
+        return throwError(`cancelInvestment not implemented for campaign flavor ${flavor}`)
+    }
+  }
+
+  isWhitelistRequired(campaign: CampaignWithInfo): Observable<boolean> {
+    switch (campaign.flavor) {
+      case 'CfManagerSoftcapV1':
+        return this.campaignBasicService.isWhitelistRequired(campaign.contractAddress)
+      default:
+        return of(false)
     }
   }
 
@@ -145,6 +140,14 @@ export class CampaignService {
       case 'CfManagerSoftcapV1':
       default:
         return this.campaignBasicService.stats(address)
+    }
+  }
+
+  finalize(address: string, flavor: CampaignFlavor) {
+    switch (flavor) {
+      case 'CfManagerSoftcapV1':
+      default:
+        return this.campaignBasicService.finalize(address)
     }
   }
 
@@ -207,7 +210,7 @@ interface UploadInfoData {
   newsURLs: string[]
 }
 
-interface CampaignStats {
+export interface CampaignStats {
   userMin: number
   userMax: number
   tokenBalance: number

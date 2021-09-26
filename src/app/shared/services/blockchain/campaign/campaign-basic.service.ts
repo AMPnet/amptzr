@@ -19,7 +19,7 @@ import {findLog} from '../../../utils/ethersjs'
 import {ErrorService} from '../../error.service'
 import {TokenPrice} from '../../../utils/token-price'
 import {Provider} from '@ethersproject/providers'
-
+import {CampaignCommonState} from './campaign.common'
 
 @Injectable({
   providedIn: 'root',
@@ -54,10 +54,16 @@ export class CampaignBasicService {
     return CfManagerSoftcap__factory.connect(address, signerOrProvider)
   }
 
-  getState(address: string, signerOrProvider: Signer | Provider): Observable<CampaignState> {
-    return of(this.contract(address, signerOrProvider)).pipe(
+  getState(address: string): Observable<CampaignBasicState> {
+    return this.sessionQuery.provider$.pipe(
+      map(provider => this.contract(address, provider)),
       switchMap(contract => contract.getState()),
     )
+  }
+
+  getStateFromCommon(campaign: CampaignCommonState): Observable<CampaignBasicState | undefined> {
+    return campaign.flavor === 'CfManagerSoftcapV1' ?
+      this.getState(campaign.contractAddress) : of(undefined)
   }
 
   create(data: CreateBasicCampaignData): Observable<string | undefined> {
@@ -108,8 +114,7 @@ export class CampaignBasicService {
   }
 
   stats(campaignAddress: string): Observable<BasicCampaignStats> {
-    return this.sessionQuery.provider$.pipe(
-      switchMap(provider => this.getState(campaignAddress, provider)),
+    return this.getState(campaignAddress).pipe(
       map(campaign => {
         const userMin = this.stablecoin.format(campaign.minInvestment)
         const userMax = this.stablecoin.format(campaign.maxInvestment)
@@ -140,9 +145,7 @@ export class CampaignBasicService {
   }
 
   isWhitelistRequired(address: string): Observable<boolean> {
-    return this.sessionQuery.provider$.pipe(
-      switchMap(provider => this.getState(address, provider)),
-      take(1),
+    return this.getState(address).pipe(take(1),
       map(state => state.whitelistRequired),
     )
   }
@@ -176,7 +179,7 @@ export class CampaignBasicService {
   }
 }
 
-export interface CampaignState {
+export interface CampaignBasicState {
   flavor: string;
   version: string;
   contractAddress: string;

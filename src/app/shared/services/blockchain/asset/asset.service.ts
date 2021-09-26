@@ -3,7 +3,7 @@ import {PreferenceQuery} from '../../../../preference/state/preference.query'
 import {StablecoinService} from '../stablecoin.service'
 import {GasService} from '../gas.service'
 import {BigNumber, BigNumberish, Signer} from 'ethers'
-import {combineLatest, from, Observable, of} from 'rxjs'
+import {combineLatest, from, Observable, of, throwError} from 'rxjs'
 import {map, switchMap} from 'rxjs/operators'
 import {IPFSAsset} from '../../../../../../types/ipfs/asset'
 import {Injectable} from '@angular/core'
@@ -66,8 +66,9 @@ export class AssetService {
           case 'AssetTransferableV1':
             return this.assetTransferableService.getState(address, signerOrProvider)
           case 'AssetV1':
-          default:
             return this.assetBasicService.getState(address, signerOrProvider)
+          default:
+            return throwError(`getState not implemented for asset flavor ${flavor}`)
         }
       }),
     )
@@ -76,22 +77,29 @@ export class AssetService {
   getAssetWithInfo(address: string, fullInfo = false): Observable<CommonAssetWithInfo> {
     return this.sessionQuery.provider$.pipe(
       switchMap(provider => this.getCommonState(address, provider)),
+      switchMap(asset => this.getAssetInfo(asset, fullInfo)),
+    )
+  }
+
+  getAssetInfo(asset: AssetCommonState, fullInfo = false): Observable<CommonAssetWithInfo> {
+    return of(asset).pipe(
       switchMap(state => this.ipfsService.get<IPFSAsset>(state.info).pipe(
         map(info => ({...state, infoData: info})),
       )),
-      switchMap(asset => fullInfo ? combineLatest([
-        this.ipfsService.get<IPFSText>(asset.infoData.description),
+      switchMap(assetWithInfo => fullInfo ? combineLatest([
+        this.ipfsService.get<IPFSText>(assetWithInfo.infoData.description),
       ]).pipe(
         map(([descriptionRes]) => ({
-          ...asset,
+          ...assetWithInfo,
           infoData: {
-            ...asset.infoData,
+            ...assetWithInfo.infoData,
             descriptionData: descriptionRes.content,
           },
         })),
-      ) : of(asset)),
+      ) : of(assetWithInfo)),
     )
   }
+
 
   uploadInfo(logo: File, description?: string, asset?: IPFSAsset): Observable<IPFSAddResult> {
     return combineLatest([

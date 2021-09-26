@@ -6,14 +6,12 @@ import {
   QueryService,
 } from './query.service'
 import {Observable} from 'rxjs'
-import {PreferenceQuery} from '../../../preference/state/preference.query'
 
 @Injectable({
   providedIn: 'root',
 })
 export class NameService {
-  constructor(private queryService: QueryService,
-              private preferenceQuery: PreferenceQuery) {
+  constructor(private queryService: QueryService) {
   }
 
   getIssuer(id: string): Observable<IssuerCommonStateWithName> {

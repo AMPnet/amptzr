@@ -77,7 +77,7 @@
                     </label>
                   </div>
                   <img class="w-full h-72 object-cover"
-                       [src]="((updateForm.get('logo')?.value?.[0] | safe:'fileUrl') || campaign.photo) | toUrlIPFS"
+                       [src]="((updateForm.get('logo')?.value?.[0] | safe:'fileUrl') || campaign.infoData.photo) | toUrlIPFS"
                        alt="Campaign image">
                 </div>
               </div>

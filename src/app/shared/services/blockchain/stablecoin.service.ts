@@ -24,7 +24,7 @@ export class StablecoinService {
   ]).pipe(
     distinctUntilChanged(),
     switchMap(([issuer, provider]) => this.issuerService.getState(
-      issuer.issuer.contractAddress, issuer.issuer.flavor as IssuerFlavor, provider,
+      issuer.issuer.contractAddress, issuer.issuer.flavor as IssuerFlavor,
     ).pipe(
       map(issuer => ERC20__factory.connect(issuer.stablecoin, provider)),
     )),

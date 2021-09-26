@@ -8,7 +8,6 @@ import {DialogService} from '../../shared/services/dialog.service'
 import {IssuerPathPipe} from '../../shared/pipes/issuer-path.pipe'
 import {v4 as uuidV4} from 'uuid'
 import {AssetService} from '../../shared/services/blockchain/asset/asset.service'
-import {AssetFlavor} from '../../shared/services/blockchain/flavors'
 
 @Component({
   selector: 'app-admin-asset-new',
@@ -43,14 +42,14 @@ export class AdminAssetNewComponent {
     ).pipe(
       switchMap(uploadRes => this.assetService.create({
         issuer: this.preferenceQuery.issuer.address,
-        ansName: uuidV4(),
+        slug: uuidV4(),
         name: this.createForm.value.name,
         initialTokenSupply: this.stablecoinService.parse(this.createForm.value.initialTokenSupply, 18),
         symbol: this.createForm.value.symbol,
         whitelistRequiredForRevenueClaim: this.createForm.value.whitelistRequiredForRevenueClaim,
         whitelistRequiredForLiquidationClaim: this.createForm.value.whitelistRequiredForLiquidationClaim,
         info: uploadRes.path,
-      }, AssetFlavor.ASSET)), // TODO: set proper asset flavor from dropdown
+      }, 'AssetV1')), // TODO: set proper asset flavor from dropdown
       switchMap(assetAddress => this.dialogService.info('Asset successfully created!', false).pipe(
         tap(() => this.routerService.navigate([`/admin/assets/${assetAddress}`])),
       )),

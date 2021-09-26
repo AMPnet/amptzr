@@ -3,9 +3,8 @@ import {QueryService__factory} from '../../../../../types/ethers-contracts'
 import {SessionQuery} from '../../../session/state/session.query'
 import {filter, map, switchMap} from 'rxjs/operators'
 import {PreferenceQuery} from '../../../preference/state/preference.query'
-import {combineLatest, Observable, of} from 'rxjs'
+import {combineLatest, Observable} from 'rxjs'
 import {BigNumber} from 'ethers'
-import {CampaignService, CampaignWithInfo} from './campaign/campaign.service'
 import {CampaignCommonState} from './campaign/campaign.common'
 import {IssuerCommonState} from './issuer/issuer.common'
 import {AssetCommonState} from './asset/asset.common'
@@ -57,18 +56,12 @@ export class QueryService {
         issuer.address, address!,
         Object.values(network.tokenizerConfig.cfManagerFactory),
         network.tokenizerConfig.nameRegistry,
-      ) as Promise<PortfolioStateItem[]>),
-    switchMap(portfolio => portfolio.length === 0 ? of([]) : combineLatest(
-      portfolio.map(portfolio => this.campaignService.getCampaignInfo(portfolio.campaign).pipe(
-        map(campaignWithInfo => ({...portfolio, campaign: campaignWithInfo})),
-      ))),
-    ),
+      ) as Promise<PortfolioItem[]>),
     map(portfolio => portfolio.filter(item => item.tokenAmount > BigNumber.from(0))),
   )
 
   constructor(private sessionQuery: SessionQuery,
-              private preferenceQuery: PreferenceQuery,
-              private campaignService: CampaignService) {
+              private preferenceQuery: PreferenceQuery) {
   }
 
   getIssuerForAddress(address: string): Observable<IssuerCommonStateWithName> {
@@ -185,12 +178,8 @@ interface PortfolioInvested {
   tokenValue: BigNumber;
 }
 
-interface PortfolioStateItem extends PortfolioInvested {
+export interface PortfolioItem extends PortfolioInvested {
   campaign: CampaignCommonState;
-}
-
-interface PortfolioItem extends PortfolioInvested {
-  campaign: CampaignWithInfo;
 }
 
 export interface IssuerCommonStateWithName {

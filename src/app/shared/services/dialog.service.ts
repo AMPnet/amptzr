@@ -23,6 +23,7 @@ export class DialogService {
         message,
         cancelable,
       } as InfoDialogData<unknown>,
+      disableClose: !cancelable,
     }).afterClosed().pipe(
       map(res => !!(res as InfoDialogResponse<unknown>)?.confirmed),
     )

@@ -6,8 +6,8 @@ import {RouterService} from '../../shared/services/router.service'
 import {DialogService} from '../../shared/services/dialog.service'
 import {switchMap, tap} from 'rxjs/operators'
 import {ActivatedRoute} from '@angular/router'
-import {resolveAddress} from '../../shared/utils/ethersjs'
-import {AssetService, AssetWithInfo} from '../../shared/services/blockchain/asset/asset.service'
+import {AssetService, AssetWithInfo, CommonAssetWithInfo} from '../../shared/services/blockchain/asset/asset.service'
+import {NameService} from '../../shared/services/blockchain/name.service'
 
 @Component({
   selector: 'app-admin-asset-edit',
@@ -17,12 +17,13 @@ import {AssetService, AssetWithInfo} from '../../shared/services/blockchain/asse
 })
 export class AdminAssetEditComponent {
   assetSub = new BehaviorSubject<void>(undefined)
-  asset$: Observable<WithStatus<AssetWithInfo>>
+  asset$: Observable<WithStatus<CommonAssetWithInfo>>
 
   updateForm: FormGroup
 
   constructor(private route: ActivatedRoute,
               private routerService: RouterService,
+              private nameService: NameService,
               private assetService: AssetService,
               private dialogService: DialogService,
               private fb: FormBuilder) {
@@ -35,8 +36,8 @@ export class AdminAssetEditComponent {
     this.asset$ = this.assetSub.asObservable().pipe(
       switchMap(() => withStatus(
         // TODO: fix resolving address via name service
-        resolveAddress(assetId, this.assetService.getAddressByName(assetId)).pipe(
-          switchMap(address => this.assetService.getAssetWithInfo(address, true)),
+        this.nameService.getAsset(assetId).pipe(
+          switchMap(asset => this.assetService.getAssetWithInfo(asset.asset.contractAddress, true)),
         ),
       )),
       tap(asset => {
@@ -50,10 +51,10 @@ export class AdminAssetEditComponent {
     )
   }
 
-  update(asset: AssetWithInfo) {
+  update(asset: CommonAssetWithInfo) {
     return () => {
       return this.assetService.uploadInfo(
-        this.updateForm.value.logo?.[0], '', asset,
+        this.updateForm.value.logo?.[0], '', asset.infoData,
       ).pipe(
         switchMap(uploadRes => this.assetService.updateInfo(asset.contractAddress, uploadRes.path)),
         switchMap(() => this.dialogService.info('Asset successfully updated!', false)),

@@ -1,12 +1,12 @@
 import {ChangeDetectionStrategy, Component} from '@angular/core'
 import {FormBuilder, FormGroup, Validators} from '@angular/forms'
-import {IssuerService} from '../../shared/services/blockchain/issuer.service'
-import {finalize, switchMap} from 'rxjs/operators'
+import {switchMap} from 'rxjs/operators'
 import {SignerService} from '../../shared/services/signer.service'
 import {DialogService} from '../../shared/services/dialog.service'
 import {RouterService} from '../../shared/services/router.service'
 import {SessionQuery} from '../../session/state/session.query'
 import {UserService} from '../../shared/services/user.service'
+import {IssuerService} from '../../shared/services/blockchain/issuer/issuer.service'
 
 @Component({
   selector: 'app-admin-issuer-new',
@@ -28,7 +28,7 @@ export class AdminIssuerNewComponent {
               private fb: FormBuilder) {
     this.createForm = this.fb.group({
       name: ['', Validators.required],
-      ansName: ['', Validators.required],
+      slug: ['', Validators.required],
       logo: [undefined, Validators.required],
     })
   }
@@ -39,10 +39,10 @@ export class AdminIssuerNewComponent {
       this.createForm.value.logo?.[0],
       '',
     ).pipe(
-      switchMap(uploadRes => this.issuerService.create(
-        this.createForm.value.ansName,
-        uploadRes.path,
-      )),
+      switchMap(uploadRes => this.issuerService.create({
+        info: uploadRes.path,
+        mappedName: this.createForm.value.slug,
+      }, 'IssuerV1')),
       switchMap(issuerAddress => this.dialogService.info('Issuer successfully created!', false).pipe(
         switchMap(() => this.router.router.navigate([`/${issuerAddress}`])),
       )),

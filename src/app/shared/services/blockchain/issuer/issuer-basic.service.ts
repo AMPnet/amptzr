@@ -14,6 +14,11 @@ import {GasService} from '../gas.service'
 import {BigNumber, Signer} from 'ethers'
 import {IPFSAddResult} from '../../ipfs/ipfs.service.types'
 import {Provider} from '@ethersproject/providers'
+import {CampaignCommonState} from '../campaign/campaign.common'
+import {CampaignBasicState} from '../campaign/campaign-basic.service'
+import {AssetCommonState} from '../asset/asset.common'
+import {AssetBasicService} from '../asset/asset-basic.service'
+import {IssuerCommonState} from './issuer.common'
 
 @Injectable({
   providedIn: 'root',
@@ -36,10 +41,16 @@ export class IssuerBasicService {
     return Issuer__factory.connect(address, signerOrProvider)
   }
 
-  getState(address: string, signerOrProvider: Signer | Provider): Observable<IssuerBasicState> {
-    return of(this.contract(address, signerOrProvider)).pipe(
+  getState(address: string): Observable<IssuerBasicState> {
+    return this.sessionQuery.provider$.pipe(
+      map(provider => this.contract(address, provider)),
       switchMap(contract => contract.getState()),
     )
+  }
+
+  getStateFromCommon(issuer: IssuerCommonState): Observable<IssuerBasicState | undefined> {
+    return issuer.flavor === 'CfManagerSoftcapV1' ?
+      this.getState(issuer.contractAddress) : of(undefined)
   }
 
   create(data: CreateBasicIssuerData): Observable<string | undefined> {

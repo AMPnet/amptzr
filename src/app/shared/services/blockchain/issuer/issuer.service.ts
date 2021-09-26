@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core'
-import {combineLatest, from, Observable, of} from 'rxjs'
+import {combineLatest, from, Observable, of, throwError} from 'rxjs'
 import {filter, map, shareReplay, switchMap} from 'rxjs/operators'
 import {WithStatus, withStatus} from '../../../utils/observables'
 import {PreferenceQuery} from '../../../../preference/state/preference.query'
@@ -56,15 +56,14 @@ export class IssuerService {
     )
   }
 
-  getState(
-    address: string, flavor: IssuerFlavor, signerOrProvider: Signer | Provider,
-  ): Observable<IssuerBasicState> {
+  getState(address: string, flavor: IssuerFlavor): Observable<IssuerBasicState> {
     return of(address).pipe(
       switchMap(address => {
         switch (flavor) {
           case 'IssuerV1':
+            return this.issuerBasicService.getState(address)
           default:
-            return this.issuerBasicService.getState(address, signerOrProvider)
+            return throwError(`getState not implemented issuer flavor ${flavor}`)
         }
       }),
     )
@@ -117,6 +116,45 @@ export class IssuerService {
           case 'IssuerV1':
           default:
             return this.issuerBasicService.create(data)
+        }
+      }),
+    )
+  }
+
+  isWalletApproved(address: string): Observable<boolean> {
+    return this.preferenceQuery.issuer$.pipe(
+      switchMap(issuer => {
+        switch (issuer.flavor) {
+          case 'IssuerV1':
+            return this.issuerBasicService.isWalletApproved(address)
+          default:
+            return of(true)
+        }
+      }),
+    )
+  }
+
+  changeWalletApprover(issuerAddress: string, walletApproverAddress: string) {
+    return this.preferenceQuery.issuer$.pipe(
+      switchMap(issuer => {
+        switch (issuer.flavor) {
+          case 'IssuerV1':
+            return this.issuerBasicService.changeWalletApprover(issuerAddress, walletApproverAddress)
+          default:
+            return throwError(`changeWalletApprover not implemented issuer flavor ${issuer.flavor}`)
+        }
+      }),
+    )
+  }
+
+  changeOwner(issuerAddress: string, ownerAddress: string) {
+    return this.preferenceQuery.issuer$.pipe(
+      switchMap(issuer => {
+        switch (issuer.flavor) {
+          case 'IssuerV1':
+            return this.issuerBasicService.changeOwner(issuerAddress, ownerAddress)
+          default:
+            return throwError(`changeOwner not implemented for issuer flavor ${issuer.flavor}`)
         }
       }),
     )

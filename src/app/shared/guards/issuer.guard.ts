@@ -1,10 +1,9 @@
 import {Inject, Injectable} from '@angular/core'
 import {ActivatedRouteSnapshot, CanActivate, RouterStateSnapshot, UrlTree} from '@angular/router'
 import {combineLatest, Observable, of} from 'rxjs'
-import {map, switchMap, take, tap} from 'rxjs/operators'
+import {switchMap, take, tap} from 'rxjs/operators'
 import {PreferenceQuery} from '../../preference/state/preference.query'
 import {PreferenceStore} from '../../preference/state/preference.store'
-import {IssuerService} from '../services/blockchain/issuer.service'
 import {SessionQuery} from '../../session/state/session.query'
 import {environment} from '../../../environments/environment'
 import {StablecoinService} from '../services/blockchain/stablecoin.service'
@@ -14,6 +13,9 @@ import {IssuerPathPipe} from '../pipes/issuer-path.pipe'
 import {getWindow} from '../utils/browser'
 import {DOCUMENT} from '@angular/common'
 import {NameService} from '../services/blockchain/name.service'
+import {IssuerService} from '../services/blockchain/issuer/issuer.service'
+import {IssuerCommonStateWithName} from '../services/blockchain/query.service'
+import {IssuerFlavor} from '../services/blockchain/flavors'
 
 @Injectable({
   providedIn: 'root',
@@ -33,20 +35,15 @@ export class IssuerGuard implements CanActivate {
 
   canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<boolean | UrlTree> {
     const activation$ = of(environment.fixed.issuer || route.params.issuer as string).pipe(
-      // TODO: handle error cases
-      // TODO: handle getting issuers also by id (number)
-      switchMap(issuer => this.nameService.getIssuer(issuer).pipe(map(i => i.contractAddress))),
-      switchMap(issuerAddress => this.issuerService.getState(issuerAddress, this.sessionQuery.provider)),
+      switchMap(issuer => this.nameService.getIssuer(issuer)),
       tap(issuer => this.preferenceStore.update({
         issuer: {
-          address: issuer.contractAddress,
-          slug: issuer.ansName,
-          // TODO: use this to reset stale issuer in preference when issuerFactory address changes.
-          // we should automatically log out the current user in this case.
-          createdByAddress: issuer.createdBy,
+          address: issuer.issuer.contractAddress,
+          flavor: issuer.issuer.flavor as IssuerFlavor,
+          slug: issuer.mappedName,
         },
       })),
-      tap(issuer => this.setupManifest(issuer.contractAddress).subscribe()),
+      tap(issuer => this.setupManifest(issuer).subscribe()),
       // this is needed to reload the latest issuer config
       switchMap(() => combineLatest([this.stablecoin.contract$]).pipe(take(1))),
       switchMap(() => of(true)),
@@ -55,12 +52,12 @@ export class IssuerGuard implements CanActivate {
     return this.dialogService.overlayLoading(activation$, '')
   }
 
-  private setupManifest(issuerAddress: string) {
-    return this.issuerService.getIssuerWithInfo(issuerAddress).pipe(
+  private setupManifest(issuer: IssuerCommonStateWithName) {
+    return this.issuerService.getIssuerInfo(issuer.issuer).pipe(
       tap(issuer => {
         const manifest = {
-          name: issuer.name,
-          short_name: issuer.name,
+          name: issuer.infoData.name,
+          short_name: issuer.infoData.name,
           description: '',
           start_url: `${getWindow().location.origin}${this.issuerPathPipe.transform('/')}`,
           background_color: '#fff',

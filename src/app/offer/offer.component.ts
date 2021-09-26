@@ -16,6 +16,7 @@ import {TailwindService} from '../shared/services/tailwind.service'
 import {NameService} from '../shared/services/blockchain/name.service'
 import {CampaignService, CampaignWithInfo} from '../shared/services/blockchain/campaign/campaign.service'
 import {CampaignBasicService} from '../shared/services/blockchain/campaign/campaign-basic.service'
+import {CampaignFlavor} from '../shared/services/blockchain/flavors'
 
 @Component({
   selector: 'app-offer',
@@ -83,9 +84,9 @@ export class OfferComponent {
     )
   }
 
-  goToInvest(campaignAddress: string) {
+  goToInvest(campaign: CampaignWithInfo) {
     return () => {
-      return this.identityService.ensureIdentityChecked(campaignAddress).pipe(
+      return this.identityService.ensureIdentityChecked(campaign).pipe(
         // TODO: add check for balance > 0
         switchMap(() => this.profileService.ensureBasicInfo),
         switchMap(() => this.router.navigate(['invest'], {relativeTo: this.route})),
@@ -93,9 +94,11 @@ export class OfferComponent {
     }
   }
 
-  finalize(campaignAddress: string) {
+  finalize(campaign: CampaignWithInfo) {
     return () => {
-      return this.campaignBasicService.finalize(campaignAddress).pipe(
+      return this.campaignService.finalize(
+        campaign.contractAddress, campaign.flavor as CampaignFlavor,
+      ).pipe(
         switchMap(() => this.dialogService.success('The project has been finalized successfully.')),
         tap(() => this.campaignSub.next()),
       )
