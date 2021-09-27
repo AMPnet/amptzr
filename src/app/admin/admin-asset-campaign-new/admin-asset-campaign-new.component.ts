@@ -360,15 +360,6 @@ export class AdminAssetCampaignNewComponent {
   }
 
   private static validDateRange(formGroup: FormGroup): ValidationErrors | null {
-    const today = new Date().toISOString().split('T')[0]
-    if (formGroup.value.startDate < today) {
-      return {invalidStartDate: true}
-    }
-
-    if (formGroup.value.endDate < today) {
-      return {invalidEndDate: true}
-    }
-
     if (formGroup.value.startDate > formGroup.value.endDate) {
       return {invalidDateRange: true}
     }

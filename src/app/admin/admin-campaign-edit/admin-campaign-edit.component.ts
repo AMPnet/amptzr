@@ -19,8 +19,10 @@ import {NameService} from '../../shared/services/blockchain/name.service'
 })
 export class AdminCampaignEditComponent {
   campaign$: Observable<WithStatus<CampaignWithInfo>>
+  isAdvancedMode = false
 
   updateForm: FormGroup
+  updateInfoForm: FormGroup
   newsUrls: FormArray
 
   quillMods = quillMods
@@ -63,6 +65,11 @@ export class AdminCampaignEditComponent {
     })
     this.newsUrls = this.updateForm.get('newsUrls') as FormArray
 
+    this.isAdvancedMode = this.route.snapshot.queryParams.advanced
+    this.updateInfoForm = this.fb.group({
+      info: ['', Validators.required],
+    })
+
     const campaignId = this.route.snapshot.params.campaignId
     this.campaign$ = this.nameService.getCampaign(campaignId).pipe(
       switchMap(campaign => withStatus(this.campaignService.getCampaignInfo(campaign.campaign, true))),
@@ -89,6 +96,10 @@ export class AdminCampaignEditComponent {
             returnFrom: campaign.value.infoData.return.from || 0,
             returnTo: campaign.value.infoData.return.to || 0,
             isReturnValueFixed: isReturnValueFixed,
+          })
+
+          this.updateInfoForm.setValue({
+            info: campaign.value.info,
           })
 
           if (!campaign.value.infoData.return.from) {
@@ -188,6 +199,15 @@ export class AdminCampaignEditComponent {
       ).pipe(
         switchMap(uploadRes => this.campaignService.updateInfo(campaign.contractAddress, uploadRes.path)),
         switchMap(() => this.dialogService.info('Campaign successfully updated!', false)),
+        switchMap(() => this.routerService.navigate(['..'], {relativeTo: this.route})),
+      )
+    }
+  }
+
+  updateInfo(campaign: CampaignWithInfo) {
+    return () => {
+      return this.campaignService.updateInfo(campaign.contractAddress, this.updateInfoForm.value.info).pipe(
+        switchMap(() => this.dialogService.info('Campaign info successfully updated!', false)),
         switchMap(() => this.routerService.navigate(['..'], {relativeTo: this.route})),
       )
     }

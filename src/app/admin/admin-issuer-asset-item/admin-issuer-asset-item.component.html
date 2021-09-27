@@ -30,7 +30,7 @@
 
             <a *ngFor="let campaign of campaigns"
                [routerLink]="('/admin/campaigns/' + campaign.contractAddress) | issuerPath"
-               class="px-8 py-0.5 bg-blue-200  hover:bg-indigo-800 hover:text-white rounded-full">
+               class="px-8 py-0.5 bg-blue-200 hover:bg-indigo-800 hover:text-white rounded-full">
               {{ campaign.infoData.name }}
             </a>
           </ng-container>
