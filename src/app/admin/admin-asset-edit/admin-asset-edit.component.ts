@@ -35,7 +35,6 @@ export class AdminAssetEditComponent {
 
     this.asset$ = this.assetSub.asObservable().pipe(
       switchMap(() => withStatus(
-        // TODO: fix resolving address via name service
         this.nameService.getAsset(assetId).pipe(
           switchMap(asset => this.assetService.getAssetWithInfo(asset.asset.contractAddress, true)),
         ),

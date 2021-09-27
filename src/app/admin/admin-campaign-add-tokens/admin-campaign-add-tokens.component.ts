@@ -7,7 +7,7 @@ import {ActivatedRoute} from '@angular/router'
 import {RouterService} from '../../shared/services/router.service'
 import {DialogService} from '../../shared/services/dialog.service'
 import {BigNumber} from 'ethers'
-import {filter, map, switchMap, take, tap} from 'rxjs/operators'
+import {map, shareReplay, switchMap, take, tap} from 'rxjs/operators'
 import {combineLatest, Observable} from 'rxjs'
 import {withStatus, WithStatus} from '../../shared/utils/observables'
 import {AssetService, CommonAssetWithInfo} from '../../shared/services/blockchain/asset/asset.service'
@@ -26,7 +26,8 @@ import {CampaignFlavor} from '../../shared/services/blockchain/flavors'
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AdminCampaignAddTokensComponent {
-  campaignData$: Observable<WithStatus<CampaignData>>
+  campaignData$: Observable<CampaignData>
+  campaignDataWithStatus$: Observable<WithStatus<CampaignData>>
 
   fundingForm: FormGroup
 
@@ -45,22 +46,23 @@ export class AdminCampaignAddTokensComponent {
       switchMap(campaign => this.campaignService.getCampaignWithInfo(campaign.campaign.contractAddress, true)),
     )
 
-    this.campaignData$ = withStatus(
-      campaign$.pipe(
-        switchMap(campaign => combineLatest([
-          this.assetService.getAssetWithInfo(campaign.asset, true),
-          this.assetService.balance(campaign.asset),
-          this.campaignService.stats(campaign.contractAddress, campaign.flavor as CampaignFlavor),
-        ]).pipe(
-          map(([asset, assetBalance, stats]) => ({
-            asset,
-            assetBalance,
-            campaign,
-            stats,
-          })),
-        )),
-      ),
+    this.campaignData$ = campaign$.pipe(
+      switchMap(campaign => combineLatest([
+        this.assetService.getAssetWithInfo(campaign.asset, true),
+        this.assetService.balance(campaign.asset),
+        this.campaignService.stats(campaign.contractAddress, campaign.flavor as CampaignFlavor),
+      ]).pipe(
+        map(([asset, assetBalance, stats]) => ({
+          asset,
+          assetBalance,
+          campaign,
+          stats,
+        })),
+      )),
+      shareReplay(1),
     )
+
+    this.campaignDataWithStatus$ = withStatus(this.campaignData$)
 
     this.fundingForm = this.fb.group({
       amount: [0, [Validators.required], [this.validAmount.bind(this)]],
@@ -110,10 +112,12 @@ export class AdminCampaignAddTokensComponent {
 
   private validAmount(control: AbstractControl): Observable<ValidationErrors | null> {
     return combineLatest([this.campaignData$]).pipe(take(1),
-      filter(([campaignDataRes]) => !!campaignDataRes.value),
-      map(([campaignDataRes]) => campaignDataRes.value!),
-      map(data => {
+      map(([data]) => {
         const amount = control.value
+
+        if (amount <= 0) {
+          return {nonPositive: true}
+        }
 
         const fundingTokens = this.fundingTokensAmount(amount, data)
 

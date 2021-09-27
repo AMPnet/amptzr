@@ -8,6 +8,7 @@ export interface CampaignCommonState {
   owner: string;
   info: string;
   asset: string;
+  stablecoin: string;
   softCap: BigNumber;
   finalized: boolean;
   canceled: boolean;

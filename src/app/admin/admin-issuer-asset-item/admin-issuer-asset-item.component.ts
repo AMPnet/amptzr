@@ -1,5 +1,5 @@
 import {ChangeDetectionStrategy, Component, Input, OnInit} from '@angular/core'
-import {combineLatest, Observable} from 'rxjs'
+import {combineLatest, Observable, of} from 'rxjs'
 import {withStatus, WithStatus} from '../../shared/utils/observables'
 import {CampaignService, CampaignWithInfo} from '../../shared/services/blockchain/campaign/campaign.service'
 import {switchMap} from 'rxjs/operators'
@@ -22,11 +22,11 @@ export class AdminIssuerAssetItemComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    // TODO: fetch campaigns via query service
     this.campaigns$ = withStatus(
       this.queryService.getCampaignsForAssetAddress(this.asset.contractAddress).pipe(
-        switchMap(campaigns => combineLatest(
-          campaigns.map(campaign => this.campaignService.getCampaignInfo(campaign.campaign))),
+        switchMap(campaigns => campaigns.length > 0 ? combineLatest(
+            campaigns.map(campaign => this.campaignService.getCampaignInfo(campaign.campaign)),
+          ) : of([]),
         )),
     )
   }

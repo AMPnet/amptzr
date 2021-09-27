@@ -41,15 +41,6 @@ export class CampaignBasicService {
               private preferenceQuery: PreferenceQuery) {
   }
 
-  // getCampaigns(asset: string): Observable<CampaignWithInfo[]> {
-  //   return this.factoryContract$.pipe(
-  //     switchMap(contract => from(contract.getInstancesForAsset(asset)).pipe(
-  //       switchMap(campaigns => campaigns.length === 0 ? of([]) : combineLatest(
-  //         campaigns.map(campaign => this.getCampaignWithInfo(campaign))),
-  //       ))),
-  //   )
-  // }
-
   contract(address: string, signerOrProvider: Signer | Provider): CfManagerSoftcap {
     return CfManagerSoftcap__factory.connect(address, signerOrProvider)
   }

@@ -34,23 +34,6 @@ export class AssetService {
   ) {
   }
 
-  // TODO: remove this and use query service
-  // getAssets(issuer: string): Observable<AssetWithInfo[]> {
-  //   return this.assetBasicService.factoryContract$.pipe(
-  //     switchMap(contract => from(contract.getInstancesForIssuer(issuer)).pipe(
-  //       switchMap(assets => assets.length === 0 ? of([]) : combineLatest(
-  //         assets.map(asset => this.getAssetWithInfo(asset))),
-  //       ))),
-  //   )
-  // }
-
-  // TODO: remove this and use query service
-  // getAddressByName(ansName: string): Observable<string> {
-  //   return this.assetBasicService.factoryContract$.pipe(
-  //     switchMap(contract => contract.namespace(this.preferenceQuery.issuer.address, ansName)),
-  //   )
-  // }
-
   getCommonState(address: string, signerOrProvider: Signer | Provider): Observable<AssetCommonState> {
     return of(this.assetBasicService.contract(address, signerOrProvider)).pipe(
       switchMap(contract => contract.commonState()),
@@ -169,8 +152,6 @@ export class AssetService {
 
 export type AssetInfo = { infoData: IPFSAsset }
 export type CommonAssetWithInfo = AssetCommonState & AssetInfo
-export type AssetWithInfo = AssetState & AssetInfo
-export type TransferableAssetWithInfo = TransferableAssetState & AssetInfo
 
 interface CreateAssetData {
   issuer: string,

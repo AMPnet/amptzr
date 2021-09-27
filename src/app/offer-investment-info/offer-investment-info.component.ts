@@ -20,7 +20,7 @@ export class OfferInvestmentInfoComponent implements OnInit {
 
   campaignBasic$!: Observable<CampaignBasicState | undefined>
 
-  @HostBinding('class.hidden') hidden: boolean = false
+  @HostBinding('class.hidden') hidden: boolean = true
 
   constructor(private percentPipe: PercentPipe,
               private campaignService: CampaignService,
