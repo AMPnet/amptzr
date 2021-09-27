@@ -41,7 +41,6 @@ const appRoutes: Routes = [
         ],
       },
       {path: 'faq', component: FaqComponent},
-      {path: 'admin/issuer/new', component: AdminIssuerNewComponent},
       {
         path: 'admin', canActivate: [AuthGuard, AdminGuard], children: [
           {path: '', pathMatch: 'full', redirectTo: 'issuer'},
@@ -69,7 +68,10 @@ const issuerRoutes: Routes = [{
 
 const networkRoutes: Routes = [{
   path: !environment.fixed.chainID ? ':chainID' : '',
-  canActivate: [NetworkGuard], children: issuerRoutes,
+  canActivate: [NetworkGuard], children: [
+    {path: 'admin/issuers/new', component: AdminIssuerNewComponent},
+    ...issuerRoutes,
+  ],
 }]
 
 const routes: Routes = [

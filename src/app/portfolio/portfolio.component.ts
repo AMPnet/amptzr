@@ -3,7 +3,7 @@ import {withStatus} from '../shared/utils/observables'
 import {SessionQuery} from '../session/state/session.query'
 import {PortfolioItem, QueryService} from '../shared/services/blockchain/query.service'
 import {map, shareReplay, switchMap, tap} from 'rxjs/operators'
-import {BehaviorSubject, combineLatest, Observable} from 'rxjs'
+import {BehaviorSubject, combineLatest, Observable, of} from 'rxjs'
 import {DialogService} from '../shared/services/dialog.service'
 import {StablecoinService} from '../shared/services/blockchain/stablecoin.service'
 import {CampaignService, CampaignWithInfo} from '../shared/services/blockchain/campaign/campaign.service'
@@ -20,11 +20,11 @@ export class PortfolioComponent {
 
   portfolio$: Observable<PortfolioItemView[]> = this.portfolioSub.asObservable().pipe(
     switchMap(() => this.queryService.portfolio$),
-    switchMap(portfolio => combineLatest(
+    switchMap(portfolio => portfolio.length > 0 ? combineLatest(
       portfolio.map(item => this.campaignService.getCampaignInfo(item.campaign).pipe(
         map(i => ({...item, campaign: i})),
       )),
-    )),
+    ) : of([])),
     shareReplay({bufferSize: 1, refCount: true}),
   )
   portfolioWithStatus$ = withStatus(this.portfolio$)

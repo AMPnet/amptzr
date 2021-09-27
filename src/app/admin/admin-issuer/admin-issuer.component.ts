@@ -1,8 +1,8 @@
 import {ChangeDetectionStrategy, Component} from '@angular/core'
-import {combineLatest, Observable} from 'rxjs'
+import {combineLatest, Observable, of} from 'rxjs'
 import {StablecoinService} from '../../shared/services/blockchain/stablecoin.service'
 import {withStatus, WithStatus} from '../../shared/utils/observables'
-import {filter, map, mergeMap, switchMap} from 'rxjs/operators'
+import {filter, map, switchMap} from 'rxjs/operators'
 import {ReportService} from '../../shared/services/backend/report.service'
 import {AssetService, CommonAssetWithInfo} from '../../shared/services/blockchain/asset/asset.service'
 import {IssuerService, IssuerWithInfo} from '../../shared/services/blockchain/issuer/issuer.service'
@@ -44,11 +44,13 @@ export class AdminIssuerComponent {
     )
 
     this.assets$ = issuerContractAddress$.pipe(
-      mergeMap(address => withStatus(
-        this.queryService.getAssetsForIssuerAddress(address).pipe(
-          switchMap(assets => combineLatest(
-            assets.map(asset => this.assetService.getAssetInfo(asset.asset))),
-          ))),
+      switchMap(address => withStatus(
+          this.queryService.getAssetsForIssuerAddress(address).pipe(
+            switchMap(assets => assets.length > 0 ? combineLatest(
+                assets.map(asset => this.assetService.getAssetInfo(asset.asset)),
+              ) : of([]),
+            )),
+        ),
       ),
     )
   }

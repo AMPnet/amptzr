@@ -9,16 +9,16 @@
 
     <ng-container *ngIf="(campaignBasic$ | async) as campaignBasic">
       <div class="mt-1 lg:mt-auto" *ngIf="shouldShowMin">
-        <div class="font-bold lg:text-lg">
+        <span class="font-bold lg:text-lg">
           {{ campaignBasic.minInvestment | formatUnit:'bignumToWei' | currencyDefault }}
-        </div>
+        </span>
         <span class="ml-2 font-light" [class.text-sm]="display === 'wide'">Minimum investment</span>
       </div>
 
       <div class="mt-1 lg:mt-auto" *ngIf="shouldShowMax">
-        <div class="font-bold lg:text-lg">
+        <span class="font-bold lg:text-lg">
           {{ campaignBasic.maxInvestment | formatUnit:'bignumToWei' | currencyDefault }}
-        </div>
+        </span>
         <span class="ml-2 font-light text-sm">Max investment</span>
       </div>
     </ng-container>

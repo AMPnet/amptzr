@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core'
 import {QueryService__factory} from '../../../../../types/ethers-contracts'
 import {SessionQuery} from '../../../session/state/session.query'
-import {filter, map, switchMap} from 'rxjs/operators'
+import {filter, map, switchMap, tap} from 'rxjs/operators'
 import {PreferenceQuery} from '../../../preference/state/preference.query'
 import {combineLatest, Observable} from 'rxjs'
 import {BigNumber} from 'ethers'
@@ -25,9 +25,10 @@ export class QueryService {
     this.contract$,
     this.preferenceQuery.network$,
   ]).pipe(
+    tap(([contract, network]) => console.log('cont, net:', Object.values(network.tokenizerConfig.cfManagerFactory), network.tokenizerConfig.nameRegistry)),
     switchMap(([contract, network]) =>
       contract.getIssuers(
-        Object.values(network.tokenizerConfig.cfManagerFactory),
+        Object.values(network.tokenizerConfig.issuerFactory),
         network.tokenizerConfig.nameRegistry,
       )),
   )

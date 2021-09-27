@@ -32,10 +32,10 @@ export class AdminAssetNewComponent {
       symbol: ['', [Validators.required, Validators.maxLength(10), Validators.pattern('[A-Za-z0-9]*')]],
       whitelistRequiredForRevenueClaim: [false, Validators.required],
       whitelistRequiredForLiquidationClaim: [false, Validators.required],
+      flavor: ['AssetV1', Validators.required],
     })
   }
 
-  // TODO: create two methods for this depending on asset type
   create() {
     return this.assetService.uploadInfo(
       this.createForm.value.logo?.[0],
@@ -49,7 +49,7 @@ export class AdminAssetNewComponent {
         whitelistRequiredForRevenueClaim: this.createForm.value.whitelistRequiredForRevenueClaim,
         whitelistRequiredForLiquidationClaim: this.createForm.value.whitelistRequiredForLiquidationClaim,
         info: uploadRes.path,
-      }, 'AssetV1')), // TODO: set proper asset flavor from dropdown
+      }, this.createForm.value.flavor)),
       switchMap(assetAddress => this.dialogService.info('Asset successfully created!', false).pipe(
         tap(() => this.routerService.navigate([`/admin/assets/${assetAddress}`])),
       )),

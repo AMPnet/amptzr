@@ -1,5 +1,5 @@
 import {ChangeDetectionStrategy, Component} from '@angular/core'
-import {BehaviorSubject, combineLatest, Observable} from 'rxjs'
+import {BehaviorSubject, combineLatest, Observable, of} from 'rxjs'
 import {withStatus, WithStatus} from '../../shared/utils/observables'
 import {ActivatedRoute} from '@angular/router'
 import {filter, map, mergeMap, switchMap} from 'rxjs/operators'
@@ -38,11 +38,11 @@ export class AdminAssetDetailComponent {
       filter(asset => !!asset.value),
       map(asset => asset.value!.contractAddress),
       mergeMap(address => withStatus(
-          this.queryService.getCampaignsForAssetAddress(address).pipe(
-            switchMap(campaigns => combineLatest(
-              campaigns.map(campaign => this.campaignService.getCampaignInfo(campaign.campaign))),
-            )),
-        ),
+        this.queryService.getCampaignsForAssetAddress(address).pipe(
+          switchMap(campaigns => campaigns.length > 0 ? combineLatest(
+              campaigns.map(campaign => this.campaignService.getCampaignInfo(campaign.campaign)),
+            ) : of([]),
+          ))),
       ),
     )
   }

@@ -44,7 +44,7 @@ export class AdminIssuerNewComponent {
         mappedName: this.createForm.value.slug,
       }, 'IssuerV1')),
       switchMap(issuerAddress => this.dialogService.info('Issuer successfully created!', false).pipe(
-        switchMap(() => this.router.router.navigate([`/${issuerAddress}`])),
+        switchMap(() => this.router.router.navigate([`/${issuerAddress}`])), // TODO: fix this redirect
       )),
     )
   }

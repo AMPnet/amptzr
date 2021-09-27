@@ -1,23 +1,15 @@
 import {Injectable} from '@angular/core'
 import {combineLatest, from, Observable, of} from 'rxjs'
-import {filter, first, map, shareReplay, switchMap, take} from 'rxjs/operators'
-import {WithStatus, withStatus} from '../../../utils/observables'
+import {first, map, switchMap, take} from 'rxjs/operators'
 import {PreferenceQuery} from '../../../../preference/state/preference.query'
-import {IpfsService} from '../../ipfs/ipfs.service'
 import {DialogService} from '../../dialog.service'
 import {Issuer, Issuer__factory, IssuerFactory, IssuerFactory__factory} from '../../../../../../types/ethers-contracts'
 import {SignerService} from '../../signer.service'
-import {IPFSIssuer} from '../../../../../../types/ipfs/issuer'
 import {SessionQuery} from '../../../../session/state/session.query'
 import {findLog} from '../../../utils/ethersjs'
 import {GasService} from '../gas.service'
-import {BigNumber, Signer} from 'ethers'
-import {IPFSAddResult} from '../../ipfs/ipfs.service.types'
+import {Signer} from 'ethers'
 import {Provider} from '@ethersproject/providers'
-import {CampaignCommonState} from '../campaign/campaign.common'
-import {CampaignBasicState} from '../campaign/campaign-basic.service'
-import {AssetCommonState} from '../asset/asset.common'
-import {AssetBasicService} from '../asset/asset-basic.service'
 import {IssuerCommonState} from './issuer.common'
 
 @Injectable({
@@ -26,7 +18,7 @@ import {IssuerCommonState} from './issuer.common'
 export class IssuerBasicService {
   factoryContract$: Observable<IssuerFactory> = this.sessionQuery.provider$.pipe(
     map(provider =>
-      IssuerFactory__factory.connect(this.preferenceQuery.network.tokenizerConfig.issuerFactory, provider),
+      IssuerFactory__factory.connect(this.preferenceQuery.network.tokenizerConfig.issuerFactory.basic, provider),
     ),
   )
 
