@@ -22,12 +22,6 @@ import {IssuerFlavor} from '../flavors'
   providedIn: 'root',
 })
 export class IssuerService {
-  issuers$: Observable<IssuerWithInfo[]> = this.queryService.issuers$.pipe(
-    switchMap(issuers => issuers.length === 0 ? of([]) : combineLatest(
-      issuers.map(issuer => this.getIssuerInfo(issuer.issuer))),
-    ),
-  )
-
   issuerWithStatus$: Observable<WithStatus<IssuerWithInfo>> = this.preferenceQuery.issuer$.pipe(
     switchMap(issuer => withStatus(this.getIssuerWithInfo(issuer.address))),
     shareReplay(1),
