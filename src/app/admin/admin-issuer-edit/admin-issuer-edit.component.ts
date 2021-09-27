@@ -1,6 +1,6 @@
 import {ChangeDetectionStrategy, Component} from '@angular/core'
 import {StablecoinService} from '../../shared/services/blockchain/stablecoin.service'
-import {combineLatest, Observable} from 'rxjs'
+import {Observable} from 'rxjs'
 import {AbstractControl, FormBuilder, FormGroup, ValidationErrors, Validators} from '@angular/forms'
 import {map, switchMap, tap} from 'rxjs/operators'
 import {DialogService} from '../../shared/services/dialog.service'
@@ -8,7 +8,6 @@ import {RouterService} from '../../shared/services/router.service'
 import {PreferenceStore} from '../../preference/state/preference.store'
 import {IssuerService, IssuerWithInfo} from '../../shared/services/blockchain/issuer/issuer.service'
 import {IssuerBasicService, IssuerBasicState} from '../../shared/services/blockchain/issuer/issuer-basic.service'
-import {WithStatus} from '../../shared/utils/observables'
 
 @Component({
   selector: 'app-admin-issuer-edit',

@@ -18,7 +18,7 @@ export class OffersCardComponent implements OnChanges {
   campaignSub = new Subject<CampaignCommonStateWithName>()
   campaign$: Observable<WithStatus<CampaignCommonStateWithName & CampaignWithInfo>> = this.campaignSub.asObservable().pipe(
     switchMap(state => withStatus(this.campaignService.getCampaignInfo(state.campaign).pipe(
-      map(campaignWithState => ({...state, ...campaignWithState}))
+      map(campaignWithState => ({...state, ...campaignWithState})),
     ))),
   )
 

@@ -6,7 +6,7 @@ import {RouterService} from '../../shared/services/router.service'
 import {DialogService} from '../../shared/services/dialog.service'
 import {switchMap, tap} from 'rxjs/operators'
 import {ActivatedRoute} from '@angular/router'
-import {AssetService, AssetWithInfo, CommonAssetWithInfo} from '../../shared/services/blockchain/asset/asset.service'
+import {AssetService, CommonAssetWithInfo} from '../../shared/services/blockchain/asset/asset.service'
 import {NameService} from '../../shared/services/blockchain/name.service'
 
 @Component({

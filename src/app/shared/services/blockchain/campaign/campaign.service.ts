@@ -1,7 +1,6 @@
 import {Injectable} from '@angular/core'
 import {combineLatest, from, Observable, of, throwError} from 'rxjs'
 import {IpfsService, IPFSText} from '../../ipfs/ipfs.service'
-import {PreferenceQuery} from '../../../../preference/state/preference.query'
 import {StablecoinService} from '../stablecoin.service'
 import {cid, IPFSCampaign, IPFSDocument, iso8601, ReturnFrequency} from '../../../../../../types/ipfs/campaign'
 import {GasService} from '../gas.service'
