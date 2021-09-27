@@ -42,9 +42,6 @@
                     [disabled]="!fundingForm.valid"
                     [onClick]="addTokens(campaignData).bind(this)">
             </button>
-            {{ fundingForm.errors | json }}
-            {{ fundingForm.valid }}
-            {{ fundingForm.value }}
           </div>
         </ng-container>
 
