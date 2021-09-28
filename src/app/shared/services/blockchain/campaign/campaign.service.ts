@@ -214,6 +214,7 @@ export interface CampaignStats {
   userMax: number
   tokenBalance: number
   tokensSold: number
+  tokensClaimed: number
   softCap: number
   tokenPrice: number
   tokensAvailable: number

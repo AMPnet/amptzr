@@ -97,7 +97,7 @@
                 <span>Asset: <b>{{ campaignData.asset.name }}</b></span>
                 <span>Price per token: <b>{{ campaignData.stats.tokenPrice | currencyDefault }}</b></span>
                 <span>Tokens sold: <b>{{ campaignData.stats.tokensSold | number }}</b></span>
-                <span>Token balance: <b>{{ campaignData.stats.tokenBalance | number }}</b></span>
+                <span>Tokens for sale: <b>{{ campaignData.stats.tokensAvailable | number }}</b></span>
 
                 <span class="text-2xl text-indigo-900 my-2">Investors</span>
                 <ng-container *ngIf="campaignData.campaignBasic as campaignBasic">
@@ -111,8 +111,9 @@
                   </div>
                 </ng-container>
                 <span>Returning profits: <b>{{ returnFrequency(campaignData.campaign) }}</b></span>
-                <span
-                  *ngIf="isReturningProfits">Return for investors: <b>{{ returnValue(campaignData.campaign) }}</b></span>
+                <span *ngIf="isReturningProfits(campaignData.campaign)">
+                  Return for investors: <b>{{ returnValue(campaignData.campaign) }}</b>
+                </span>
                 <ng-container *ngIf="campaignData.campaignBasic as campaignBasic">
                   <div>
                     ID verification for investors:
@@ -120,6 +121,7 @@
                   </div>
                   <span>Total investor count: <b>{{ campaignBasic.totalInvestorsCount.toNumber() | number }}</b></span>
                   <span>Total claim count: <b>{{ campaignBasic.totalClaimsCount.toNumber() | number }}</b></span>
+                  <span>Tokens claimed: <b>{{ campaignData.stats.tokensClaimed | number }}</b></span>
                 </ng-container>
 
 

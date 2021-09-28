@@ -111,12 +111,14 @@ export class CampaignBasicService {
         const userMax = this.stablecoin.format(campaign.maxInvestment)
         const tokenBalance = this.stablecoin.format(campaign.totalTokensBalance, 18)
         const tokensSold = this.stablecoin.format(campaign.totalTokensSold, 18)
+        const tokensClaimable = this.stablecoin.format(campaign.totalClaimableTokens, 18)
         const softCap = this.stablecoin.format(campaign.softCap)
+        const tokensClaimed = tokensSold - tokensClaimable
         const tokenPrice = TokenPrice.parse(campaign.tokenPrice.toNumber())
-        const tokensAvailable = tokenBalance - tokensSold
+        const tokensAvailable = Math.max(0, tokenBalance - tokensSold)
 
         const valueInvested = tokensSold * tokenPrice
-        const valueTotal = tokenBalance * tokenPrice
+        const valueTotal = Math.max(tokenBalance, tokensSold) * tokenPrice
         const valueToInvest = tokensAvailable * tokenPrice
 
         return {
@@ -124,6 +126,7 @@ export class CampaignBasicService {
           userMax,
           tokenBalance,
           tokensSold,
+          tokensClaimed,
           softCap,
           tokenPrice,
           tokensAvailable,
@@ -177,6 +180,7 @@ export interface CampaignBasicState {
   owner: string;
   asset: string;
   issuer: string;
+  stablecoin: string;
   tokenPrice: BigNumber;
   softCap: BigNumber;
   minInvestment: BigNumber;
@@ -209,6 +213,7 @@ interface BasicCampaignStats {
   userMax: number
   tokenBalance: number
   tokensSold: number
+  tokensClaimed: number
   softCap: number
   tokenPrice: number
   tokensAvailable: number
