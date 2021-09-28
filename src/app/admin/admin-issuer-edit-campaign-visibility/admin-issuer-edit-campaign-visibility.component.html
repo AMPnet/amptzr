@@ -1,0 +1,53 @@
+<ng-container *ngIf="(issuer$ | async) as issuer">
+  <ng-container *ngIf="(offers$ | async) as offersRes">
+    <ng-container *ngIf="(offersDisplaySettings$ | async) as offersDisplaySettingsRes">
+      <ng-container *ngIf="offersRes.value && offersDisplaySettingsRes.value">
+        <div class="flex flex-col items-center px-2 justify-center w-full">
+          <div class="flex flex-col lg:flex-row gap-4 my-4">
+            <button app-action-button
+                    class="flex order-2 lg:order-1 items-center justify-center gap-4 bg-indigo-800 text-white text-lg
+                           px-24 py-2 rounded-full transition-all ease-in-out duration-300"
+                    text="Discard changes"
+                    [onClick]="discardChanges.bind(this)">
+            </button>
+
+            <button app-action-button
+                    class="flex order-1 lg:order-2 items-center justify-center gap-4 bg-indigo-800 disabled:bg-gray-400
+                           text-white text-lg px-24 py-2 rounded-full transition-all ease-in-out duration-300"
+                    text="Save changes"
+                    [onClick]="updateCampaignVisibility(issuer).bind(this)"
+                    [disabled]="!hasUnsavedChanges(offersDisplaySettingsRes.value)">
+            </button>
+          </div>
+
+          <div class="w-full max-w-6xl lg:mx-4 mb-8" *ngFor="let offer of offersRes.value; let i = index">
+            <app-admin-campaign-visibility-card [offer]="offer"
+                                                [isHidden]="isCampaignHidden(offer, offersDisplaySettingsRes.value)"
+                                                (campaignVisibilityChange)="onCampaignVisibilityChange($event)">
+            </app-admin-campaign-visibility-card>
+          </div>
+        </div>
+
+        <ng-container *ngIf="offersRes.value.length === 0">
+          <div class="flex justify-center py-4">
+            No campaigns available.
+          </div>
+        </ng-container>
+      </ng-container>
+
+      <ng-container *ngIf="offersRes.error || offersDisplaySettingsRes.error">
+        <div class="flex justify-center py-4">
+          Cannot fetch campaigns.
+        </div>
+        <div hidden>Campaign errors: {{ offersRes.error | json }}</div>
+        <div hidden>Visibility errors: {{ offersDisplaySettingsRes.error | json }}</div>
+      </ng-container>
+
+      <ng-container *ngIf="offersRes.loading && offersDisplaySettingsRes.loading">
+        <div class="flex justify-center py-4">
+          <app-spinner type="overlay">Loading campaigns...</app-spinner>
+        </div>
+      </ng-container>
+    </ng-container>
+  </ng-container>
+</ng-container>
