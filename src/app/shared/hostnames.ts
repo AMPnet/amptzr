@@ -8,7 +8,7 @@ export const Hostnames: { [host in string]: Host } = {
   },
   'woz.eugen.work': {
     network: MumbaiNetwork,
-    issuerAddress: '0x58d6b2e412a2495F14303AB442D2098Ac8B81F26',
+    issuerAddress: '0x75C7193E8e0C8179A0cb2FF190Bc8E4681ffA8c7',
   },
 }
 
