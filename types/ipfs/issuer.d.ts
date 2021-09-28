@@ -9,7 +9,13 @@ export interface IPFSIssuer {
   logo: url | cid
 
   rampApiKey: string
+  offersDisplaySettings?: cid
 }
 
 type url = string
 type cid = string
+type address = string
+
+export interface IPFSOffersDisplaySettings {
+  hiddenOffers: address[]
+}
