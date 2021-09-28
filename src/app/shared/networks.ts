@@ -36,9 +36,11 @@ interface TokenizerConfig {
   assetFactory: {
     basic: string,
     transferable: string,
+    simple: string,
   }
   cfManagerFactory: {
     basic: string,
+    vesting: string,
   },
   snapshotDistributorFactory: string,
   deployerService: string,
@@ -73,9 +75,11 @@ export const MaticNetwork: Network = {
     assetFactory: {
       basic: '0x77e74FDa88df9468A006fC07c5D3a464f99a52A2',
       transferable: '0xDbc97cc1d74D77c5cB1A7e6fC26F055B8F56d4EF',
+      simple: '0x0361B0A1333A0BF88ce2c3a4d7192C5E8A5Efea9',
     },
     cfManagerFactory: {
-      basic: '0x99B113c999eF3616737FBF83c1f18aeC27c6205e',
+      basic: '0x3105e7FE2bb0DD528888192A4ffC08a1Bf5Ee789',
+      vesting: '0x5009469A278Bcc572442c0144c07108156984176',
     },
     snapshotDistributorFactory: '0xB674FFEFB72462F2ED21097946fA7a442E34991A',
     deployerService: '0xeE8D5A0b8314d8559ab46df7F2487F6542cB70eb',
@@ -114,9 +118,11 @@ export const MumbaiNetwork: Network = {
     assetFactory: {
       basic: '0x19d22BBEc9F1aa1bB9AB0F172f5D9e6DDF9E6C47',
       transferable: '0x52997837b399d66A4d71b6E28fCed6Fb95B83fd9',
+      simple: '0x0361B0A1333A0BF88ce2c3a4d7192C5E8A5Efea9',
     },
     cfManagerFactory: {
       basic: '0x3877230A7dE98DF02cCd7F23C46294F80b81F64f',
+      vesting: '0x5009469A278Bcc572442c0144c07108156984176',
     },
     snapshotDistributorFactory: '0x13B7A1eaEba77B2c8C44b56bdE2863c4efDa8dd8',
     deployerService: '0x9132e92e6fc8E192f72087D8856014566C43145f',
