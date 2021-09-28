@@ -47,7 +47,7 @@ const appRoutes: Routes = [
           {path: '', pathMatch: 'full', redirectTo: 'issuer'},
           {path: 'issuer', component: AdminIssuerComponent},
           {path: 'issuer/edit', component: AdminIssuerEditComponent},
-          {path: 'issuer/edit-campaign-visibility', component: AdminIssuerEditCampaignVisibilityComponent},
+          {path: 'issuer/edit-offer-visibility', component: AdminIssuerEditCampaignVisibilityComponent},
           {path: 'assets/new', component: AdminAssetNewComponent},
           {path: 'assets/:id', component: AdminAssetDetailComponent},
           {path: 'assets/:id/edit', component: AdminAssetEditComponent},

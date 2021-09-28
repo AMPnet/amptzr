@@ -3,8 +3,8 @@ import {CampaignCommonStateWithName, QueryService} from '../../shared/services/b
 import {withStatus} from '../../shared/utils/observables'
 import {CampaignVisibility} from './admin-campaign-visibility-card/admin-campaign-visibility-card.component'
 import {IPFSOffersDisplaySettings} from '../../../../types/ipfs/issuer'
-import {Observable} from 'rxjs'
-import {switchMap, tap} from 'rxjs/operators'
+import {combineLatest, Observable} from 'rxjs'
+import {map, switchMap, tap} from 'rxjs/operators'
 import {DialogService} from '../../shared/services/dialog.service'
 import {PreferenceStore} from '../../preference/state/preference.store'
 import {RouterService} from '../../shared/services/router.service'
@@ -20,8 +20,13 @@ import {CampaignService} from '../../shared/services/blockchain/campaign/campaig
 })
 export class AdminIssuerEditCampaignVisibilityComponent {
   issuer$: Observable<IssuerWithInfo>
-  offers$ = withStatus(this.queryService.offers$)
-  offersDisplaySettings$ = withStatus(this.issuerService.issuerOffersDisplaySettings$)
+  visibilityData$ = withStatus(
+    combineLatest([this.queryService.offers$, this.issuerService.issuerOffersDisplaySettings$]).pipe(
+      map(([offers, offersDisplaySettings]) => {
+        return {offers, offersDisplaySettings}
+      })
+    )
+  )
 
   hiddenCampaigns: Set<string> = new Set([])
   initialized: boolean = false
@@ -59,10 +64,6 @@ export class AdminIssuerEditCampaignVisibilityComponent {
         tap(() => this.routerService.navigate(['/admin'])),
       )
     }
-  }
-
-  discardChanges() {
-    return fromPromise(this.routerService.navigate(['/admin']))
   }
 
   hasUnsavedChanges(offersDisplaySettings: IPFSOffersDisplaySettings) {
