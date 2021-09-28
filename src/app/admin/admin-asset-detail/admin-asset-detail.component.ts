@@ -6,6 +6,7 @@ import {ActivatedRoute} from '@angular/router'
 import {filter, map, mergeMap, switchMap} from 'rxjs/operators'
 import {MetaService} from '../../shared/services/meta.service'
 import {CampaignService, CampaignWithInfo} from '../../shared/services/blockchain/campaign.service'
+import {resolveAddress} from '../../shared/utils/ethersjs'
 
 @Component({
   selector: 'app-admin-asset-detail',
@@ -26,7 +27,7 @@ export class AdminAssetDetailComponent {
 
     this.asset$ = this.assetSub.asObservable().pipe(
       switchMap(() => withStatus(
-        this.assetService.getAddressByName(assetId).pipe(
+        resolveAddress(assetId, this.assetService.getAddressByName(assetId)).pipe(
           switchMap(address => this.assetService.getAssetWithInfo(address)),
         ),
       )),

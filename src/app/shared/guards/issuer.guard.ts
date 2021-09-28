@@ -13,6 +13,7 @@ import {IpfsService} from '../services/ipfs/ipfs.service'
 import {IssuerPathPipe} from '../pipes/issuer-path.pipe'
 import {getWindow} from '../utils/browser'
 import {DOCUMENT} from '@angular/common'
+import {resolveAddress} from '../utils/ethersjs'
 
 @Injectable({
   providedIn: 'root',
@@ -33,13 +34,7 @@ export class IssuerGuard implements CanActivate {
     const activation$ = of(environment.fixed.issuer || route.params.issuer as string).pipe(
       // TODO: handle error cases
       // TODO: handle getting issuers also by id (number)
-      switchMap(issuer => {
-        if (issuer.startsWith('0x')) {
-          return of(issuer)
-        } else {
-          return this.issuerService.getAddressByName(issuer)
-        }
-      }),
+      switchMap(issuer => resolveAddress(issuer, this.issuerService.getAddressByName(issuer))),
       switchMap(issuerAddress => this.issuerService.getState(issuerAddress, this.sessionQuery.provider)),
       tap(issuer => this.preferenceStore.update({
         issuer: {

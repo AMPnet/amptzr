@@ -39,6 +39,14 @@ button, textarea, input, select, a {
   -webkit-tap-highlight-color: transparent;
 }
 
+.ql-toolbar {
+  @apply border-gray-400 border-2 rounded-t-lg;
+}
+
+.ql-container {
+  @apply border-gray-400 border-2 rounded-b-lg;
+}
+
 .ql-editor {
   width: 100%;
   min-height: 400px;

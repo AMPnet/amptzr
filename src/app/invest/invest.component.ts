@@ -10,6 +10,7 @@ import {DialogService} from '../shared/services/dialog.service'
 import {RouterService} from '../shared/services/router.service'
 import {SessionQuery} from '../session/state/session.query'
 import {InvestService, PreInvestData} from '../shared/services/invest.service'
+import {resolveAddress} from '../shared/utils/ethersjs'
 
 @Component({
   selector: 'app-invest',
@@ -38,9 +39,8 @@ export class InvestComponent {
               private investService: InvestService,
               private router: RouterService,
               private route: ActivatedRoute) {
-    const campaignID = this.route.snapshot.params.id
-
-    const campaignAddress$ = this.campaignService.getAddressByName(campaignID).pipe(
+    const campaignId = this.route.snapshot.params.id
+    const campaignAddress$ = resolveAddress(campaignId, this.campaignService.getAddressByName(campaignId)).pipe(
       shareReplay(1),
     )
 

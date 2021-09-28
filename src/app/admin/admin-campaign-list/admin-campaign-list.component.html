@@ -1,5 +1,5 @@
 <div class="flex flex-col">
-  <span class="text-3xl text-indigo-800">Related campaigns:</span>
+  <span class="text-2xl text-indigo-800">Related campaigns:</span>
   <ng-container *ngIf="(campaigns$ | async) as campaignsRes">
 
     <ng-container *ngIf="campaignsRes.value as campaigns">
@@ -10,9 +10,11 @@
         </div>
       </ng-container>
 
-      <ng-container *ngFor="let campaign of campaigns">
-        <app-admin-campaign-item [asset]="asset" [campaign]="campaign" type="view-screen"></app-admin-campaign-item>
-      </ng-container>
+      <div class="flex flex-col gap-2 mt-4">
+        <app-admin-campaign-item *ngFor="let campaign of campaigns"
+                                 [asset]="asset" [campaign]="campaign" type="view-screen">
+        </app-admin-campaign-item>
+      </div>
     </ng-container>
 
     <ng-container *ngIf="campaignsRes.error">

@@ -2,7 +2,9 @@
   <div class="w-full max-w-6xl">
     <div class="flex flex-col gap-2 w-full justify-start bg-white shadow-xl rounded-4xl p-4 pt-8">
       <form [formGroup]="createForm">
-        <div class="text-2xl text-indigo-900 mb-8">Set up your asset and its related token</div>
+        <h1 class="text-2xl text-indigo-900 mb-8">
+          Set up your asset and its related token
+        </h1>
         <div class="flex flex-col lg:flex-row">
           <div class="relative w-full lg:w-1/3">
             <div class="flex justify-center w-full absolute top-32 lg:top-40">
@@ -28,8 +30,12 @@
             <div class="flex flex-col lg:flex-row gap-2 mt-4 lg:mt-0 lg:ml-4">
               <div class="flex flex-col gap-2 lg:w-1/2 lg:mr-4">
                 <div class="flex flex-col gap-1">
-                  <label class="text-lg font-semibold">Asset name</label>
-                  <span class="text-xs">Which is the asset you want to tokenize?</span>
+                  <label class="text-lg font-semibold">
+                    Asset name
+                  </label>
+                  <span class="text-xs">
+                    Which is the asset you want to tokenize?
+                  </span>
                 </div>
                 <input class="border-gray-400 rounded-lg" type="text" formControlName="name">
               </div>
@@ -60,8 +66,12 @@
             <div class="flex flex-col lg:flex-row gap-2 lg:ml-4">
               <div class="flex flex-col gap-2 lg:w-1/2 lg:mr-4">
                 <div class="flex flex-col gap-1">
-                  <label class="text-lg font-semibold">Token symbol</label>
-                  <span class="text-xs">A short symbol of your token, i.e. APPL (Apple), ETH (Ethereum)</span>
+                  <label class="text-lg font-semibold">
+                    Token symbol
+                  </label>
+                  <span class="text-xs">
+                    A short symbol of your token, i.e. APPL (Apple), ETH (Ethereum)
+                  </span>
                 </div>
                 <input class="border-gray-400 rounded-lg" type="text" formControlName="symbol">
               </div>
@@ -87,20 +97,14 @@
         <div class="flex flex-col gap-2 lg:w-2/3 lg:pr-7 lg:mt-4">
           <div class="flex flex-col gap-2">
             <div class="flex flex-col gap-1">
-              <label class="text-lg font-semibold">Token supply</label>
+              <label class="text-lg font-semibold">
+                Token supply
+              </label>
               <span class="text-xs">
                 Total amount of tokens you want to create. The same token can be used for multiple campaigns.
               </span>
             </div>
             <input class="border-gray-400 rounded-lg" type="number" min="0" formControlName="initialTokenSupply">
-          </div>
-
-          <div class="flex flex-col gap-1">
-            <label class="text-lg font-semibold">Asset URL</label>
-            <div class="flex flex-col lg:flex-row gap-2 lg:items-center">
-              <span class="text-xs">{{ assetUrl }}</span>
-              <input class="border-gray-400 rounded-lg lg:w-full" type="text" formControlName="ansName">
-            </div>
           </div>
 
           <div class="flex flex-col gap-4 mb-4">
@@ -111,12 +115,6 @@
           <div class="flex flex-col gap-4 mb-4">
             <span class="text-lg font-semibold">Is wallet whitelisting required for liquidation claim?</span>
             <app-form-yes-no-buttons formControlName="whitelistRequiredForLiquidationClaim"></app-form-yes-no-buttons>
-          </div>
-
-          <div class="flex flex-col gap-1">
-            <label class="text-lg font-semibold">Description</label>
-            <span class="text-xs">Describe your token and the asset it relates to (Optional content)</span>
-            <textarea class="border-gray-400 rounded-lg" formControlName="description"></textarea>
           </div>
         </div>
 

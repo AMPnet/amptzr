@@ -1,0 +1,14 @@
+<ng-container *ngIf="(assetData$ | async) as assetDataRes">
+  <ng-container *ngIf="assetDataRes.value as assetData">
+    <app-admin-campaign-new [assetData]="assetData" [assetService]="assetService"></app-admin-campaign-new>
+  </ng-container>
+
+  <ng-container *ngIf="assetDataRes.error">
+    <div class="w-full text-center mt-8">Cannot fetch asset.</div>
+    <div hidden>{{ assetDataRes.error | json }}</div>
+  </ng-container>
+
+  <ng-container *ngIf="assetDataRes.loading">
+    <app-spinner type="overlay">Loading asset...</app-spinner>
+  </ng-container>
+</ng-container>
