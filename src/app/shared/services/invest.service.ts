@@ -1,8 +1,10 @@
 import {Injectable} from '@angular/core'
 import {combineLatest, Observable} from 'rxjs'
-import {map, shareReplay, take} from 'rxjs/operators'
+import {map, take} from 'rxjs/operators'
 import {StablecoinService} from './blockchain/stablecoin.service'
-import {CampaignService} from './blockchain/campaign.service'
+import {CampaignService} from './blockchain/campaign/campaign.service'
+import {CampaignCommonStateWithName} from './blockchain/query.service'
+import {CampaignFlavor} from './blockchain/flavors'
 
 @Injectable({
   providedIn: 'root',
@@ -13,16 +15,16 @@ export class InvestService {
   ) {
   }
 
-  preInvestData(campaignAddress: string): Observable<PreInvestData> {
-    const campaign$ = this.campaignService.getCampaignWithInfo(campaignAddress).pipe(shareReplay(1))
+  preInvestData(campaign: CampaignCommonStateWithName): Observable<PreInvestData> {
     const balance$ = combineLatest([this.stablecoin.balance$]).pipe(take(1), map(([balance]) => balance))
-    const alreadyInvested$ = this.campaignService.alreadyInvested(campaignAddress)
+    const alreadyInvested$ = this.campaignService.alreadyInvested(campaign.campaign.contractAddress)
+    const stats$ = this.campaignService.stats(
+      campaign.campaign.contractAddress, campaign.campaign.flavor as CampaignFlavor,
+    )
 
-    return combineLatest([campaign$, balance$, alreadyInvested$]).pipe(
-      map(([campaign, balance, alreadyInvested]) => {
+    return combineLatest([balance$, alreadyInvested$, stats$]).pipe(
+      map(([balance, alreadyInvested, campaignStats]) => {
         const walletBalance = this.stablecoin.format(balance)
-        const campaignStats = this.campaignService.stats(campaign)
-
         const userInvestGap = this.floorDecimals(campaignStats.userMax - alreadyInvested)
 
         const max = Math.min(userInvestGap, this.floorDecimals(campaignStats.valueToInvest))

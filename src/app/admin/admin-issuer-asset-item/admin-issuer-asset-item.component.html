@@ -1,0 +1,63 @@
+<div class="flex flex-col justify-start lg:flex-row w-full my-4 shadow-xl rounded-4xl bg-white">
+  <div class="flex justify-center relative w-full lg:w-1/5 mt-4 lg:ml-4">
+    <img *ngIf="asset.infoData.logo; else noImage" class="w-40 h-40 object-cover rounded-full"
+         src="{{ asset.infoData.logo | toUrlIPFS }}" alt="Asset logo">
+    <ng-template #noImage>
+      <div class="w-full lg:w-40 h-40 bg-gray-200 rounded-t-4xl lg:rounded-full"></div>
+    </ng-template>
+  </div>
+  <div class="flex flex-col justify-between m-4 h-full lg:w-full rounded-b-4xl lg:rounded-none
+              lg:rounded-r-4xl bg-white">
+    <div class="flex flex-col text-lg lg:pr-8">
+      <span class="text-4xl mb-8">{{ asset.name ?? 'Unknown' }}</span>
+
+      <div class="flex items-center gap-2">
+        <span>Token symbol:</span><b>{{ asset.symbol }}</b>
+      </div>
+
+      <div class="flex items-center gap-2">
+        <span>Token supply:</span><b>{{ asset.totalSupply | formatUnit:'bignumToWei':18 | number }}</b>
+      </div>
+
+      <div class="flex items-center flex-wrap gap-2 mb-8">
+        <span>Related campaigns:</span>
+
+        <ng-container *ngIf="(campaigns$ | async) as campaignsRes">
+          <ng-container *ngIf="campaignsRes.value as campaigns">
+            <ng-container *ngIf="campaigns.length === 0">
+              There are no campaigns related to this asset.
+            </ng-container>
+
+            <a *ngFor="let campaign of campaigns"
+               [routerLink]="('/admin/campaigns/' + campaign.contractAddress) | issuerPath"
+               class="px-8 py-0.5 bg-blue-200 hover:bg-indigo-800 hover:text-white rounded-full">
+              {{ campaign.infoData.name }}
+            </a>
+          </ng-container>
+
+          <ng-container *ngIf="campaignsRes.error">
+            Cannot fetch related campaigns.
+            <div hidden>{{ campaignsRes.error | json }}</div>
+          </ng-container>
+
+          <ng-container *ngIf="campaignsRes.loading">
+            <app-spinner type="inline-xs"></app-spinner>
+          </ng-container>
+        </ng-container>
+      </div>
+    </div>
+    <div class="flex flex-col justify-end">
+      <div class="flex justify-center lg:justify-end">
+        <button class="flex items-center gap-4 px-24 py-2 rounded-full bg-indigo-800 text-white text-lg"
+                [routerLink]="('/admin/assets/' + asset.contractAddress) | issuerPath">
+          <span>View asset</span>
+          <svg width="8" height="14" viewBox="0 0 8 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M1 1.16602L6.83333 6.99935L1 12.8327" stroke="white" stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

@@ -42,24 +42,15 @@ import {ReactiveFormsModule} from '@angular/forms'
 import {CurrencyMaskDirective} from './shared/directives/currency-mask.directive'
 import {ValueCopyComponent} from './shared/components/value-copy/value-copy.component'
 import {FileInputAccessorDirective} from './shared/directives/file-input-accessor.directive'
-import {IssuerEditComponent} from './issuers/issuer-edit/issuer-edit.component'
 import {SafePipe} from './shared/pipes/safe.pipe'
-import {IssuerNewComponent} from './issuers/issuer-new/issuer-new.component'
-import {IssuerListComponent} from './issuers/issuer-list/issuer-list.component'
-import {IssuerDetailComponent} from './issuers/issuer-detail/issuer-detail.component'
 import {FormatUnitPipe} from './shared/pipes/format-unit.pipe'
 import {ToTextIpfsPipe} from './shared/pipes/to-text-ipfs.pipe'
 import {ToUrlIPFSPipe} from './shared/pipes/to-url-ipfs.pipe'
-import {CampaignDetailComponent} from './campaigns/campaign-detail/campaign-detail.component'
-import {CampaignEditComponent} from './campaigns/campaign-edit/campaign-edit.component'
-import {CampaignNewComponent} from './campaigns/campaign-new/campaign-new.component'
-import {CampaignAddTokensComponent} from './campaigns/campaign-add-tokens/campaign-add-tokens.component'
 import {IssuerPathPipe} from './shared/pipes/issuer-path.pipe'
 import {OffersCardComponent} from './offers/offers-card/offers-card.component'
 import {WalletButtonComponent} from './app-layout/navbar/wallet-button/wallet-button.component'
 import {FaqQuestionComponent} from './faq/faq-question/faq-question.component'
 import {MatTooltipModule} from '@angular/material/tooltip'
-import {IssuerEditAdvancedComponent} from './issuers/issuer-edit-advanced/issuer-edit-advanced.component'
 import {DepositFlowComponent} from './deposit/deposit-flow/deposit-flow.component'
 import {TruncatePipe} from './shared/pipes/truncate.pipe'
 import {UnescapePipe} from './shared/pipes/unescape.pipe'
@@ -74,39 +65,23 @@ import {delay, filter} from 'rxjs/operators'
 import {LoadingDialogComponent} from './shared/components/loading-dialog/loading-dialog.component'
 import {WalletTxHistoryComponent} from './wallet/wallet-tx-history/wallet-tx-history.component'
 import {WalletTxHistoryItemComponent} from './wallet/wallet-tx-history-item/wallet-tx-history-item.component'
-import {FtAssetNewComponent} from './assets/ft-assets/ft-asset-new/ft-asset-new.component'
-import {FtAssetEditComponent} from './assets/ft-assets/ft-asset-edit/ft-asset-edit.component'
-import {FtAssetDetailComponent} from './assets/ft-assets/ft-asset-detail/ft-asset-detail.component'
-import {AssetDetailComponent} from './assets/assets/asset-detail/asset-detail.component'
-import {AssetEditComponent} from './assets/assets/asset-edit/asset-edit.component'
-import {AssetNewComponent} from './assets/assets/asset-new/asset-new.component'
 import {AssetPathSegmentPipe} from './shared/pipes/asset-path-segment.pipe'
 import {MatSnackBarModule} from '@angular/material/snack-bar'
 import {AddButtonComponent} from './shared/components/add-button/add-button.component'
-import {AdminAssetListComponent} from './admin/admin-asset-list/admin-asset-list.component'
-import {AdminAssetItemComponent} from './admin/admin-asset-item/admin-asset-item.component'
+import {AdminIssuerAssetItemComponent} from './admin/admin-issuer-asset-item/admin-issuer-asset-item.component'
 import {AdminIssuerEditComponent} from './admin/admin-issuer-edit/admin-issuer-edit.component'
 import {AdminAssetDetailComponent} from './admin/admin-asset-detail/admin-asset-detail.component'
-import {AdminCampaignListComponent} from './admin/admin-campaign-list/admin-campaign-list.component'
-import {AdminFtAssetDetailComponent} from './admin/admin-ft-asset-detail/admin-ft-asset-detail.component'
 import {AdminCampaignItemComponent} from './admin/admin-campaign-item/admin-campaign-item.component'
 import {AdminAssetEditComponent} from './admin/admin-asset-edit/admin-asset-edit.component'
-import {AdminFtAssetEditComponent} from './admin/admin-ft-asset-edit/admin-ft-asset-edit.component'
 import {AdminIssuerComponent} from './admin/admin-issuer/admin-issuer.component'
 import {AdminAssetNewComponent} from './admin/admin-asset-new/admin-asset-new.component'
-import {AdminFtAssetNewComponent} from './admin/admin-ft-asset-new/admin-ft-asset-new.component'
 import {FormYesNoButtonsComponent} from './shared/components/form-yes-no-buttons/form-yes-no-buttons.component'
-import {AdminCampaignNewComponent} from './admin/admin-campaign-new/admin-campaign-new.component'
-import {AdminAssetCampaignNewComponent} from './admin/admin-asset-campaign-new/admin-asset-campaign-new.component'
-import {AdminFtAssetCampaignNewComponent} from './admin/admin-ft-asset-campaign-new/admin-ft-asset-campaign-new.component'
 import {DateMaskDirective} from './shared/directives/date-mask.directive'
-import {AdminCampaignViewComponent} from './admin/admin-campaign-view/admin-campaign-view.component'
-import {AdminAssetCampaignViewComponent} from './admin/admin-asset-campaign-view/admin-asset-campaign-view.component'
-import {AdminFtAssetCampaignViewComponent} from './admin/admin-ft-asset-campaign-view/admin-ft-asset-campaign-view.component'
 import {AdminCampaignEditComponent} from './admin/admin-campaign-edit/admin-campaign-edit.component'
-import {AdminAssetCampaignAddTokensComponent} from './admin/admin-asset-campaign-add-tokens/admin-asset-campaign-add-tokens.component'
-import {AdminFtAssetCampaignAddTokensComponent} from './admin/admin-ft-asset-campaign-add-tokens/admin-ft-asset-campaign-add-tokens.component'
 import {AdminCampaignAddTokensComponent} from './admin/admin-campaign-add-tokens/admin-campaign-add-tokens.component'
+import {AdminCampaignDetailComponent} from './admin/admin-campaign-detail/admin-campaign-detail.component'
+import {AdminAssetCampaignNewComponent} from './admin/admin-asset-campaign-new/admin-asset-campaign-new.component'
+import {AdminIssuerNewComponent} from './admin/admin-issuer-new/admin-issuer-new.component'
 
 @NgModule({
   declarations: [
@@ -143,24 +118,8 @@ import {AdminCampaignAddTokensComponent} from './admin/admin-campaign-add-tokens
     CurrencyMaskDirective,
     ValueCopyComponent,
     FileInputAccessorDirective,
-    IssuerEditComponent,
-    IssuerDetailComponent,
-    IssuerListComponent,
-    IssuerNewComponent,
-    IssuerListComponent,
-    AssetNewComponent,
-    AssetEditComponent,
-    AssetDetailComponent,
-    FtAssetNewComponent,
-    FtAssetEditComponent,
-    FtAssetDetailComponent,
-    CampaignDetailComponent,
-    CampaignEditComponent,
-    CampaignNewComponent,
-    CampaignAddTokensComponent,
     WalletButtonComponent,
     FaqQuestionComponent,
-    IssuerEditAdvancedComponent,
     DepositFlowComponent,
     TruncatePipe,
     UnescapePipe,
@@ -175,29 +134,19 @@ import {AdminCampaignAddTokensComponent} from './admin/admin-campaign-add-tokens
     WalletTxHistoryItemComponent,
     AdminIssuerComponent,
     AddButtonComponent,
-    AdminAssetListComponent,
-    AdminAssetItemComponent,
+    AdminIssuerAssetItemComponent,
     AdminIssuerEditComponent,
     AdminAssetDetailComponent,
-    AdminCampaignListComponent,
-    AdminFtAssetDetailComponent,
     AdminCampaignItemComponent,
     AdminAssetEditComponent,
-    AdminFtAssetEditComponent,
     AdminAssetNewComponent,
-    AdminFtAssetNewComponent,
     FormYesNoButtonsComponent,
-    AdminCampaignNewComponent,
     AdminAssetCampaignNewComponent,
-    AdminFtAssetCampaignNewComponent,
     DateMaskDirective,
-    AdminCampaignViewComponent,
-    AdminAssetCampaignViewComponent,
-    AdminFtAssetCampaignViewComponent,
     AdminCampaignEditComponent,
-    AdminAssetCampaignAddTokensComponent,
-    AdminFtAssetCampaignAddTokensComponent,
     AdminCampaignAddTokensComponent,
+    AdminCampaignDetailComponent,
+    AdminIssuerNewComponent,
   ],
   imports: [
     BrowserModule,

@@ -4,25 +4,29 @@ import {distinctUntilChanged, filter, map, switchMap, tap} from 'rxjs/operators'
 import {ERC20__factory} from '../../../../../types/ethers-contracts'
 import {SessionQuery} from '../../../session/state/session.query'
 import {PreferenceQuery} from '../../../preference/state/preference.query'
-import {IssuerService} from './issuer.service'
 import {BigNumber, BigNumberish} from 'ethers'
 import {SignerService} from '../signer.service'
 import {contractEvent} from '../../utils/ethersjs'
 import {DialogService} from '../dialog.service'
 import {formatUnits, parseUnits} from 'ethers/lib/utils'
 import {GasService} from './gas.service'
+import {IssuerService} from './issuer/issuer.service'
+import {NameService} from './name.service'
+import {IssuerFlavor} from './flavors'
 
 @Injectable({
   providedIn: 'root',
 })
 export class StablecoinService {
   contract$ = combineLatest([
-    this.preferenceQuery.issuer$,
+    this.preferenceQuery.issuer$.pipe(switchMap(issuer => this.nameService.getIssuer(issuer.address))),
     this.sessionQuery.provider$,
   ]).pipe(
     distinctUntilChanged(),
-    switchMap(([issuer, provider]) => this.issuerService.getState(issuer.address, provider).pipe(
-      map(state => ERC20__factory.connect(state.stablecoin, provider)),
+    switchMap(([issuer, provider]) => this.issuerService.getState(
+      issuer.issuer.contractAddress, issuer.issuer.flavor as IssuerFlavor,
+    ).pipe(
+      map(issuer => ERC20__factory.connect(issuer.stablecoin, provider)),
     )),
     switchMap(contract => of(contract).pipe(
       switchMap(contract => combineLatest([contract.decimals(), contract.symbol()])),
@@ -55,6 +59,7 @@ export class StablecoinService {
 
   constructor(private sessionQuery: SessionQuery,
               private preferenceQuery: PreferenceQuery,
+              private nameService: NameService,
               private signerService: SignerService,
               private dialogService: DialogService,
               private gasService: GasService,

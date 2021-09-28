@@ -17,8 +17,8 @@
                   <span>Upload logo</span>
                 </label>
               </div>
-              <img *ngIf="issuer.logo; else noImage" class="w-full h-48 lg:h-30 object-cover"
-                   [src]="((updateForm.get('logo')?.value?.[0] | safe:'fileUrl') || issuer.logo) | toUrlIPFS"
+              <img *ngIf="issuer.infoData.logo; else noImage" class="w-full h-48 lg:h-30 object-cover"
+                   [src]="((updateForm.get('logo')?.value?.[0] | safe:'fileUrl') || issuer.infoData.logo) | toUrlIPFS"
                    alt="Issuer logo">
               <ng-template #noImage>
                 <div class="w-full h-48 lg:h-30 bg-gray-200"></div>
@@ -38,11 +38,12 @@
                   <app-value-copy [value]="issuer.contractAddress"></app-value-copy>
                 </div>
 
-                <div class="flex items-center gap-2 text-gray-400">
+                <div class="flex items-center gap-2 text-gray-400"
+                     *ngIf="issuer.issuerBasic as issuerBasic">
                   <span>STABLECOIN:</span>
                   <span class="text-sm font-normal">{{ stableCoinSymbol }}</span>
-                  <span class="text-sm font-normal">{{ issuer.stablecoin | addrShort }}</span>
-                  <app-value-copy [value]="issuer.stablecoin"></app-value-copy>
+                  <span class="text-sm font-normal">{{ issuerBasic.stablecoin | addrShort }}</span>
+                  <app-value-copy [value]="issuerBasic.stablecoin"></app-value-copy>
                 </div>
 
                 <div class="flex flex-col gap-1 mt-3 lg:mt-0">
@@ -61,7 +62,8 @@
                   </div>
                 </div>
 
-                <form [formGroup]="updateWalletApproverAddressForm">
+                <form [formGroup]="updateWalletApproverAddressForm"
+                      *ngIf="issuer.issuerBasic">
                   <div class="flex flex-col gap-2 mt-6">
                     <label>WALLET APPROVER ADDRESS:</label>
                     <div class="flex gap-2">
@@ -78,7 +80,8 @@
                   </div>
                 </form>
 
-                <form [formGroup]="updateOwnerAddressForm">
+                <form [formGroup]="updateOwnerAddressForm"
+                      *ngIf="issuer.issuerBasic">
                   <div class="flex flex-col gap-1 mt-6 lg:mt-0">
                     <label>OWNER ADDRESS:</label>
                     <div class="flex gap-2">

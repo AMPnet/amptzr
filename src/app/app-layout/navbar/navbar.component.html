@@ -10,7 +10,7 @@
       <div class="py-2">
         <ng-container *ngIf="issuerRes.value as issuer">
           <a [routerLink]="'/offers' | issuerPath">
-            <img class="h-full pl-4 py-1 object-contain" src="{{ issuer.logo | toUrlIPFS }}" alt="Logo">
+            <img class="h-full pl-4 py-1 object-contain" src="{{ issuer.infoData.logo | toUrlIPFS }}" alt="Logo">
           </a>
         </ng-container>
       </div>

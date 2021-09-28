@@ -2,9 +2,9 @@ import {ApplicationRef, ChangeDetectionStrategy, Component} from '@angular/core'
 import {filter, first, switchMap, tap} from 'rxjs/operators'
 import {SwUpdate} from '@angular/service-worker'
 import {concat, defer, from, interval} from 'rxjs'
-import {IssuerService} from './shared/services/blockchain/issuer.service'
 import {DialogService} from './shared/services/dialog.service'
 import {Title} from '@angular/platform-browser'
+import {IssuerService} from './shared/services/blockchain/issuer/issuer.service'
 
 @Component({
   selector: 'app-root',
@@ -40,6 +40,6 @@ export class AppComponent {
 
   issuerTitle$ = this.issuerService.issuerWithStatus$.pipe(
     filter(res => !!res.value),
-    tap(issuer => this.title.setTitle(issuer.value!.name)),
+    tap(issuer => this.title.setTitle(issuer.value!.infoData.name)),
   )
 }

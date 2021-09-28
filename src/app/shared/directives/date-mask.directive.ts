@@ -1,7 +1,7 @@
 import {Directive, ElementRef, HostListener} from '@angular/core'
 
 @Directive({
-  selector: 'input[appDateMask]'
+  selector: 'input[appDateMask]',
 })
 export class DateMaskDirective {
 
