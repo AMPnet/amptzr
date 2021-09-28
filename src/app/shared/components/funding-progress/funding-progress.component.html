@@ -1,4 +1,4 @@
-<ng-container *ngIf="progressData as data">
+<ng-container *ngIf="(progressData$ | async) as data">
   <ng-container *ngIf="campaign">
     <div *ngIf="data.raised < data.total && data.total >= data.softCap">
       <span class="mt-6 font-bold text-gray-800 text-sm">{{ data.raised | currencyDefault }}</span>
@@ -30,7 +30,7 @@
         <div class="font-bold text-indigo-800 text-sm uppercase">
           {{ (data.raisedPercentage / data.softCapPercentage) | percent }} funded
         </div>
-        <div class="font-light text-gray-500 text-sm">{{ dateRange() }}</div>
+        <div class="font-light text-gray-500 text-sm">{{ dateRange(campaign) }}</div>
       </div>
     </div>
     <div *ngIf="data.raised >= data.total || data.softCap > data.total">
@@ -45,7 +45,7 @@
           finished
         </div>
 
-        <div class="font-light text-gray-500 text-sm">{{ dateRange() }}</div>
+        <div class="font-light text-gray-500 text-sm">{{ dateRange(campaign) }}</div>
       </div>
     </div>
   </ng-container>

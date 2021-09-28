@@ -10,41 +10,21 @@ import {InvestComponent} from './invest/invest.component'
 import {DepositComponent} from './deposit/deposit.component'
 import {AuthGuard} from './shared/guards/auth.guard'
 import {FaqComponent} from './faq/faq.component'
-import {IssuerEditComponent} from './issuers/issuer-edit/issuer-edit.component'
-import {IssuerNewComponent} from './issuers/issuer-new/issuer-new.component'
-import {IssuerListComponent} from './issuers/issuer-list/issuer-list.component'
-import {IssuerDetailComponent} from './issuers/issuer-detail/issuer-detail.component'
-import {CampaignNewComponent} from './campaigns/campaign-new/campaign-new.component'
-import {CampaignDetailComponent} from './campaigns/campaign-detail/campaign-detail.component'
-import {CampaignEditComponent} from './campaigns/campaign-edit/campaign-edit.component'
-import {CampaignAddTokensComponent} from './campaigns/campaign-add-tokens/campaign-add-tokens.component'
 import {IssuerGuard} from './shared/guards/issuer.guard'
-import {IssuerEditAdvancedComponent} from './issuers/issuer-edit-advanced/issuer-edit-advanced.component'
 import {environment} from '../environments/environment'
 import {NetworkGuard} from './shared/guards/network.guard'
 import {HomeComponent} from './home/home.component'
-import {FtAssetDetailComponent} from './assets/ft-assets/ft-asset-detail/ft-asset-detail.component'
-import {FtAssetEditComponent} from './assets/ft-assets/ft-asset-edit/ft-asset-edit.component'
-import {AssetDetailComponent} from './assets/assets/asset-detail/asset-detail.component'
-import {AssetEditComponent} from './assets/assets/asset-edit/asset-edit.component'
-import {AssetNewComponent} from './assets/assets/asset-new/asset-new.component'
-import {FtAssetNewComponent} from './assets/ft-assets/ft-asset-new/ft-asset-new.component'
 import {AdminGuard} from './shared/guards/admin.guard'
 import {AdminIssuerEditComponent} from './admin/admin-issuer-edit/admin-issuer-edit.component'
 import {AdminAssetDetailComponent} from './admin/admin-asset-detail/admin-asset-detail.component'
-import {AdminFtAssetDetailComponent} from './admin/admin-ft-asset-detail/admin-ft-asset-detail.component'
 import {AdminAssetEditComponent} from './admin/admin-asset-edit/admin-asset-edit.component'
-import {AdminFtAssetEditComponent} from './admin/admin-ft-asset-edit/admin-ft-asset-edit.component'
 import {AdminIssuerComponent} from './admin/admin-issuer/admin-issuer.component'
 import {AdminAssetNewComponent} from './admin/admin-asset-new/admin-asset-new.component'
-import {AdminFtAssetNewComponent} from './admin/admin-ft-asset-new/admin-ft-asset-new.component'
-import {AdminFtAssetCampaignNewComponent} from './admin/admin-ft-asset-campaign-new/admin-ft-asset-campaign-new.component'
 import {AdminAssetCampaignNewComponent} from './admin/admin-asset-campaign-new/admin-asset-campaign-new.component'
-import {AdminAssetCampaignViewComponent} from './admin/admin-asset-campaign-view/admin-asset-campaign-view.component'
-import {AdminFtAssetCampaignViewComponent} from './admin/admin-ft-asset-campaign-view/admin-ft-asset-campaign-view.component'
 import {AdminCampaignEditComponent} from './admin/admin-campaign-edit/admin-campaign-edit.component'
-import {AdminAssetCampaignAddTokensComponent} from './admin/admin-asset-campaign-add-tokens/admin-asset-campaign-add-tokens.component'
-import {AdminFtAssetCampaignAddTokensComponent} from './admin/admin-ft-asset-campaign-add-tokens/admin-ft-asset-campaign-add-tokens.component'
+import {AdminCampaignDetailComponent} from './admin/admin-campaign-detail/admin-campaign-detail.component'
+import {AdminCampaignAddTokensComponent} from './admin/admin-campaign-add-tokens/admin-campaign-add-tokens.component'
+import {AdminIssuerNewComponent} from './admin/admin-issuer-new/admin-issuer-new.component'
 
 const appRoutes: Routes = [
   {
@@ -70,19 +50,9 @@ const appRoutes: Routes = [
           {path: 'assets/:id', component: AdminAssetDetailComponent},
           {path: 'assets/:id/edit', component: AdminAssetEditComponent},
           {path: 'assets/:id/campaigns/new', component: AdminAssetCampaignNewComponent},
-          {path: 'assets/:assetId/campaigns/:campaignId', component: AdminAssetCampaignViewComponent},
-          {path: 'assets/:assetId/campaigns/:campaignId/edit', component: AdminCampaignEditComponent},
-          {path: 'assets/:assetId/campaigns/:campaignId/add-tokens', component: AdminAssetCampaignAddTokensComponent},
-          {path: 'ft_assets/new', component: AdminFtAssetNewComponent},
-          {path: 'ft_assets/:id', component: AdminFtAssetDetailComponent},
-          {path: 'ft_assets/:id/edit', component: AdminFtAssetEditComponent},
-          {path: 'ft_assets/:id/campaigns/new', component: AdminFtAssetCampaignNewComponent},
-          {path: 'ft_assets/:assetId/campaigns/:campaignId', component: AdminFtAssetCampaignViewComponent},
-          {path: 'ft_assets/:assetId/campaigns/:campaignId/edit', component: AdminCampaignEditComponent},
-          {
-            path: 'ft_assets/:assetId/campaigns/:campaignId/add-tokens',
-            component: AdminFtAssetCampaignAddTokensComponent
-          },
+          {path: 'campaigns/:campaignId', component: AdminCampaignDetailComponent},
+          {path: 'campaigns/:campaignId/edit', component: AdminCampaignEditComponent},
+          {path: 'campaigns/:campaignId/add-tokens', component: AdminCampaignAddTokensComponent},
         ],
       },
       {path: 'dev_playground', component: DevPlaygroundComponent},
@@ -98,28 +68,15 @@ const issuerRoutes: Routes = [{
 
 const networkRoutes: Routes = [{
   path: !environment.fixed.chainID ? ':chainID' : '',
-  canActivate: [NetworkGuard], children: issuerRoutes,
+  canActivate: [NetworkGuard], children: [
+    {path: 'admin/issuers/new', component: AdminIssuerNewComponent},
+    ...issuerRoutes,
+  ],
 }]
 
 const routes: Routes = [
   {path: '', pathMatch: 'full', redirectTo: !environment.fixed.issuer ? '/home' : '/offers'},
   {path: 'home', component: HomeComponent},
-  {path: 'issuers', component: IssuerListComponent},
-  {path: 'issuers/new', component: IssuerNewComponent},
-  {path: 'issuers/:id', component: IssuerDetailComponent},
-  {path: 'issuers/:id/edit', component: IssuerEditComponent},
-  {path: 'issuers/:id/edit/advanced', component: IssuerEditAdvancedComponent},
-  {path: 'issuers/:id/assets/new', component: AssetNewComponent},
-  {path: 'issuers/:id/ft_assets/new', component: FtAssetNewComponent},
-  {path: 'assets/:id', component: AssetDetailComponent},
-  {path: 'assets/:id/edit', component: AssetEditComponent},
-  {path: 'assets/:id/campaigns/new', component: CampaignNewComponent},
-  {path: 'ft_assets/:id', component: FtAssetDetailComponent},
-  {path: 'ft_assets/:id/edit', component: FtAssetEditComponent},
-  {path: 'ft_assets/:id/campaigns/new', component: CampaignNewComponent},
-  {path: 'campaigns/:id', component: CampaignDetailComponent},
-  {path: 'campaigns/:id/edit', component: CampaignEditComponent},
-  {path: 'campaigns/:id/add-tokens', component: CampaignAddTokensComponent},
   {
     path: '', component: AppLayoutComponent, children: networkRoutes,
   },

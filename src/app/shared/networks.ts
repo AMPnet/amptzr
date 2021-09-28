@@ -30,13 +30,20 @@ export interface Network {
 
 interface TokenizerConfig {
   apxRegistry: string,
-  issuerFactory: string,
-  assetFactory: string,
-  assetTransferableFactory: string,
-  cfManagerFactory: string,
-  payoutManagerFactory: string,
+  issuerFactory: {
+    basic: string,
+  },
+  assetFactory: {
+    basic: string,
+    transferable: string,
+  }
+  cfManagerFactory: {
+    basic: string,
+  },
+  snapshotDistributorFactory: string,
   deployerService: string,
   queryService: string,
+  nameRegistry: string,
   defaultWalletApprover: string,
   defaultStableCoin: string,
   childChainManager: string, // matic specific
@@ -59,15 +66,22 @@ export const MaticNetwork: Network = {
   rpcURLs: ['https://polygon-rpc.com'],
   explorerURLs: ['https://polygonscan.com/'],
   tokenizerConfig: {
-    apxRegistry: '0xC5C69f646E94abD4D169a0b8a4F4A493360BF7F9',
-    issuerFactory: '0xb0077f54f6d35C269aB7b231179Cac634a38F52e',
-    assetFactory: '0x8C5202317643cb4C80A6160Dad3b7f2d2De1872B',
-    assetTransferableFactory: '0x6bEcC917b7937d3180768c555Cd17Ad5e3cD2BC1',
-    cfManagerFactory: '0x341408B1B56c67478639b0446C419c607bEB84E9',
-    payoutManagerFactory: '0x65d1987c95FE89509366ee1B0CF250E0c00083DC',
-    deployerService: '0xb1EA65089c3525BC4F4287Ea83E0E594cDA00b30',
-    queryService: '0x1055A19E99eD45114eFBBE0fD2B59B21103A21C9',
-    defaultWalletApprover: '0x3edE377caC124205F6f73635c1DC4eb2Da8d0399',
+    apxRegistry: '0xd72d91319E5ff36F34761B72a1e47e803Ce65743',
+    issuerFactory: {
+      basic: '0xa77d68e73752b4e4E6670032400f9a1Da522ed22',
+    },
+    assetFactory: {
+      basic: '0x9e4a2d67e1b63ab1c46000161c8288d5e4dea075',
+      transferable: '0xf80a26bf08af7c8c33d6f8cfcfe9641363ba788b',
+    },
+    cfManagerFactory: {
+      basic: '0x3105e7FE2bb0DD528888192A4ffC08a1Bf5Ee789',
+    },
+    snapshotDistributorFactory: '0x1a88619a71d3D77FD8D75052825F863dAa1D415A',
+    deployerService: '0xfe8a734d71D1754EC8f670676365aAf5408e7931',
+    queryService: '0x142f05565D9e0562e7caA09bAf816D263615dfe6',
+    nameRegistry: '0x40eD1E8f0E5ed20d114bCeBE55c7b7fd27567D5F',
+    defaultWalletApprover: '0x5C028C472227c975BD64ae1050066302Aef4e14D',
     defaultStableCoin: '0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174',
     childChainManager: '0xA6FA4fB5f76172d178d61B04b0ecd319C5d1C0aa',
   },
@@ -93,15 +107,22 @@ export const MumbaiNetwork: Network = {
   rpcURLs: ['https://matic-mumbai.chainstacklabs.com'],
   explorerURLs: ['https://mumbai.polygonscan.com/'],
   tokenizerConfig: {
-    apxRegistry: '0xb46979536849360806B48143065A10D4E309D966',
-    issuerFactory: '0x664cF91d5E484bF4520Eec22d1ca8ce9324f9946',
-    assetFactory: '0x3E5B2f3aDBd431BF838B84E25907CC0580C738c3',
-    assetTransferableFactory: '0xdA6a8abd23dA1aDf3e9d3Ed91DB65017D1c571f8',
-    cfManagerFactory: '0x086726c8bE64b946AEd142726dE00B3cf52098B7',
-    payoutManagerFactory: '0x1EaF0DA71e593F28BC67a0C3C09BA7d52364124F',
-    deployerService: '0x1F1FCc012D4b901cb88d4B958052D301F62F9bF3',
-    queryService: '0x25dFc73574EF3A16bF53A84E2394B4CaA5a5bc1a',
-    defaultWalletApprover: '0xD449f575B45318f196ec806b84Fcbf3f9583F8dc',
+    apxRegistry: '0x2D3B123C7D53E537D449186386618301b4a93B22',
+    issuerFactory: {
+      basic: '0x95c406b7294c300308BAc5C722ffe3f1e4e0Cb75',
+    },
+    assetFactory: {
+      basic: '0x19d22BBEc9F1aa1bB9AB0F172f5D9e6DDF9E6C47',
+      transferable: '0x52997837b399d66A4d71b6E28fCed6Fb95B83fd9',
+    },
+    cfManagerFactory: {
+      basic: '0x3877230A7dE98DF02cCd7F23C46294F80b81F64f',
+    },
+    snapshotDistributorFactory: '0x13B7A1eaEba77B2c8C44b56bdE2863c4efDa8dd8',
+    deployerService: '0x9132e92e6fc8E192f72087D8856014566C43145f',
+    queryService: '0x85A9e3142c31E9a820643D59310C63E1605eeCE7',
+    nameRegistry: '0x2D14cc9AcC1a638Fc8BF7d3eD0C9d79270194461',
+    defaultWalletApprover: '0x622b12839a32FD4C9bc8B1Ff5D4D96DA41C86356',
     defaultStableCoin: '0x9733aa0fb74a01f058fbeb0ad9da3f483058908e',
     childChainManager: '0xb5505a6d998549090530911180f38aC5130101c6',
   },

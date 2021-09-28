@@ -9,10 +9,10 @@
               <img
                 class="lg:w-5/12 w-full rounded-t-3xl lg:rounded-l-3xl object-cover
                 card-corner-radius-override"
-                src="{{ campaign.photo | toUrlIPFS }}" alt="Project image">
+                src="{{ campaign.infoData.photo | toUrlIPFS }}" alt="Project image">
               <div class="w-full flex flex-col p-4 lg:p-8">
                 <!-- Input with label, min invest and max invest amounts -->
-                <h1 class="pt-2 lg:pt-8 text-4xl uppercase">{{ campaign.name }}</h1>
+                <h1 class="pt-2 lg:pt-8 text-4xl uppercase">{{ campaign.infoData.name }}</h1>
 
                 <ng-container *ngIf="preInvestData$ | async as data">
                   <div class="mt-4 flex flex-col lg:flex-row justify-between">
@@ -133,10 +133,10 @@
                   {{ investmentForm.get('amount')?.value | currencyDefault }}
                 </span>
                 <span class="hidden lg:inline">-></span>
-                <span class="text-3xl lg:ml-2 mt-2 lg:mt-auto uppercase">{{ campaign.name }}</span>
+                <span class="text-3xl lg:ml-2 mt-2 lg:mt-auto uppercase">{{ campaign.infoData.name }}</span>
               </div>
               <app-offer-investment-info [offer]="campaign" display="return-only"></app-offer-investment-info>
-              <div class="mt-4 text-gray-500">{{ campaign.about }}</div>
+              <div class="mt-4 text-gray-500">{{ campaign.infoData.about }}</div>
               <div class="w-full flex justify-end mt-8 mb-4">
                 <button (click)="backToEdit()" class="rounded-full lg:px-16 py-2 text-sm font-semibold">
                   Cancel

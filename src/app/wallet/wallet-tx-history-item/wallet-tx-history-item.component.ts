@@ -1,9 +1,10 @@
 import {ChangeDetectionStrategy, Component, Input, OnInit} from '@angular/core'
 import {Transaction, TransactionType} from '../../shared/services/backend/report.service'
-import {CampaignService} from '../../shared/services/blockchain/campaign.service'
 import {Observable, of} from 'rxjs'
 import {withStatus, WithStatus} from '../../shared/utils/observables'
-import {map} from 'rxjs/operators'
+import {map, switchMap} from 'rxjs/operators'
+import {NameService} from '../../shared/services/blockchain/name.service'
+import {CampaignService} from '../../shared/services/blockchain/campaign/campaign.service'
 
 @Component({
   selector: 'app-wallet-tx-history-item',
@@ -17,7 +18,8 @@ export class WalletTxHistoryItemComponent implements OnInit {
   txView$!: Observable<TxView>
   entityName$!: Observable<WithStatus<string>>
 
-  constructor(private campaignService: CampaignService) {
+  constructor(private campaignService: CampaignService,
+              private nameService: NameService) {
   }
 
   ngOnInit() {
@@ -68,8 +70,9 @@ export class WalletTxHistoryItemComponent implements OnInit {
   }
 
   private campaignName(address: string) {
-    return this.campaignService.getCampaignWithInfo(address).pipe(
-      map(campaign => campaign.name),
+    return this.nameService.getCampaign(address).pipe(
+      switchMap(campaign => this.campaignService.getCampaignInfo(campaign.campaign)),
+      map(campaign => campaign.infoData.name),
     )
   }
 }

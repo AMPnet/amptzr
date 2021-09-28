@@ -1,10 +1,10 @@
 import {ChangeDetectionStrategy, Component} from '@angular/core'
-import {Observable} from 'rxjs'
-import {withStatus, WithStatus} from '../shared/utils/observables'
-import {IssuerService, IssuerWithInfo} from '../shared/services/blockchain/issuer.service'
-import {switchMap} from 'rxjs/operators'
+import {combineLatest, Observable, of} from 'rxjs'
+import {WithStatus, withStatus} from '../shared/utils/observables'
+import {map, switchMap} from 'rxjs/operators'
 import {RouterService} from '../shared/services/router.service'
-import {SessionQuery} from '../session/state/session.query'
+import {IssuerService, IssuerWithInfo} from '../shared/services/blockchain/issuer/issuer.service'
+import {QueryService} from '../shared/services/blockchain/query.service'
 
 @Component({
   selector: 'app-home',
@@ -13,16 +13,27 @@ import {SessionQuery} from '../session/state/session.query'
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class HomeComponent {
-  issuers$: Observable<WithStatus<IssuerWithInfo[]>> = this.sessionQuery.provider$.pipe(
-    switchMap(() => withStatus(this.issuerService.issuers$)),
+  issuers$: Observable<WithStatus<IssuerItem[]>> = this.queryService.issuers$.pipe(
+    switchMap(issuers => withStatus(
+        issuers.length === 0 ? of([]) : combineLatest(
+          issuers.map(issuer => this.issuerService.getIssuerInfo(issuer.issuer).pipe(
+            map(i => ({mappedName: issuer.mappedName, issuer: i})),
+          ))),
+      ),
+    ),
   )
 
   constructor(private issuerService: IssuerService,
               private router: RouterService,
-              private sessionQuery: SessionQuery) {
+              private queryService: QueryService) {
   }
 
-  openIssuer(issuer: IssuerWithInfo) {
-    this.router.navigateIssuer(issuer.ansName)
+  openIssuer(issuer: IssuerItem) {
+    this.router.navigateIssuer(issuer.mappedName)
   }
+}
+
+interface IssuerItem {
+  mappedName: string,
+  issuer: IssuerWithInfo
 }

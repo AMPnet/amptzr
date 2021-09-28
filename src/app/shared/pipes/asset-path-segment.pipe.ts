@@ -10,9 +10,9 @@ export class AssetPathSegmentPipe implements PipeTransform {
 
   public transform(value: any): any {
     switch (value) {
-      case this.preferenceQuery.network.tokenizerConfig.assetFactory:
+      case this.preferenceQuery.network.tokenizerConfig.assetFactory.basic:
         return 'assets'
-      case this.preferenceQuery.network.tokenizerConfig.assetTransferableFactory:
+      case this.preferenceQuery.network.tokenizerConfig.assetFactory.transferable:
         return 'ft_assets'
     }
 

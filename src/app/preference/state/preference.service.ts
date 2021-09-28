@@ -60,6 +60,7 @@ export class PreferenceService {
             chainID: fixedChainID,
             issuer: {
               address: fixedIssuer,
+              flavor: 'IssuerV1', // TODO: flavor should be added to fixed issuer configuration
             },
           })
         }

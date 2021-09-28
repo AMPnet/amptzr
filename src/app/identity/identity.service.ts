@@ -3,11 +3,11 @@ import {combineLatest, Observable, of} from 'rxjs'
 import {delay, filter, map, repeatWhen, switchMap, take} from 'rxjs/operators'
 import {VeriffService} from './veriff/veriff.service'
 import {BackendUserService} from '../shared/services/backend/backend-user.service'
-import {IssuerService} from '../shared/services/blockchain/issuer.service'
 import {SignerService} from '../shared/services/signer.service'
 import {SessionQuery} from '../session/state/session.query'
-import {CampaignService} from '../shared/services/blockchain/campaign.service'
 import {PreferenceQuery} from '../preference/state/preference.query'
+import {CampaignService, CampaignWithInfo} from '../shared/services/blockchain/campaign/campaign.service'
+import {IssuerService} from '../shared/services/blockchain/issuer/issuer.service'
 
 @Injectable({
   providedIn: 'root',
@@ -22,15 +22,15 @@ export class IdentityService {
               private veriffService: VeriffService) {
   }
 
-  ensureIdentityChecked(campaignAddress: string): Observable<void> {
-    return this.checkOnIssuerProcedure(campaignAddress).pipe(
+  ensureIdentityChecked(campaign: CampaignWithInfo): Observable<void> {
+    return this.checkOnIssuerProcedure(campaign).pipe(
       switchMap(identityChecked => identityChecked ? of(undefined) : this.checkOnBackendProcedure),
     )
   }
 
-  private checkOnIssuerProcedure(campaignAddress: string): Observable<boolean> {
+  private checkOnIssuerProcedure(campaign: CampaignWithInfo): Observable<boolean> {
     return this.signerService.ensureAuth.pipe(take(1),
-      switchMap(() => this.campaignService.isWhitelistRequired(campaignAddress).pipe(
+      switchMap(() => this.campaignService.isWhitelistRequired(campaign).pipe(
         switchMap(isWhitelistRequired => !isWhitelistRequired ? of(true) :
           this.issuerService.isWalletApproved(this.sessionQuery.getValue().address!),
         ))),
