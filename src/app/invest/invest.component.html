@@ -5,7 +5,7 @@
         <form [formGroup]="investmentForm">
           <!-- Input investment card -->
           <div *ngIf="(investState$ | async) === investState.Editing">
-            <div class="flex flex-col lg:flex-row mt-8 shadow-lg rounded-3xl bg-white">
+            <div class="flex flex-col lg:flex-row mt-8 shadow-lg rounded-3xl bg-white lg:min-h-[24rem]">
               <img
                 class="lg:w-5/12 w-full rounded-t-3xl lg:rounded-l-3xl object-cover
                 card-corner-radius-override"

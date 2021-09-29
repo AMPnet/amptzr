@@ -28,7 +28,7 @@ import {AdminIssuerNewComponent} from './admin/admin-issuer-new/admin-issuer-new
 
 const appRoutes: Routes = [
   {
-    path: '', children: [
+    path: '', component: AppLayoutComponent, children: [
       {path: '', pathMatch: 'full', redirectTo: 'offers'},
       {path: 'offers', component: OffersComponent},
       {path: 'offers/:id', component: OfferComponent},
@@ -78,7 +78,7 @@ const routes: Routes = [
   {path: '', pathMatch: 'full', redirectTo: !environment.fixed.issuer ? '/home' : '/offers'},
   {path: 'home', component: HomeComponent},
   {
-    path: '', component: AppLayoutComponent, children: networkRoutes,
+    path: '', children: networkRoutes,
   },
   {path: '**', redirectTo: '/home'},
 ]
