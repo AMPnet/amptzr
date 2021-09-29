@@ -18,8 +18,8 @@
                     <span>Upload logo</span>
                   </label>
                 </div>
-                <img *ngIf="asset.logo; else noImage" class="w-full h-48 lg:h-30 object-cover"
-                     [src]="((updateForm.get('logo')?.value?.[0] | safe:'fileUrl') || asset.logo) | toUrlIPFS"
+                <img *ngIf="asset.infoData.logo; else noImage" class="w-full h-48 lg:h-30 object-cover"
+                     [src]="((updateForm.get('logo')?.value?.[0] | safe:'fileUrl') || asset.infoData.logo) | toUrlIPFS"
                      alt="Asset logo">
                 <ng-template #noImage>
                   <div class="w-full h-48 lg:h-30 bg-gray-200"></div>
@@ -38,14 +38,8 @@
                   <div class="flex items-center gap-2 text-gray-400">
                     <span>Token supply:</span>
                     <span class="text-sm font-normal">
-                      {{ asset.initialTokenSupply | formatUnit:'bignumToWei':18 }}
+                      {{ asset.totalSupply | formatUnit:'bignumToWei':18 | number }}
                     </span>
-                  </div>
-
-                  <div class="flex flex-col gap-2 mt-3 lg:mt-0">
-                    <label>Description:</label>
-                    <textarea class="border-gray-400 rounded-lg" type="text" formControlName="description">
-                    </textarea>
                   </div>
                 </div>
 
@@ -73,7 +67,9 @@
       </ng-container>
 
       <ng-container *ngIf="assetRes.loading">
-        <app-spinner type="overlay">Loading asset...</app-spinner>
+        <app-spinner type="overlay">
+          Loading asset...
+        </app-spinner>
       </ng-container>
     </ng-container>
   </div>

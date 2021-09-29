@@ -1,11 +1,11 @@
 import {Injectable} from '@angular/core'
-import {IssuerService} from '../shared/services/blockchain/issuer.service'
 import {combineLatest, Observable} from 'rxjs'
 import {RampInstantEvents, RampInstantEventTypes, RampInstantSDK} from '@ramp-network/ramp-instant-sdk'
 import {SessionQuery} from '../session/state/session.query'
 import {ToUrlIPFSPipe} from '../shared/pipes/to-url-ipfs.pipe'
 import {PreferenceQuery} from '../preference/state/preference.query'
 import {switchMap, take} from 'rxjs/operators'
+import {IssuerService} from '../shared/services/blockchain/issuer/issuer.service'
 
 @Injectable({
   providedIn: 'root',
@@ -27,9 +27,9 @@ export class DepositRampService {
       switchMap(([issuer, address]) => {
         return new Observable<RampInstantEvents>(observer => {
           new RampInstantSDK({
-            hostAppName: issuer.name,
-            hostLogoUrl: this.toUrlIpfsPipe.transform(issuer.logo),
-            hostApiKey: issuer.rampApiKey,
+            hostAppName: issuer.infoData.name,
+            hostLogoUrl: this.toUrlIpfsPipe.transform(issuer.infoData.logo),
+            hostApiKey: issuer.infoData.rampApiKey,
             swapAsset: this.preferenceQuery.network.ramp.swapAsset,
             fiatCurrency: this.preferenceQuery.network.ramp.fiatCurrency,
             fiatValue: depositAmount.toString(),

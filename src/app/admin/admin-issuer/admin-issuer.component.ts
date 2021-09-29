@@ -1,12 +1,13 @@
 import {ChangeDetectionStrategy, Component} from '@angular/core'
-import {IssuerService, IssuerWithInfo} from '../../shared/services/blockchain/issuer.service'
-import {Observable} from 'rxjs'
+import {combineLatest, Observable, of} from 'rxjs'
 import {StablecoinService} from '../../shared/services/blockchain/stablecoin.service'
-import {AssetService, AssetWithInfo} from '../../shared/services/blockchain/asset.service'
 import {withStatus, WithStatus} from '../../shared/utils/observables'
-import {FtAssetService, FtAssetWithInfo} from '../../shared/services/blockchain/ft-asset.service'
-import {map, mergeMap} from 'rxjs/operators'
+import {filter, map, switchMap} from 'rxjs/operators'
 import {ReportService} from '../../shared/services/backend/report.service'
+import {AssetService, CommonAssetWithInfo} from '../../shared/services/blockchain/asset/asset.service'
+import {IssuerService, IssuerWithInfo} from '../../shared/services/blockchain/issuer/issuer.service'
+import {QueryService} from '../../shared/services/blockchain/query.service'
+import {IssuerBasicService, IssuerBasicState} from '../../shared/services/blockchain/issuer/issuer-basic.service'
 
 @Component({
   selector: 'app-admin',
@@ -15,27 +16,42 @@ import {ReportService} from '../../shared/services/backend/report.service'
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AdminIssuerComponent {
-  issuer$: Observable<IssuerWithInfo>
-  assets$: Observable<WithStatus<AssetWithInfo[]>>
-  ftAssets$: Observable<WithStatus<FtAssetWithInfo[]>>
+  issuer$: Observable<WithStatus<IssuerView>>
+
+  assets$: Observable<WithStatus<CommonAssetWithInfo[]>>
   stableCoinSymbol: string
 
   constructor(private issuerService: IssuerService,
               private stableCoinService: StablecoinService,
               private assetService: AssetService,
-              private ftAssetService: FtAssetService,
+              private issuerBasicService: IssuerBasicService,
+              private queryService: QueryService,
               private reportService: ReportService) {
-    this.issuer$ = this.issuerService.issuer$
+    this.issuer$ = withStatus(
+      this.issuerService.issuer$.pipe(
+        switchMap(issuer => this.issuerBasicService.getStateFromCommon(issuer).pipe(
+          map(issuerBasic => ({...issuer, issuerBasic})),
+        )),
+      ),
+    )
+
     this.stableCoinSymbol = this.stableCoinService.symbol
 
     const issuerContractAddress$ = this.issuer$.pipe(
+      filter(issuerRes => !!issuerRes.value),
+      map(issuerRes => issuerRes.value!),
       map(issuer => issuer.contractAddress),
     )
+
     this.assets$ = issuerContractAddress$.pipe(
-      mergeMap(issuerContractAddress => withStatus(this.assetService.getAssets(issuerContractAddress))),
-    )
-    this.ftAssets$ = issuerContractAddress$.pipe(
-      mergeMap(issuerContractAddress => withStatus(this.ftAssetService.getAssets(issuerContractAddress))),
+      switchMap(address => withStatus(
+          this.queryService.getAssetsForIssuerAddress(address).pipe(
+            switchMap(assets => assets.length > 0 ? combineLatest(
+                assets.map(asset => this.assetService.getAssetInfo(asset.asset)),
+              ) : of([]),
+            )),
+        ),
+      ),
     )
   }
 
@@ -43,3 +59,5 @@ export class AdminIssuerComponent {
     return this.reportService.downloadAdminInvestorsReport()
   }
 }
+
+type IssuerView = IssuerWithInfo & { issuerBasic: IssuerBasicState | undefined }

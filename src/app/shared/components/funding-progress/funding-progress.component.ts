@@ -1,6 +1,9 @@
 import {ChangeDetectionStrategy, Component, Input, OnInit} from "@angular/core"
-import {CampaignService, CampaignWithInfo} from '../../services/blockchain/campaign.service'
 import {DatePipe} from '@angular/common'
+import {CampaignService, CampaignWithInfo} from '../../services/blockchain/campaign/campaign.service'
+import {CampaignFlavor} from '../../services/blockchain/flavors'
+import {map} from 'rxjs/operators'
+import {Observable} from 'rxjs'
 
 @Component({
   selector: 'app-funding-progress',
@@ -10,49 +13,52 @@ import {DatePipe} from '@angular/common'
 })
 export class FundingProgressComponent implements OnInit {
   @Input() campaign!: CampaignWithInfo
-
-  progressData: ProgressData | undefined
+  progressData$!: Observable<ProgressData>
 
   constructor(private campaignService: CampaignService,
               private datePipe: DatePipe) {
   }
 
   ngOnInit() {
-    const stats = this.campaignService.stats(this.campaign)
+    this.progressData$ = this.campaignService.stats(
+      this.campaign.contractAddress, this.campaign.flavor as CampaignFlavor,
+    ).pipe(
+      map(stats => {
+        const raisedPercentage = stats.valueTotal !== 0 ?
+          stats.valueInvested / stats.valueTotal : 0
 
-    const raisedPercentage = stats.valueTotal !== 0 ?
-      stats.valueInvested / stats.valueTotal : 0
+        const softCapPercentage = stats.valueTotal !== 0 ?
+          stats.softCap / stats.valueTotal : 0
 
-    const softCapPercentage = stats.valueTotal !== 0 ?
-      stats.softCap / stats.valueTotal : 0
-
-    this.progressData = {
-      raised: stats.valueInvested,
-      raisedPercentage: raisedPercentage,
-      total: stats.valueTotal,
-      softCap: stats.softCap,
-      softCapPercentage: softCapPercentage,
-    }
+        return {
+          raised: stats.valueInvested,
+          raisedPercentage: raisedPercentage,
+          total: stats.valueTotal,
+          softCap: stats.softCap,
+          softCapPercentage: softCapPercentage,
+        }
+      }),
+    )
   }
 
-  dateRange() {
-    if (!!this.campaign.startDate && !!this.campaign.endDate) {
-      return `${this.formatDate(this.campaign.startDate)} - ${this.formatDate(this.campaign.endDate)}`
+  dateRange(campaign: CampaignWithInfo) {
+    if (!!campaign.infoData.startDate && !!campaign.infoData.endDate) {
+      return `${this.formatDate(campaign.infoData.startDate)} - ${this.formatDate(campaign.infoData.endDate)}`
     }
 
-    if (!!this.campaign.startDate) {
-      return `From ${this.formatDate(this.campaign.startDate)}`
+    if (!!campaign.infoData.startDate) {
+      return `From ${this.formatDate(campaign.infoData.startDate)}`
     }
 
-    if (!!this.campaign.endDate) {
-      return `Until ${this.formatDate(this.campaign.endDate)}`
+    if (!!campaign.infoData.endDate) {
+      return `Until ${this.formatDate(campaign.infoData.endDate)}`
     }
 
     return ''
   }
 
   private formatDate(value?: string): string | null {
-    return this.datePipe.transform(value, "mediumDate")
+    return this.datePipe.transform(value, 'mediumDate')
   }
 }
 

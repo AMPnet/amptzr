@@ -1,6 +1,5 @@
 import {ChangeDetectionStrategy, Component} from '@angular/core'
 import {BehaviorSubject, combineLatest, Observable, of} from 'rxjs'
-import {CampaignService, CampaignWithInfo} from '../shared/services/blockchain/campaign.service'
 import {ActivatedRoute} from '@angular/router'
 import {filter, map, startWith, switchMap, tap} from 'rxjs/operators'
 import {WithStatus, withStatus} from '../shared/utils/observables'
@@ -14,6 +13,10 @@ import {SessionQuery} from '../session/state/session.query'
 import {LinkPreviewResponse, LinkPreviewService} from '../shared/services/backend/link-preview.service'
 import {quillMods} from '../shared/utils/quill'
 import {TailwindService} from '../shared/services/tailwind.service'
+import {NameService} from '../shared/services/blockchain/name.service'
+import {CampaignService, CampaignWithInfo} from '../shared/services/blockchain/campaign/campaign.service'
+import {CampaignBasicService} from '../shared/services/blockchain/campaign/campaign-basic.service'
+import {CampaignFlavor} from '../shared/services/blockchain/flavors'
 
 @Component({
   selector: 'app-offer',
@@ -34,6 +37,8 @@ export class OfferComponent {
   quillMods = quillMods
 
   constructor(private campaignService: CampaignService,
+              private campaignBasicService: CampaignBasicService,
+              private nameService: NameService,
               private metaService: MetaService,
               private toUrlIPFSPipe: ToUrlIPFSPipe,
               private identityService: IdentityService,
@@ -44,17 +49,17 @@ export class OfferComponent {
               private route: ActivatedRoute,
               private tailwindService: TailwindService,
               private linkPreviewService: LinkPreviewService) {
-    const campaignID = this.route.snapshot.params.id
+    const campaignId = this.route.snapshot.params.id
 
     this.campaign$ = this.campaignSub.asObservable().pipe(
       switchMap(() => withStatus(
-        this.campaignService.getAddressByName(campaignID).pipe(
-          switchMap(address => this.campaignService.getCampaignWithInfo(address)),
+        this.nameService.getCampaign(campaignId).pipe(
+          switchMap(campaign => this.campaignService.getCampaignInfo(campaign.campaign)),
           tap(campaign => this.metaService.setMeta({
-            title: campaign.name,
-            description: campaign.about,
+            title: campaign.infoData.name,
+            description: campaign.infoData.about,
             contentURL: window.location.href,
-            imageURL: this.toUrlIPFSPipe.transform(campaign.photo),
+            imageURL: this.toUrlIPFSPipe.transform(campaign.infoData.photo),
           })),
         ),
       )),
@@ -63,11 +68,11 @@ export class OfferComponent {
     this.links$ = this.campaign$.pipe(
       filter((campaign) => !!campaign.value),
       switchMap((campaign) => {
-        if (!campaign.value!.newsURLs) {
+        if (!campaign.value!.infoData.newsURLs) {
           return withStatus(of({value: []}))
         }
 
-        const previewLinks = campaign.value!.newsURLs?.map((url) => this.linkPreviewService.previewLink(url))
+        const previewLinks = campaign.value!.infoData!.newsURLs?.map((url) => this.linkPreviewService.previewLink(url))
 
         return withStatus(combineLatest(previewLinks).pipe(map(value => ({value}))))
       }),
@@ -79,9 +84,9 @@ export class OfferComponent {
     )
   }
 
-  goToInvest(campaignAddress: string) {
+  goToInvest(campaign: CampaignWithInfo) {
     return () => {
-      return this.identityService.ensureIdentityChecked(campaignAddress).pipe(
+      return this.identityService.ensureIdentityChecked(campaign).pipe(
         // TODO: add check for balance > 0
         switchMap(() => this.profileService.ensureBasicInfo),
         switchMap(() => this.router.navigate(['invest'], {relativeTo: this.route})),
@@ -89,9 +94,11 @@ export class OfferComponent {
     }
   }
 
-  finalize(campaignAddress: string) {
+  finalize(campaign: CampaignWithInfo) {
     return () => {
-      return this.campaignService.finalize(campaignAddress).pipe(
+      return this.campaignService.finalize(
+        campaign.contractAddress, campaign.flavor as CampaignFlavor,
+      ).pipe(
         switchMap(() => this.dialogService.success('The project has been finalized successfully.')),
         tap(() => this.campaignSub.next()),
       )

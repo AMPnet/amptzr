@@ -4,7 +4,7 @@ import {distinctUntilChanged, map, shareReplay, switchMap} from 'rxjs/operators'
 import {BackendHttpClient} from './backend/backend-http-client.service'
 import {combineLatest, Observable} from 'rxjs'
 import {SessionQuery} from '../../session/state/session.query'
-import {IssuerService} from './blockchain/issuer.service'
+import {IssuerService} from './blockchain/issuer/issuer.service'
 
 @Injectable({
   providedIn: 'root',

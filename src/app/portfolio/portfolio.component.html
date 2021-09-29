@@ -34,9 +34,10 @@
         <section class="w-full mt-8">
           <div *ngFor="let item of portfolio" class="w-full rounded-3xl shadow-lg flex flex-col lg:flex-row mt-4">
             <div class="w-full lg:w-4/12">
-              <a routerLink="{{ '/offers/' + item.campaign.ansName | issuerPath }}">
-                <img class="w-full h-32 object-cover rounded-t-3xl lg:h-full lg:rounded-tr-none lg:rounded-l-3xl"
-                     src="{{ item.campaign.photo | toUrlIPFS }}" alt="Project image">
+              <a routerLink="{{ '/offers/' + item.campaign.contractAddress | issuerPath }}">
+                <img class="w-full h-32 object-cover rounded-t-3xl lg:h-full lg:rounded-tr-none lg:rounded-l-3xl
+                bg-white"
+                     src="{{ item.campaign.infoData.photo | toUrlIPFS }}" alt="Project image">
               </a>
             </div>
             <div class="w-full bg-white rounded-b-3xl lg:rounded-none lg:rounded-r-3xl p-6">
@@ -47,8 +48,8 @@
                 </div>
               </div>
               <div class="text-3xl mt-4 lg:text-4xl tracking-wider font-light uppercase">
-                <a routerLink="{{ '/offers/' + item.campaign.ansName | issuerPath }}">
-                  {{ item.campaign.name }}
+                <a routerLink="{{ '/offers/' + item.campaign.contractAddress | issuerPath }}">
+                  {{ item.campaign.infoData.name }}
                 </a>
               </div>
               <div class="mt-2 flex flex-col lg:flex-row justify-start lg:justify-between">
@@ -59,7 +60,7 @@
                   <button *ngIf="!item.campaign.finalized" app-action-button
                           class="w-full lg:w-52 lg:px-20 lg:ml-8 mt-8 lg:mt-0 py-2 bg-transparent
                           text-black font-semibold rounded-full whitespace-nowrap"
-                          [onClick]="cancel(item.campaign.contractAddress).bind(this)"
+                          [onClick]="cancel(item.campaign.contractAddress, item.campaign.flavor).bind(this)"
                           text="Cancel Investment">
                   </button>
 
