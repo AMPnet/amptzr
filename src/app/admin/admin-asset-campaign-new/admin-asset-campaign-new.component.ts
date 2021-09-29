@@ -192,6 +192,7 @@ export class AdminAssetCampaignNewComponent {
 
   toggleReturnFrequencyControls(value: boolean) {
     if (value) {
+      this.createForm1.controls.isReturnValueFixed.enable()
       this.createForm1.controls.returnFrequency.enable()
       this.createForm1.controls.returnFrom.enable()
 
@@ -199,6 +200,7 @@ export class AdminAssetCampaignNewComponent {
         this.createForm1.controls.returnTo.enable()
       }
     } else {
+      this.createForm1.controls.isReturnValueFixed.disable()
       this.createForm1.controls.returnFrequency.disable()
       this.createForm1.controls.returnFrom.disable()
       this.createForm1.controls.returnTo.disable()
@@ -252,6 +254,7 @@ export class AdminAssetCampaignNewComponent {
 
   create(data: AssetData) {
     return () => {
+      const hasMinAndMaxInvestment = this.createForm1.value.hasMinAndMaxInvestment
       return this.campaignService.uploadInfo({
         name: this.createForm1.value.name,
         photo: this.createForm2.value.logo?.[0],
@@ -268,8 +271,8 @@ export class AdminAssetCampaignNewComponent {
           assetAddress: data.asset.contractAddress,
           initialPricePerToken: TokenPrice.format(this.createForm1.value.tokenPrice),
           softCap: this.stablecoinService.parse(this.createForm1.value.softCap),
-          minInvestment: this.getMinInvestmentValue(),
-          maxInvestment: this.getMaxInvestmentValue(data),
+          minInvestment: this.getMinInvestmentValue(hasMinAndMaxInvestment),
+          maxInvestment: this.getMaxInvestmentValue(hasMinAndMaxInvestment, data),
           whitelistRequired: this.createForm1.value.isIdVerificationRequired,
           info: uploadRes.path,
         }, 'CfManagerSoftcapV1')), // TODO: set a correct campaign type from dropdown
@@ -386,16 +389,16 @@ export class AdminAssetCampaignNewComponent {
     return {}
   }
 
-  private getMinInvestmentValue() {
-    if (this.createForm1.value.hasMinAndMaxInvestment) {
+  private getMinInvestmentValue(hasMinAndMaxInvestment: boolean) {
+    if (hasMinAndMaxInvestment) {
       return this.stablecoinService.parse(this.createForm1.value.minInvestment)
     }
 
     return BigNumber.from(1)
   }
 
-  private getMaxInvestmentValue(data: AssetData) {
-    if (this.createForm1.value.hasMinAndMaxInvestment) {
+  private getMaxInvestmentValue(hasMinAndMaxInvestment: boolean, data: AssetData) {
+    if (hasMinAndMaxInvestment) {
       return this.stablecoinService.parse(this.createForm1.value.maxInvestment)
     }
 
