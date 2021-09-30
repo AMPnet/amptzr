@@ -4,7 +4,7 @@ import {PreferenceQuery} from '../../preference/state/preference.query'
 import {getWindow} from '../../shared/utils/browser'
 import {IssuerPathPipe} from '../../shared/pipes/issuer-path.pipe'
 import {ReturnFrequencies, ReturnFrequency} from 'types/ipfs/campaign'
-import {ViewportScroller} from '@angular/common'
+import {DatePipe, PercentPipe, ViewportScroller} from '@angular/common'
 import {BigNumber} from 'ethers'
 import {StablecoinService} from '../../shared/services/blockchain/stablecoin.service'
 import {quillMods} from '../../shared/utils/quill'
@@ -16,7 +16,11 @@ import {ActivatedRoute} from '@angular/router'
 import {BehaviorSubject, combineLatest, Observable} from 'rxjs'
 import {withStatus, WithStatus} from '../../shared/utils/observables'
 import {AssetService, CommonAssetWithInfo} from '../../shared/services/blockchain/asset/asset.service'
-import {CampaignService} from '../../shared/services/blockchain/campaign/campaign.service'
+import {
+  CampaignService,
+  CampaignUploadInfoData,
+  CreateCampaignData
+} from '../../shared/services/blockchain/campaign/campaign.service'
 import {NameService} from '../../shared/services/blockchain/name.service'
 
 @Component({
@@ -26,14 +30,17 @@ import {NameService} from '../../shared/services/blockchain/name.service'
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AdminAssetCampaignNewComponent {
+  readonly showPreviewScreen = false
+
   assetData$: Observable<WithStatus<AssetData>>
 
   stepType = Step
-  step$ = new BehaviorSubject<Step>(Step.FIRST)
+  step$ = new BehaviorSubject<Step>(Step.CREATION_FIRST)
 
   createForm1: FormGroup
   createForm2: FormGroup
   newsUrls: FormArray
+  preview!: CampaignPreview
 
   quillMods = quillMods
 
@@ -50,6 +57,8 @@ export class AdminAssetCampaignNewComponent {
               private viewportScroller: ViewportScroller,
               private preferenceQuery: PreferenceQuery,
               private issuerPathPipe: IssuerPathPipe,
+              private datePipe: DatePipe,
+              private percentPipe: PercentPipe,
               private stablecoinService: StablecoinService,
               private route: ActivatedRoute,
               private assetService: AssetService,
@@ -215,13 +224,19 @@ export class AdminAssetCampaignNewComponent {
     }
   }
 
-  nextCreationStep() {
-    this.step$.next(Step.SECOND)
+  firstCreationStep() {
+    this.step$.next(Step.CREATION_FIRST)
     this.viewportScroller.scrollToPosition([0, 0])
   }
 
-  previousCreationStep() {
-    this.step$.next(Step.FIRST)
+  secondCreationStep() {
+    this.step$.next(Step.CREATION_SECOND)
+    this.viewportScroller.scrollToPosition([0, 0])
+  }
+
+  previewCampaignStep(data: AssetData) {
+    this.preparePreviewData(data)
+    this.step$.next(Step.PREVIEW)
     this.viewportScroller.scrollToPosition([0, 0])
   }
 
@@ -254,26 +269,9 @@ export class AdminAssetCampaignNewComponent {
 
   create(data: AssetData) {
     return () => {
-      const hasMinAndMaxInvestment = this.createForm1.value.hasMinAndMaxInvestment
-      return this.campaignService.uploadInfo({
-        name: this.createForm1.value.name,
-        photo: this.createForm2.value.logo?.[0],
-        about: this.createForm2.value.about,
-        description: this.createForm2.value.description,
-        startDate: new Date(this.createForm2.value.startDate).toISOString(),
-        endDate: new Date(this.createForm2.value.endDate).toISOString(),
-        return: this.createCampaignReturnObject(),
-        newDocuments: this.createForm2.value.documents,
-        newsURLs: this.newsUrls.value,
-      }).pipe(
+      return this.campaignService.uploadInfo(this.preview.info).pipe(
         switchMap(uploadRes => this.campaignService.create({
-          slug: this.createForm1.value.slug,
-          assetAddress: data.asset.contractAddress,
-          initialPricePerToken: TokenPrice.format(this.createForm1.value.tokenPrice),
-          softCap: this.stablecoinService.parse(this.createForm1.value.softCap),
-          minInvestment: this.getMinInvestmentValue(hasMinAndMaxInvestment),
-          maxInvestment: this.getMaxInvestmentValue(hasMinAndMaxInvestment, data),
-          whitelistRequired: this.createForm1.value.isIdVerificationRequired,
+          ...this.preview.data,
           info: uploadRes.path,
         }, 'CfManagerSoftcapV1')), // TODO: set a correct campaign type from dropdown
         switchMap(campaignAddress =>
@@ -289,6 +287,55 @@ export class AdminAssetCampaignNewComponent {
         ),
       )
     }
+  }
+
+  createImmediately(data: AssetData) {
+    return () => {
+      ~
+        this.preparePreviewData(data)
+      return this.create(data)()
+    }
+  }
+
+  previewDateRange() {
+    if (!!this.preview.info.startDate && !!this.preview.info.endDate) {
+      return `${this.formatDate(this.preview.info.startDate)} - ${this.formatDate(this.preview.info.endDate)}`
+    }
+
+    if (!!this.preview.info.startDate) {
+      return `From ${this.formatDate(this.preview.info.startDate)}`
+    }
+
+    if (!!this.preview.info.endDate) {
+      return `Until ${this.formatDate(this.preview.info.endDate)}`
+    }
+
+    return 'Not specified'
+  }
+
+  previewHasMinInvestment() {
+    return this.preview.data.minInvestment > BigNumber.from(1)
+  }
+
+  previewHasMaxInvestment(assetData: AssetData) {
+    const maxValue = this.stablecoinService.format(assetData.asset.totalSupply, 18) * this.preview.tokenPrice
+    return this.stablecoinService.format(this.preview.data.maxInvestment) < maxValue
+  }
+
+  previewReturn() {
+    if (this.preview.info.return.frequency) {
+      const frequency = this.ReturnFrequencyNames[this.preview.info.return.frequency]
+      const from = this.percentPipe.transform(this.preview.info.return.from)
+
+      if (this.preview.info.return.to) {
+        const to = this.percentPipe.transform(this.preview.info.return.to)
+        return `${frequency} from ${from} to ${to}`
+      }
+
+      return `${frequency} at ${from}`
+    }
+
+    return 'No'
   }
 
   private tokenPercentage(pricePerToken: number, totalValue: number, data: AssetData) {
@@ -408,24 +455,72 @@ export class AdminAssetCampaignNewComponent {
   }
 
   private addTokensToCampaign(campaignAddress: string, data: AssetData) {
-    const tokenBalance = this.stablecoinService.format(data.balance)
-    // Due to possible rounding errors, we use min(specifiedCampaignTokens, assetTokenBalance) to ensure that valid
-    // amount is always sent here.
-    const tokenAmount = Math.min(this.createForm1.value.hardCap / this.createForm1.value.tokenPrice, tokenBalance)
-
     return this.assetService.transferTokensToCampaign(
       data.asset.contractAddress,
       campaignAddress,
-      tokenAmount,
+      this.preview.hardCapTokens,
     )
+  }
+
+  private formatDate(value?: string): string | null {
+    return this.datePipe.transform(value, 'mediumDate')
+  }
+
+  private preparePreviewData(data: AssetData) {
+    const hasMinAndMaxInvestment = this.createForm1.value.hasMinAndMaxInvestment
+    const tokenBalance = this.stablecoinService.format(data.balance)
+    const tokenPrice = this.createForm1.value.tokenPrice
+    // Due to possible rounding errors, we use min(specifiedCampaignTokens, assetTokenBalance) to ensure that valid
+    // amount is always sent here.
+    const hardCapTokens = Math.min(this.createForm1.value.hardCap / tokenPrice, tokenBalance)
+    const softCapTokens = Math.min(this.createForm1.value.softCap / tokenPrice, tokenBalance)
+    this.preview = {
+      info: {
+        name: this.createForm1.value.name,
+        photo: this.createForm2.value.logo?.[0],
+        about: this.createForm2.value.about,
+        description: this.createForm2.value.description,
+        startDate: new Date(this.createForm2.value.startDate).toISOString(),
+        endDate: new Date(this.createForm2.value.endDate).toISOString(),
+        return: this.createCampaignReturnObject(),
+        newDocuments: this.createForm2.value.documents,
+        newsURLs: this.newsUrls.value,
+      },
+      data: {
+        slug: this.createForm1.value.slug,
+        assetAddress: data.asset.contractAddress,
+        initialPricePerToken: TokenPrice.format(tokenPrice),
+        softCap: this.stablecoinService.parse(this.createForm1.value.softCap),
+        minInvestment: this.getMinInvestmentValue(hasMinAndMaxInvestment),
+        maxInvestment: this.getMaxInvestmentValue(hasMinAndMaxInvestment, data),
+        whitelistRequired: this.createForm1.value.isIdVerificationRequired,
+      },
+      tokenPrice: tokenPrice,
+      hardCap: this.createForm1.value.hardCap,
+      hardCapTokens: hardCapTokens,
+      hardCapTokensPercentage: this.createForm1.value.hardCapTokensPercentage,
+      softCapTokens: softCapTokens,
+      softCapTokensPercentage: this.softCapTokensPercentage(data),
+    }
   }
 }
 
 enum Step {
-  FIRST, SECOND
+  CREATION_FIRST, CREATION_SECOND, PREVIEW
 }
 
 interface AssetData {
   asset: CommonAssetWithInfo,
   balance: BigNumber,
+}
+
+interface CampaignPreview {
+  info: Omit<CampaignUploadInfoData, 'photo' | 'documents'> & { photo?: File }
+  data: Omit<CreateCampaignData, 'info'>
+  tokenPrice: number
+  hardCap: number
+  hardCapTokens: number
+  hardCapTokensPercentage: number
+  softCapTokens: number
+  softCapTokensPercentage: number
 }

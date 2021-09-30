@@ -7,7 +7,7 @@
 
       <ng-container *ngIf="(assetData$ | async) as assetDataRes">
         <ng-container *ngIf="assetDataRes.value as assetData">
-          <form [class.hidden]="(step$ | async) !== stepType.FIRST" class="contents" [formGroup]="createForm1">
+          <form [class.hidden]="(step$ | async) !== stepType.CREATION_FIRST" class="contents" [formGroup]="createForm1">
             <div class="flex flex-col gap-4 lg:w-2/3">
               <div class="flex flex-col gap-2 pt-6">
                 <label class="text-lg font-semibold">
@@ -185,13 +185,14 @@
               <button class="flex items-center justify-center gap-4 bg-indigo-800 disabled:bg-gray-400 text-white
                              px-24 py-2 rounded-full"
                       [disabled]="!createForm1.valid"
-                      (click)="nextCreationStep()">
+                      (click)="secondCreationStep()">
                 Next
               </button>
             </div>
           </form>
 
-          <form [class.hidden]="(step$ | async) !== stepType.SECOND" class="contents" [formGroup]="createForm2">
+          <form [class.hidden]="(step$ | async) !== stepType.CREATION_SECOND" class="contents"
+                [formGroup]="createForm2">
             <div class="flex flex-col gap-4 lg:w-2/3">
               <div class="flex flex-col gap-2 pt-6">
                 <h3 class="text-lg font-semibold">
@@ -367,18 +368,192 @@
             <div class="flex flex-col lg:flex-row justify-center lg:justify-between mt-8 gap-4">
               <button class="flex items-center justify-center gap-4 bg-indigo-800 disabled:bg-gray-400 text-white
                              px-24 py-2 rounded-full"
-                      (click)="previousCreationStep()">
+                      (click)="firstCreationStep()">
+                Back
+              </button>
+              <button app-action-button *ngIf="!showPreviewScreen"
+                      class="flex items-center justify-center gap-4 bg-indigo-800 disabled:bg-gray-400 text-white
+                             px-24 py-2 rounded-full"
+                      text="Create campaign"
+                      [onClick]="createImmediately(assetData).bind(this)">
+              </button>
+              <button *ngIf="showPreviewScreen"
+                      class="flex items-center justify-center gap-4 bg-indigo-800 disabled:bg-gray-400 text-white
+                             px-24 py-2 rounded-full"
+                      [disabled]="!createForm2.valid"
+                      (click)="previewCampaignStep(assetData)">
+                Preview campaign
+              </button>
+            </div>
+          </form>
+
+          <div *ngIf="(step$ | async) === stepType.PREVIEW" class="flex flex-col gap-4 mt-2">
+            <div class="flex flex-col lg:flex-row">
+              <div class="flex flex-col gap-4 lg:w-2/3">
+                <div class="flex flex-col gap-2 pt-6">
+                  <span class="text-lg font-semibold">Campaign title</span>
+                  <span>{{ preview.info.name }}</span>
+                </div>
+
+                <div class="flex flex-col gap-2">
+                  <span class="text-lg font-semibold">Campaign URL</span>
+                  <span>{{ campaignUrl }}<b>{{ preview.data.slug }}</b></span>
+                </div>
+
+                <div class="flex flex-col gap-2">
+                  <span class="text-lg font-semibold">Main image</span>
+                  <div class="relative w-full lg:w-2/3">
+                    <img *ngIf="preview.info.photo; else noImage" class="w-full h-72 object-cover"
+                         [src]="(preview.info.photo | safe:'fileUrl') | toUrlIPFS"
+                         alt="Campaign image">
+                    <ng-template #noImage>
+                      <div class="w-full h-72 bg-gray-100 border-gray-500 border-2 border-dashed">
+                        <svg class="w-full h-full" width="490" height="284" viewBox="0 0 490 284" fill="none"
+                             xmlns="http://www.w3.org/2000/svg">
+                          <path
+                            d="M47 251.231L186.36 36.4102L273.348 136.43L323.944 87.159L442 251.231H393.874H109.726H47Z"
+                            fill="white" fill-opacity="0.5"/>
+                          <path d="M381 85.8594C395.912 85.8594 408 73.7711 408 58.8594C408 43.9477 395.912 31.8594 381
+                                   31.8594C366.088 31.8594 354 43.9477 354 58.8594C354 73.7711 366.088 85.8594 381
+                                   85.8594Z"
+                                fill="white" fill-opacity="0.5" stroke="#9CA3AF" stroke-width="4"
+                                stroke-miterlimit="10"/>
+                          <path d="M68.2383 250.473H409.018" stroke="#9CA3AF" stroke-width="4" stroke-miterlimit="10"
+                                stroke-linecap="round"/>
+                          <path d="M429 234.846L323.567 89.629L274.528 137.982L187.607 39.1406L77 205.688"
+                                stroke="#9CA3AF"
+                                stroke-width="4" stroke-miterlimit="10" stroke-linecap="round"/>
+                        </svg>
+                      </div>
+                    </ng-template>
+                  </div>
+                </div>
+
+                <div class="flex flex-col gap-2">
+                  <span class="text-lg font-semibold">Short description</span>
+                  <span>{{ preview.info.about }}</span>
+                </div>
+
+                <div class="flex flex-col gap-2">
+                  <span class="text-lg font-semibold">Main description</span>
+                  <quill-view class="ql-editor-override" [content]="preview.info.description"
+                              format="html"
+                              (onEditorCreated)="quillMods($event)"></quill-view>
+                </div>
+
+                <div class="flex flex-col gap-2">
+                  <span class="text-lg font-semibold">Campaign duration</span>
+                  <span>{{ previewDateRange() }}</span>
+                </div>
+
+                <div class="flex flex-col gap-2">
+                  <span class="text-lg font-semibold">Price per token</span>
+                  <span>{{ preview.tokenPrice | currencyDefault }}</span>
+                </div>
+
+                <div class="flex flex-col gap-2">
+                  <span class="text-lg font-semibold">Maximum amount to raise</span>
+                  <span>
+                    <b>{{ preview.hardCap | currencyDefault }}</b> by selling
+                    <b>{{ preview.hardCapTokens }} ({{ preview.hardCapTokensPercentage | percent }})</b> of my
+                    {{ assetData.asset.name | uppercase }} tokens
+                  </span>
+                </div>
+
+                <div class="flex flex-col gap-2">
+                  <span class="text-lg font-semibold">Minimum amount to raise (Soft cap)</span>
+                  <span>
+                    <b>{{ preview.data.softCap | formatUnit:'bignumToWei' | currencyDefault }}</b> by selling
+                    <b>{{ preview.softCapTokens }} ({{ preview.softCapTokensPercentage | percent }})</b> of my
+                    {{ assetData.asset.name | uppercase }} tokens
+                  </span>
+                </div>
+
+                <div class="flex flex-col gap-2">
+                  <span class="text-lg font-semibold">Minimum investment</span>
+                  <span *ngIf="previewHasMinInvestment(); else minInvestmentNotSpecified">
+                    {{ preview.data.minInvestment | formatUnit:'bignumToWei' | currencyDefault }}
+                  </span>
+                  <ng-template #minInvestmentNotSpecified>
+                    <span>Not specified</span>
+                  </ng-template>
+                </div>
+
+                <div class="flex flex-col gap-2">
+                  <span class="text-lg font-semibold">Maximum investment</span>
+                  <span *ngIf="previewHasMaxInvestment(assetData); else maxInvestmentNotSpecified">
+                    {{ preview.data.maxInvestment | formatUnit:'bignumToWei' | currencyDefault }}
+                  </span>
+                  <ng-template #maxInvestmentNotSpecified>
+                    <span>Unlimited</span>
+                  </ng-template>
+                </div>
+
+                <div class="flex flex-col gap-2">
+                  <span class="text-lg font-semibold">Returning profits to investors</span>
+                  <span>{{ previewReturn() }}</span>
+                </div>
+
+                <div class="flex flex-col gap-2">
+                  <span class="text-lg font-semibold">ID verification required for investors</span>
+                  <span>{{ preview.data.whitelistRequired ? 'Yes' : 'No' }}</span>
+                </div>
+              </div>
+
+              <div class="flex flex-col gap-4 lg:w-1/3">
+                <div class="mt-4 lg:mt-6 text-lg font-semibold">Project Documents</div>
+                <ng-container *ngIf="preview.info.newDocuments.length > 0; else noDocuments">
+                  <div *ngFor="let document of preview.info.newDocuments" class="mt-4 flex items-center">
+                    <svg width="22" height="26" viewBox="0 0 22 26" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M7.00033 19.6667V17M11.0003 19.6667V14.3333M15.0003 19.6667V11.6667M17.667
+                             25H4.33366C3.62641 25 2.94814 24.719 2.44804 24.219C1.94794 23.7189 1.66699 23.0406 1.66699
+                             22.3333V3.66667C1.66699 2.95942 1.94794 2.28115 2.44804 1.78105C2.94814 1.28095 3.62641 1
+                             4.33366 1H11.7817C12.1353 1.00008 12.4743 1.1406 12.7243 1.39067L19.943 8.60933C20.1931
+                             8.85932 20.3336 9.19841 20.3337 9.552V22.3333C20.3337 23.0406 20.0527 23.7189 19.5526
+                             24.219C19.0525 24.719 18.3742 25 17.667 25Z"
+                            stroke="#3F3F46" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                    <span class="ml-3 text-sm">
+                      {{ document.name | truncate:30:false:true }}
+                    </span>
+                  </div>
+                </ng-container>
+
+                <ng-template #noDocuments>
+                  <span>No documents have been added</span>
+                </ng-template>
+
+                <div class="text-lg font-semibold">Related News</div>
+                <ng-container *ngIf="preview.info.newsURLs.length > 0; else noNewsUrls">
+                  <div class="flex flex-col mt-2 px-4 bg-gray-100 rounded-lg divide-y-2">
+                    <div *ngFor="let link of preview.info.newsURLs" class="py-4">
+                      <a href="{{ link }}" class="text-lg" target="_blank" rel="noopener noreferrer">
+                        {{ link | truncate:30:false:true }}
+                      </a>
+                    </div>
+                  </div>
+                </ng-container>
+
+                <ng-template #noNewsUrls>
+                  <span>No news URLs have been added</span>
+                </ng-template>
+              </div>
+            </div>
+
+            <div class="flex flex-col lg:flex-row justify-center lg:justify-between mt-8 gap-4">
+              <button class="flex items-center justify-center gap-4 bg-indigo-800 disabled:bg-gray-400 text-white
+                             px-24 py-2 rounded-full"
+                      (click)="secondCreationStep()">
                 Back
               </button>
               <button app-action-button
                       class="flex items-center justify-center gap-4 bg-indigo-800 disabled:bg-gray-400 text-white
                              px-24 py-2 rounded-full"
                       text="Create campaign"
-                      [disabled]="!createForm2.valid"
                       [onClick]="create(assetData).bind(this)">
               </button>
             </div>
-          </form>
+          </div>
         </ng-container>
 
         <ng-container *ngIf="assetDataRes.error">
