@@ -62,7 +62,8 @@
                         <div class="text-sm">
                           with price per token:
                         </div>
-                        <input appCurrencyMask class="border-gray-400 rounded-lg w-1/3 lg:w-32" type="text"
+                        <input appCurrencyMask [options]="{precision: 4}"
+                               class="border-gray-400 rounded-lg w-1/3 lg:w-32" type="text"
                                formControlName="tokenPrice" (blur)="onTokenPriceBlur(assetData)">
                       </div>
                     </div>
