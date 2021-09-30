@@ -15,12 +15,12 @@ import {CampaignCommonStateWithName} from '../../../shared/services/blockchain/q
 import {CampaignService, CampaignWithInfo} from '../../../shared/services/blockchain/campaign/campaign.service'
 
 @Component({
-  selector: 'app-admin-campaign-visibility-card',
-  templateUrl: './admin-campaign-visibility-card.component.html',
-  styleUrls: ['./admin-campaign-visibility-card.component.css'],
+  selector: 'app-admin-issuer-edit-campaign-visibility-card',
+  templateUrl: './admin-issuer-edit-campaign-visibility-card.component.html',
+  styleUrls: ['./admin-issuer-edit-campaign-visibility-card.component.css'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class AdminCampaignVisibilityCardComponent implements OnChanges, OnInit {
+export class AdminIssuerEditCampaignVisibilityCardComponent implements OnChanges, OnInit {
   @Input() offer!: CampaignCommonStateWithName
   @Input() isHidden!: boolean
   @Output() campaignVisibilityChange: EventEmitter<CampaignVisibility> = new EventEmitter<CampaignVisibility>()

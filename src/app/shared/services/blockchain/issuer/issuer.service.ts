@@ -33,7 +33,7 @@ export class IssuerService {
     shareReplay(1),
   )
 
-  issuerOffersDisplaySettings$: Observable<IPFSOffersDisplaySettings> = this.issuer$.pipe(
+  offersDisplaySettings$: Observable<IPFSOffersDisplaySettings> = this.issuer$.pipe(
     switchMap(issuer => this.ipfsService
       .get<Partial<IPFSOffersDisplaySettings>>(issuer.infoData.offersDisplaySettings || '')
       .pipe(

@@ -13,10 +13,10 @@ import {map, switchMap} from 'rxjs/operators'
 })
 export class OffersComponent {
   offers$ = withStatus(
-    this.issuerService.issuerOffersDisplaySettings$.pipe(
+    this.issuerService.offersDisplaySettings$.pipe(
       switchMap(displaySettings => this.queryService.offers$.pipe(
         map(offers => offers.filter(
-          offer => displaySettings.hiddenOffers.indexOf(offer.campaign.contractAddress) === -1
+          offer => !displaySettings.hiddenOffers.includes(offer.campaign.contractAddress)
         ))
       ))
     ))

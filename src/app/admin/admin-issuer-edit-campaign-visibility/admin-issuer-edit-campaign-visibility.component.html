@@ -13,10 +13,10 @@
         </div>
 
         <div class="w-full max-w-6xl lg:mx-4 mb-8" *ngFor="let offer of visibilityData.offers; let i = index">
-          <app-admin-campaign-visibility-card [offer]="offer"
-                                              [isHidden]="isCampaignHidden(offer, visibilityData.offersDisplaySettings)"
-                                              (campaignVisibilityChange)="onCampaignVisibilityChange($event)">
-          </app-admin-campaign-visibility-card>
+          <app-admin-issuer-edit-campaign-visibility-card
+            [offer]="offer" [isHidden]="isCampaignHidden(offer, visibilityData.offersDisplaySettings)"
+            (campaignVisibilityChange)="onCampaignVisibilityChange($event)">
+          </app-admin-issuer-edit-campaign-visibility-card>
         </div>
       </div>
 

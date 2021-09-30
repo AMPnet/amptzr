@@ -1,7 +1,7 @@
 import {ChangeDetectionStrategy, Component} from '@angular/core'
 import {CampaignCommonStateWithName, QueryService} from '../../shared/services/blockchain/query.service'
 import {withStatus} from '../../shared/utils/observables'
-import {CampaignVisibility} from './admin-campaign-visibility-card/admin-campaign-visibility-card.component'
+import {CampaignVisibility} from './admin-issuer-edit-campaign-visibility-card/admin-issuer-edit-campaign-visibility-card.component'
 import {IPFSOffersDisplaySettings} from '../../../../types/ipfs/issuer'
 import {combineLatest, Observable} from 'rxjs'
 import {map, switchMap, tap} from 'rxjs/operators'
@@ -21,7 +21,7 @@ import {CampaignService} from '../../shared/services/blockchain/campaign/campaig
 export class AdminIssuerEditCampaignVisibilityComponent {
   issuer$: Observable<IssuerWithInfo>
   visibilityData$ = withStatus(
-    combineLatest([this.queryService.offers$, this.issuerService.issuerOffersDisplaySettings$]).pipe(
+    combineLatest([this.queryService.offers$, this.issuerService.offersDisplaySettings$]).pipe(
       map(([offers, offersDisplaySettings]) => {
         return {offers, offersDisplaySettings}
       })
@@ -49,7 +49,7 @@ export class AdminIssuerEditCampaignVisibilityComponent {
   }
 
   isCampaignHidden(offer: CampaignCommonStateWithName, displaySettings: IPFSOffersDisplaySettings) {
-    return displaySettings.hiddenOffers.indexOf(offer.campaign.contractAddress) !== -1
+    return displaySettings.hiddenOffers.includes(offer.campaign.contractAddress)
   }
 
   updateCampaignVisibility(issuer: IssuerWithInfo) {
