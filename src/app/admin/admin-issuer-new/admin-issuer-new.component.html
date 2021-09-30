@@ -1,8 +1,4 @@
 <div class="px-4 py-2 max-w-screen-lg mx-auto">
-  <div class="my-4">
-    <a routerLink="/issuers">ᐊ Back to Issuers</a>
-  </div>
-
   <div class="py-2" *ngIf="(isLoggedIn$ | async) === true">
     <button class="flex inline-flex items-center justify-center flex-grow-0 bg-gray-300 hover:bg-gray-400
                          rounded-full ml-4 py-1 px-2" (click)="logout()">
@@ -41,7 +37,7 @@
     </div>
 
     <button app-action-button
-            class="bg-blue-500 disabled:bg-gray-400 text-white p-2 rounded-md mt-2"
+            class="bg-indigo-800 disabled:bg-gray-400 mt-2 px-24 py-2 rounded-full text-white"
             text="Create"
             [disabled]="!createForm.valid"
             [onClick]="create.bind(this)">
