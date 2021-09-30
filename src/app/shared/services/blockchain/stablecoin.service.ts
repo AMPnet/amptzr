@@ -79,7 +79,9 @@ export class StablecoinService {
   }
 
   parse(amount: string | number, precision?: number) {
-    return parseUnits(String(amount), precision ?? this.precision)
+    const decimals = precision ?? this.precision
+    const roundedAmount = Math.round(Number(amount) * 10 ** decimals) / 10 ** decimals
+    return parseUnits(String(roundedAmount), precision ?? this.precision)
   }
 
   getAllowance(campaignAddress: string): Observable<number> {
