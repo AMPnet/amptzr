@@ -8,7 +8,6 @@ import {map, switchMap, tap} from 'rxjs/operators'
 import {DialogService} from '../../shared/services/dialog.service'
 import {PreferenceStore} from '../../preference/state/preference.store'
 import {RouterService} from '../../shared/services/router.service'
-import {fromPromise} from 'rxjs/internal-compatibility'
 import {IssuerService, IssuerWithInfo} from '../../shared/services/blockchain/issuer/issuer.service'
 import {CampaignService} from '../../shared/services/blockchain/campaign/campaign.service'
 
