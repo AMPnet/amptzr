@@ -58,10 +58,10 @@ export class DialogService {
     }).afterClosed()
   }
 
-  loading<T>(obs$: Observable<T>, message: string, opts?: MatDialogConfig): Observable<T> {
+  loading<T>(obs$: Observable<T>, title: string, message?: string, opts?: MatDialogConfig): Observable<T> {
     const dialogRef = this.dialog.open(LoadingDialogComponent, {
       ...opts,
-      data: {message} as LoadingDialogData,
+      data: {title, message} as LoadingDialogData,
       disableClose: true,
       minWidth: 320,
       maxWidth: opts?.width,
@@ -72,8 +72,8 @@ export class DialogService {
     )
   }
 
-  overlayLoading<T>(obs$: Observable<T>, message: string): Observable<T> {
-    return this.loading(obs$, message, {
+  overlayLoading<T>(obs$: Observable<T>, title: string): Observable<T> {
+    return this.loading(obs$, title, '', {
       width: '100vw',
       height: '100vh',
     })
