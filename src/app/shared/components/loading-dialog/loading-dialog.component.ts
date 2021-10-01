@@ -10,6 +10,7 @@ import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog'
 })
 export class LoadingDialogComponent implements OnInit {
   private dataSub = new BehaviorSubject<LoadingDialogData>({
+    title: '',
     message: '',
   })
   data$ = this.dataSub.asObservable()
@@ -31,5 +32,6 @@ export class LoadingDialogComponent implements OnInit {
 }
 
 export interface LoadingDialogData {
+  title: string;
   message: string;
 }
