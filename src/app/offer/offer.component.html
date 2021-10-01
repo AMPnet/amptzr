@@ -111,7 +111,7 @@
                               {{ link.open_graph!.title! | truncate:140:true }}
                             </ng-container>
                             <ng-template #showURL>
-                              {{ link.url | truncate:40:true }}
+                              {{ link.url | truncate:200:false }}
                             </ng-template>
                           </a>
 
