@@ -8,6 +8,7 @@ import {SessionQuery} from '../session/state/session.query'
 import {PreferenceQuery} from '../preference/state/preference.query'
 import {CampaignService, CampaignWithInfo} from '../shared/services/blockchain/campaign/campaign.service'
 import {IssuerService} from '../shared/services/blockchain/issuer/issuer.service'
+import {DialogService} from '../shared/services/dialog.service'
 
 @Injectable({
   providedIn: 'root',
@@ -18,6 +19,7 @@ export class IdentityService {
               private sessionQuery: SessionQuery,
               private preferenceQuery: PreferenceQuery,
               private issuerService: IssuerService,
+              private dialogService: DialogService,
               private campaignService: CampaignService,
               private veriffService: VeriffService) {
   }
@@ -42,7 +44,11 @@ export class IdentityService {
       switchMap(whitelistedOnBackend => whitelistedOnBackend ?
         of(undefined) : this.openIdentityDialog),
       switchMap(() => this.whitelistOnBackend()),
-      switchMap(() => this.waitUntilIssuerCheckPassed),
+      switchMap(() => this.dialogService.loading(
+        this.waitUntilIssuerCheckPassed,
+        'Wallet whitelisting',
+        'This is usually a short process, but it might take up to a few minutes. Stay patient or return to invest later.',
+      )),
     )
   }
 
