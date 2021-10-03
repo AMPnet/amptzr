@@ -29,7 +29,7 @@
 
               <div class="flex flex-row gap-2 items-center mt-2 lg:mt-0 lg:justify-around">
                 <span class="text-sm">with price per token:</span>
-                <b class="lg:text-center">{{ campaignData.stats.tokenPrice | currencyDefault }}</b>
+                <b class="lg:text-center">{{ campaignData.stats.tokenPrice | currencyDefault:'tokenPrice' }}</b>
               </div>
             </div>
           </div>

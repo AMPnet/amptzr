@@ -95,7 +95,7 @@
               <div class="flex flex-col gap-2 text-sm p-4 mt-2 bg-gray-100 rounded-lg">
                 <span class="text-2xl text-indigo-900 my-2">Asset & Token</span>
                 <span>Asset: <b>{{ campaignData.asset.name }}</b></span>
-                <span>Price per token: <b>{{ campaignData.stats.tokenPrice | currencyDefault }}</b></span>
+                <span>Price per token: <b>{{ campaignData.stats.tokenPrice | currencyDefault:'tokenPrice' }}</b></span>
                 <span>Tokens sold: <b>{{ campaignData.stats.tokensSold | number }}</b></span>
                 <span>Tokens for sale: <b>{{ campaignData.stats.tokensAvailable | number }}</b></span>
 
