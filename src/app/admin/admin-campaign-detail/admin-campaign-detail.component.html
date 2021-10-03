@@ -84,7 +84,7 @@
             <div class="flex flex-col gap-4 mt-4 lg:mt-0 order-2">
               <button app-action-button
                       class="flex items-center justify-center gap-4 bg-indigo-800 disabled:bg-gray-400 text-white
-                         mt-2 px-24 py-2 rounded-full"
+                             mt-2 px-2 py-2 rounded-full"
                       text="Finalize campaign"
                       [onClick]="finalize(campaignData.campaign).bind(this)"
                       [class.hidden]="campaignData.campaign.finalized || campaignData.campaign.canceled"
