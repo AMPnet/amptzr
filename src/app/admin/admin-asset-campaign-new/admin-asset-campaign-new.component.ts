@@ -30,7 +30,7 @@ import {NameService} from '../../shared/services/blockchain/name.service'
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AdminAssetCampaignNewComponent {
-  readonly showPreviewScreen = false
+  readonly showPreviewScreen = true
 
   assetData$: Observable<WithStatus<AssetData>>
 

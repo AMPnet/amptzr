@@ -8,8 +8,8 @@
       <ng-container *ngIf="(assetData$ | async) as assetDataRes">
         <ng-container *ngIf="assetDataRes.value as assetData">
           <form [class.hidden]="(step$ | async) !== stepType.CREATION_FIRST" class="contents" [formGroup]="createForm1">
-            <div class="flex flex-col gap-4 lg:w-2/3">
-              <div class="flex flex-col gap-2 pt-6">
+            <div class="flex flex-col gap-8 lg:w-2/3">
+              <div class="flex flex-col gap-4 pt-6">
                 <label class="text-lg font-semibold">
                   Name your campaign
                 </label>
@@ -17,11 +17,11 @@
                        placeholder="CAMPAIGN TITLE" formControlName="name">
               </div>
 
-              <div class="flex flex-col gap-2">
+              <div class="flex flex-col gap-4">
                 <label class="text-lg font-semibold">
                   Campaign URL
                 </label>
-                <div class="flex flex-col lg:flex-row lg:items-center gap-2">
+                <div class="flex flex-col lg:flex-row lg:items-center gap-4">
                   <div class="text-sm">
                     {{ campaignUrl }}
                   </div>
@@ -32,20 +32,20 @@
             </div>
 
             <div class="flex flex-col lg:flex-row bg-gray-100 rounded-lg my-8 p-4">
-              <div class="flex flex-col gap-4 pb-2 lg:p-6">
-                <div class="flex flex-col gap-4">
+              <div class="flex flex-col gap-8 pb-2 lg:p-6">
+                <div class="flex flex-col gap-8">
                   <h3 class="text-lg font-semibold">
                     Maximum amount you want to raise
                   </h3>
-                  <div class="flex flex-col lg:flex-row lg:items-center gap-2">
-                    <div class="flex flex-row gap-2 items-center">
+                  <div class="flex flex-col lg:flex-row lg:items-center gap-4">
+                    <div class="flex flex-row gap-4 items-center">
                       <span class="text-sm">To raise</span>
                       <input appCurrencyMask class="border-gray-400 rounded-lg"
                              type="text" formControlName="hardCap"
                              (blur)="onHardCapBlur(assetData)">
                     </div>
 
-                    <div class="flex flex-row gap-2 items-center">
+                    <div class="flex flex-row gap-4 items-center">
                       <span class="text-sm">I will sell</span>
                       <input appPercentageMask class="border-gray-400 rounded-lg w-1/3 lg:w-32" type="text"
                              formControlName="hardCapTokensPercentage"
@@ -57,7 +57,7 @@
                       tokens <b>(max {{ maxTokensPercentage(assetData) | percent }})</b>
                     </div>
 
-                    <div class="flex flex-row items-center gap-2">
+                    <div class="flex flex-row items-center gap-4">
                       <div class="text-sm">
                         with price per token:
                       </div>
@@ -68,12 +68,12 @@
                   </div>
                 </div>
 
-                <div class="flex flex-col gap-4 mt-4 lg:mt-0 mb-8 lg:mb-0">
+                <div class="flex flex-col gap-8 mt-4 lg:mt-0 mb-8 lg:mb-0">
                   <h3 class="text-lg font-semibold">
                     Minimum target for successful campaign (Soft cap)
                   </h3>
-                  <div class="flex flex-col lg:flex-row lg:items-center gap-2">
-                    <div class="flex flex-row gap-2 items-center">
+                  <div class="flex flex-col lg:flex-row lg:items-center gap-4">
+                    <div class="flex flex-row gap-4 items-center">
                       <div class="text-sm">
                         To raise
                       </div>
@@ -96,15 +96,15 @@
             </div>
 
             <div class="flex flex-col gap-6 lg:w-2/3">
-              <div class="flex flex-col gap-2">
+              <div class="flex flex-col gap-4">
                 <h3 class="text-lg font-semibold">
                   Do you want to set up minimum & maximum amount to invest?
                 </h3>
-                <div class="flex flex-col lg:flex-row gap-4">
+                <div class="flex flex-col lg:flex-row gap-8">
                   <app-form-yes-no-buttons formControlName="hasMinAndMaxInvestment"
                                            (ngModelChange)="toggleMinAndMaxInvestmentControls($event)">
                   </app-form-yes-no-buttons>
-                  <div class="flex flex-row gap-4 overflow-hidden transition-all ease-in-out duration-300"
+                  <div class="flex flex-row gap-8 overflow-hidden transition-all ease-in-out duration-300"
                        [class]="createForm1.get('hasMinAndMaxInvestment')?.value ?
                             'max-w-full max-h-full' :
                             'max-w-0 max-h-0 lg:max-h-full invisible'">
@@ -116,16 +116,16 @@
                 </div>
               </div>
 
-              <div class="flex flex-col gap-2">
+              <div class="flex flex-col gap-4">
                 <h3 class="text-lg font-semibold">
                   Will you be returning profits to your investors?
                 </h3>
-                <div class="flex flex-col lg:flex-row gap-4">
+                <div class="flex flex-col lg:flex-row gap-8">
                   <app-form-yes-no-buttons formControlName="isReturningProfitsToInvestors"
                                            (ngModelChange)="toggleReturnFrequencyControls($event)">
                   </app-form-yes-no-buttons>
                   <div
-                    class="flex flex-row items-center gap-4 overflow-hidden transition-all ease-in-out duration-300"
+                    class="flex flex-row items-center gap-8 overflow-hidden transition-all ease-in-out duration-300"
                     [class]="createForm1.get('isReturningProfitsToInvestors')?.value ?
                             'max-w-full max-h-full' :
                             'max-w-0 max-h-0 lg:max-h-full invisible'">
@@ -145,17 +145,17 @@
                 </div>
               </div>
 
-              <div class="flex flex-col gap-2 overflow-hidden transition-all ease-in-out duration-300"
+              <div class="flex flex-col gap-4 overflow-hidden transition-all ease-in-out duration-300"
                    [class]="createForm1.get('isReturningProfitsToInvestors')?.value ?
                         'max-w-full max-h-full' : 'max-w-0 max-h-0 -mt-6 invisible'">
                 <h3 class="text-lg font-semibold whitespace-nowrap">
                   Is your return value fixed?
                 </h3>
-                <div class="flex flex-col lg:flex-row gap-4">
+                <div class="flex flex-col lg:flex-row gap-8">
                   <app-form-yes-no-buttons formControlName="isReturnValueFixed"
                                            (ngModelChange)="toggleReturnToControls($event)">
                   </app-form-yes-no-buttons>
-                  <div class="flex flex-row gap-4">
+                  <div class="flex flex-row gap-8">
                     <input appPercentageMask
                            class="border-gray-400 disabled:bg-gray-100 rounded-lg transition-all ease-in-out
                                   duration-300"
@@ -172,7 +172,7 @@
                 </div>
               </div>
 
-              <div class="flex flex-col gap-2">
+              <div class="flex flex-col gap-4">
                 <h3 class="text-lg font-semibold">
                   Do you require ID verification for your investors?
                 </h3>
@@ -182,7 +182,7 @@
             </div>
 
             <div class="flex flex-col lg:flex-row justify-center lg:justify-end mt-8">
-              <button class="flex items-center justify-center gap-4 bg-indigo-800 disabled:bg-gray-400 text-white
+              <button class="flex items-center justify-center gap-8 bg-indigo-800 disabled:bg-gray-400 text-white
                              px-24 py-2 rounded-full"
                       [disabled]="!createForm1.valid"
                       (click)="secondCreationStep()">
@@ -193,14 +193,14 @@
 
           <form [class.hidden]="(step$ | async) !== stepType.CREATION_SECOND" class="contents"
                 [formGroup]="createForm2">
-            <div class="flex flex-col gap-4 lg:w-2/3">
-              <div class="flex flex-col gap-2 pt-6">
+            <div class="flex flex-col gap-8 lg:w-2/3">
+              <div class="flex flex-col gap-4 pt-6">
                 <h3 class="text-lg font-semibold">
                   Select a main image
                 </h3>
                 <div class="relative w-full lg:w-2/3">
                   <div class="flex justify-center w-full absolute top-32">
-                    <label class="flex items-center gap-4 px-8 py-2 rounded-full bg-green-600 text-white text-lg
+                    <label class="flex items-center gap-8 px-8 py-2 rounded-full bg-green-600 text-white text-lg
                                   cursor-pointer">
                       <input class="hidden" type="file" formControlName="logo" multiple>
                       <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -236,7 +236,7 @@
                 </div>
               </div>
 
-              <div class="flex flex-col gap-2 lg:pr-2">
+              <div class="flex flex-col gap-4 lg:pr-2">
                 <label class="text-lg font-semibold">
                   Write a short description of your project
                 </label>
@@ -248,14 +248,14 @@
             <label class="text-lg font-semibold mt-4">
               Describe your project
             </label>
-            <div class="flex flex-col gap-2 lg:flex-row mt-2 lg:h-[36rem]">
+            <div class="flex flex-col gap-4 lg:flex-row mt-2 lg:h-[36rem]">
               <quill-editor class="lg:w-2/3 lg:h-[30rem]"
                             formControlName="description"
                             (onEditorCreated)="quillMods($event)"
                             (onContentChanged)="markDescriptionAsDirty()">
               </quill-editor>
 
-              <div class="flex flex-row bg-gray-100 gap-2 p-4 my-4 lg:my-0 rounded-lg lg:w-1/3 lg:h-20">
+              <div class="flex flex-row bg-gray-100 gap-4 p-4 my-4 lg:my-0 rounded-lg lg:w-1/3 lg:h-20">
                 <div>
                   <svg width="26" height="26" viewBox="0 0 26 26" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path d="M9.884 19.6667H16.1147M13 1V2.33333M21.4853 4.51467L20.5427 5.45733M25 13H23.6667M2.33333
@@ -271,18 +271,18 @@
                           stroke="#3F3F46" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                   </svg>
                 </div>
-                <div class="flex flex-col text-sm gap-2">
+                <div class="flex flex-col text-sm gap-4">
                   <span>QUICK TIP:</span>
                   <span>Try not to use too many font styles and sizes.</span>
                 </div>
               </div>
             </div>
 
-            <div class="flex flex-col gap-2">
+            <div class="flex flex-col gap-4">
               <label class="text-lg font-semibold">
                 What is the duration of your project?
               </label>
-              <div class="flex flex-col lg:flex-row gap-4">
+              <div class="flex flex-col lg:flex-row gap-8">
                 <input appDateMask class="border-gray-400 rounded-lg" type="text" placeholder="From"
                        formControlName="startDate">
                 <input appDateMask class="border-gray-400 rounded-lg" type="text" placeholder="To"
@@ -354,7 +354,7 @@
             </div>
 
             <div class="lg:flex lg:justify-start">
-              <button class="flex items-center justify-center w-full lg:w-auto gap-4 px-8 py-2 rounded-full
+              <button class="flex items-center justify-center w-full lg:w-auto gap-8 px-8 py-2 rounded-full
                              bg-green-600 text-white text-lg"
                       (click)="addNewsUrl()">
                 <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -365,20 +365,20 @@
               </button>
             </div>
 
-            <div class="flex flex-col lg:flex-row justify-center lg:justify-between mt-8 gap-4">
-              <button class="flex items-center justify-center gap-4 bg-indigo-800 disabled:bg-gray-400 text-white
+            <div class="flex flex-col lg:flex-row justify-center lg:justify-between mt-8 gap-8">
+              <button class="flex items-center justify-center gap-8 bg-indigo-800 disabled:bg-gray-400 text-white
                              px-24 py-2 rounded-full"
                       (click)="firstCreationStep()">
                 Back
               </button>
               <button app-action-button *ngIf="!showPreviewScreen"
-                      class="flex items-center justify-center gap-4 bg-indigo-800 disabled:bg-gray-400 text-white
+                      class="flex items-center justify-center gap-8 bg-indigo-800 disabled:bg-gray-400 text-white
                              px-24 py-2 rounded-full"
                       text="Create campaign"
                       [onClick]="createImmediately(assetData).bind(this)">
               </button>
               <button *ngIf="showPreviewScreen"
-                      class="flex items-center justify-center gap-4 bg-indigo-800 disabled:bg-gray-400 text-white
+                      class="flex items-center justify-center gap-8 bg-indigo-800 disabled:bg-gray-400 text-white
                              px-24 py-2 rounded-full"
                       [disabled]="!createForm2.valid"
                       (click)="previewCampaignStep(assetData)">
@@ -387,20 +387,20 @@
             </div>
           </form>
 
-          <div *ngIf="(step$ | async) === stepType.PREVIEW" class="flex flex-col gap-4 mt-2">
+          <div *ngIf="(step$ | async) === stepType.PREVIEW" class="flex flex-col gap-8 mt-2">
             <div class="flex flex-col lg:flex-row">
-              <div class="flex flex-col gap-4 lg:w-2/3">
-                <div class="flex flex-col gap-2 pt-6">
+              <div class="flex flex-col gap-8 lg:w-2/3">
+                <div class="flex flex-col gap-4 pt-6">
                   <span class="text-lg font-semibold">Campaign title</span>
                   <span>{{ preview.info.name }}</span>
                 </div>
 
-                <div class="flex flex-col gap-2">
+                <div class="flex flex-col gap-4">
                   <span class="text-lg font-semibold">Campaign URL</span>
                   <span>{{ campaignUrl }}<b>{{ preview.data.slug }}</b></span>
                 </div>
 
-                <div class="flex flex-col gap-2">
+                <div class="flex flex-col gap-4">
                   <span class="text-lg font-semibold">Main image</span>
                   <div class="relative w-full lg:w-2/3">
                     <img *ngIf="preview.info.photo; else noImage" class="w-full h-72 object-cover"
@@ -429,29 +429,29 @@
                   </div>
                 </div>
 
-                <div class="flex flex-col gap-2">
+                <div class="flex flex-col gap-4">
                   <span class="text-lg font-semibold">Short description</span>
                   <span>{{ preview.info.about }}</span>
                 </div>
 
-                <div class="flex flex-col gap-2">
+                <div class="flex flex-col gap-4">
                   <span class="text-lg font-semibold">Main description</span>
                   <quill-view class="ql-editor-override" [content]="preview.info.description"
                               format="html"
                               (onEditorCreated)="quillMods($event)"></quill-view>
                 </div>
 
-                <div class="flex flex-col gap-2">
+                <div class="flex flex-col gap-4">
                   <span class="text-lg font-semibold">Campaign duration</span>
                   <span>{{ previewDateRange() }}</span>
                 </div>
 
-                <div class="flex flex-col gap-2">
+                <div class="flex flex-col gap-4">
                   <span class="text-lg font-semibold">Price per token</span>
                   <span>{{ preview.tokenPrice | currencyDefault }}</span>
                 </div>
 
-                <div class="flex flex-col gap-2">
+                <div class="flex flex-col gap-4">
                   <span class="text-lg font-semibold">Maximum amount to raise</span>
                   <span>
                     <b>{{ preview.hardCap | currencyDefault }}</b> by selling
@@ -460,7 +460,7 @@
                   </span>
                 </div>
 
-                <div class="flex flex-col gap-2">
+                <div class="flex flex-col gap-4">
                   <span class="text-lg font-semibold">Minimum amount to raise (Soft cap)</span>
                   <span>
                     <b>{{ preview.data.softCap | formatUnit:'bignumToWei' | currencyDefault }}</b> by selling
@@ -469,7 +469,7 @@
                   </span>
                 </div>
 
-                <div class="flex flex-col gap-2">
+                <div class="flex flex-col gap-4">
                   <span class="text-lg font-semibold">Minimum investment</span>
                   <span *ngIf="previewHasMinInvestment(); else minInvestmentNotSpecified">
                     {{ preview.data.minInvestment | formatUnit:'bignumToWei' | currencyDefault }}
@@ -479,7 +479,7 @@
                   </ng-template>
                 </div>
 
-                <div class="flex flex-col gap-2">
+                <div class="flex flex-col gap-4">
                   <span class="text-lg font-semibold">Maximum investment</span>
                   <span *ngIf="previewHasMaxInvestment(assetData); else maxInvestmentNotSpecified">
                     {{ preview.data.maxInvestment | formatUnit:'bignumToWei' | currencyDefault }}
@@ -489,12 +489,12 @@
                   </ng-template>
                 </div>
 
-                <div class="flex flex-col gap-2">
+                <div class="flex flex-col gap-4">
                   <span class="text-lg font-semibold">Returning profits to investors</span>
                   <span>{{ previewReturn() }}</span>
                 </div>
 
-                <div class="flex flex-col gap-2">
+                <div class="flex flex-col gap-4">
                   <span class="text-lg font-semibold">ID verification required for investors</span>
                   <span>{{ preview.data.whitelistRequired ? 'Yes' : 'No' }}</span>
                 </div>
@@ -523,7 +523,7 @@
                   <span>No documents have been added</span>
                 </ng-template>
 
-                <div class="text-lg font-semibold">Related News</div>
+                <div class="text-lg font-semibold mt-4">Related News</div>
                 <ng-container *ngIf="preview.info.newsURLs.length > 0; else noNewsUrls">
                   <div class="flex flex-col mt-2 px-4 bg-gray-100 rounded-lg divide-y-2">
                     <div *ngFor="let link of preview.info.newsURLs" class="py-4">
@@ -540,14 +540,14 @@
               </div>
             </div>
 
-            <div class="flex flex-col lg:flex-row justify-center lg:justify-between mt-8 gap-4">
-              <button class="flex items-center justify-center gap-4 bg-indigo-800 disabled:bg-gray-400 text-white
+            <div class="flex flex-col lg:flex-row justify-center lg:justify-between mt-8 gap-8">
+              <button class="flex items-center justify-center gap-8 bg-indigo-800 disabled:bg-gray-400 text-white
                              px-24 py-2 rounded-full"
                       (click)="secondCreationStep()">
                 Back
               </button>
               <button app-action-button
-                      class="flex items-center justify-center gap-4 bg-indigo-800 disabled:bg-gray-400 text-white
+                      class="flex items-center justify-center gap-8 bg-indigo-800 disabled:bg-gray-400 text-white
                              px-24 py-2 rounded-full"
                       text="Create campaign"
                       [onClick]="create(assetData).bind(this)">
