@@ -1,14 +1,14 @@
-<ng-container *ngIf="(campaign$ | async) as campaignRes">
+<ng-container *ngIf="(campaignData$ | async) as campaignDataRes">
   <div class="flex justify-center mb-12 mt-8 lg:mx-0">
-    <ng-container *ngIf="campaignRes.value as offer">
+    <ng-container *ngIf="campaignDataRes.value as campaignData">
       <ng-container *ngIf="address$ | async as address">
         <div class=" w-full rounded-3xl pb-12 shadow-md mx-2 lg:mx-auto max-w-6xl h-full bg-white flex flex-col">
           <div class="relative">
             <img class="rounded-t-3xl lg:h-96 lg:mx-auto w-full object-cover"
-                 [src]="offer.infoData.photo | toUrlIPFS"
+                 [src]="campaignData.campaign.infoData.photo | toUrlIPFS"
                  alt="Offer photo">
             <app-offer-investment-info
-              [offer]="offer" display="wide"
+              [offer]="campaignData.campaign" display="wide"
               class="bg-white shadow-xl p-6 lg:h-10 lg:rounded-full
               absolute lg:bottom-8 -bottom-11 left-4 lg:left-12 flex flex-col lg:flex-row lg:items-center
               rounded-t-xl rounded-b-xl"></app-offer-investment-info>
@@ -17,19 +17,43 @@
 
             <!-- LEFT COLUMN -->
             <div class="w-full leading-normal mt-8 lg:mt-8">
-              <h1 class="text-4xl uppercase font-light tracking-wider leading-relaxed">{{ offer.infoData.name }}</h1>
+              <h1 class="text-4xl uppercase font-light tracking-wider leading-relaxed">
+                {{ campaignData.campaign.infoData.name }}
+              </h1>
 
               <div class="mt-4">
-                <app-funding-progress [campaign]="offer"
+                <app-funding-progress [campaign]="campaignData.campaign"
                                       *ngIf="(isMobileScreenSize$ | async) === true">
                 </app-funding-progress>
+
+                <div *ngIf="(isMobileScreenSize$ | async) === true && campaignData.campaign.owner === address.value &&
+                            !campaignData.stats.tokenBalanceAboveSoftCap"
+                     class="flex items-center justify-start lg:justify-center gap-2 text-red-500 text-sm mt-4
+                            transition-all ease-in-out duration-300">
+                  <div>
+                    <svg width="26" height="26" viewBox="0 0 26 26" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M14.3333 18.3333H13V13H11.6667M13 7.66667H13.0133M25 13C25 14.5759 24.6896 16.1363
+                               24.0866 17.5922C23.4835 19.0481 22.5996 20.371 21.4853 21.4853C20.371 22.5996 19.0481
+                               23.4835 17.5922 24.0866C16.1363 24.6896 14.5759 25 13 25C11.4241 25 9.86371 24.6896
+                               8.4078 24.0866C6.95189 23.4835 5.62902 22.5996 4.51472 21.4853C3.40042 20.371 2.5165
+                               19.0481 1.91345 17.5922C1.31039 16.1363 1 14.5759 1 13C1 9.8174 2.26428 6.76516 4.51472
+                               4.51472C6.76516 2.26428 9.8174 1 13 1C16.1826 1 19.2348 2.26428 21.4853 4.51472C23.7357
+                               6.76516 25 9.8174 25 13Z"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                  </div>
+                  <span>
+                    Investing is disabled because the amount of tokens added to the campaign does not cover the
+                    campaign soft cap
+                  </span>
+                </div>
               </div>
 
               <div class="mt-4 text-lg font-light text-gray-500">
-                {{ offer.infoData.about }}
+                {{ campaignData.campaign.infoData.about }}
               </div>
 
-              <ng-container *ngIf="(offer.infoData.description | toTextIPFS | async) as descriptionRes">
+              <ng-container *ngIf="(campaignData.campaign.infoData.description | toTextIPFS | async) as descriptionRes">
                 <div *ngIf="descriptionRes.value as description" class="mt-4 text-gray-700">
                   <quill-view [content]="description" format="html" (onEditorCreated)="quillMods($event)">
                   </quill-view>
@@ -48,15 +72,16 @@
 
             <!-- RIGHT COLUMN -->
             <div class="w-full mt-8 lg:w-8/12 lg:pr-4">
-              <app-funding-progress [campaign]="offer"
+              <app-funding-progress [campaign]="campaignData.campaign"
                                     *ngIf="(isMobileScreenSize$ | async) === false">
               </app-funding-progress>
 
               <!-- Floating Invest button -->
               <div class="fixed lg:relative lg:w-full bottom-4 right-4 lg:right-0 px-4 lg:px-0 w-7/12">
                 <button app-action-button
-                        [onClick]="goToInvest(offer).bind(this)"
-                        [disabled]="offer.finalized || offer.canceled"
+                        [onClick]="goToInvest(campaignData.campaign).bind(this)"
+                        [disabled]="campaignData.campaign.finalized || campaignData.campaign.canceled ||
+                                    !campaignData.stats.tokenBalanceAboveSoftCap"
                         text="Invest"
                         class="w-full mr-8 lg:mr-0 py-3 shadow-xl rounded-full bg-indigo-800
                       text-white mt-12 flex items-center justify-center disabled:bg-gray-400">
@@ -74,19 +99,41 @@
                 </button>
               </div>
 
+              <div *ngIf="(isMobileScreenSize$ | async) === false && campaignData.campaign.owner === address.value &&
+                          !campaignData.stats.tokenBalanceAboveSoftCap"
+                   class="flex items-center justify-start lg:justify-center gap-2 text-red-500 text-sm
+                          transition-all ease-in-out duration-300">
+                <div>
+                  <svg width="26" height="26" viewBox="0 0 26 26" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M14.3333 18.3333H13V13H11.6667M13 7.66667H13.0133M25 13C25 14.5759 24.6896 16.1363 24.0866
+                             17.5922C23.4835 19.0481 22.5996 20.371 21.4853 21.4853C20.371 22.5996 19.0481 23.4835
+                             17.5922 24.0866C16.1363 24.6896 14.5759 25 13 25C11.4241 25 9.86371 24.6896 8.4078
+                             24.0866C6.95189 23.4835 5.62902 22.5996 4.51472 21.4853C3.40042 20.371 2.5165 19.0481
+                             1.91345 17.5922C1.31039 16.1363 1 14.5759 1 13C1 9.8174 2.26428 6.76516 4.51472
+                             4.51472C6.76516 2.26428 9.8174 1 13 1C16.1826 1 19.2348 2.26428 21.4853 4.51472C23.7357
+                             6.76516 25 9.8174 25 13Z"
+                          stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </div>
+                <span>
+                  Investing is disabled because the amount of tokens added to the campaign does not cover the
+                  campaign soft cap
+                </span>
+              </div>
+
               <button app-action-button
-                      *ngIf="!offer.canceled && !offer.finalized &&
-                              offer.fundsRaised.gte(offer.softCap) &&
-                              offer.flavor === 'CfManagerSoftcapV1' &&
-                              offer.owner === address.value"
-                      [onClick]="finalize(offer).bind(this)"
+                      *ngIf="!campaignData.campaign.canceled && !campaignData.campaign.finalized &&
+                              campaignData.campaign.fundsRaised.gte(campaignData.campaign.softCap) &&
+                              campaignData.campaign.flavor === 'CfManagerSoftcapV1' &&
+                              campaignData.campaign.owner === address.value"
+                      [onClick]="finalize(campaignData.campaign).bind(this)"
                       text="Finalize"
                       class="w-full py-2 mt-2 shadow-xl rounded-full bg-green-600 text-white disabled:bg-gray-400">
               </button>
 
-              <ng-container *ngIf="offer.infoData.documents.length > 0">
+              <ng-container *ngIf="campaignData.campaign.infoData.documents.length > 0">
                 <div class="mt-10 text-lg uppercase font-light">Project Documents</div>
-                <div *ngFor="let document of offer.infoData.documents" class="mt-4 flex items-center">
+                <div *ngFor="let document of campaignData.campaign.infoData.documents" class="mt-4 flex items-center">
                   <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path
                       d="M8 20V21C8 21.7956 8.31607 22.5587 8.87868 23.1213C9.44129 23.6839 10.2044 24 11 24H21C21.7956 24 22.5587 23.6839 23.1213 23.1213C23.6839 22.5587 24 21.7956 24 21V20M20 16L16 20M16 20L12 16M16 20V8"
@@ -99,7 +146,7 @@
                 </div>
               </ng-container>
 
-              <ng-container *ngIf="offer.infoData.newsURLs.length > 0">
+              <ng-container *ngIf="campaignData.campaign.infoData.newsURLs.length > 0">
                 <div class="mt-10 text-lg uppercase font-light">Related News</div>
                 <ng-container *ngIf="links$ | async as linksRes">
                   <div class="flex flex-col mt-2 px-4 bg-gray-100 rounded-lg divide-y-2">
@@ -147,12 +194,12 @@
       </ng-container>
     </ng-container>
 
-    <ng-container *ngIf="campaignRes.error">
+    <ng-container *ngIf="campaignDataRes.error">
       Cannot fetch offer.
-      <div hidden>{{ campaignRes.error | json }}</div>
+      <div hidden>{{ campaignDataRes.error | json }}</div>
     </ng-container>
 
-    <ng-container *ngIf="campaignRes.loading">
+    <ng-container *ngIf="campaignDataRes.loading">
       <app-spinner type="overlay">Loading offer...</app-spinner>
     </ng-container>
   </div>
