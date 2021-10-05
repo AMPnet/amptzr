@@ -31,6 +31,12 @@ import {NameService} from '../../shared/services/blockchain/name.service'
 })
 export class AdminAssetCampaignNewComponent {
   assetData$: Observable<WithStatus<AssetData>>
+  resolvedAssetData?: AssetData
+
+  setResolvedAssetData(assetData?: AssetData) {
+    this.resolvedAssetData = assetData
+    return this.resolvedAssetData
+  }
 
   stepType = Step
   step$ = new BehaviorSubject<Step>(Step.CREATION_FIRST)
@@ -123,7 +129,7 @@ export class AdminAssetCampaignNewComponent {
     return getWindow().location.origin + this.issuerPathPipe.transform(`/offers/`)
   }
 
-  maxTokensPercentage(data: AssetData) {
+  maxTokensPercentage(data?: AssetData) {
     if (!data) {
       return 0
     }
@@ -356,7 +362,7 @@ export class AdminAssetCampaignNewComponent {
     }
 
     const hardCapTokensPercentage = formGroup.value.hardCapTokensPercentage
-    if (hardCapTokensPercentage <= 0 || hardCapTokensPercentage > this.maxTokensPercentage) {
+    if (hardCapTokensPercentage <= 0 || hardCapTokensPercentage > this.maxTokensPercentage(this.resolvedAssetData)) {
       return {invalidHardCapTokensMaxPercentage: true}
     }
 

@@ -6,7 +6,7 @@
       </h1>
 
       <ng-container *ngIf="(assetData$ | async) as assetDataRes">
-        <ng-container *ngIf="assetDataRes.value as assetData">
+        <ng-container *ngIf="setResolvedAssetData(assetDataRes.value) as assetData">
           <form [class.hidden]="(step$ | async) !== stepType.CREATION_FIRST" class="contents" [formGroup]="createForm1">
             <div class="flex flex-col gap-8 lg:w-2/3">
               <div class="flex flex-col gap-4 pt-6">
