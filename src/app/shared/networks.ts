@@ -168,15 +168,14 @@ export const GoerliNetwork: Network = {
     },
     cfManagerFactory: {
       basic: '0x6298FdED290229C970b2D8796E66EeaF4Ccd0bbd',
-      vesting: '0x75D39FE314f07297666334555Fdba4C0A7Cc35fb',
+      vesting: '0xd4B31CFbDdd567A2052073bFCef1B879244f91d9',
     },
     snapshotDistributorFactory: '0x3B9b7855c7D5269171458C9732E02F49F2480a29',
     deployerService: '0x596E2F22cE6A75EF75Ed19e694aCfBa96140959f',
     queryService: '0x5A22bc3a5078801CB0e8B5C61bb8361D16C8Ed73',
     nameRegistry: '0x41b90C4C84f6388c29835CBA03Cd50D92fB24e8E',
     defaultWalletApprover: '0x893152e259BdDEa9D42f935f38d7c2c88431c748',
-    // custom stablecoin issued by filip
-    defaultStableCoin: '0x7A6E8B47ab83cA0374ef6D59a0B0459BCB5c0510',
+    defaultStableCoin: '0x7A6E8B47ab83cA0374ef6D59a0B0459BCB5c0510', // custom stablecoin issued by filip
     childChainManager: '0xb5505a6d998549090530911180f38aC5130101c6',
   },
 }
