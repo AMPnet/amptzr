@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core'
-import {combineLatest, Observable} from 'rxjs'
+import {combineLatest, defer, Observable, of} from 'rxjs'
 import {RampInstantEvents, RampInstantEventTypes, RampInstantSDK} from '@ramp-network/ramp-instant-sdk'
 import {SessionQuery} from '../session/state/session.query'
 import {ToUrlIPFSPipe} from '../shared/pipes/to-url-ipfs.pipe'
@@ -14,6 +14,8 @@ export class DepositRampService {
   address$ = this.sessionQuery.address$
   issuer$ = this.issuerService.issuer$
 
+  isAvailable$: Observable<boolean> = defer(() => of(!!this.preferenceQuery.network.ramp))
+
   constructor(private sessionQuery: SessionQuery,
               private issuerService: IssuerService,
               private toUrlIpfsPipe: ToUrlIPFSPipe,
@@ -26,15 +28,22 @@ export class DepositRampService {
     ]).pipe(take(1),
       switchMap(([issuer, address]) => {
         return new Observable<RampInstantEvents>(observer => {
+          const rampConfig = this.preferenceQuery.network.ramp
+
+          if (!rampConfig) {
+            observer.error('Ramp network not configured for this network.')
+            return
+          }
+
           new RampInstantSDK({
             hostAppName: issuer.infoData.name,
             hostLogoUrl: this.toUrlIpfsPipe.transform(issuer.infoData.logo),
             hostApiKey: issuer.infoData.rampApiKey,
-            swapAsset: this.preferenceQuery.network.ramp.swapAsset,
-            fiatCurrency: this.preferenceQuery.network.ramp.fiatCurrency,
+            swapAsset: rampConfig.swapAsset,
+            fiatCurrency: rampConfig.fiatCurrency,
             fiatValue: depositAmount.toString(),
             userAddress: address,
-            url: this.preferenceQuery.network.ramp.url,
+            url: rampConfig.url,
             variant: 'auto',
           })
             .on('*', event => {

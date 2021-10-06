@@ -122,11 +122,19 @@
               </div>
 
               <button app-action-button
+<<<<<<< HEAD
                       *ngIf="!campaignData.campaign.canceled && !campaignData.campaign.finalized &&
                               campaignData.campaign.fundsRaised.gte(campaignData.campaign.softCap) &&
                               campaignData.campaign.flavor === 'CfManagerSoftcapV1' &&
                               campaignData.campaign.owner === address.value"
                       [onClick]="finalize(campaignData.campaign).bind(this)"
+=======
+                      *ngIf="!offer.canceled && !offer.finalized &&
+                              offer.fundsRaised.gte(offer.softCap) &&
+                              ['CfManagerSoftcapV1', 'CfManagerSoftcapVestingV1'].includes(offer.flavor) &&
+                              offer.owner === address.value"
+                      [onClick]="finalize(offer).bind(this)"
+>>>>>>> added vesting flavor
                       text="Finalize"
                       class="w-full py-2 mt-2 shadow-xl rounded-full bg-green-600 text-white disabled:bg-gray-400">
               </button>

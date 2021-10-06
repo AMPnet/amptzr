@@ -41,7 +41,7 @@ export class IssuerBasicService {
   }
 
   getStateFromCommon(issuer: IssuerCommonState): Observable<IssuerBasicState | undefined> {
-    return issuer.flavor === 'CfManagerSoftcapV1' ?
+    return issuer.flavor === 'IssuerV1' ?
       this.getState(issuer.contractAddress) : of(undefined)
   }
 

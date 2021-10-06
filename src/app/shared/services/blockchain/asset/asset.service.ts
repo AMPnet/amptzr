@@ -16,6 +16,7 @@ import {Provider} from '@ethersproject/providers'
 import {AssetTransferableService, TransferableAssetState} from './asset-transferable.service'
 import {AssetFlavor} from '../flavors'
 import {AssetCommonState} from './asset.common'
+import {AssetSimpleService, SimpleAssetState} from './asset-simple.service'
 
 @Injectable({
   providedIn: 'root',
@@ -26,6 +27,7 @@ export class AssetService {
     private preferenceQuery: PreferenceQuery,
     private assetBasicService: AssetBasicService,
     private assetTransferableService: AssetTransferableService,
+    private assetSimpleService: AssetSimpleService,
     private ipfsService: IpfsService,
     private signerService: SignerService,
     private dialogService: DialogService,
@@ -42,12 +44,14 @@ export class AssetService {
 
   getState(
     address: string, flavor: AssetFlavor, signerOrProvider: Signer | Provider,
-  ): Observable<AssetState | TransferableAssetState> {
+  ): Observable<AssetState | TransferableAssetState | SimpleAssetState> {
     return of(address).pipe(
       switchMap(address => {
         switch (flavor) {
           case 'AssetTransferableV1':
             return this.assetTransferableService.getState(address, signerOrProvider)
+          case 'AssetSimpleV1':
+            return this.assetSimpleService.getState(address, signerOrProvider)
           case 'AssetV1':
             return this.assetBasicService.getState(address, signerOrProvider)
           default:
@@ -117,9 +121,12 @@ export class AssetService {
         switch (flavor) {
           case 'AssetTransferableV1':
             return this.assetTransferableService.create(data)
+          case 'AssetSimpleV1':
+            return this.assetSimpleService.create(data)
           case 'AssetV1':
-          default:
             return this.assetBasicService.create(data)
+          default:
+            return throwError(`create not implemented for asset flavor ${flavor}`)
         }
       }),
     )

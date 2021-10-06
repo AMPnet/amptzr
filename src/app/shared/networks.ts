@@ -2,10 +2,10 @@ import {providers, utils} from 'ethers'
 import {SecretType} from '@arkane-network/arkane-connect/dist/src/models/SecretType'
 
 export enum ChainID {
-  // ETHEREUM_MAINNET = 1,
-  // GOERLI_TESTNET = 5,
   MATIC_MAINNET = 137, // Polygon
   MUMBAI_TESTNET = 80001, // Polygon
+  // ETHEREUM_MAINNET = 1,
+  GOERLI_TESTNET = 5,
 }
 
 export interface Network {
@@ -20,12 +20,8 @@ export interface Network {
   rpcURLs: string[],
   explorerURLs: string[],
   tokenizerConfig: TokenizerConfig,
-  venlyConfig: VenlyConfig,
-  ramp: {
-    swapAsset: string,
-    fiatCurrency: string,
-    url?: string // URL is needed only for testing environments, Ramp uses production version when URL is not specified
-  }
+  venlyConfig?: VenlyConfig,
+  ramp?: RampConfig,
 }
 
 interface TokenizerConfig {
@@ -54,6 +50,12 @@ interface TokenizerConfig {
 interface VenlyConfig {
   secretType: SecretType
   env: 'staging' | 'prod'
+}
+
+interface RampConfig {
+  swapAsset: string,
+  fiatCurrency: string,
+  url?: string // URL is needed only for testing environments
 }
 
 export const MaticNetwork: Network = {
@@ -121,12 +123,12 @@ export const MumbaiNetwork: Network = {
       simple: '0x0361B0A1333A0BF88ce2c3a4d7192C5E8A5Efea9',
     },
     cfManagerFactory: {
-      basic: '0x3877230A7dE98DF02cCd7F23C46294F80b81F64f',
-      vesting: '0x5009469A278Bcc572442c0144c07108156984176',
+      basic: '0xE0776c364b1050789ba25ff8E508Be7C796d6974',
+      vesting: '0xd1b57efEC963E71A7E737E9Ea58a079a6C258381',
     },
     snapshotDistributorFactory: '0x13B7A1eaEba77B2c8C44b56bdE2863c4efDa8dd8',
     deployerService: '0x9132e92e6fc8E192f72087D8856014566C43145f',
-    queryService: '0x85A9e3142c31E9a820643D59310C63E1605eeCE7',
+    queryService: '0x74D23A2FCe2A70313b444aE51816a70061C7786A',
     nameRegistry: '0x2D14cc9AcC1a638Fc8BF7d3eD0C9d79270194461',
     defaultWalletApprover: '0x622b12839a32FD4C9bc8B1Ff5D4D96DA41C86356',
     defaultStableCoin: '0x9733aa0fb74a01f058fbeb0ad9da3f483058908e',
@@ -143,9 +145,46 @@ export const MumbaiNetwork: Network = {
   },
 }
 
+export const GoerliNetwork: Network = {
+  chainID: ChainID.GOERLI_TESTNET,
+  name: 'Goerli (Ethereum Testnet)',
+  shortName: 'goerli',
+  nativeCurrency: {
+    name: 'ETH',
+    symbol: 'ETH',
+  },
+  maxGasPrice: 20,
+  rpcURLs: ['https://goerli-light.eth.linkpool.io/'],
+  explorerURLs: ['https://goerli.etherscan.io/'],
+  tokenizerConfig: {
+    apxRegistry: '0x95e1F87B3E5EC566CC0676DED8Ce992cE0E51Ed7',
+    issuerFactory: {
+      basic: '0x043974EED6624b4a361a6462445041cC9965C94E',
+    },
+    assetFactory: {
+      basic: '0xD9dAc1e7d38699333619FC3AD4514653AfC15e82',
+      transferable: '0x0d2FaB8Fae25E3e4e37d89fc08bC6BDB404db76d',
+      simple: '0x6BC4Eb65F7675FD237B5BC45b97ac5D22FBa08c9',
+    },
+    cfManagerFactory: {
+      basic: '0x6298FdED290229C970b2D8796E66EeaF4Ccd0bbd',
+      vesting: '0x75D39FE314f07297666334555Fdba4C0A7Cc35fb',
+    },
+    snapshotDistributorFactory: '0x3B9b7855c7D5269171458C9732E02F49F2480a29',
+    deployerService: '0x596E2F22cE6A75EF75Ed19e694aCfBa96140959f',
+    queryService: '0x5A22bc3a5078801CB0e8B5C61bb8361D16C8Ed73',
+    nameRegistry: '0x41b90C4C84f6388c29835CBA03Cd50D92fB24e8E',
+    defaultWalletApprover: '0x893152e259BdDEa9D42f935f38d7c2c88431c748',
+    // custom stablecoin issued by filip
+    defaultStableCoin: '0x7A6E8B47ab83cA0374ef6D59a0B0459BCB5c0510',
+    childChainManager: '0xb5505a6d998549090530911180f38aC5130101c6',
+  },
+}
+
 export const Networks: { [key in ChainID]: Network } = {
   [ChainID.MATIC_MAINNET]: MaticNetwork,
   [ChainID.MUMBAI_TESTNET]: MumbaiNetwork,
+  [ChainID.GOERLI_TESTNET]: GoerliNetwork,
 }
 
 const getEthersNetwork = (network: Network): providers.Network => ({

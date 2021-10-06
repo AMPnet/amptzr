@@ -102,6 +102,7 @@ export class AdminAssetCampaignNewComponent {
       returnFrom: [{value: undefined, disabled: true}, [Validators.required, Validators.min(0.01), Validators.max(1)]],
       returnTo: [{value: undefined, disabled: true}, [Validators.required, Validators.min(0.01), Validators.max(1)]],
       isIdVerificationRequired: [false, Validators.required],
+      flavor: ['CfManagerSoftcapV1', Validators.required],
     }, {
       validators: [
         this.validMonetaryValues.bind(this),
@@ -277,7 +278,7 @@ export class AdminAssetCampaignNewComponent {
         switchMap(uploadRes => this.campaignService.create({
           ...this.preview.data,
           info: uploadRes.path,
-        }, 'CfManagerSoftcapV1')), // TODO: set a correct campaign type from dropdown
+        }, this.createForm1.value.flavor)),
         switchMap(campaignAddress =>
           this.dialogService.info(
             'Campaign successfully created! You will be asked to sign a transaction to transfer' +

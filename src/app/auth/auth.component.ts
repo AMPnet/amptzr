@@ -21,6 +21,7 @@ import {IssuerService} from '../shared/services/blockchain/issuer/issuer.service
 export class AuthComponent {
   issuer$ = this.issuerService.issuerWithStatus$
   injectedWeb3$: Observable<any> = defer(() => of(getWindow()?.ethereum))
+  venlyAvailable$ = this.venlySubsignerService.isAvailable$
 
   constructor(private signer: SignerService,
               private preferenceStore: PreferenceStore,
