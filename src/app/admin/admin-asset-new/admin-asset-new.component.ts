@@ -29,9 +29,9 @@ export class AdminAssetNewComponent {
       name: ['', Validators.required],
       logo: [undefined, Validators.required],
       initialTokenSupply: [0, [Validators.required, Validators.min(1)]],
-      symbol: ['', [Validators.required, Validators.maxLength(10), Validators.pattern('[A-Za-z0-9]*')]],
-      whitelistRequiredForRevenueClaim: [false, Validators.required],
-      whitelistRequiredForLiquidationClaim: [false, Validators.required],
+      symbol: ['', [Validators.required, Validators.maxLength(20)]],
+      whitelistRequiredForRevenueClaim: [false],
+      whitelistRequiredForLiquidationClaim: [false],
       flavor: ['AssetV1', Validators.required],
     })
   }

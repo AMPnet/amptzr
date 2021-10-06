@@ -77,7 +77,7 @@
               <button app-action-button
                       *ngIf="!offer.canceled && !offer.finalized &&
                               offer.fundsRaised.gte(offer.softCap) &&
-                              offer.flavor === 'CfManagerSoftcapV1' &&
+                              ['CfManagerSoftcapV1', 'CfManagerSoftcapVestingV1'].includes(offer.flavor) &&
                               offer.owner === address.value"
                       [onClick]="finalize(offer).bind(this)"
                       text="Finalize"

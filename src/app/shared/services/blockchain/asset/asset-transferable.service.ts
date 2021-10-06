@@ -11,7 +11,7 @@ import {
   AssetTransferable,
   AssetTransferable__factory,
   AssetTransferableFactory,
-  AssetTransferableFactory__factory, IAssetSimple, IAssetSimple__factory,
+  AssetTransferableFactory__factory,
 } from '../../../../../../types/ethers-contracts'
 import {BigNumber, BigNumberish, Signer} from 'ethers'
 import {Provider} from '@ethersproject/providers'
@@ -20,10 +20,10 @@ import {findLog} from '../../../utils/ethersjs'
 @Injectable({
   providedIn: 'root',
 })
-export class AssetSimpleService {
-  factoryContract$: Observable<IAssetSimple> = this.sessionQuery.provider$.pipe(
+export class AssetTransferableService {
+  factoryContract$: Observable<AssetTransferableFactory> = this.sessionQuery.provider$.pipe(
     map(provider =>
-      IAssetSimple__factory.connect(
+      AssetTransferableFactory__factory.connect(
         this.preferenceQuery.network.tokenizerConfig.assetFactory.transferable, provider,
       )),
   )

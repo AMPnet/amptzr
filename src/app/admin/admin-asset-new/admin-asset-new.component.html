@@ -107,16 +107,6 @@
             <input class="border-gray-400 rounded-lg" type="number" min="0" formControlName="initialTokenSupply">
           </div>
 
-          <div class="flex flex-col gap-4 mb-4">
-            <span class="text-lg font-semibold">Is wallet whitelisting required for revenue claim?</span>
-            <app-form-yes-no-buttons formControlName="whitelistRequiredForRevenueClaim"></app-form-yes-no-buttons>
-          </div>
-
-          <div class="flex flex-col gap-4 mb-4">
-            <span class="text-lg font-semibold">Is wallet whitelisting required for liquidation claim?</span>
-            <app-form-yes-no-buttons formControlName="whitelistRequiredForLiquidationClaim"></app-form-yes-no-buttons>
-          </div>
-
           <div class="flex flex-col gap-2 mb-4">
             <label class="text-lg font-semibold">
               Asset flavor
@@ -129,8 +119,23 @@
               <option value="AssetTransferableV1">
                 Transferable
               </option>
+              <option value="AssetSimpleV1">
+                Simple
+              </option>
             </select>
           </div>
+
+          <ng-container *ngIf="['AssetV1', 'AssetTransferableV1'].includes(createForm.get('flavor')?.value)">
+            <div class="flex flex-col gap-4 mb-4">
+              <span class="text-lg font-semibold">Is wallet whitelisting required for revenue claim?</span>
+              <app-form-yes-no-buttons formControlName="whitelistRequiredForRevenueClaim"></app-form-yes-no-buttons>
+            </div>
+
+            <div class="flex flex-col gap-4 mb-4">
+              <span class="text-lg font-semibold">Is wallet whitelisting required for liquidation claim?</span>
+              <app-form-yes-no-buttons formControlName="whitelistRequiredForLiquidationClaim"></app-form-yes-no-buttons>
+            </div>
+          </ng-container>
         </div>
 
         <div class="flex justify-center lg:justify-end mt-8">

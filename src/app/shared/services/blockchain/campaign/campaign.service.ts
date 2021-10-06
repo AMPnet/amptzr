@@ -15,7 +15,7 @@ import {Provider} from '@ethersproject/providers'
 import {CampaignBasicService} from './campaign-basic.service'
 import {CampaignFlavor} from '../flavors'
 import {CampaignCommonState} from './campaign.common'
-
+import {CampaignVestingService} from './campaign-vesting.service'
 
 @Injectable({
   providedIn: 'root',
@@ -28,6 +28,7 @@ export class CampaignService {
               private dialogService: DialogService,
               private stablecoin: StablecoinService,
               private campaignBasicService: CampaignBasicService,
+              private campaignVestingService: CampaignVestingService,
               private gasService: GasService) {
   }
 
@@ -100,8 +101,11 @@ export class CampaignService {
       switchMap(data => {
         switch (flavor) {
           case 'CfManagerSoftcapV1':
-          default:
             return this.campaignBasicService.create(data)
+          case 'CfManagerSoftcapVestingV1':
+            return this.campaignVestingService.create(data)
+          default:
+            return throwError(`create not implemented for campaign flavor ${flavor}`)
         }
       }),
     )
@@ -111,6 +115,8 @@ export class CampaignService {
     switch (flavor) {
       case 'CfManagerSoftcapV1':
         return this.campaignBasicService.invest(address, amount)
+      case 'CfManagerSoftcapVestingV1':
+        return this.campaignVestingService.invest(address, amount)
       default:
         return throwError(`invest not implemented for campaign flavor ${flavor}`)
     }
@@ -120,6 +126,8 @@ export class CampaignService {
     switch (flavor) {
       case 'CfManagerSoftcapV1':
         return this.campaignBasicService.cancelInvestment(address)
+      case 'CfManagerSoftcapVestingV1':
+        return this.campaignVestingService.cancelInvestment(address)
       default:
         return throwError(`cancelInvestment not implemented for campaign flavor ${flavor}`)
     }
@@ -129,6 +137,8 @@ export class CampaignService {
     switch (campaign.flavor) {
       case 'CfManagerSoftcapV1':
         return this.campaignBasicService.isWhitelistRequired(campaign.contractAddress)
+      case 'CfManagerSoftcapVestingV1':
+        return this.campaignVestingService.isWhitelistRequired(campaign.contractAddress)
       default:
         return of(false)
     }
@@ -137,16 +147,22 @@ export class CampaignService {
   stats(address: string, flavor: CampaignFlavor): Observable<CampaignStats> {
     switch (flavor) {
       case 'CfManagerSoftcapV1':
-      default:
         return this.campaignBasicService.stats(address)
+      case 'CfManagerSoftcapVestingV1':
+        return this.campaignVestingService.stats(address)
+      default:
+        return throwError(`stats not implemented for campaign flavor ${flavor}`)
     }
   }
 
   finalize(address: string, flavor: CampaignFlavor) {
     switch (flavor) {
       case 'CfManagerSoftcapV1':
-      default:
         return this.campaignBasicService.finalize(address)
+      case 'CfManagerSoftcapVestingV1':
+        return this.campaignVestingService.finalize(address)
+      default:
+        return throwError(`finalize not implemented for campaign flavor ${flavor}`)
     }
   }
 
