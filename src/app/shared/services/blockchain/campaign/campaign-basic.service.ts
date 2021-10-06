@@ -121,29 +121,7 @@ export class CampaignBasicService {
         const valueTotal = Math.max(tokenBalance, tokensSold) * tokenPrice
         const valueToInvest = tokensAvailable * tokenPrice
 
-        // Calculate the value of all tokens added to the campaign - we use BigNumbers for precision to guard against
-        // edge cases where the value of the tokens would be just a bit below soft cap. In those cases we don't want to
-        // consider the campaign to have enough tokens to cover the soft cap due to rounding errors since this would
-        // then probably fail on the contract side.
-        const currentTokenValue = campaign.totalTokensBalance.mul(campaign.tokenPrice)
-        // campaign.totalTokensBalance has 18 decimals and campaign.tokenPrice has TokenPrice.decimals, so their product
-        // will have a total of (18 + TokenPrice.decimals) significant digits. campaign.softCap uses the default number
-        // of decimals specified in StableCoinService (this.stablecoin.precision).
-        // To scale the soft cap correctly, we need to multiply it by the difference of significant digits in
-        // currentTokenValue and soft cap significant digits.
-        //
-        // Example: assume we have 1 token with price per token of 1$ and soft cap of 1$. Then:
-        // campaign.totalTokensBalance = 10^18
-        // campaign.tokenPrice = 10^4
-        // campaign.softCap = 10^6
-        //
-        // So: campaign.totalTokensBalance * campaign.tokenPrice = 10^22
-        // and: campaign.softCap * 10^(18 + 4 - 6) = campaign.softCap * 10^16 = 10^6 * 10^16 = 10^22
-        // That was the calculation for the case when there are exactly enough tokens to cover the soft cap of 1$.
-        const decimalsDifference = 18 + TokenPrice.decimals - this.stablecoin.precision
-        // This will scale the soft cap correctly so it can be directly comapred with currentTokenValue.
-        const scaledSoftCap = campaign.softCap.mul(BigNumber.from(10).pow(decimalsDifference))
-        const tokenBalanceAboveSoftCap = currentTokenValue > scaledSoftCap
+        const tokenBalanceAboveSoftCap = tokenBalance * tokenPrice > softCap
 
         return {
           userMin,
