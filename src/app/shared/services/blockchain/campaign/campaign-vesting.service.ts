@@ -27,7 +27,7 @@ import {CampaignCommonState} from './campaign.common'
 export class CampaignVestingService {
   factoryContract$: Observable<CfManagerSoftcapVestingFactory> = this.sessionQuery.provider$.pipe(
     map(provider => CfManagerSoftcapVestingFactory__factory.connect(
-      this.preferenceQuery.network.tokenizerConfig.cfManagerFactory.basic, provider,
+      this.preferenceQuery.network.tokenizerConfig.cfManagerFactory.vesting, provider,
     )),
   )
 
