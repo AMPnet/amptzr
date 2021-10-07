@@ -132,7 +132,7 @@
                 <span class="text-3xl mr-2 font-semibold">
                   {{ investmentForm.get('amount')?.value | currencyDefault }}
                 </span>
-                <span class="hidden lg:inline">-></span>
+                <span class="hidden lg:inline whitespace-nowrap">-></span>
                 <span class="text-3xl lg:ml-2 mt-2 lg:mt-auto uppercase">{{ campaign.infoData.name }}</span>
               </div>
               <app-offer-investment-info [offer]="campaign" display="return-only"></app-offer-investment-info>

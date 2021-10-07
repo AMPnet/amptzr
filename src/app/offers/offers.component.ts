@@ -16,9 +16,9 @@ export class OffersComponent {
     this.issuerService.offersDisplaySettings$.pipe(
       switchMap(displaySettings => this.queryService.offers$.pipe(
         map(offers => offers.filter(
-          offer => !displaySettings.hiddenOffers.includes(offer.campaign.contractAddress)
-        ))
-      ))
+          offer => !displaySettings.hiddenOffers.includes(offer.campaign.contractAddress),
+        )),
+      )),
     ))
 
   constructor(private sessionQuery: SessionQuery,

@@ -38,8 +38,8 @@ export class IssuerService {
       .get<Partial<IPFSOffersDisplaySettings>>(issuer.infoData.offersDisplaySettings || '')
       .pipe(
         map((displaySettings) => ({
-          hiddenOffers: displaySettings.hiddenOffers || []
-        }))
+          hiddenOffers: displaySettings.hiddenOffers || [],
+        })),
       )),
     shareReplay(1),
   )
@@ -90,7 +90,7 @@ export class IssuerService {
 
   uploadOffersDisplaySettings(
     displaySettings: IPFSOffersDisplaySettings,
-    issuer: IPFSIssuer
+    issuer: IPFSIssuer,
   ): Observable<IPFSAddResult> {
     return this.ipfsService.addObject<IPFSOffersDisplaySettings>(displaySettings).pipe(
       switchMap(displaySettings => this.ipfsService.addObject<IPFSIssuer>({

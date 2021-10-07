@@ -17,7 +17,7 @@
 
             <!-- LEFT COLUMN -->
             <div class="w-full leading-normal mt-8 lg:mt-8">
-              <h1 class="text-4xl font-light tracking-wider leading-relaxed">{{ offer.infoData.name }}</h1>
+              <h1 class="text-4xl uppercase font-light tracking-wider leading-relaxed">{{ offer.infoData.name }}</h1>
 
               <div class="mt-4">
                 <app-funding-progress [campaign]="offer"
@@ -30,7 +30,7 @@
               </div>
 
               <ng-container *ngIf="(offer.infoData.description | toTextIPFS | async) as descriptionRes">
-                <div *ngIf="descriptionRes.value as description" class="mt-4 font-light text-gray-700">
+                <div *ngIf="descriptionRes.value as description" class="mt-4 text-gray-700">
                   <quill-view [content]="description" format="html" (onEditorCreated)="quillMods($event)">
                   </quill-view>
                 </div>

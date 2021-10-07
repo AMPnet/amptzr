@@ -23,8 +23,8 @@ export class AdminIssuerEditCampaignVisibilityComponent {
     combineLatest([this.queryService.offers$, this.issuerService.offersDisplaySettings$]).pipe(
       map(([offers, offersDisplaySettings]) => {
         return {offers, offersDisplaySettings}
-      })
-    )
+      }),
+    ),
   )
 
   hiddenCampaigns: Set<string> = new Set([])
@@ -55,7 +55,7 @@ export class AdminIssuerEditCampaignVisibilityComponent {
     return () => {
       return this.issuerService.uploadOffersDisplaySettings(
         {hiddenOffers: Array.from(this.hiddenCampaigns)},
-        issuer.infoData
+        issuer.infoData,
       ).pipe(
         switchMap(result => this.issuerService.updateInfo(issuer.contractAddress, result.path)),
         switchMap(() => this.dialogService.info('Campaign visibility successfully updated!', false)),
