@@ -30,8 +30,6 @@ import {NameService} from '../../shared/services/blockchain/name.service'
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AdminAssetCampaignNewComponent {
-  readonly showPreviewScreen = true
-
   assetData$: Observable<WithStatus<AssetData>>
 
   stepType = Step
@@ -286,14 +284,6 @@ export class AdminAssetCampaignNewComponent {
           ),
         ),
       )
-    }
-  }
-
-  createImmediately(data: AssetData) {
-    return () => {
-      ~
-        this.preparePreviewData(data)
-      return this.create(data)()
     }
   }
 

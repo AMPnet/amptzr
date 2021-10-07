@@ -371,14 +371,7 @@
                       (click)="firstCreationStep()">
                 Back
               </button>
-              <button app-action-button *ngIf="!showPreviewScreen"
-                      class="flex items-center justify-center gap-8 bg-indigo-800 disabled:bg-gray-400 text-white
-                             px-24 py-2 rounded-full"
-                      text="Create campaign"
-                      [onClick]="createImmediately(assetData).bind(this)">
-              </button>
-              <button *ngIf="showPreviewScreen"
-                      class="flex items-center justify-center gap-8 bg-indigo-800 disabled:bg-gray-400 text-white
+              <button class="flex items-center justify-center gap-8 bg-indigo-800 disabled:bg-gray-400 text-white
                              px-24 py-2 rounded-full"
                       [disabled]="!createForm2.valid"
                       (click)="previewCampaignStep(assetData)">
