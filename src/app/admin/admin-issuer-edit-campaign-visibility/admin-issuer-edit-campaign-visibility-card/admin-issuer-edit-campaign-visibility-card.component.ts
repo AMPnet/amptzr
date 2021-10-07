@@ -6,7 +6,7 @@ import {
   OnChanges,
   OnInit,
   Output,
-  SimpleChanges
+  SimpleChanges,
 } from '@angular/core'
 import {Observable, Subject} from 'rxjs'
 import {withStatus, WithStatus} from '../../../shared/utils/observables'

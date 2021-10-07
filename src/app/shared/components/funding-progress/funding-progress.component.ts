@@ -40,7 +40,7 @@ export class FundingProgressComponent implements OnInit {
             softCapPercentage: softCapPercentage,
           }
         }),
-      )
+      ),
     )
   }
 
