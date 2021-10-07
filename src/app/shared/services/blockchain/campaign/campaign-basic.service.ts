@@ -20,6 +20,7 @@ import {ErrorService} from '../../error.service'
 import {TokenPrice} from '../../../utils/token-price'
 import {Provider} from '@ethersproject/providers'
 import {CampaignCommonState} from './campaign.common'
+import {CampaignFlavor} from '../flavors'
 
 @Injectable({
   providedIn: 'root',
@@ -53,7 +54,7 @@ export class CampaignBasicService {
   }
 
   getStateFromCommon(campaign: CampaignCommonState): Observable<CampaignBasicState | undefined> {
-    return campaign.flavor === 'CfManagerSoftcapV1' ?
+    return campaign.flavor === CampaignFlavor.BASIC ?
       this.getState(campaign.contractAddress) : of(undefined)
   }
 

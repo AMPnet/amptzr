@@ -22,6 +22,7 @@ import {
   CreateCampaignData,
 } from '../../shared/services/blockchain/campaign/campaign.service'
 import {NameService} from '../../shared/services/blockchain/name.service'
+import {CampaignFlavor} from '../../shared/services/blockchain/flavors'
 
 @Component({
   selector: 'app-admin-asset-campaign-new',
@@ -38,6 +39,7 @@ export class AdminAssetCampaignNewComponent {
     return this.resolvedAssetData
   }
 
+  campaignFlavor = CampaignFlavor
   stepType = Step
   step$ = new BehaviorSubject<Step>(Step.CREATION_FIRST)
 
@@ -102,7 +104,7 @@ export class AdminAssetCampaignNewComponent {
       returnFrom: [{value: undefined, disabled: true}, [Validators.required, Validators.min(0.01), Validators.max(1)]],
       returnTo: [{value: undefined, disabled: true}, [Validators.required, Validators.min(0.01), Validators.max(1)]],
       isIdVerificationRequired: [false, Validators.required],
-      flavor: ['CfManagerSoftcapV1', Validators.required],
+      flavor: [CampaignFlavor.BASIC, Validators.required],
     }, {
       validators: [
         this.validMonetaryValues.bind(this),

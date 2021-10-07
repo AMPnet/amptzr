@@ -113,19 +113,19 @@
             </label>
             <select class="border-gray-400 rounded-lg w-full lg:w-64 disabled:bg-gray-100"
                     formControlName="flavor">
-              <option value="AssetV1">
+              <option [value]="assetFlavor.BASIC">
                 Basic
               </option>
-              <option value="AssetTransferableV1">
+              <option [value]="assetFlavor.TRANSFERABLE">
                 Transferable
               </option>
-              <option value="AssetSimpleV1">
+              <option [value]="assetFlavor.SIMPLE">
                 Simple
               </option>
             </select>
           </div>
 
-          <ng-container *ngIf="['AssetV1', 'AssetTransferableV1'].includes(createForm.get('flavor')?.value)">
+          <ng-container *ngIf="isAssetWhitelistable(createForm.get('flavor')?.value)">
             <div class="flex flex-col gap-4 mb-4">
               <span class="text-lg font-semibold">Is wallet whitelisting required for revenue claim?</span>
               <app-form-yes-no-buttons formControlName="whitelistRequiredForRevenueClaim"></app-form-yes-no-buttons>

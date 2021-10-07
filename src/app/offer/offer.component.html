@@ -131,7 +131,7 @@
 =======
                       *ngIf="!offer.canceled && !offer.finalized &&
                               offer.fundsRaised.gte(offer.softCap) &&
-                              ['CfManagerSoftcapV1', 'CfManagerSoftcapVestingV1'].includes(offer.flavor) &&
+                              isFinalizableFlavor(offer.flavor) &&
                               offer.owner === address.value"
                       [onClick]="finalize(offer).bind(this)"
 >>>>>>> added vesting flavor
