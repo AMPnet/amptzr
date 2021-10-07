@@ -441,14 +441,14 @@
 
                 <div class="flex flex-col gap-4">
                   <span class="text-lg font-semibold">Price per token</span>
-                  <span>{{ preview.tokenPrice | currencyDefault }}</span>
+                  <span>{{ preview.tokenPrice | currencyDefault:'tokenPrice' }}</span>
                 </div>
 
                 <div class="flex flex-col gap-4">
                   <span class="text-lg font-semibold">Maximum amount to raise</span>
                   <span>
                     <b>{{ preview.hardCap | currencyDefault }}</b> by selling
-                    <b>{{ preview.hardCapTokens }} ({{ preview.hardCapTokensPercentage | percent }})</b> of my
+                    <b>{{ preview.hardCapTokens | number }} ({{ preview.hardCapTokensPercentage | percent }})</b> of my
                     {{ assetData.asset.name | uppercase }} tokens
                   </span>
                 </div>
@@ -457,7 +457,7 @@
                   <span class="text-lg font-semibold">Minimum amount to raise (Soft cap)</span>
                   <span>
                     <b>{{ preview.data.softCap | formatUnit:'bignumToWei' | currencyDefault }}</b> by selling
-                    <b>{{ preview.softCapTokens }} ({{ preview.softCapTokensPercentage | percent }})</b> of my
+                    <b>{{ preview.softCapTokens | number }} ({{ preview.softCapTokensPercentage | percent }})</b> of my
                     {{ assetData.asset.name | uppercase }} tokens
                   </span>
                 </div>
