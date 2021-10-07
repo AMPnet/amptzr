@@ -100,9 +100,9 @@ export class CampaignService {
     return of(data).pipe(
       switchMap(data => {
         switch (flavor) {
-          case 'CfManagerSoftcapV1':
+          case CampaignFlavor.BASIC:
             return this.campaignBasicService.create(data)
-          case 'CfManagerSoftcapVestingV1':
+          case CampaignFlavor.VESTING:
             return this.campaignVestingService.create(data)
           default:
             return throwError(`create not implemented for campaign flavor ${flavor}`)
@@ -113,9 +113,9 @@ export class CampaignService {
 
   invest(address: string, flavor: CampaignFlavor, amount: number) {
     switch (flavor) {
-      case 'CfManagerSoftcapV1':
+      case CampaignFlavor.BASIC:
         return this.campaignBasicService.invest(address, amount)
-      case 'CfManagerSoftcapVestingV1':
+      case CampaignFlavor.VESTING:
         return this.campaignVestingService.invest(address, amount)
       default:
         return throwError(`invest not implemented for campaign flavor ${flavor}`)
@@ -124,9 +124,9 @@ export class CampaignService {
 
   cancelInvestment(address: string, flavor: CampaignFlavor) {
     switch (flavor) {
-      case 'CfManagerSoftcapV1':
+      case CampaignFlavor.BASIC:
         return this.campaignBasicService.cancelInvestment(address)
-      case 'CfManagerSoftcapVestingV1':
+      case CampaignFlavor.VESTING:
         return this.campaignVestingService.cancelInvestment(address)
       default:
         return throwError(`cancelInvestment not implemented for campaign flavor ${flavor}`)
@@ -135,9 +135,9 @@ export class CampaignService {
 
   isWhitelistRequired(campaign: CampaignWithInfo): Observable<boolean> {
     switch (campaign.flavor) {
-      case 'CfManagerSoftcapV1':
+      case CampaignFlavor.BASIC:
         return this.campaignBasicService.isWhitelistRequired(campaign.contractAddress)
-      case 'CfManagerSoftcapVestingV1':
+      case CampaignFlavor.VESTING:
         return this.campaignVestingService.isWhitelistRequired(campaign.contractAddress)
       default:
         return of(false)
@@ -146,9 +146,9 @@ export class CampaignService {
 
   stats(address: string, flavor: CampaignFlavor): Observable<CampaignStats> {
     switch (flavor) {
-      case 'CfManagerSoftcapV1':
+      case CampaignFlavor.BASIC:
         return this.campaignBasicService.stats(address)
-      case 'CfManagerSoftcapVestingV1':
+      case CampaignFlavor.VESTING:
         return this.campaignVestingService.stats(address)
       default:
         return throwError(`stats not implemented for campaign flavor ${flavor}`)
@@ -157,9 +157,9 @@ export class CampaignService {
 
   finalize(address: string, flavor: CampaignFlavor) {
     switch (flavor) {
-      case 'CfManagerSoftcapV1':
+      case CampaignFlavor.BASIC:
         return this.campaignBasicService.finalize(address)
-      case 'CfManagerSoftcapVestingV1':
+      case CampaignFlavor.VESTING:
         return this.campaignVestingService.finalize(address)
       default:
         return throwError(`finalize not implemented for campaign flavor ${flavor}`)

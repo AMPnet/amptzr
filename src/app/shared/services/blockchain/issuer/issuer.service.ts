@@ -54,7 +54,7 @@ export class IssuerService {
     return of(address).pipe(
       switchMap(address => {
         switch (flavor) {
-          case 'IssuerV1':
+          case IssuerFlavor.BASIC:
             return this.issuerBasicService.getState(address)
           default:
             return throwError(`getState not implemented issuer flavor ${flavor}`)
@@ -107,7 +107,7 @@ export class IssuerService {
     return of(data).pipe(
       switchMap(data => {
         switch (flavor) {
-          case 'IssuerV1':
+          case IssuerFlavor.BASIC:
           default:
             return this.issuerBasicService.create(data)
         }
@@ -119,7 +119,7 @@ export class IssuerService {
     return this.preferenceQuery.issuer$.pipe(
       switchMap(issuer => {
         switch (issuer.flavor) {
-          case 'IssuerV1':
+          case IssuerFlavor.BASIC:
             return this.issuerBasicService.isWalletApproved(address)
           default:
             return of(true)
@@ -132,7 +132,7 @@ export class IssuerService {
     return this.preferenceQuery.issuer$.pipe(
       switchMap(issuer => {
         switch (issuer.flavor) {
-          case 'IssuerV1':
+          case IssuerFlavor.BASIC:
             return this.issuerBasicService.changeWalletApprover(issuerAddress, walletApproverAddress)
           default:
             return throwError(`changeWalletApprover not implemented issuer flavor ${issuer.flavor}`)
@@ -145,7 +145,7 @@ export class IssuerService {
     return this.preferenceQuery.issuer$.pipe(
       switchMap(issuer => {
         switch (issuer.flavor) {
-          case 'IssuerV1':
+          case IssuerFlavor.BASIC:
             return this.issuerBasicService.changeOwner(issuerAddress, ownerAddress)
           default:
             return throwError(`changeOwner not implemented for issuer flavor ${issuer.flavor}`)

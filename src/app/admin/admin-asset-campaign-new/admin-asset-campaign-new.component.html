@@ -185,10 +185,10 @@
                   </label>
                   <select class="border-gray-400 rounded-lg w-full lg:w-64 disabled:bg-gray-100"
                           formControlName="flavor">
-                    <option value="CfManagerSoftcapV1">
+                    <option [value]="campaignFlavor.BASIC">
                       Basic
                     </option>
-                    <option value="CfManagerSoftcapVestingV1">
+                    <option [value]="campaignFlavor.VESTING">
                       Vesting
                     </option>
                   </select>

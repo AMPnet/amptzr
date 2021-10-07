@@ -48,11 +48,11 @@ export class AssetService {
     return of(address).pipe(
       switchMap(address => {
         switch (flavor) {
-          case 'AssetTransferableV1':
+          case AssetFlavor.TRANSFERABLE:
             return this.assetTransferableService.getState(address, signerOrProvider)
-          case 'AssetSimpleV1':
+          case AssetFlavor.SIMPLE:
             return this.assetSimpleService.getState(address, signerOrProvider)
-          case 'AssetV1':
+          case AssetFlavor.BASIC:
             return this.assetBasicService.getState(address, signerOrProvider)
           default:
             return throwError(`getState not implemented for asset flavor ${flavor}`)
@@ -119,11 +119,11 @@ export class AssetService {
     return of(data).pipe(
       switchMap(data => {
         switch (flavor) {
-          case 'AssetTransferableV1':
+          case AssetFlavor.TRANSFERABLE:
             return this.assetTransferableService.create(data)
-          case 'AssetSimpleV1':
+          case AssetFlavor.SIMPLE:
             return this.assetSimpleService.create(data)
-          case 'AssetV1':
+          case AssetFlavor.BASIC:
             return this.assetBasicService.create(data)
           default:
             return throwError(`create not implemented for asset flavor ${flavor}`)

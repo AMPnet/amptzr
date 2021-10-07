@@ -8,6 +8,7 @@ import {DialogService} from '../../shared/services/dialog.service'
 import {IssuerPathPipe} from '../../shared/pipes/issuer-path.pipe'
 import {v4 as uuidV4} from 'uuid'
 import {AssetService} from '../../shared/services/blockchain/asset/asset.service'
+import {AssetFlavor} from '../../shared/services/blockchain/flavors'
 
 @Component({
   selector: 'app-admin-asset-new',
@@ -17,6 +18,8 @@ import {AssetService} from '../../shared/services/blockchain/asset/asset.service
 })
 export class AdminAssetNewComponent {
   createForm: FormGroup
+
+  assetFlavor = AssetFlavor
 
   constructor(private assetService: AssetService,
               private preferenceQuery: PreferenceQuery,
@@ -32,7 +35,7 @@ export class AdminAssetNewComponent {
       symbol: ['', [Validators.required, Validators.maxLength(20)]],
       whitelistRequiredForRevenueClaim: [false],
       whitelistRequiredForLiquidationClaim: [false],
-      flavor: ['AssetV1', Validators.required],
+      flavor: [this.assetFlavor.BASIC, Validators.required],
     })
   }
 
@@ -54,5 +57,9 @@ export class AdminAssetNewComponent {
         tap(() => this.routerService.navigate([`/admin/assets/${assetAddress}`])),
       )),
     )
+  }
+
+  isAssetWhitelistable(flavor: AssetFlavor | string): boolean {
+    return [AssetFlavor.BASIC, AssetFlavor.TRANSFERABLE].includes(flavor as AssetFlavor)
   }
 }
