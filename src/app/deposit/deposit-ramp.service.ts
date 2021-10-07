@@ -6,6 +6,7 @@ import {ToUrlIPFSPipe} from '../shared/pipes/to-url-ipfs.pipe'
 import {PreferenceQuery} from '../preference/state/preference.query'
 import {switchMap, take} from 'rxjs/operators'
 import {IssuerService} from '../shared/services/blockchain/issuer/issuer.service'
+import {StablecoinService} from '../shared/services/blockchain/stablecoin.service'
 
 @Injectable({
   providedIn: 'root',
@@ -19,6 +20,7 @@ export class DepositRampService {
   constructor(private sessionQuery: SessionQuery,
               private issuerService: IssuerService,
               private toUrlIpfsPipe: ToUrlIPFSPipe,
+              private stablecoinService: StablecoinService,
               private preferenceQuery: PreferenceQuery) {
   }
 
@@ -40,8 +42,7 @@ export class DepositRampService {
             hostLogoUrl: this.toUrlIpfsPipe.transform(issuer.infoData.logo),
             hostApiKey: issuer.infoData.rampApiKey,
             swapAsset: rampConfig.swapAsset,
-            fiatCurrency: rampConfig.fiatCurrency,
-            fiatValue: depositAmount.toString(),
+            swapAmount: this.stablecoinService.parse(depositAmount).toString(),
             userAddress: address,
             url: rampConfig.url,
             variant: 'auto',

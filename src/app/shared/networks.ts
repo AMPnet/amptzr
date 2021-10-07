@@ -54,8 +54,7 @@ interface VenlyConfig {
 
 interface RampConfig {
   swapAsset: string,
-  fiatCurrency: string,
-  url?: string // URL is needed only for testing environments
+  url?: string // needed only for testing environments
 }
 
 export const MaticNetwork: Network = {
@@ -97,7 +96,6 @@ export const MaticNetwork: Network = {
   },
   ramp: {
     swapAsset: 'MATIC_USDC',
-    fiatCurrency: 'USD',
   },
 }
 
@@ -140,7 +138,6 @@ export const MumbaiNetwork: Network = {
   },
   ramp: {
     swapAsset: 'MATIC_USDC2',
-    fiatCurrency: 'USD',
     url: 'https://ri-widget-staging.firebaseapp.com/',
   },
 }
