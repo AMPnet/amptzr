@@ -141,8 +141,10 @@
             <div class="flex flex-col gap-2">
               <label class="text-lg font-semibold">What is the duration of your project?</label>
               <div class="flex flex-col lg:flex-row gap-4">
-                <input class="border-gray-400 rounded-lg" type="date" formControlName="startDate">
-                <input class="border-gray-400 rounded-lg" type="date" formControlName="endDate">
+                <input appDateMask class="border-gray-400 rounded-lg" type="text" placeholder="From"
+                       formControlName="startDate">
+                <input appDateMask class="border-gray-400 rounded-lg" type="text" placeholder="To"
+                       formControlName="endDate">
               </div>
             </div>
 

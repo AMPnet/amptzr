@@ -46,8 +46,8 @@ export class AdminCampaignEditComponent {
       logo: [undefined],
       about: ['', Validators.required],
       description: ['', Validators.required],
-      startDate: [undefined, Validators.required],
-      endDate: [undefined, Validators.required],
+      startDate: [undefined],
+      endDate: [undefined],
       documentUpload: [undefined],
       newDocuments: [[]],
       oldDocuments: [[]],
@@ -87,8 +87,8 @@ export class AdminCampaignEditComponent {
             name: campaign.value.infoData.name || '',
             about: campaign.value.infoData.about || '',
             description: campaign.value.infoData.description || '',
-            startDate: campaign.value.infoData.startDate.split('T')[0],
-            endDate: campaign.value.infoData.endDate.split('T')[0],
+            startDate: campaign.value.infoData.startDate?.split('T')[0],
+            endDate: campaign.value.infoData.endDate?.split('T')[0],
             oldDocuments: campaign.value.infoData.documents || [],
             newDocuments: [],
             isReturningProfitsToInvestors: isReturningProfitsToInvestors,
@@ -188,8 +188,8 @@ export class AdminCampaignEditComponent {
           photo: this.updateForm.value.logo?.[0],
           about: this.updateForm.value.about,
           description: this.updateForm.value.description,
-          startDate: new Date(this.updateForm.value.startDate).toISOString(),
-          endDate: new Date(this.updateForm.value.endDate).toISOString(),
+          startDate: AdminCampaignEditComponent.dateToIsoString(this.updateForm.value.startDate),
+          endDate: AdminCampaignEditComponent.dateToIsoString(this.updateForm.value.endDate),
           documents: this.updateForm.value.oldDocuments,
           newDocuments: this.updateForm.value.newDocuments,
           return: this.createCampaignReturnObject(),
@@ -259,10 +259,20 @@ export class AdminCampaignEditComponent {
   }
 
   private static validDateRange(formGroup: FormGroup): ValidationErrors | null {
-    if (formGroup.value.startDate > formGroup.value.endDate) {
+    const startDate = formGroup.value.startDate
+    const endDate = formGroup.value.endDate
+    if (!!startDate && !!endDate && startDate > endDate) {
       return {invalidDateRange: true}
     }
 
     return null
+  }
+
+  private static dateToIsoString(date?: string): string | undefined {
+    if (!date) {
+      return undefined
+    }
+
+    return new Date(date).toISOString()
   }
 }
