@@ -19,7 +19,7 @@ import {AssetService, CommonAssetWithInfo} from '../../shared/services/blockchai
 import {
   CampaignService,
   CampaignUploadInfoData,
-  CreateCampaignData
+  CreateCampaignData,
 } from '../../shared/services/blockchain/campaign/campaign.service'
 import {NameService} from '../../shared/services/blockchain/name.service'
 
@@ -308,8 +308,10 @@ export class AdminAssetCampaignNewComponent {
   }
 
   previewHasMaxInvestment(assetData: AssetData) {
+    const maxInvestment = this.stablecoinService.format(this.preview.data.maxInvestment)
     const maxValue = this.stablecoinService.format(assetData.asset.totalSupply, 18) * this.preview.tokenPrice
-    return this.stablecoinService.format(this.preview.data.maxInvestment) < maxValue
+
+    return Number(maxInvestment.toFixed(2)) < Number(maxValue.toFixed(2))
   }
 
   previewReturn() {
