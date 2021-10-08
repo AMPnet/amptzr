@@ -164,9 +164,4 @@ export class AdminCampaignDetailComponent {
       )
     }
   }
-
-  campaignHasMaxInvestment(asset: CommonAssetWithInfo, campaignStats: CampaignStats) {
-    const maxValue = this.stablecoinService.format(asset.totalSupply, 18) * campaignStats.tokenPrice
-    return campaignStats.userMax < maxValue
-  }
 }

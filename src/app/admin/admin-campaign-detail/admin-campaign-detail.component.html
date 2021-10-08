@@ -107,13 +107,7 @@
                   </div>
                   <div *ngIf="shouldShowMax">
                     Max investment:
-                    <b *ngIf="campaignHasMaxInvestment(campaignData.asset, campaignData.stats);
-                              else maxInvestmentNotSpecified">
-                      {{ campaignBasic.maxInvestment | formatUnit:'bignumToWei' | currencyDefault }}
-                    </b>
-                    <ng-template #maxInvestmentNotSpecified>
-                      <b>Unlimited</b>
-                    </ng-template>
+                    <b>{{ campaignBasic.maxInvestment | formatUnit:'bignumToWei' | currencyDefault }}</b>
                   </div>
                 </ng-container>
                 <span>Returning profits: <b>{{ returnFrequency(campaignData.campaign) }}</b></span>
