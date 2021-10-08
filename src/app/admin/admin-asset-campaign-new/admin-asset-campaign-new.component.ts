@@ -107,8 +107,8 @@ export class AdminAssetCampaignNewComponent {
       logo: [undefined, Validators.required],
       about: ['', Validators.required],
       description: ['', Validators.required],
-      startDate: [undefined, Validators.required],
-      endDate: [undefined, Validators.required],
+      startDate: [undefined],
+      endDate: [undefined],
       documentUpload: [undefined],
       documents: [[]],
       newsUrls: this.fb.array([]),
@@ -402,7 +402,9 @@ export class AdminAssetCampaignNewComponent {
   }
 
   private static validDateRange(formGroup: FormGroup): ValidationErrors | null {
-    if (formGroup.value.startDate > formGroup.value.endDate) {
+    const startDate = formGroup.value.startDate
+    const endDate = formGroup.value.endDate
+    if (!!startDate && !!endDate && startDate > endDate) {
       return {invalidDateRange: true}
     }
 
@@ -472,8 +474,8 @@ export class AdminAssetCampaignNewComponent {
         photo: this.createForm2.value.logo?.[0],
         about: this.createForm2.value.about,
         description: this.createForm2.value.description,
-        startDate: new Date(this.createForm2.value.startDate).toISOString(),
-        endDate: new Date(this.createForm2.value.endDate).toISOString(),
+        startDate: AdminAssetCampaignNewComponent.dateToIsoString(this.createForm2.value.startDate)!,
+        endDate: AdminAssetCampaignNewComponent.dateToIsoString(this.createForm2.value.endDate)!,
         return: this.createCampaignReturnObject(),
         newDocuments: this.createForm2.value.documents,
         newsURLs: this.newsUrls.value,
@@ -494,6 +496,14 @@ export class AdminAssetCampaignNewComponent {
       softCapTokens: softCapTokens,
       softCapTokensPercentage: this.softCapTokensPercentage(data),
     }
+  }
+
+  private static dateToIsoString(date?: string): string | undefined {
+    if (!date) {
+      return undefined
+    }
+
+    return new Date(date).toISOString()
   }
 }
 
