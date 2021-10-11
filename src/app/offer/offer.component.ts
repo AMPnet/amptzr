@@ -14,8 +14,7 @@ import {LinkPreviewResponse, LinkPreviewService} from '../shared/services/backen
 import {quillMods} from '../shared/utils/quill'
 import {TailwindService} from '../shared/services/tailwind.service'
 import {NameService} from '../shared/services/blockchain/name.service'
-import {CampaignService, CampaignWithInfo} from '../shared/services/blockchain/campaign/campaign.service'
-import {CampaignBasicService} from '../shared/services/blockchain/campaign/campaign-basic.service'
+import {CampaignService, CampaignStats, CampaignWithInfo} from '../shared/services/blockchain/campaign/campaign.service'
 import {CampaignFlavor} from '../shared/services/blockchain/flavors'
 
 @Component({
@@ -26,7 +25,10 @@ import {CampaignFlavor} from '../shared/services/blockchain/flavors'
 })
 export class OfferComponent {
   campaignSub = new BehaviorSubject<void>(undefined)
-  campaign$: Observable<WithStatus<CampaignWithInfo>>
+  campaignData$: Observable<WithStatus<{
+    campaign: CampaignWithInfo,
+    stats: CampaignStats,
+  }>>
   links$: Observable<WithStatus<{ value: LinkPreviewResponse[] }>>
   address$ = this.sessionQuery.address$.pipe(
     map(value => ({value: value})),
@@ -37,7 +39,6 @@ export class OfferComponent {
   quillMods = quillMods
 
   constructor(private campaignService: CampaignService,
-              private campaignBasicService: CampaignBasicService,
               private nameService: NameService,
               private metaService: MetaService,
               private toUrlIPFSPipe: ToUrlIPFSPipe,
@@ -51,28 +52,35 @@ export class OfferComponent {
               private linkPreviewService: LinkPreviewService) {
     const campaignId = this.route.snapshot.params.id
 
-    this.campaign$ = this.campaignSub.asObservable().pipe(
+    this.campaignData$ = this.campaignSub.asObservable().pipe(
       switchMap(() => withStatus(
         this.nameService.getCampaign(campaignId).pipe(
-          switchMap(campaign => this.campaignService.getCampaignInfo(campaign.campaign)),
-          tap(campaign => this.metaService.setMeta({
+          switchMap(campaign => combineLatest([
+            this.campaignService.getCampaignInfo(campaign.campaign),
+            this.campaignService.stats(campaign.campaign.contractAddress, campaign.campaign.flavor as CampaignFlavor),
+          ])),
+          tap(([campaign, stats]) => this.metaService.setMeta({
             title: campaign.infoData.name,
             description: campaign.infoData.about,
             contentURL: window.location.href,
             imageURL: this.toUrlIPFSPipe.transform(campaign.infoData.photo),
           })),
+          map(([campaign, stats]) => {
+            return {campaign, stats}
+          }),
         ),
       )),
     )
 
-    this.links$ = this.campaign$.pipe(
-      filter((campaign) => !!campaign.value),
-      switchMap((campaign) => {
-        if (!campaign.value!.infoData.newsURLs) {
+    this.links$ = this.campaignData$.pipe(
+      filter((campaignData) => !!campaignData.value),
+      switchMap((campaignData) => {
+        if (!campaignData.value!.campaign.infoData.newsURLs) {
           return withStatus(of({value: []}))
         }
 
-        const previewLinks = campaign.value!.infoData!.newsURLs?.map((url) => this.linkPreviewService.previewLink(url))
+        const previewLinks = campaignData.value!.campaign
+          .infoData!.newsURLs?.map((url) => this.linkPreviewService.previewLink(url))
 
         return withStatus(combineLatest(previewLinks).pipe(map(value => ({value}))))
       }),

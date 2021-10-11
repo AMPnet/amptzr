@@ -220,4 +220,5 @@ export interface CampaignStats {
   valueInvested: number
   valueTotal: number
   valueToInvest: number
+  tokenBalanceAboveSoftCap: boolean
 }
