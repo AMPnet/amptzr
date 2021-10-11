@@ -141,7 +141,7 @@
       </ng-container>
 
       <ng-container *ngIf="issuerRes.loading">
-        Loading issuer...
+        <app-spinner type="overlay">Loading issuer...</app-spinner>
       </ng-container>
     </ng-container>
   </div>

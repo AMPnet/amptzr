@@ -15,10 +15,7 @@ import {Provider} from '@ethersproject/providers'
 import {CampaignBasicService} from './campaign-basic.service'
 import {CampaignFlavor} from '../flavors'
 import {CampaignCommonState} from './campaign.common'
-<<<<<<< HEAD
-=======
 import {CampaignVestingService} from './campaign-vesting.service'
->>>>>>> added vesting flavor
 
 @Injectable({
   providedIn: 'root',

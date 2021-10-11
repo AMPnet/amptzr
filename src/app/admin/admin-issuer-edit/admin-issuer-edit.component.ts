@@ -8,6 +8,7 @@ import {RouterService} from '../../shared/services/router.service'
 import {PreferenceStore} from '../../preference/state/preference.store'
 import {IssuerService, IssuerWithInfo} from '../../shared/services/blockchain/issuer/issuer.service'
 import {IssuerBasicService, IssuerBasicState} from '../../shared/services/blockchain/issuer/issuer-basic.service'
+import {WithStatus, withStatus} from '../../shared/utils/observables'
 
 @Component({
   selector: 'app-admin-issuer-edit',
@@ -16,7 +17,7 @@ import {IssuerBasicService, IssuerBasicState} from '../../shared/services/blockc
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AdminIssuerEditComponent {
-  issuer$: Observable<IssuerView>
+  issuer$: Observable<WithStatus<IssuerView>>
   stableCoinSymbol = this.stableCoinService.symbol
 
   updateForm: FormGroup
@@ -43,28 +44,30 @@ export class AdminIssuerEditComponent {
     })
 
 
-    this.issuer$ = this.issuerService.issuer$.pipe(
-      switchMap(issuer => this.issuerBasicService.getStateFromCommon(issuer).pipe(
-        map(issuerBasic => ({...issuer, issuerBasic})),
-      )),
-      tap(issuer => {
-        this.updateForm.reset()
-        this.updateForm.setValue({
-          ...this.updateForm.value,
-          name: issuer.infoData.name || '',
-          rampApiKey: issuer.infoData.rampApiKey || '',
-        })
+    this.issuer$ = withStatus(
+      this.issuerService.issuer$.pipe(
+        switchMap(issuer => this.issuerBasicService.getStateFromCommon(issuer).pipe(
+          map(issuerBasic => ({...issuer, issuerBasic})),
+        )),
+        tap(issuer => {
+          this.updateForm.reset()
+          this.updateForm.setValue({
+            ...this.updateForm.value,
+            name: issuer.infoData.name || '',
+            rampApiKey: issuer.infoData.rampApiKey || '',
+          })
 
-        this.updateWalletApproverAddressForm.reset()
-        this.updateWalletApproverAddressForm.setValue({
-          walletApproverAddress: issuer.issuerBasic?.walletApprover || '',
-        })
+          this.updateWalletApproverAddressForm.reset()
+          this.updateWalletApproverAddressForm.setValue({
+            walletApproverAddress: issuer.issuerBasic?.walletApprover || '',
+          })
 
-        this.updateOwnerAddressForm.reset()
-        this.updateOwnerAddressForm.setValue({
-          ownerAddress: issuer.owner || '',
-        })
-      }),
+          this.updateOwnerAddressForm.reset()
+          this.updateOwnerAddressForm.setValue({
+            ownerAddress: issuer.owner || '',
+          })
+        }),
+      ),
     )
   }
 

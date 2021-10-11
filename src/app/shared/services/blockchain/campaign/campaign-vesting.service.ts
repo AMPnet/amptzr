@@ -122,6 +122,8 @@ export class CampaignVestingService {
         const valueTotal = Math.max(tokenBalance, tokensSold) * tokenPrice
         const valueToInvest = tokensAvailable * tokenPrice
 
+        const tokenBalanceAboveSoftCap = tokenBalance * tokenPrice > softCap
+
         return {
           userMin,
           userMax,
@@ -134,6 +136,7 @@ export class CampaignVestingService {
           valueInvested,
           valueTotal,
           valueToInvest,
+          tokenBalanceAboveSoftCap,
         }
       }),
     )
@@ -226,4 +229,5 @@ interface VestingCampaignStats {
   valueInvested: number
   valueTotal: number
   valueToInvest: number
+  tokenBalanceAboveSoftCap: boolean
 }
