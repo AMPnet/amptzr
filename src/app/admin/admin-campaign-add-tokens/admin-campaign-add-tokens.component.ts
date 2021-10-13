@@ -57,6 +57,7 @@ export class AdminCampaignAddTokensComponent {
           assetBalance,
           campaign,
           stats,
+          addTokenStats: this.addTokensStats(stats, assetBalance),
         })),
       )),
       shareReplay(1),
@@ -67,6 +68,13 @@ export class AdminCampaignAddTokensComponent {
     this.fundingForm = this.fb.group({
       amount: [0, [Validators.required], [this.validAmount.bind(this)]],
     })
+  }
+
+  addTokensStats(stats: CampaignStats, assetBalance: BigNumber): AddTokensStats {
+    return {
+      min: Math.max(0, stats.softCap - stats.tokenBalance * stats.tokenPrice),
+      max: this.stablecoinService.format(assetBalance, 18) * stats.tokenPrice,
+    }
   }
 
   minAmountToReachSoftCap(stats: CampaignStats) {
@@ -82,27 +90,13 @@ export class AdminCampaignAddTokensComponent {
     return this.stablecoinService.format(data.assetBalance, 18) * data.stats.tokenPrice
   }
 
-  tokensPercentage(data: CampaignData) {
-    const pricePerToken = data.stats.tokenPrice
-    if (pricePerToken === 0) {
-      return 0
-    }
-
-    const numOfTokensToSell = this.fundingForm.value.amount / pricePerToken
-    if (numOfTokensToSell === 0) {
-      return 0
-    }
-
-    const totalTokens = this.stablecoinService.format(data.asset.totalSupply, 18)
-    return numOfTokensToSell / totalTokens
-  }
-
   addTokens(data: CampaignData) {
     return () => {
       return this.assetService.transferTokensToCampaign(
         data.asset.contractAddress,
         data.campaign.contractAddress,
-        this.fundingTokensAmount(this.fundingForm.value.amount, data),
+        this.fundingForm.value.amount,
+        data.stats.tokenPrice,
       ).pipe(
         switchMap(() => this.dialogService.info('Tokens added to campaign.', false)),
         switchMap(() => this.routerService.navigate(['..'], {relativeTo: this.route})),
@@ -117,31 +111,16 @@ export class AdminCampaignAddTokensComponent {
 
         if (amount <= 0) {
           return {nonPositive: true}
-        }
-
-        const fundingTokens = this.fundingTokensAmount(amount, data)
-
-        const minTokens = this.minAmountToReachSoftCap(data.stats) / data.stats.tokenPrice
-        if (fundingTokens < minTokens) {
-          return {fundingAmountTooLow: true}
-        }
-
-        const maxTokens = this.maxFundingAmount(data) / data.stats.tokenPrice
-        if (fundingTokens > maxTokens) {
-          return {fundingAmountTooHigh: true}
+        } else if (amount < data.addTokenStats.min) {
+          return {tooLow: true}
+        } else if (amount > data.addTokenStats.max) {
+          return {tooHigh: true}
         }
 
         return null
       }),
       tap(() => ɵmarkDirty(this)),
     )
-  }
-
-  private fundingTokensAmount(amount: number, data: CampaignData) {
-    const tokenBalance = this.stablecoinService.format(data.assetBalance)
-    // Due to possible rounding errors, we use min(specifiedFundingTokens, assetTokenBalance) to ensure that valid
-    // amount is always sent here.
-    return Math.min(amount / data.stats.tokenPrice, tokenBalance)
   }
 }
 
@@ -150,4 +129,10 @@ interface CampaignData {
   assetBalance: BigNumber,
   campaign: CampaignWithInfo,
   stats: CampaignStats,
+  addTokenStats: AddTokensStats,
+}
+
+interface AddTokensStats {
+  min: number,
+  max: number,
 }

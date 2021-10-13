@@ -10,6 +10,7 @@ import {DialogService} from '../../shared/services/dialog.service'
 import {RouterService} from '../../shared/services/router.service'
 import {CampaignService, CampaignWithInfo} from '../../shared/services/blockchain/campaign/campaign.service'
 import {NameService} from '../../shared/services/blockchain/name.service'
+import {dateToIsoString} from '../../shared/utils/date'
 
 @Component({
   selector: 'app-admin-campaign-edit',
@@ -188,8 +189,8 @@ export class AdminCampaignEditComponent {
           photo: this.updateForm.value.logo?.[0],
           about: this.updateForm.value.about,
           description: this.updateForm.value.description,
-          startDate: AdminCampaignEditComponent.dateToIsoString(this.updateForm.value.startDate),
-          endDate: AdminCampaignEditComponent.dateToIsoString(this.updateForm.value.endDate),
+          startDate: dateToIsoString(this.updateForm.value.startDate),
+          endDate: dateToIsoString(this.updateForm.value.endDate),
           documents: this.updateForm.value.oldDocuments,
           newDocuments: this.updateForm.value.newDocuments,
           return: this.createCampaignReturnObject(),
@@ -266,13 +267,5 @@ export class AdminCampaignEditComponent {
     }
 
     return null
-  }
-
-  private static dateToIsoString(date?: string): string | undefined {
-    if (!date) {
-      return undefined
-    }
-
-    return new Date(date).toISOString()
   }
 }

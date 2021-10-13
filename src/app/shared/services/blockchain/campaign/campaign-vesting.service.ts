@@ -122,7 +122,13 @@ export class CampaignVestingService {
         const valueTotal = Math.max(tokenBalance, tokensSold) * tokenPrice
         const valueToInvest = tokensAvailable * tokenPrice
 
-        const tokenBalanceAboveSoftCap = tokenBalance * tokenPrice > softCap
+        const tokenValue = campaign.totalTokensBalance
+          .mul(campaign.tokenPrice)
+          .mul(BigNumber.from((10 ** this.stablecoin.precision).toString()))
+          .div(BigNumber.from((10 ** TokenPrice.precision).toString()))
+          .div(BigNumber.from((10 ** 18).toString())) // token precision
+
+        const softCapReached = tokenValue.gte(campaign.softCap)
 
         return {
           userMin,
@@ -136,7 +142,7 @@ export class CampaignVestingService {
           valueInvested,
           valueTotal,
           valueToInvest,
-          tokenBalanceAboveSoftCap,
+          softCapReached,
         }
       }),
     )
@@ -229,5 +235,5 @@ interface VestingCampaignStats {
   valueInvested: number
   valueTotal: number
   valueToInvest: number
-  tokenBalanceAboveSoftCap: boolean
+  softCapReached: boolean
 }

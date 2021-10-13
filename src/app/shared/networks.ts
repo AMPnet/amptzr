@@ -79,7 +79,7 @@ export const MaticNetwork: Network = {
       simple: '0x0361B0A1333A0BF88ce2c3a4d7192C5E8A5Efea9',
     },
     cfManagerFactory: {
-      basic: '0x3105e7FE2bb0DD528888192A4ffC08a1Bf5Ee789',
+      basic: '0x99B113c999eF3616737FBF83c1f18aeC27c6205e',
       vesting: '0x5009469A278Bcc572442c0144c07108156984176',
     },
     snapshotDistributorFactory: '0xB674FFEFB72462F2ED21097946fA7a442E34991A',

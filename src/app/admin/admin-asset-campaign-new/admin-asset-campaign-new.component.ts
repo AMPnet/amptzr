@@ -23,6 +23,7 @@ import {
 } from '../../shared/services/blockchain/campaign/campaign.service'
 import {NameService} from '../../shared/services/blockchain/name.service'
 import {CampaignFlavor} from '../../shared/services/blockchain/flavors'
+import {dateToIsoString} from '../../shared/utils/date'
 
 @Component({
   selector: 'app-admin-asset-campaign-new',
@@ -152,7 +153,7 @@ export class AdminAssetCampaignNewComponent {
     }
 
     const pricePerToken = this.createForm1.value.hardCap / numOfTokensToSell
-    return Math.round(pricePerToken * 10_000) / 10_000
+    return Math.floor(pricePerToken * 10_000) / 10_000
   }
 
   softCapTokensPercentage(data: AssetData) {
@@ -461,7 +462,8 @@ export class AdminAssetCampaignNewComponent {
     return this.assetService.transferTokensToCampaign(
       data.asset.contractAddress,
       campaignAddress,
-      this.preview.hardCapTokens,
+      this.preview.hardCap,
+      this.preview.tokenPrice,
     )
   }
 
@@ -483,8 +485,8 @@ export class AdminAssetCampaignNewComponent {
         photo: this.createForm2.value.logo?.[0],
         about: this.createForm2.value.about,
         description: this.createForm2.value.description,
-        startDate: AdminAssetCampaignNewComponent.dateToIsoString(this.createForm2.value.startDate)!,
-        endDate: AdminAssetCampaignNewComponent.dateToIsoString(this.createForm2.value.endDate)!,
+        startDate: dateToIsoString(this.createForm2.value.startDate) || '',
+        endDate: dateToIsoString(this.createForm2.value.endDate) || '',
         return: this.createCampaignReturnObject(),
         newDocuments: this.createForm2.value.documents,
         newsURLs: this.newsUrls.value,
@@ -505,14 +507,6 @@ export class AdminAssetCampaignNewComponent {
       softCapTokens: softCapTokens,
       softCapTokensPercentage: this.softCapTokensPercentage(data),
     }
-  }
-
-  private static dateToIsoString(date?: string): string | undefined {
-    if (!date) {
-      return undefined
-    }
-
-    return new Date(date).toISOString()
   }
 }
 

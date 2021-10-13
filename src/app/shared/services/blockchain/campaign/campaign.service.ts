@@ -4,7 +4,7 @@ import {IpfsService, IPFSText} from '../../ipfs/ipfs.service'
 import {StablecoinService} from '../stablecoin.service'
 import {cid, IPFSCampaign, IPFSDocument, iso8601, ReturnFrequency} from '../../../../../../types/ipfs/campaign'
 import {GasService} from '../gas.service'
-import {BigNumberish, Signer} from 'ethers'
+import {BigNumber, BigNumberish, Signer} from 'ethers'
 import {map, switchMap} from 'rxjs/operators'
 import {DialogService} from '../../dialog.service'
 import {SignerService} from '../../signer.service'
@@ -97,6 +97,15 @@ export class CampaignService {
   }
 
   create(data: CreateCampaignData, flavor: CampaignFlavor): Observable<string | undefined> {
+    const realSoftCap = BigNumber.from(data.softCap)
+      .div(data.initialPricePerToken)
+      .mul(data.initialPricePerToken)
+
+    data = {
+      ...data,
+      softCap: realSoftCap,
+    }
+
     return of(data).pipe(
       switchMap(data => {
         switch (flavor) {
@@ -237,5 +246,5 @@ export interface CampaignStats {
   valueInvested: number
   valueTotal: number
   valueToInvest: number
-  tokenBalanceAboveSoftCap: boolean
+  softCapReached: boolean
 }

@@ -10,8 +10,8 @@
  * If the preferred token price is `0.000567` (USDC), the token price will be stored as `5` in the contract.
  */
 export class TokenPrice {
-  static readonly decimals = 4
-  static readonly scale = 10 ** TokenPrice.decimals
+  static readonly precision = 4
+  static readonly scale = 10 ** TokenPrice.precision
 
   static format(value: number): number {
     return Math.floor(Number(value) * TokenPrice.scale)

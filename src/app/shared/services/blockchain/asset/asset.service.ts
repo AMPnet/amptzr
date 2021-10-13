@@ -17,6 +17,7 @@ import {AssetTransferableService, TransferableAssetState} from './asset-transfer
 import {AssetFlavor} from '../flavors'
 import {AssetCommonState} from './asset.common'
 import {AssetSimpleService, SimpleAssetState} from './asset-simple.service'
+import {TokenPrice} from '../../../utils/token-price'
 
 @Injectable({
   providedIn: 'root',
@@ -132,12 +133,20 @@ export class AssetService {
     )
   }
 
-  transferTokensToCampaign(assetAddress: string, campaignAddress: string, amount: number) {
+  transferTokensToCampaign(
+    assetAddress: string, campaignAddress: string, stablecoinValue: number, tokenPrice: number,
+  ) {
+    const tokens = this.stablecoin.parse(stablecoinValue)
+      .mul(BigNumber.from((10 ** TokenPrice.precision).toString()))
+      .mul(BigNumber.from((10 ** 18).toString())) // token precision
+      .div(BigNumber.from(TokenPrice.format(tokenPrice)))
+      .div(BigNumber.from((10 ** this.stablecoin.precision).toString()))
+
     return this.signerService.ensureAuth.pipe(
       map(signer => this.assetBasicService.contract(assetAddress, signer)),
       switchMap(contract => combineLatest([of(contract), this.gasService.overrides])),
       switchMap(([contract, overrides]) => contract.populateTransaction.transfer(
-        campaignAddress, this.stablecoin.parse(amount, 18), overrides),
+        campaignAddress, tokens, overrides),
       ),
       switchMap(tx => this.signerService.sendTransaction(tx)),
       switchMap(tx => this.dialogService.loading(
