@@ -121,7 +121,7 @@ export class CampaignBasicService {
         const valueTotal = Math.max(tokenBalance, tokensSold) * tokenPrice
         const valueToInvest = tokensAvailable * tokenPrice
 
-        const tokenBalanceAboveSoftCap = tokenBalance * tokenPrice > softCap
+        const tokenBalanceAboveSoftCap = tokenBalance * tokenPrice >= softCap
 
         return {
           userMin,
