@@ -18,7 +18,7 @@ export class GoogleTranslateComponent implements OnInit {
     const s1 = this.doc.createElement('script')
     s1.innerHTML = `
     function googleTranslateElementInit() {
-      new google.translate.TranslateElement({pageLanguage: 'en', layout: google.translate.TranslateElement.InlineLayout.HORIZONTAL}, 'google_translate_element');
+      new google.translate.TranslateElement({pageLanguage: 'en', layout: google.translate.TranslateElement.InlineLayout.HORIZONTAL, autoDisplay: false}, 'google_translate_element');
     }
 `
     head.appendChild(s1)
