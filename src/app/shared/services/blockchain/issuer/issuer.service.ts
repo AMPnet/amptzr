@@ -6,7 +6,7 @@ import {PreferenceQuery} from '../../../../preference/state/preference.query'
 import {IpfsService} from '../../ipfs/ipfs.service'
 import {DialogService} from '../../dialog.service'
 import {SignerService} from '../../signer.service'
-import {IPFSIssuer} from '../../../../../../types/ipfs/issuer'
+import {IPFSIssuer, IPFSOffersDisplaySettings} from '../../../../../../types/ipfs/issuer'
 import {SessionQuery} from '../../../../session/state/session.query'
 import {GasService} from '../gas.service'
 import {Signer} from 'ethers'
@@ -30,6 +30,17 @@ export class IssuerService {
   issuer$: Observable<IssuerWithInfo> = this.issuerWithStatus$.pipe(
     filter(issuerWithStatus => !!issuerWithStatus.value),
     map(issuerWithStatus => issuerWithStatus.value!),
+    shareReplay(1),
+  )
+
+  offersDisplaySettings$: Observable<IPFSOffersDisplaySettings> = this.issuer$.pipe(
+    switchMap(issuer => this.ipfsService
+      .get<Partial<IPFSOffersDisplaySettings>>(issuer.infoData.offersDisplaySettings || '')
+      .pipe(
+        map((displaySettings) => ({
+          hiddenOffers: displaySettings.hiddenOffers || [],
+        })),
+      )),
     shareReplay(1),
   )
 
@@ -77,6 +88,18 @@ export class IssuerService {
     )
   }
 
+  uploadOffersDisplaySettings(
+    displaySettings: IPFSOffersDisplaySettings,
+    issuer: IPFSIssuer,
+  ): Observable<IPFSAddResult> {
+    return this.ipfsService.addObject<IPFSOffersDisplaySettings>(displaySettings).pipe(
+      switchMap(displaySettings => this.ipfsService.addObject<IPFSIssuer>({
+        ...issuer,
+        offersDisplaySettings: displaySettings.path,
+      })),
+    )
+  }
+
   uploadInfo(name: string, logo: File, rampApiKey: string, issuer?: IPFSIssuer): Observable<IPFSAddResult> {
     return combineLatest([
       logo ? this.ipfsService.addFile(logo) : of(undefined),
@@ -86,6 +109,7 @@ export class IssuerService {
         name: name || issuer?.name || '',
         logo: logo?.path || issuer?.logo || '',
         rampApiKey: rampApiKey || issuer?.rampApiKey || '',
+        offersDisplaySettings: issuer?.offersDisplaySettings || '',
       })),
     )
   }

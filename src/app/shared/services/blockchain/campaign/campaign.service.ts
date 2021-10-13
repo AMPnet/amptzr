@@ -16,7 +16,6 @@ import {CampaignBasicService} from './campaign-basic.service'
 import {CampaignFlavor} from '../flavors'
 import {CampaignCommonState} from './campaign.common'
 
-
 @Injectable({
   providedIn: 'root',
 })
@@ -61,7 +60,7 @@ export class CampaignService {
     )
   }
 
-  uploadInfo(data: Partial<UploadInfoData>, campaign?: IPFSCampaign): Observable<IPFSAddResult> {
+  uploadInfo(data: Partial<CampaignUploadInfoData>, campaign?: IPFSCampaign): Observable<IPFSAddResult> {
     return combineLatest([
       data.photo ? this.ipfsService.addFile(data.photo) : of(undefined),
       this.ipfsService.addText(data.description || ''),
@@ -181,7 +180,7 @@ export class CampaignService {
 export type CampaignInfo = { infoData: IPFSCampaign }
 export type CampaignWithInfo = CampaignCommonState & CampaignInfo
 
-interface CreateCampaignData {
+export interface CreateCampaignData {
   slug: string,
   assetAddress: string,
   initialPricePerToken: BigNumberish,
@@ -192,7 +191,7 @@ interface CreateCampaignData {
   info: string,
 }
 
-interface UploadInfoData {
+export interface CampaignUploadInfoData {
   name: string
   photo: File
   about: string
@@ -221,4 +220,5 @@ export interface CampaignStats {
   valueInvested: number
   valueTotal: number
   valueToInvest: number
+  tokenBalanceAboveSoftCap: boolean
 }

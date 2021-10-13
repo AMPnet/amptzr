@@ -13,14 +13,26 @@ export class CurrencyDefaultPipe implements PipeTransform {
               private stablecoin: StablecoinService) {
   }
 
-  // TODO: finish adding stablecoin symbol from stablecoin
   transform(
     value: number | string,
-    code = 'USD',
-    display = 'symbol',
-    digitsInfo = '1.0-2',
-    locale = 'en',
+    type: Type = 'stablecoin',
   ) {
-    return this.currencyPipe.transform(value, code, display, digitsInfo, locale)
+    const symbol = this.stablecoin.symbol
+    switch (type) {
+      case 'stablecoin':
+        return this.transformCurrency(value, '1.0-2', symbol)
+      case 'tokenPrice':
+        return this.transformCurrency(value, '1.0-4', symbol)
+    }
+  }
+
+  private transformCurrency(value: number | string, format: string, symbol: string): string | null {
+    if (symbol === 'USDC') {
+      return this.currencyPipe.transform(value, 'USD', 'symbol', format, 'en')
+    }
+
+    return this.currencyPipe.transform(value, `${symbol} `, 'code', format, 'en')
   }
 }
+
+type Type = 'stablecoin' | 'tokenPrice'

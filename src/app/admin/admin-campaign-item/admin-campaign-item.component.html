@@ -33,7 +33,7 @@
           </span>
           </div>
           <div class="mt-2 mb-4">
-            Price per token: <b>{{ campaignData.tokenPrice | currencyDefault }}</b>
+            Price per token: <b>{{ campaignData.tokenPrice | currencyDefault:'tokenPrice' }}</b>
           </div>
 
           <app-funding-progress class="lg:w-3/4" [campaign]="campaign"></app-funding-progress>

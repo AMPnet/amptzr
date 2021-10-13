@@ -4,6 +4,7 @@ import {CampaignService, CampaignWithInfo} from '../../services/blockchain/campa
 import {CampaignFlavor} from '../../services/blockchain/flavors'
 import {map} from 'rxjs/operators'
 import {Observable} from 'rxjs'
+import {withStatus, WithStatus} from '../../utils/observables'
 
 @Component({
   selector: 'app-funding-progress',
@@ -13,31 +14,33 @@ import {Observable} from 'rxjs'
 })
 export class FundingProgressComponent implements OnInit {
   @Input() campaign!: CampaignWithInfo
-  progressData$!: Observable<ProgressData>
+  progressData$!: Observable<WithStatus<ProgressData>>
 
   constructor(private campaignService: CampaignService,
               private datePipe: DatePipe) {
   }
 
   ngOnInit() {
-    this.progressData$ = this.campaignService.stats(
-      this.campaign.contractAddress, this.campaign.flavor as CampaignFlavor,
-    ).pipe(
-      map(stats => {
-        const raisedPercentage = stats.valueTotal !== 0 ?
-          stats.valueInvested / stats.valueTotal : 0
+    this.progressData$ = withStatus(
+      this.campaignService.stats(
+        this.campaign.contractAddress, this.campaign.flavor as CampaignFlavor,
+      ).pipe(
+        map(stats => {
+          const raisedPercentage = stats.valueTotal !== 0 ?
+            stats.valueInvested / stats.valueTotal : 0
 
-        const softCapPercentage = stats.valueTotal !== 0 ?
-          stats.softCap / stats.valueTotal : 0
+          const softCapPercentage = stats.valueTotal !== 0 ?
+            stats.softCap / stats.valueTotal : 0
 
-        return {
-          raised: stats.valueInvested,
-          raisedPercentage: raisedPercentage,
-          total: stats.valueTotal,
-          softCap: stats.softCap,
-          softCapPercentage: softCapPercentage,
-        }
-      }),
+          return {
+            raised: stats.valueInvested,
+            raisedPercentage: raisedPercentage,
+            total: stats.valueTotal,
+            softCap: stats.softCap,
+            softCapPercentage: softCapPercentage,
+          }
+        }),
+      ),
     )
   }
 
