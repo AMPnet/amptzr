@@ -1,8 +1,8 @@
 import {ChangeDetectionStrategy, Component} from '@angular/core'
 import {SessionQuery} from '../session/state/session.query'
 import {SignerService} from '../shared/services/signer.service'
-import {finalize, switchMap} from 'rxjs/operators'
-import {EMPTY, Observable, of} from 'rxjs'
+import {catchError, finalize, switchMap, tap, timeout} from 'rxjs/operators'
+import {defer, EMPTY, from, Observable, of} from 'rxjs'
 import {VenlySubsignerService} from '../shared/services/subsigners/venly-subsigner.service'
 import {AuthProvider} from '../preference/state/preference.store'
 import {withStatus} from '../shared/utils/observables'
@@ -13,6 +13,7 @@ import {TransactionType} from '../shared/services/backend/report.service'
 import {BackendHttpClient} from '../shared/services/backend/backend-http-client.service'
 import {PreferenceQuery} from '../preference/state/preference.query'
 import {BackendUser, BackendUserService} from '../shared/services/backend/backend-user.service'
+import {FortmaticSubsignerService} from '../shared/services/subsigners/fortmatic-subsigner.service'
 
 @Component({
   selector: 'app-wallet',
@@ -48,7 +49,8 @@ export class WalletComponent {
               private stablecoin: StablecoinService,
               private userService: UserService,
               private backendUserService: BackendUserService,
-              private venly: VenlySubsignerService,
+              private venlySubsignerService: VenlySubsignerService,
+              private fortmaticSubsignerService: FortmaticSubsignerService,
               private http: BackendHttpClient,
               private router: RouterService) {
   }
@@ -60,9 +62,16 @@ export class WalletComponent {
   }
 
   manageVenlyWallets(): Observable<unknown> {
-    return this.venly.manageWallets().pipe(
-      switchMap(res => res ? this.signerService.login(this.venly, {force: false}) : EMPTY),
+    return this.venlySubsignerService.manageWallets().pipe(
+      switchMap(res => res ? this.signerService.login(this.venlySubsignerService, {force: false}) : EMPTY),
       switchMap(() => this.http.logout()),
+    )
+  }
+
+  manageFortmaticWallet(): Observable<unknown> {
+    return from(this.fortmaticSubsignerService.subprovider!.user.settings()).pipe(
+      timeout(0), // user.settings() never resolves
+      catchError(() => EMPTY)
     )
   }
 }

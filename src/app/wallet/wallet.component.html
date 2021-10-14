@@ -72,6 +72,12 @@
                 <span class="underline mx-1">(Manage wallets)</span>
               </ng-template>
             </button>
+            <button app-action-button *ngIf="authProvider === authProviderType.FORTMATIC"
+                    [onClick]="manageFortmaticWallet.bind(this)">
+              <ng-template #content #loadingContent>
+                <span class="underline mx-1">(Manage wallet)</span>
+              </ng-template>
+            </button>
           </ng-container>
         </span>
         <span class="flex flex-col items-end">

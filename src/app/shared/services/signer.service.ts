@@ -127,7 +127,10 @@ export class SignerService {
   }
 
   registerListeners(): void {
-    this.listenersSub.next((this.sessionQuery.signer?.provider as any)?.provider)
+    const provider = this.sessionQuery.signer?.provider as any
+    const providerWithEvents = provider?.provider['_events'] ? provider.provider : provider
+
+    this.listenersSub.next(providerWithEvents)
   }
 
   private subscribeToChanges(): void {
