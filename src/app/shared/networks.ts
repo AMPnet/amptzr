@@ -71,18 +71,18 @@ export const MaticNetwork: Network = {
   tokenizerConfig: {
     apxRegistry: '0x992EF576A79b7D3d05C31DfBCc389362F158c812',
     issuerFactory: {
-      basic: '0xbb017303eF097b5a702B70C17E948B4a19C127Ce',
+      basic: '0x05372FE88cA46a6Bc1EFFC6eA7C3E15B7E3c9d29',
     },
     assetFactory: {
-      basic: '0x646f28Bbb509c711C9f0721c30dD7c5F0fd8B8Ae',
-      transferable: '0x71EAf56967316b9d5f932DFAe7119C1811c858CF',
-      simple: '0xFd19eB8E6745adDE36Fe2763B862c3027DD72a1a',
+      basic: '0x77e74FDa88df9468A006fC07c5D3a464f99a52A2',
+      transferable: '0xDbc97cc1d74D77c5cB1A7e6fC26F055B8F56d4EF',
+      simple: '',
     },
     cfManagerFactory: {
-      basic: '0x047cc31A2D16ba6bC5815bE055A5346c478418e7',
-      vesting: '0x22794341575CdD8A8a9AC52dE3C36DE083064efd',
+      basic: '0x99B113c999eF3616737FBF83c1f18aeC27c6205e',
+      vesting: '',
     },
-    snapshotDistributorFactory: '0xA8F9dcCB136dd0b316B814D01d29280b6C071A29',
+    snapshotDistributorFactory: '0xB674FFEFB72462F2ED21097946fA7a442E34991A',
     deployerService: '0xeE8D5A0b8314d8559ab46df7F2487F6542cB70eb',
     queryService: '0x1966841C08a421D79fbaC626f0BFe26D0341A90F',
     nameRegistry: '0xAd935453430d43589e4A65281d348d8b625fe0BB',
@@ -156,18 +156,18 @@ export const GoerliNetwork: Network = {
   tokenizerConfig: {
     apxRegistry: '0x95e1F87B3E5EC566CC0676DED8Ce992cE0E51Ed7',
     issuerFactory: {
-      basic: '0x043974EED6624b4a361a6462445041cC9965C94E',
+      basic: '0xB978755ddD7Bf363E7f7B6bFa5ee53664C3E3415',
     },
     assetFactory: {
-      basic: '0xD9dAc1e7d38699333619FC3AD4514653AfC15e82',
-      transferable: '0x0d2FaB8Fae25E3e4e37d89fc08bC6BDB404db76d',
-      simple: '0x6BC4Eb65F7675FD237B5BC45b97ac5D22FBa08c9',
+      basic: '0x592Fcd4A39705AA5307845De578c489826f35638',
+      transferable: '0x3F114782A6A6a7aA0bC6C0728Bf0D7C3B449b5e9',
+      simple: '0xc20186CFC26F9A274fDE21eD489b7851f6f04E91',
     },
     cfManagerFactory: {
-      basic: '0x6298FdED290229C970b2D8796E66EeaF4Ccd0bbd',
-      vesting: '0xd4B31CFbDdd567A2052073bFCef1B879244f91d9',
+      basic: '0xb325cFa78B952EAb0E5a3fb295b384a463b92b17',
+      vesting: '0xcCcC247c42C14D39bE368C4a3Cc7ACcF85f55675',
     },
-    snapshotDistributorFactory: '0x3B9b7855c7D5269171458C9732E02F49F2480a29',
+    snapshotDistributorFactory: '0x8008B073536608dD8454a31B4c685bAe61a4C5c2',
     deployerService: '0x596E2F22cE6A75EF75Ed19e694aCfBa96140959f',
     queryService: '0x5A22bc3a5078801CB0e8B5C61bb8361D16C8Ed73',
     nameRegistry: '0x41b90C4C84f6388c29835CBA03Cd50D92fB24e8E',

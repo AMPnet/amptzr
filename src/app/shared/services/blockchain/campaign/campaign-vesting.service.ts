@@ -84,7 +84,7 @@ export class CampaignVestingService {
             'Processing transaction...',
           )),
           map(receipt => findLog(
-            receipt, contract, contract.interface.getEvent('CfManagerSoftcapCreated'),
+            receipt, contract, contract.interface.getEvent('CfManagerSoftcapVestingCreated'),
           )?.args?.cfManager),
         )
       }),

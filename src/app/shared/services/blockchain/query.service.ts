@@ -27,7 +27,7 @@ export class QueryService {
   ]).pipe(
     switchMap(([contract, network]) =>
       contract.getIssuers(
-        Object.values(network.tokenizerConfig.issuerFactory),
+        Object.values(network.tokenizerConfig.issuerFactory).filter(i => i),
         network.tokenizerConfig.nameRegistry,
       )),
   )
@@ -39,7 +39,7 @@ export class QueryService {
   ]).pipe(
     switchMap(([contract, issuer, network]) =>
       contract.getCampaignsForIssuer(issuer.address,
-        Object.values(network.tokenizerConfig.cfManagerFactory),
+        Object.values(network.tokenizerConfig.cfManagerFactory).filter(i => i),
         network.tokenizerConfig.nameRegistry,
       )),
   )
@@ -54,7 +54,7 @@ export class QueryService {
     switchMap(([contract, issuer, network, address]) =>
       contract.getCampaignsForIssuerInvestor(
         issuer.address, address!,
-        Object.values(network.tokenizerConfig.cfManagerFactory),
+        Object.values(network.tokenizerConfig.cfManagerFactory).filter(i => i),
         network.tokenizerConfig.nameRegistry,
       ) as Promise<PortfolioItem[]>),
     map(portfolio => portfolio.filter(item => item.tokenAmount > BigNumber.from(0))),
@@ -115,7 +115,7 @@ export class QueryService {
   getAssetsForIssuerAddress(address: string): Observable<AssetCommonStateWithName[]> {
     return this.contract$.pipe(
       switchMap(contract => contract.getAssetsForIssuer(address,
-        Object.values(this.preferenceQuery.network.tokenizerConfig.assetFactory),
+        Object.values(this.preferenceQuery.network.tokenizerConfig.assetFactory).filter(i => i),
         this.preferenceQuery.network.tokenizerConfig.nameRegistry),
       ),
     )
@@ -124,7 +124,7 @@ export class QueryService {
   getAssetsForIssuerName(slug: string): Observable<AssetCommonStateWithName[]> {
     return this.contract$.pipe(
       switchMap(contract => contract.getAssetsForIssuerName(slug,
-        Object.values(this.preferenceQuery.network.tokenizerConfig.assetFactory),
+        Object.values(this.preferenceQuery.network.tokenizerConfig.assetFactory).filter(i => i),
         this.preferenceQuery.network.tokenizerConfig.nameRegistry),
       ),
     )
@@ -133,7 +133,7 @@ export class QueryService {
   getCampaignsForIssuerAddress(address: string): Observable<CampaignCommonStateWithName[]> {
     return this.contract$.pipe(
       switchMap(contract => contract.getCampaignsForIssuer(address,
-        Object.values(this.preferenceQuery.network.tokenizerConfig.cfManagerFactory),
+        Object.values(this.preferenceQuery.network.tokenizerConfig.cfManagerFactory).filter(i => i),
         this.preferenceQuery.network.tokenizerConfig.nameRegistry),
       ),
     )
@@ -142,7 +142,7 @@ export class QueryService {
   getCampaignsForIssuerName(slug: string): Observable<CampaignCommonStateWithName[]> {
     return this.contract$.pipe(
       switchMap(contract => contract.getCampaignsForIssuerName(slug,
-        Object.values(this.preferenceQuery.network.tokenizerConfig.cfManagerFactory),
+        Object.values(this.preferenceQuery.network.tokenizerConfig.cfManagerFactory).filter(i => i),
         this.preferenceQuery.network.tokenizerConfig.nameRegistry),
       ),
     )
@@ -151,7 +151,7 @@ export class QueryService {
   getCampaignsForAssetAddress(address: string): Observable<CampaignCommonStateWithName[]> {
     return this.contract$.pipe(
       switchMap(contract => contract.getCampaignsForAsset(address,
-        Object.values(this.preferenceQuery.network.tokenizerConfig.cfManagerFactory),
+        Object.values(this.preferenceQuery.network.tokenizerConfig.cfManagerFactory).filter(i => i),
         this.preferenceQuery.network.tokenizerConfig.nameRegistry),
       ),
     )
@@ -160,7 +160,7 @@ export class QueryService {
   getCampaignsForAssetName(slug: string): Observable<CampaignCommonStateWithName[]> {
     return this.contract$.pipe(
       switchMap(contract => contract.getCampaignsForAssetName(slug,
-        Object.values(this.preferenceQuery.network.tokenizerConfig.cfManagerFactory),
+        Object.values(this.preferenceQuery.network.tokenizerConfig.cfManagerFactory).filter(i => i),
         this.preferenceQuery.network.tokenizerConfig.nameRegistry),
       ),
     )
