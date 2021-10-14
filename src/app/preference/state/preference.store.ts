@@ -43,4 +43,5 @@ export enum AuthProvider {
   METAMASK = 'METAMASK',
   WALLET_CONNECT = 'WALLET_CONNECT',
   VENLY = 'VENLY',
+  FORTMATIC = 'FORTMATIC'
 }

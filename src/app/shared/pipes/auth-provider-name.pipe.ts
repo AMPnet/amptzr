@@ -23,6 +23,8 @@ export class AuthProviderNamePipe implements PipeTransform {
         return 'Wallet Connect'
       case AuthProvider.VENLY:
         return 'Venly'
+      case AuthProvider.FORTMATIC:
+        return 'Fortmatic'
     }
   }
 }

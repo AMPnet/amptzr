@@ -8,6 +8,7 @@ import {MetamaskSubsignerService} from '../../shared/services/subsigners/metamas
 import {WalletConnectSubsignerService} from '../../shared/services/subsigners/walletconnect-subsigner.service'
 import {VenlySubsignerService} from '../../shared/services/subsigners/venly-subsigner.service'
 import {environment} from '../../../environments/environment'
+import {FortmaticSubsignerService} from '../../shared/services/subsigners/fortmatic-subsigner.service'
 
 @Injectable({providedIn: 'root'})
 export class PreferenceService {
@@ -15,6 +16,7 @@ export class PreferenceService {
               private preferenceQuery: PreferenceQuery,
               private metamaskSubsignerService: MetamaskSubsignerService,
               private walletConnectSubsignerService: WalletConnectSubsignerService,
+              private fortmaticSubsignerService: FortmaticSubsignerService,
               private venlySubsignerService: VenlySubsignerService,
               private signer: SignerService) {
   }
@@ -33,6 +35,8 @@ export class PreferenceService {
             return this.signer.login(this.walletConnectSubsignerService, {force: false})
           case AuthProvider.VENLY:
             return this.signer.login(this.venlySubsignerService, {force: false})
+          case AuthProvider.FORTMATIC:
+            return this.signer.login(this.fortmaticSubsignerService, {force: false})
           default:
             return EMPTY
         }

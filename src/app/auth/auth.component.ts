@@ -11,6 +11,7 @@ import {MatDialogRef} from '@angular/material/dialog'
 import {RouterService} from '../shared/services/router.service'
 import {getWindow} from '../shared/utils/browser'
 import {IssuerService} from '../shared/services/blockchain/issuer/issuer.service'
+import {FortmaticSubsignerService} from '../shared/services/subsigners/fortmatic-subsigner.service'
 
 @Component({
   selector: 'app-auth',
@@ -27,6 +28,7 @@ export class AuthComponent {
               private metamaskSubsignerService: MetamaskSubsignerService,
               private walletConnectSubsignerService: WalletConnectSubsignerService,
               private venlySubsignerService: VenlySubsignerService,
+              private fortmaticSubsignerService: FortmaticSubsignerService,
               private preferenceQuery: PreferenceQuery,
               private router: RouterService,
               private issuerService: IssuerService,
@@ -45,6 +47,12 @@ export class AuthComponent {
 
   connectVenly(): Observable<unknown> {
     return this.signer.login(this.venlySubsignerService).pipe(
+      tap(() => this.afterLoginActions()),
+    )
+  }
+
+  connectFortmatic(): Observable<unknown> {
+    return this.signer.login(this.fortmaticSubsignerService).pipe(
       tap(() => this.afterLoginActions()),
     )
   }
