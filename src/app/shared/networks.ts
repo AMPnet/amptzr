@@ -71,18 +71,18 @@ export const MaticNetwork: Network = {
   tokenizerConfig: {
     apxRegistry: '0x992EF576A79b7D3d05C31DfBCc389362F158c812',
     issuerFactory: {
-      basic: '0x05372FE88cA46a6Bc1EFFC6eA7C3E15B7E3c9d29',
+      basic: '0xbb017303eF097b5a702B70C17E948B4a19C127Ce',
     },
     assetFactory: {
-      basic: '0x77e74FDa88df9468A006fC07c5D3a464f99a52A2',
-      transferable: '0xDbc97cc1d74D77c5cB1A7e6fC26F055B8F56d4EF',
-      simple: '0x0361B0A1333A0BF88ce2c3a4d7192C5E8A5Efea9',
+      basic: '0x646f28Bbb509c711C9f0721c30dD7c5F0fd8B8Ae',
+      transferable: '0x71EAf56967316b9d5f932DFAe7119C1811c858CF',
+      simple: '0xFd19eB8E6745adDE36Fe2763B862c3027DD72a1a',
     },
     cfManagerFactory: {
-      basic: '0x99B113c999eF3616737FBF83c1f18aeC27c6205e',
-      vesting: '0x5009469A278Bcc572442c0144c07108156984176',
+      basic: '0x047cc31A2D16ba6bC5815bE055A5346c478418e7',
+      vesting: '0x22794341575CdD8A8a9AC52dE3C36DE083064efd',
     },
-    snapshotDistributorFactory: '0xB674FFEFB72462F2ED21097946fA7a442E34991A',
+    snapshotDistributorFactory: '0xA8F9dcCB136dd0b316B814D01d29280b6C071A29',
     deployerService: '0xeE8D5A0b8314d8559ab46df7F2487F6542cB70eb',
     queryService: '0x1966841C08a421D79fbaC626f0BFe26D0341A90F',
     nameRegistry: '0xAd935453430d43589e4A65281d348d8b625fe0BB',
