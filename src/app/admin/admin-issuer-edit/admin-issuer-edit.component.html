@@ -1,9 +1,5 @@
 <div class="w-full h-full flex justify-center mt-8 px-2 pb-8">
   <div class="bg-red w-full max-w-6xl">
-    <ng-container *ngIf="(issuer$ | async) as issuer">
-
-    </ng-container>
-
     <ng-container *ngIf="(issuer$ | async) as issuerRes">
       <ng-container *ngIf="issuerRes.value as issuer">
         <form [formGroup]="updateForm">

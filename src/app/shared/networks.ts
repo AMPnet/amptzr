@@ -151,7 +151,7 @@ export const GoerliNetwork: Network = {
     symbol: 'ETH',
   },
   maxGasPrice: 20,
-  rpcURLs: ['https://goerli-light.eth.linkpool.io/'],
+  rpcURLs: ['https://goerli.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161'],
   explorerURLs: ['https://goerli.etherscan.io/'],
   tokenizerConfig: {
     apxRegistry: '0x95e1F87B3E5EC566CC0676DED8Ce992cE0E51Ed7',
