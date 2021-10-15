@@ -156,18 +156,18 @@ export const GoerliNetwork: Network = {
   tokenizerConfig: {
     apxRegistry: '0x95e1F87B3E5EC566CC0676DED8Ce992cE0E51Ed7',
     issuerFactory: {
-      basic: '0xB978755ddD7Bf363E7f7B6bFa5ee53664C3E3415',
+      basic: '0x0361B0A1333A0BF88ce2c3a4d7192C5E8A5Efea9',
     },
     assetFactory: {
-      basic: '0x592Fcd4A39705AA5307845De578c489826f35638',
-      transferable: '0x3F114782A6A6a7aA0bC6C0728Bf0D7C3B449b5e9',
-      simple: '0xc20186CFC26F9A274fDE21eD489b7851f6f04E91',
+      basic: '0xE58FA32f73D0EeeaD05EFf3c769F596773D446c7',
+      transferable: '0xB70E991eda75820Df751ddd90cC58a769f044c1d',
+      simple: '0x0D4c488fA3339C3D68640964242252F7da3886FC',
     },
     cfManagerFactory: {
-      basic: '0xb325cFa78B952EAb0E5a3fb295b384a463b92b17',
-      vesting: '0xcCcC247c42C14D39bE368C4a3Cc7ACcF85f55675',
+      basic: '0xa468ad0f01819D995191802A89148d268B04C750',
+      vesting: '0x64F09Cc15d9359a68A75cfEB4711701160EA5178',
     },
-    snapshotDistributorFactory: '0x8008B073536608dD8454a31B4c685bAe61a4C5c2',
+    snapshotDistributorFactory: '0x856Ad79217C52827f56748931FFcabc5c2F274aA',
     deployerService: '0x596E2F22cE6A75EF75Ed19e694aCfBa96140959f',
     queryService: '0x5A22bc3a5078801CB0e8B5C61bb8361D16C8Ed73',
     nameRegistry: '0x41b90C4C84f6388c29835CBA03Cd50D92fB24e8E',
