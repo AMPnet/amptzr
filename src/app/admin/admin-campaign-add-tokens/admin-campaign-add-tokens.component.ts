@@ -90,6 +90,21 @@ export class AdminCampaignAddTokensComponent {
     return this.stablecoinService.format(data.assetBalance, 18) * data.stats.tokenPrice
   }
 
+  tokensPercentage(data: CampaignData) {
+    const pricePerToken = data.stats.tokenPrice
+    if (pricePerToken === 0) {
+      return 0
+    }
+
+    const numOfTokensToSell = this.fundingForm.value.amount / pricePerToken
+    if (numOfTokensToSell === 0) {
+      return 0
+    }
+
+    const totalTokens = this.stablecoinService.format(data.asset.totalSupply, 18)
+    return numOfTokensToSell / totalTokens
+  }
+
   addTokens(data: CampaignData) {
     return () => {
       return this.assetService.transferTokensToCampaign(

@@ -23,39 +23,36 @@ export class QueryService {
 
   issuers$: Observable<IssuerCommonStateWithName[]> = combineLatest([
     this.contract$,
-    this.preferenceQuery.network$,
   ]).pipe(
-    switchMap(([contract, network]) =>
+    switchMap(([contract]) =>
       contract.getIssuers(
-        Object.values(network.tokenizerConfig.issuerFactory).filter(i => i),
-        network.tokenizerConfig.nameRegistry,
+        this.preferenceQuery.issuerFactories,
+        this.preferenceQuery.network.tokenizerConfig.nameRegistry,
       )),
   )
 
   offers$: Observable<OfferItem[]> = combineLatest([
     this.contract$,
     this.preferenceQuery.issuer$,
-    this.preferenceQuery.network$,
   ]).pipe(
-    switchMap(([contract, issuer, network]) =>
+    switchMap(([contract, issuer]) =>
       contract.getCampaignsForIssuer(issuer.address,
-        Object.values(network.tokenizerConfig.cfManagerFactory).filter(i => i),
-        network.tokenizerConfig.nameRegistry,
+        this.preferenceQuery.campaignFactories,
+        this.preferenceQuery.network.tokenizerConfig.nameRegistry,
       )),
   )
 
   portfolio$: Observable<PortfolioItem[]> = combineLatest([
     this.contract$,
     this.preferenceQuery.issuer$,
-    this.preferenceQuery.network$,
     this.sessionQuery.address$,
   ]).pipe(
-    filter(([_contract, _issuer, _network, address]) => !!address),
-    switchMap(([contract, issuer, network, address]) =>
+    filter(([_contract, _issuer, address]) => !!address),
+    switchMap(([contract, issuer, address]) =>
       contract.getCampaignsForIssuerInvestor(
         issuer.address, address!,
-        Object.values(network.tokenizerConfig.cfManagerFactory).filter(i => i),
-        network.tokenizerConfig.nameRegistry,
+        this.preferenceQuery.campaignFactories,
+        this.preferenceQuery.network.tokenizerConfig.nameRegistry,
       ) as Promise<PortfolioItem[]>),
     map(portfolio => portfolio.filter(item => item.tokenAmount > BigNumber.from(0))),
   )
@@ -115,7 +112,7 @@ export class QueryService {
   getAssetsForIssuerAddress(address: string): Observable<AssetCommonStateWithName[]> {
     return this.contract$.pipe(
       switchMap(contract => contract.getAssetsForIssuer(address,
-        Object.values(this.preferenceQuery.network.tokenizerConfig.assetFactory).filter(i => i),
+        this.preferenceQuery.assetFactories,
         this.preferenceQuery.network.tokenizerConfig.nameRegistry),
       ),
     )
@@ -124,7 +121,7 @@ export class QueryService {
   getAssetsForIssuerName(slug: string): Observable<AssetCommonStateWithName[]> {
     return this.contract$.pipe(
       switchMap(contract => contract.getAssetsForIssuerName(slug,
-        Object.values(this.preferenceQuery.network.tokenizerConfig.assetFactory).filter(i => i),
+        this.preferenceQuery.assetFactories,
         this.preferenceQuery.network.tokenizerConfig.nameRegistry),
       ),
     )
@@ -133,7 +130,7 @@ export class QueryService {
   getCampaignsForIssuerAddress(address: string): Observable<CampaignCommonStateWithName[]> {
     return this.contract$.pipe(
       switchMap(contract => contract.getCampaignsForIssuer(address,
-        Object.values(this.preferenceQuery.network.tokenizerConfig.cfManagerFactory).filter(i => i),
+        this.preferenceQuery.campaignFactories,
         this.preferenceQuery.network.tokenizerConfig.nameRegistry),
       ),
     )
@@ -142,7 +139,7 @@ export class QueryService {
   getCampaignsForIssuerName(slug: string): Observable<CampaignCommonStateWithName[]> {
     return this.contract$.pipe(
       switchMap(contract => contract.getCampaignsForIssuerName(slug,
-        Object.values(this.preferenceQuery.network.tokenizerConfig.cfManagerFactory).filter(i => i),
+        this.preferenceQuery.campaignFactories,
         this.preferenceQuery.network.tokenizerConfig.nameRegistry),
       ),
     )
@@ -151,7 +148,7 @@ export class QueryService {
   getCampaignsForAssetAddress(address: string): Observable<CampaignCommonStateWithName[]> {
     return this.contract$.pipe(
       switchMap(contract => contract.getCampaignsForAsset(address,
-        Object.values(this.preferenceQuery.network.tokenizerConfig.cfManagerFactory).filter(i => i),
+        this.preferenceQuery.campaignFactories,
         this.preferenceQuery.network.tokenizerConfig.nameRegistry),
       ),
     )
@@ -160,7 +157,7 @@ export class QueryService {
   getCampaignsForAssetName(slug: string): Observable<CampaignCommonStateWithName[]> {
     return this.contract$.pipe(
       switchMap(contract => contract.getCampaignsForAssetName(slug,
-        Object.values(this.preferenceQuery.network.tokenizerConfig.cfManagerFactory).filter(i => i),
+        this.preferenceQuery.campaignFactories,
         this.preferenceQuery.network.tokenizerConfig.nameRegistry),
       ),
     )

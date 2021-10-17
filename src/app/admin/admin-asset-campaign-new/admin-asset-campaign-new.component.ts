@@ -281,7 +281,7 @@ export class AdminAssetCampaignNewComponent {
         switchMap(uploadRes => this.campaignService.create({
           ...this.preview.data,
           info: uploadRes.path,
-        }, this.createForm1.value.flavor)),
+        }, this.preview.flavor)),
         switchMap(campaignAddress =>
           this.dialogService.info(
             'Campaign successfully created! You will be asked to sign a transaction to transfer' +
@@ -500,6 +500,7 @@ export class AdminAssetCampaignNewComponent {
         maxInvestment: this.getMaxInvestmentValue(hasMinAndMaxInvestment, data),
         whitelistRequired: this.createForm1.value.isIdVerificationRequired,
       },
+      flavor: this.createForm1.value.flavor as CampaignFlavor,
       tokenPrice: tokenPrice,
       hardCap: this.createForm1.value.hardCap,
       hardCapTokens: hardCapTokens,
@@ -522,6 +523,7 @@ interface AssetData {
 interface CampaignPreview {
   info: Omit<CampaignUploadInfoData, 'photo' | 'documents'> & { photo?: File }
   data: Omit<CreateCampaignData, 'info'>
+  flavor: CampaignFlavor,
   tokenPrice: number
   hardCap: number
   hardCapTokens: number

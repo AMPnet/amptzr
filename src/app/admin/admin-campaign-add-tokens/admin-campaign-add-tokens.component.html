@@ -22,6 +22,12 @@
               </b>
 
               <div class="flex flex-row gap-2 items-center mt-2 lg:mt-0 lg:justify-around">
+                <span class="text-sm">I will sell</span>
+                <b class="lg:text-center">{{ tokensPercentage(campaignData) | percent }}</b>
+                <span class="text-sm">of my {{ campaignData.asset.name | uppercase }} tokens</span>
+              </div>
+
+              <div class="flex flex-row gap-2 items-center mt-2 lg:mt-0 lg:justify-around">
                 <span class="text-sm">with price per token:</span>
                 <b class="lg:text-center">{{ campaignData.stats.tokenPrice | currencyDefault:'tokenPrice' }}</b>
               </div>
