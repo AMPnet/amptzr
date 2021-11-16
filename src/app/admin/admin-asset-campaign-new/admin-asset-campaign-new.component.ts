@@ -41,6 +41,8 @@ export class AdminAssetCampaignNewComponent {
   }
 
   campaignFlavor = CampaignFlavor
+  campaignFactory = this.preferenceQuery.network.tokenizerConfig.cfManagerFactory
+
   stepType = Step
   step$ = new BehaviorSubject<Step>(Step.CREATION_FIRST)
 

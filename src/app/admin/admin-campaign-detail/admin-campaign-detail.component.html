@@ -42,10 +42,20 @@
               </div>
 
               <div class="flex flex-col gap-2 text-sm p-4 mt-2 bg-gray-100 rounded-lg">
-                <span>Raising: <b>{{ campaignData.stats.valueTotal | currencyDefault }}</b></span>
-                <span>Selling: <b>{{ hardCapTokensPercentage(campaignData.stats, campaignData.asset) | percent }} of asset shares</b></span>
-                <span>Min. Target (Soft Cap): <b>{{ campaignData.stats.softCap | currencyDefault }}</b></span>
-                <span>Asset share to reach Min. Target: <b>{{ softCapTokensPercentage(campaignData.stats, campaignData.asset) | percent }}</b></span>
+                <span>
+                  Raising: <b>{{ campaignData.stats.valueTotal | currencyDefault }}</b>
+                </span>
+                <span>
+                  Selling: <b>{{ hardCapTokensPercentage(campaignData.stats, campaignData.asset) | percent }} of
+                  asset shares</b>
+                </span>
+                <span>
+                  Min. Target (Soft Cap): <b>{{ campaignData.stats.softCap | currencyDefault }}</b>
+                </span>
+                <span>
+                  Asset share to reach Min. Target:
+                  <b>{{ softCapTokensPercentage(campaignData.stats, campaignData.asset) | percent }}</b>
+                </span>
               </div>
             </div>
 

@@ -20,6 +20,7 @@ export class AdminAssetNewComponent {
   createForm: FormGroup
 
   assetFlavor = AssetFlavor
+  assetFactory = this.preferenceQuery.network.tokenizerConfig.assetFactory
 
   constructor(private assetService: AssetService,
               private preferenceQuery: PreferenceQuery,

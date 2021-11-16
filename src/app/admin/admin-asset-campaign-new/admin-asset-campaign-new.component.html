@@ -103,10 +103,12 @@
               </label>
               <select class="border-gray-400 rounded-lg w-full lg:w-64 disabled:bg-gray-100"
                       formControlName="flavor">
-                <option [value]="campaignFlavor.BASIC">
+                <option [value]="campaignFlavor.BASIC"
+                        *ngIf="campaignFactory.basic">
                   Basic
                 </option>
-                <option [value]="campaignFlavor.VESTING">
+                <option [value]="campaignFlavor.VESTING"
+                        *ngIf="campaignFactory.vesting">
                   Vesting
                 </option>
               </select>

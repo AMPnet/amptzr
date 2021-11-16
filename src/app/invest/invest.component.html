@@ -12,7 +12,9 @@
                 src="{{ campaign.infoData.photo | toUrlIPFS }}" alt="Project image">
               <div class="w-full flex flex-col p-4 lg:p-8">
                 <!-- Input with label, min invest and max invest amounts -->
-                <h1 class="pt-2 lg:pt-8 text-4xl uppercase">{{ campaign.infoData.name }}</h1>
+                <h1 class="pt-2 lg:pt-8 text-4xl uppercase">
+                  {{ campaign.infoData.name }}
+                </h1>
 
                 <ng-container *ngIf="(preInvestDataWithStatus$ | async) as preInvestDataRes">
                   <ng-container *ngIf="preInvestDataRes.value as preInvestData">
@@ -30,17 +32,17 @@
                         <div class="mt-4 w-full flex items-end justify-between">
                           <div class="text-sm flex">
                             <ng-container *ngIf="preInvestData.max > 0 && preInvestData.min > 0">
-                            <span class="font-semibold mr-1">
-                              {{ preInvestData.min | currencyDefault }}
-                            </span>
+                              <span class="font-semibold mr-1">
+                                {{ preInvestData.min | currencyDefault }}
+                              </span>
                               Min. Investment
                             </ng-container>
                           </div>
                           <div class="text-sm flex">
                             <ng-container *ngIf="preInvestData.max > 0">
-                            <span class="font-semibold mr-1">
-                              {{ preInvestData.max | currencyDefault }}
-                            </span>
+                              <span class="font-semibold mr-1">
+                                {{ preInvestData.max | currencyDefault }}
+                              </span>
                               Max Investment
                             </ng-container>
                           </div>
@@ -75,19 +77,19 @@
                               stroke="#EF4444" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                           </svg>
                           <span class="ml-3 text-red-600 text-sm font-semibold">
-                        <ng-container *ngIf="investmentForm.get('amount')?.errors?.amountEmpty">
-                          The amount cannot be empty.
-                        </ng-container>
-                        <ng-container *ngIf="investmentForm.get('amount')?.errors?.amountTooLow">
-                          The amount is lower than minimum required investment.
-                        </ng-container>
-                        <ng-container *ngIf="investmentForm.get('amount')?.errors?.amountTooHigh">
-                          The amount exceeds maximum allowed investment.
-                        </ng-container>
-                        <ng-container *ngIf="investmentForm.get('amount')?.errors?.walletBalanceTooLow">
-                          Not enough funds. Please top up your wallet.
-                        </ng-container>
-                      </span>
+                            <ng-container *ngIf="investmentForm.get('amount')?.errors?.amountEmpty">
+                              The amount cannot be empty.
+                            </ng-container>
+                            <ng-container *ngIf="investmentForm.get('amount')?.errors?.amountTooLow">
+                              The amount is lower than minimum required investment.
+                            </ng-container>
+                            <ng-container *ngIf="investmentForm.get('amount')?.errors?.amountTooHigh">
+                              The amount exceeds maximum allowed investment.
+                            </ng-container>
+                            <ng-container *ngIf="investmentForm.get('amount')?.errors?.walletBalanceTooLow">
+                              Not enough funds. Please top up your wallet.
+                            </ng-container>
+                          </span>
                         </div>
 
                         <div class="text-sm font-semibold" *ngIf="investmentForm.get('amount')?.errors?.userMaxReached">
