@@ -1,10 +1,11 @@
 import {Injectable} from '@angular/core'
-import {from, Observable, of, throwError, zip} from 'rxjs'
+import {combineLatest, from, Observable, of, throwError, zip} from 'rxjs'
 import {providers} from 'ethers'
-import {catchError, concatMap, map, tap} from 'rxjs/operators'
+import {catchError, concatMap, map, switchMap, tap} from 'rxjs/operators'
 import {MetamaskNetworks} from '../../networks'
 import {AuthProvider, PreferenceStore} from '../../../preference/state/preference.store'
 import {getWindow} from '../../utils/browser'
+import {ERC20__factory} from '../../../../../types/ethers-contracts'
 
 @Injectable({
   providedIn: 'root',
@@ -44,9 +45,13 @@ export class MetamaskSubsignerService implements Subsigner {
   ): Observable<unknown> {
     return from(signer.provider.send('wallet_switchEthereumChain',
       [{chainId: MetamaskNetworks[this.preferenceStore.getValue().chainID].chainId}])).pipe(
-      catchError(err => err.code === 4902 ? this.addEthereumChain(signer).pipe(
+      // TODO: wait for issue fix: https://github.com/MetaMask/metamask-mobile/issues/3312
+      // catchError(err => err.code === 4902 ? this.addEthereumChain(signer).pipe(
+      //   concatMap(() => this.checkChainID(signer, opts)),
+      // ) : throwError('UNHANDLED_SWITCH_CHAIN_ERROR')),
+      catchError(() => this.addEthereumChain(signer).pipe(
         concatMap(() => this.checkChainID(signer, opts)),
-      ) : throwError('UNHANDLED_SWITCH_CHAIN_ERROR')),
+      )),
     ).pipe(catchError(() => throwError('CANNOT_SWITCH_CHAIN')))
   }
 
@@ -55,6 +60,23 @@ export class MetamaskSubsignerService implements Subsigner {
       [MetamaskNetworks[this.preferenceStore.getValue().chainID]])).pipe(
       concatMap(addChainResult => addChainResult === null ?
         of(addChainResult) : throwError('CANNOT_CHANGE_NETWORK')),
+    )
+  }
+
+  watchAsset(signer: providers.JsonRpcSigner, assetAddress: string): Observable<boolean> {
+    return of(ERC20__factory.connect(assetAddress, signer)).pipe(
+      switchMap(contract => of(contract).pipe(
+        switchMap(contract => combineLatest([contract.decimals(), contract.symbol()])),
+        map(([decimals, symbol]) => ({
+          type: 'ERC20',
+          options: {
+            address: assetAddress,
+            decimals,
+            symbol,
+          },
+        } as WatchAssetParams)),
+        switchMap(params => signer.provider.send('wallet_watchAsset', params as any)),
+      )),
     )
   }
 
@@ -82,6 +104,17 @@ export interface Subsigner {
 }
 
 export interface SubsignerLoginOpts {
+  email?: string;
   wallet?: string;
   force?: boolean;
+}
+
+interface WatchAssetParams {
+  type: 'ERC20'; // In the future, other standards will be supported
+  options: {
+    address: string; // The address of the token contract
+    'symbol': string; // A ticker symbol or shorthand, up to 5 characters
+    decimals: number; // The number of token decimals
+    image: string; // A string url of the token logo
+  };
 }

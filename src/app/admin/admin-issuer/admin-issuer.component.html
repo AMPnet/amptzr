@@ -16,24 +16,31 @@
                       bg-white p-4 justify-between">
               <div class="font-semibold">
                 <span class="text-4xl font-normal mb-8 lg:mt-8">{{ issuer.infoData.name ?? 'Unknown' }}</span>
-                <div class="flex items-center gap-2 mt-2">
+                <div class="flex items-center gap-1 mt-2">
                   <span>ADDRESS:</span>
                   <span class="text-sm font-normal">{{ issuer.contractAddress | addrShort }}</span>
                   <app-value-copy [value]="issuer.contractAddress"></app-value-copy>
+                  <app-explorer-link [value]="issuer.contractAddress" type="address">
+                  </app-explorer-link>
                 </div>
 
-
                 <ng-container *ngIf="issuer.issuerBasic as issuerBasic">
-                  <div class="flex items-center gap-2">
+                  <div class="flex items-center gap-1">
                     <span>STABLECOIN:</span>
                     <span class="text-sm font-normal">{{ stableCoinSymbol }}</span>
                     <span class="text-sm font-normal">{{ issuerBasic.stablecoin | addrShort }}</span>
                     <app-value-copy [value]="issuerBasic.stablecoin"></app-value-copy>
+                    <app-explorer-link [value]="issuerBasic.stablecoin" type="token">
+                    </app-explorer-link>
+                    <app-add-to-metamask [value]="issuerBasic.stablecoin">
+                    </app-add-to-metamask>
                   </div>
-                  <div class="flex items-center gap-2">
+                  <div class="flex items-center gap-1">
                     <span>WALLET APPROVER:</span>
                     <span class="text-sm font-normal">{{ issuerBasic.walletApprover | addrShort }}</span>
                     <app-value-copy [value]="issuerBasic.walletApprover"></app-value-copy>
+                    <app-explorer-link [value]="issuerBasic.walletApprover" type="address">
+                    </app-explorer-link>
                   </div>
                 </ng-container>
               </div>

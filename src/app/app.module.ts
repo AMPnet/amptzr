@@ -84,6 +84,8 @@ import {AdminAssetCampaignNewComponent} from './admin/admin-asset-campaign-new/a
 import {AdminIssuerNewComponent} from './admin/admin-issuer-new/admin-issuer-new.component'
 import {AdminIssuerEditCampaignVisibilityComponent} from './admin/admin-issuer-edit-campaign-visibility/admin-issuer-edit-campaign-visibility.component'
 import {AdminIssuerEditCampaignVisibilityCardComponent} from './admin/admin-issuer-edit-campaign-visibility/admin-issuer-edit-campaign-visibility-card/admin-issuer-edit-campaign-visibility-card.component'
+import {AddToMetamaskComponent} from './shared/components/add-to-metamask/add-to-metamask.component'
+import {ExplorerLinkComponent} from './shared/components/explorer-link/explorer-link.component'
 
 @NgModule({
   declarations: [
@@ -119,6 +121,8 @@ import {AdminIssuerEditCampaignVisibilityCardComponent} from './admin/admin-issu
     ProfileAddMandatoryComponent,
     CurrencyMaskDirective,
     ValueCopyComponent,
+    AddToMetamaskComponent,
+    ExplorerLinkComponent,
     FileInputAccessorDirective,
     WalletButtonComponent,
     FaqQuestionComponent,

@@ -18,6 +18,13 @@
               <app-spinner></app-spinner>
             </ng-container>
           </ng-container>
+
+          <app-explorer-link [value]="stablecoin.address" type="token"
+                             class="ml-0.5">
+          </app-explorer-link>
+          <app-add-to-metamask [value]="stablecoin.address"
+                               class="ml-0.5">
+          </app-add-to-metamask>
         </span>
 
         <!-- Action buttons (deposit, withdraw...) -->
@@ -56,9 +63,10 @@
         </p>
         <div class="flex items-center">
           <ng-container *ngIf="(address$ | async) as address">
-            <span class="flex-grow-0 mr-6">Wallet address: {{ address | addrShort }}</span>
-            <app-value-copy [value]="address" [delay]="1500"
-                            textReady="Copy address" textCopied="Copied">
+            <span class="flex-grow-0">Wallet address: {{ address | addrShort }}</span>
+            <app-explorer-link [value]="address" class="ml-1">
+            </app-explorer-link>
+            <app-value-copy [value]="address" [delay]="800" class="ml-1">
             </app-value-copy>
           </ng-container>
         </div>

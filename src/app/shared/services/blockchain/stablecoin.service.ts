@@ -18,6 +18,8 @@ import {IssuerFlavor} from './flavors'
   providedIn: 'root',
 })
 export class StablecoinService {
+  address = this.preferenceQuery.network.tokenizerConfig.defaultStableCoin
+
   contract$ = combineLatest([
     this.preferenceQuery.issuer$.pipe(switchMap(issuer => this.nameService.getIssuer(issuer.address))),
     this.sessionQuery.provider$,

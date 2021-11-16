@@ -11,6 +11,8 @@ import {MatDialog} from '@angular/material/dialog'
 import {AuthComponent} from '../../auth/auth.component'
 import {RouterService} from './router.service'
 import {ErrorService} from './error.service'
+import {PreferenceQuery} from '../../preference/state/preference.query'
+import {getWindow} from '../utils/browser'
 
 @Injectable({
   providedIn: 'root',
@@ -43,8 +45,11 @@ export class SignerService {
     tap(action => this.ngZone.run(() => action())),
   )
 
+  injectedWeb3$: Observable<any> = defer(() => of(getWindow()?.ethereum))
+
   constructor(private sessionStore: SessionStore,
               private sessionQuery: SessionQuery,
+              private preferenceQuery: PreferenceQuery,
               private preferenceStore: PreferenceStore,
               private metamaskSubsignerService: MetamaskSubsignerService,
               private ngZone: NgZone,
@@ -72,6 +77,21 @@ export class SignerService {
           map(() => this.sessionQuery.signer!),
         ),
       ),
+    )
+  }
+
+  get ensureNetwork(): Observable<void> {
+    if (!this.sessionQuery.signer) return of(undefined)
+
+    return from(this.sessionQuery.signer.getChainId()).pipe(
+      switchMap(chainId => {
+        if (chainId !== this.preferenceQuery.network.chainID) {
+          return this.logout()
+        }
+
+        return of(undefined)
+      }),
+      map(() => undefined),
     )
   }
 
@@ -107,27 +127,24 @@ export class SignerService {
 
   signMessage(message: string | utils.Bytes): Observable<string> {
     return this.ensureAuth.pipe(
-      switchMap(signer => this.dialogService.withPermission(defer(() => {
-        return from(signer.signMessage(message)).pipe(
-          this.errorService.handleError(),
-        )
-      }))),
+      switchMap(signer => from(signer.signMessage(message))),
+      this.errorService.handleError(),
     )
   }
 
   sendTransaction(transaction: providers.TransactionRequest):
     Observable<providers.TransactionResponse> {
     return this.ensureAuth.pipe(
-      switchMap(signer => this.dialogService.withPermission(defer(() => {
-        return from(signer.sendTransaction(transaction)).pipe(
-          this.errorService.handleError(),
-        )
-      }))),
+      switchMap(signer => from(signer.sendTransaction(transaction))),
+      this.errorService.handleError(false, true),
     )
   }
 
   registerListeners(): void {
-    this.listenersSub.next((this.sessionQuery.signer?.provider as any)?.provider)
+    const provider = this.sessionQuery.signer?.provider as any
+    const providerWithEvents = provider?.provider['_events'] ? provider.provider : provider
+
+    this.listenersSub.next(providerWithEvents)
   }
 
   private subscribeToChanges(): void {
@@ -170,6 +187,7 @@ export class SignerService {
 }
 
 interface LoginOpts {
+  email?: string;
   wallet?: string;
   force?: boolean;
 }
