@@ -65,7 +65,6 @@ export class AssetTransferableService {
           name: data.name,
           symbol: data.symbol,
           info: data.info,
-          childChainManager: this.preferenceQuery.network.tokenizerConfig.childChainManager,
         }, overrides)).pipe(
           switchMap(tx => this.signerService.sendTransaction(tx)),
           this.errorService.handleError(),
@@ -120,5 +119,4 @@ export interface TransferableAssetState {
   liquidationFundsTotal: BigNumber;
   liquidationTimestamp: BigNumber;
   liquidationFundsClaimed: BigNumber;
-  childChainManager: string;
 }

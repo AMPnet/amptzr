@@ -42,9 +42,9 @@ interface TokenizerConfig {
   deployerService: string,
   queryService: string,
   nameRegistry: string,
+  feeManager: string,
   defaultWalletApprover: string,
   defaultStableCoin: string,
-  childChainManager: string, // matic specific
 }
 
 interface VenlyConfig {
@@ -86,9 +86,9 @@ export const MaticNetwork: Network = {
     deployerService: '0xeE8D5A0b8314d8559ab46df7F2487F6542cB70eb',
     queryService: '0x1966841C08a421D79fbaC626f0BFe26D0341A90F',
     nameRegistry: '0xAd935453430d43589e4A65281d348d8b625fe0BB',
+    feeManager: '',
     defaultWalletApprover: '0xaE88C599DA07c186Ae575A336c92b1F20E64A9f9',
     defaultStableCoin: '0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174',
-    childChainManager: '0xA6FA4fB5f76172d178d61B04b0ecd319C5d1C0aa',
   },
   venlyConfig: {
     secretType: SecretType.MATIC,
@@ -117,20 +117,20 @@ export const MumbaiNetwork: Network = {
     },
     assetFactory: {
       basic: '0x19d22BBEc9F1aa1bB9AB0F172f5D9e6DDF9E6C47',
-      transferable: '0x52997837b399d66A4d71b6E28fCed6Fb95B83fd9',
+      transferable: '0xEe03dF75801fF4786d1895941b542cBe2832024a',
       simple: '0x0361B0A1333A0BF88ce2c3a4d7192C5E8A5Efea9',
     },
     cfManagerFactory: {
-      basic: '0xE0776c364b1050789ba25ff8E508Be7C796d6974',
-      vesting: '0xd1b57efEC963E71A7E737E9Ea58a079a6C258381',
+      basic: '0xbdD90f6Ba27def808d0535F9980015eB46F48eb7',
+      vesting: '0x511172c326F7DE74Ec8b89DA1F539ad72E3a2463',
     },
     snapshotDistributorFactory: '0x13B7A1eaEba77B2c8C44b56bdE2863c4efDa8dd8',
-    deployerService: '0x9132e92e6fc8E192f72087D8856014566C43145f',
+    deployerService: '0xd9c16C98Be8c76e277eaE428516e1fF3fD9524da',
     queryService: '0x74D23A2FCe2A70313b444aE51816a70061C7786A',
     nameRegistry: '0x2D14cc9AcC1a638Fc8BF7d3eD0C9d79270194461',
+    feeManager: '0x9448A98B90e3292379b58BF6CD7fB2EF872ba4e1',
     defaultWalletApprover: '0x622b12839a32FD4C9bc8B1Ff5D4D96DA41C86356',
     defaultStableCoin: '0x9733aa0fb74a01f058fbeb0ad9da3f483058908e',
-    childChainManager: '0xb5505a6d998549090530911180f38aC5130101c6',
   },
   venlyConfig: {
     secretType: SecretType.MATIC,
@@ -171,9 +171,9 @@ export const GoerliNetwork: Network = {
     deployerService: '0x596E2F22cE6A75EF75Ed19e694aCfBa96140959f',
     queryService: '0x5A22bc3a5078801CB0e8B5C61bb8361D16C8Ed73',
     nameRegistry: '0x41b90C4C84f6388c29835CBA03Cd50D92fB24e8E',
+    feeManager: '',
     defaultWalletApprover: '0x893152e259BdDEa9D42f935f38d7c2c88431c748',
     defaultStableCoin: '0x7A6E8B47ab83cA0374ef6D59a0B0459BCB5c0510', // custom stablecoin issued by filip
-    childChainManager: '0xb5505a6d998549090530911180f38aC5130101c6',
   },
 }
 
