@@ -33,11 +33,11 @@ export class DepositRampService {
           const rampConfig = this.preferenceQuery.network.ramp
 
           if (!rampConfig) {
-            observer.error('Ramp network not configured for this network.')
+            observer.error('Ramp network is not configured for this network.')
             return
           }
 
-          new RampInstantSDK({
+          const rampWindow = new RampInstantSDK({
             hostAppName: issuer.infoData.name,
             hostLogoUrl: this.toUrlIpfsPipe.transform(issuer.infoData.logo),
             hostApiKey: issuer.infoData.rampApiKey,
@@ -47,13 +47,15 @@ export class DepositRampService {
             url: rampConfig.url,
             variant: 'auto',
           })
-            .on('*', event => {
-              observer.next(event as any)
-              if (event.type === RampInstantEventTypes.WIDGET_CLOSE) {
-                observer.complete()
-              }
-            })
-            .show()
+
+          rampWindow.on('*', event => {
+            observer.next(event as any)
+            if (event.type === RampInstantEventTypes.WIDGET_CLOSE) {
+              observer.complete()
+            }
+          })
+
+          rampWindow.show()
         })
       }),
     )
