@@ -122,7 +122,7 @@ export const MumbaiNetwork: Network = {
     },
     cfManagerFactory: {
       basic: '0xbdD90f6Ba27def808d0535F9980015eB46F48eb7',
-      vesting: '0x511172c326F7DE74Ec8b89DA1F539ad72E3a2463',
+      vesting: '0x7470f1dD6c78b6Fe614CdB5D320824A169EB420C',
     },
     snapshotDistributorFactory: '0x13B7A1eaEba77B2c8C44b56bdE2863c4efDa8dd8',
     deployerService: '0xd9c16C98Be8c76e277eaE428516e1fF3fD9524da',
