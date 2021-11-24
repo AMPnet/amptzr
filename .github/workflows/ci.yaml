@@ -19,13 +19,7 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
-      - name: Cache node modules
-        uses: actions/cache@v2
-        with:
-          path: ~/.npm
-          key: ${{ runner.os }}-node1-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-node1-
+
       - name: Node ${{ matrix.node-version }}
         uses: actions/setup-node@v2
         with:
