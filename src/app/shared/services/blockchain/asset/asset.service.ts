@@ -16,6 +16,8 @@ import {Provider} from '@ethersproject/providers'
 import {AssetTransferableService, TransferableAssetState} from './asset-transferable.service'
 import {AssetFlavor} from '../flavors'
 import {AssetCommonState} from './asset.common'
+import {AssetSimpleService, SimpleAssetState} from './asset-simple.service'
+import {TokenPrice} from '../../../utils/token-price'
 
 @Injectable({
   providedIn: 'root',
@@ -26,6 +28,7 @@ export class AssetService {
     private preferenceQuery: PreferenceQuery,
     private assetBasicService: AssetBasicService,
     private assetTransferableService: AssetTransferableService,
+    private assetSimpleService: AssetSimpleService,
     private ipfsService: IpfsService,
     private signerService: SignerService,
     private dialogService: DialogService,
@@ -42,13 +45,15 @@ export class AssetService {
 
   getState(
     address: string, flavor: AssetFlavor, signerOrProvider: Signer | Provider,
-  ): Observable<AssetState | TransferableAssetState> {
+  ): Observable<AssetState | TransferableAssetState | SimpleAssetState> {
     return of(address).pipe(
       switchMap(address => {
         switch (flavor) {
-          case 'AssetTransferableV1':
+          case AssetFlavor.TRANSFERABLE:
             return this.assetTransferableService.getState(address, signerOrProvider)
-          case 'AssetV1':
+          case AssetFlavor.SIMPLE:
+            return this.assetSimpleService.getState(address, signerOrProvider)
+          case AssetFlavor.BASIC:
             return this.assetBasicService.getState(address, signerOrProvider)
           default:
             return throwError(`getState not implemented for asset flavor ${flavor}`)
@@ -115,22 +120,33 @@ export class AssetService {
     return of(data).pipe(
       switchMap(data => {
         switch (flavor) {
-          case 'AssetTransferableV1':
+          case AssetFlavor.TRANSFERABLE:
             return this.assetTransferableService.create(data)
-          case 'AssetV1':
-          default:
+          case AssetFlavor.SIMPLE:
+            return this.assetSimpleService.create(data)
+          case AssetFlavor.BASIC:
             return this.assetBasicService.create(data)
+          default:
+            return throwError(`create not implemented for asset flavor ${flavor}`)
         }
       }),
     )
   }
 
-  transferTokensToCampaign(assetAddress: string, campaignAddress: string, amount: number) {
+  transferTokensToCampaign(
+    assetAddress: string, campaignAddress: string, stablecoinValue: number, tokenPrice: number,
+  ) {
+    const tokens = this.stablecoin.parse(stablecoinValue)
+      .mul(BigNumber.from((10 ** TokenPrice.precision).toString()))
+      .mul(BigNumber.from((10 ** 18).toString())) // token precision
+      .div(BigNumber.from(TokenPrice.format(tokenPrice)))
+      .div(BigNumber.from((10 ** this.stablecoin.precision).toString()))
+
     return this.signerService.ensureAuth.pipe(
       map(signer => this.assetBasicService.contract(assetAddress, signer)),
       switchMap(contract => combineLatest([of(contract), this.gasService.overrides])),
       switchMap(([contract, overrides]) => contract.populateTransaction.transfer(
-        campaignAddress, this.stablecoin.parse(amount, 18), overrides),
+        campaignAddress, tokens, overrides),
       ),
       switchMap(tx => this.signerService.sendTransaction(tx)),
       switchMap(tx => this.dialogService.loading(

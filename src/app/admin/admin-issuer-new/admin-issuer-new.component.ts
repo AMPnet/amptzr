@@ -7,6 +7,7 @@ import {RouterService} from '../../shared/services/router.service'
 import {SessionQuery} from '../../session/state/session.query'
 import {UserService} from '../../shared/services/user.service'
 import {IssuerService} from '../../shared/services/blockchain/issuer/issuer.service'
+import {IssuerFlavor} from '../../shared/services/blockchain/flavors'
 
 @Component({
   selector: 'app-admin-issuer-new',
@@ -42,7 +43,7 @@ export class AdminIssuerNewComponent {
       switchMap(uploadRes => this.issuerService.create({
         info: uploadRes.path,
         mappedName: this.createForm.value.slug,
-      }, 'IssuerV1')),
+      }, IssuerFlavor.BASIC)),
       switchMap(_issuerAddress => this.dialogService.info('Issuer successfully created!', false).pipe(
         switchMap(() => this.router.router.navigate(['/'])),
       )),

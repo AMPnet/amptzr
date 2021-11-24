@@ -8,6 +8,7 @@ import {MetamaskSubsignerService} from '../../shared/services/subsigners/metamas
 import {WalletConnectSubsignerService} from '../../shared/services/subsigners/walletconnect-subsigner.service'
 import {VenlySubsignerService} from '../../shared/services/subsigners/venly-subsigner.service'
 import {environment} from '../../../environments/environment'
+import {IssuerFlavor} from '../../shared/services/blockchain/flavors'
 
 @Injectable({providedIn: 'root'})
 export class PreferenceService {
@@ -60,7 +61,7 @@ export class PreferenceService {
             chainID: fixedChainID,
             issuer: {
               address: fixedIssuer,
-              flavor: 'IssuerV1', // TODO: flavor should be added to fixed issuer configuration
+              flavor: IssuerFlavor.BASIC, // TODO: flavor should be added to fixed issuer configuration
             },
           })
         }

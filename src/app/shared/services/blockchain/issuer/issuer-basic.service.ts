@@ -11,6 +11,7 @@ import {GasService} from '../gas.service'
 import {Signer} from 'ethers'
 import {Provider} from '@ethersproject/providers'
 import {IssuerCommonState} from './issuer.common'
+import {IssuerFlavor} from '../flavors'
 
 @Injectable({
   providedIn: 'root',
@@ -41,7 +42,7 @@ export class IssuerBasicService {
   }
 
   getStateFromCommon(issuer: IssuerCommonState): Observable<IssuerBasicState | undefined> {
-    return issuer.flavor === 'CfManagerSoftcapV1' ?
+    return issuer.flavor === IssuerFlavor.BASIC ?
       this.getState(issuer.contractAddress) : of(undefined)
   }
 

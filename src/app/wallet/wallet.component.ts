@@ -45,7 +45,7 @@ export class WalletComponent {
   constructor(private sessionQuery: SessionQuery,
               private preferenceQuery: PreferenceQuery,
               private signerService: SignerService,
-              private stablecoin: StablecoinService,
+              public stablecoin: StablecoinService,
               private userService: UserService,
               private backendUserService: BackendUserService,
               private venly: VenlySubsignerService,

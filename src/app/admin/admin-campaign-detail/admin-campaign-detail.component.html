@@ -42,10 +42,20 @@
               </div>
 
               <div class="flex flex-col gap-2 text-sm p-4 mt-2 bg-gray-100 rounded-lg">
-                <span>Raising: <b>{{ campaignData.stats.valueTotal | currencyDefault }}</b></span>
-                <span>Selling: <b>{{ hardCapTokensPercentage(campaignData.stats, campaignData.asset) | percent }} of asset shares</b></span>
-                <span>Min. Target (Soft Cap): <b>{{ campaignData.stats.softCap | currencyDefault }}</b></span>
-                <span>Asset share to reach Min. Target: <b>{{ softCapTokensPercentage(campaignData.stats, campaignData.asset) | percent }}</b></span>
+                <span>
+                  Raising: <b>{{ campaignData.stats.valueTotal | currencyDefault }}</b>
+                </span>
+                <span>
+                  Selling: <b>{{ hardCapTokensPercentage(campaignData.stats, campaignData.asset) | percent }} of
+                  asset shares</b>
+                </span>
+                <span>
+                  Min. Target (Soft Cap): <b>{{ campaignData.stats.softCap | currencyDefault }}</b>
+                </span>
+                <span>
+                  Asset share to reach Min. Target:
+                  <b>{{ softCapTokensPercentage(campaignData.stats, campaignData.asset) | percent }}</b>
+                </span>
               </div>
             </div>
 
@@ -93,8 +103,20 @@
               </button>
 
               <div class="flex flex-col gap-2 text-sm p-4 mt-2 bg-gray-100 rounded-lg">
-                <span class="text-2xl text-indigo-900 my-2">Asset & Token</span>
-                <span>Asset: <b>{{ campaignData.asset.name }}</b></span>
+                <span class="text-2xl text-indigo-900 my-2">
+                  Asset & Token
+                </span>
+
+                <div class="flex gap-1">
+                  <span>
+                    Asset: <b>{{ campaignData.asset.name }}</b>
+                  </span>
+                  <app-explorer-link [value]="campaignData.asset.contractAddress" type="token">
+                  </app-explorer-link>
+                  <app-add-to-metamask [value]="campaignData.asset.contractAddress">
+                  </app-add-to-metamask>
+                </div>
+
                 <span>Price per token: <b>{{ campaignData.stats.tokenPrice | currencyDefault:'tokenPrice' }}</b></span>
                 <span>Tokens sold: <b>{{ campaignData.stats.tokensSold | number }}</b></span>
                 <span>Tokens for sale: <b>{{ campaignData.stats.tokensAvailable | number }}</b></span>
@@ -126,22 +148,49 @@
 
 
                 <span class="text-2xl text-indigo-900 my-2">Addresses</span>
-                <div>
-                  Campaign address: {{ campaignData.campaign.contractAddress | addrShort }}
-                  <app-value-copy [value]="campaignData.campaign.contractAddress"></app-value-copy>
-                </div>
-                <div *ngIf="campaignData.campaignBasic as campaignBasic">
-                  Issuer address: {{ campaignBasic.issuer | addrShort }}
-                  <app-value-copy [value]="campaignBasic.issuer">
+
+                <div class="flex gap-1">
+                  <span>
+                    Campaign address: {{ campaignData.campaign.contractAddress | addrShort }}
+                  </span>
+                  <app-value-copy [value]="campaignData.campaign.contractAddress">
                   </app-value-copy>
+                  <app-explorer-link [value]="campaignData.campaign.contractAddress" type="address">
+                  </app-explorer-link>
                 </div>
-                <div>
-                  Asset address: {{ campaignData.campaign.asset | addrShort }}
-                  <app-value-copy [value]="campaignData.campaign.asset"></app-value-copy>
+
+                <ng-container *ngIf="campaignData.campaignBasic as campaignBasic">
+                  <div class="flex gap-1">
+                    <span>
+                      Issuer address: {{ campaignBasic.issuer | addrShort }}
+                    </span>
+                    <app-value-copy [value]="campaignBasic.issuer">
+                    </app-value-copy>
+                    <app-explorer-link [value]="campaignBasic.issuer" type="address">
+                    </app-explorer-link>
+                  </div>
+                </ng-container>
+
+                <div class="flex gap-1">
+                  <span>
+                    Asset address: {{ campaignData.campaign.asset | addrShort }}
+                  </span>
+                  <app-value-copy [value]="campaignData.campaign.asset">
+                  </app-value-copy>
+                  <app-explorer-link [value]="campaignData.campaign.asset" type="token">
+                  </app-explorer-link>
+                  <app-add-to-metamask [value]="campaignData.campaign.asset">
+                  </app-add-to-metamask>
                 </div>
-                <div>
-                  Owner address: {{ campaignData.campaign.owner | addrShort }}
-                  <app-value-copy [value]="campaignData.campaign.owner"></app-value-copy>
+
+                <div class="flex gap-1">
+                  <span>
+                    Owner address: {{ campaignData.campaign.owner | addrShort }}
+                  </span>
+                  <app-value-copy [value]="campaignData.campaign.owner">
+                  </app-value-copy>
+                  <app-explorer-link [value]="campaignData.campaign.owner" type="address">
+                  </app-explorer-link>
                 </div>
               </div>
             </div>

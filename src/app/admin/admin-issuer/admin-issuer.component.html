@@ -5,35 +5,42 @@
         <div class="flex flex-col lg:flex-row lg:flex-wrap gap-6 mt-8">
           <div class="flex flex-col lg:flex-row w-full justify-start shadow-xl rounded-4xl">
             <div class="relative w-full lg:w-1/3">
-              <img *ngIf="issuer.infoData.logo; else noImage" class="w-full h-48 lg:h-64 object-cover rounded-t-4xl
+              <img *ngIf="issuer.infoData.logo; else noImage" class="w-full h-48 lg:h-full object-cover rounded-t-4xl
                         lg:rounded-none lg:rounded-l-4xl"
                    src="{{ issuer.infoData.logo | toUrlIPFS }}" alt="Issuer logo">
               <ng-template #noImage>
-                <div class="w-full h-48 lg:h-64 bg-gray-200 rounded-t-4xl lg:rounded-none lg:rounded-l-4xl"></div>
+                <div class="w-full h-48 lg:h-full bg-gray-200 rounded-t-4xl lg:rounded-none lg:rounded-l-4xl"></div>
               </ng-template>
             </div>
             <div class="flex flex-col gap-8 w-full h-full rounded-b-4xl lg:rounded-none lg:rounded-r-4xl
                       bg-white p-4 justify-between">
               <div class="font-semibold">
                 <span class="text-4xl font-normal mb-8 lg:mt-8">{{ issuer.infoData.name ?? 'Unknown' }}</span>
-                <div class="flex items-center gap-2 mt-2">
+                <div class="flex items-center gap-1 mt-2">
                   <span>ADDRESS:</span>
                   <span class="text-sm font-normal">{{ issuer.contractAddress | addrShort }}</span>
                   <app-value-copy [value]="issuer.contractAddress"></app-value-copy>
+                  <app-explorer-link [value]="issuer.contractAddress" type="address">
+                  </app-explorer-link>
                 </div>
 
-
                 <ng-container *ngIf="issuer.issuerBasic as issuerBasic">
-                  <div class="flex items-center gap-2">
+                  <div class="flex items-center gap-1">
                     <span>STABLECOIN:</span>
                     <span class="text-sm font-normal">{{ stableCoinSymbol }}</span>
                     <span class="text-sm font-normal">{{ issuerBasic.stablecoin | addrShort }}</span>
                     <app-value-copy [value]="issuerBasic.stablecoin"></app-value-copy>
+                    <app-explorer-link [value]="issuerBasic.stablecoin" type="token">
+                    </app-explorer-link>
+                    <app-add-to-metamask [value]="issuerBasic.stablecoin">
+                    </app-add-to-metamask>
                   </div>
-                  <div class="flex items-center gap-2">
+                  <div class="flex items-center gap-1">
                     <span>WALLET APPROVER:</span>
                     <span class="text-sm font-normal">{{ issuerBasic.walletApprover | addrShort }}</span>
                     <app-value-copy [value]="issuerBasic.walletApprover"></app-value-copy>
+                    <app-explorer-link [value]="issuerBasic.walletApprover" type="address">
+                    </app-explorer-link>
                   </div>
                 </ng-container>
               </div>
@@ -141,7 +148,7 @@
       </ng-container>
 
       <ng-container *ngIf="issuerRes.loading">
-        Loading issuer...
+        <app-spinner type="overlay">Loading issuer...</app-spinner>
       </ng-container>
     </ng-container>
   </div>

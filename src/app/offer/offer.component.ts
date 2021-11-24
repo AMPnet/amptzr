@@ -112,4 +112,8 @@ export class OfferComponent {
       )
     }
   }
+
+  isFinalizableFlavor(flavor: string): boolean {
+    return [CampaignFlavor.BASIC, CampaignFlavor.VESTING].includes(flavor as CampaignFlavor)
+  }
 }

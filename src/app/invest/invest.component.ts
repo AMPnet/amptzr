@@ -26,6 +26,7 @@ export class InvestComponent {
   campaignWithStatus$: Observable<WithStatus<CampaignWithInfo>>
 
   preInvestData$: Observable<PreInvestData>
+  preInvestDataWithStatus$: Observable<WithStatus<PreInvestData>>
 
   investStateSub = new BehaviorSubject<InvestState>(InvestState.Editing)
   investState$ = this.investStateSub.asObservable()
@@ -60,6 +61,8 @@ export class InvestComponent {
       }),
       shareReplay(1),
     )
+
+    this.preInvestDataWithStatus$ = withStatus(this.preInvestData$)
 
     this.investmentForm = this.fb.group({
       amount: [0, [], [this.validAmount.bind(this)]],
@@ -142,5 +145,5 @@ export class InvestComponent {
 
 enum InvestState {
   Editing,
-  InReview
+  InReview,
 }

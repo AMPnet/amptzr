@@ -25,8 +25,12 @@ export class ErrorService {
 
   private processError<T>(completeAfterAction: boolean, rethrowAfterAction: boolean) {
     return (err: any, caught: Observable<T>) => {
-      const errorRes = err as HttpErrorResponse
+      let errorRes = err as HttpErrorResponse
       let action$: Observable<any> = throwError(err)
+
+      if ((errorRes as any).code === 'UNPREDICTABLE_GAS_LIMIT') {
+        errorRes = errorRes.error
+      }
 
       if (errorRes.error instanceof ErrorEvent) { // client-side error
         return action$
@@ -64,11 +68,13 @@ export class ErrorService {
         }
       } else if ((errorRes as any).code === -32603) { // Internal JSON-RPC error
         const error = (errorRes as unknown as EthereumRpcError<EthereumRpcError<string>>)
-        if (error.data?.message?.includes('gas required exceeds allowance')) { // Metamask out of gas
+        const message = (error as any).data?.originalError?.message || error.data?.message
+
+        if (message?.includes('gas required exceeds allowance')) { // Metamask out of gas
           action$ = this.displayMessage(this.outOfGasMessage)
-        } else if (error.data?.message?.startsWith('execution reverted:')) {
+        } else if (message?.startsWith('execution reverted:')) {
           action$ = this.displayMessage(
-            error.data!.message!.replace('execution reverted:', '').trim(),
+            message!.replace('execution reverted:', '').trim(),
           )
         } else {
           action$ = this.displayMessage('Something went wrong.')
