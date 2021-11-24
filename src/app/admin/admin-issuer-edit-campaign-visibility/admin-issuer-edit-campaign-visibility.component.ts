@@ -1,7 +1,9 @@
 import {ChangeDetectionStrategy, Component} from '@angular/core'
 import {CampaignCommonStateWithName, QueryService} from '../../shared/services/blockchain/query.service'
 import {withStatus} from '../../shared/utils/observables'
-import {CampaignVisibility} from './admin-issuer-edit-campaign-visibility-card/admin-issuer-edit-campaign-visibility-card.component'
+import {
+  CampaignVisibility,
+} from './admin-issuer-edit-campaign-visibility-card/admin-issuer-edit-campaign-visibility-card.component'
 import {IPFSOffersDisplaySettings} from '../../../../types/ipfs/issuer'
 import {combineLatest, Observable} from 'rxjs'
 import {map, switchMap, tap} from 'rxjs/operators'

@@ -7,7 +7,7 @@ import {BackendUserService} from '../../shared/services/backend/backend-user.ser
   selector: 'app-auth-magic',
   templateUrl: './auth-magic.component.html',
   styleUrls: ['./auth-magic.component.css'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AuthMagicComponent {
   emailForm: FormGroup
