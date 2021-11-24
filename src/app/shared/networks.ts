@@ -108,7 +108,7 @@ export const MumbaiNetwork: Network = {
     symbol: 'MATIC',
   },
   maxGasPrice: 20,
-  rpcURLs: ['https://matic-mumbai.chainstacklabs.com'],
+  rpcURLs: ['https://rpc-mumbai.maticvigil.com'],
   explorerURLs: ['https://mumbai.polygonscan.com/'],
   tokenizerConfig: {
     apxRegistry: '0x2D3B123C7D53E537D449186386618301b4a93B22',

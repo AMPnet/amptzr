@@ -9,12 +9,14 @@ import {WalletConnectSubsignerService} from '../../shared/services/subsigners/wa
 import {VenlySubsignerService} from '../../shared/services/subsigners/venly-subsigner.service'
 import {environment} from '../../../environments/environment'
 import {IssuerFlavor} from '../../shared/services/blockchain/flavors'
+import {MagicSubsignerService} from '../../shared/services/subsigners/magic-subsigner.service'
 
 @Injectable({providedIn: 'root'})
 export class PreferenceService {
   constructor(private preferenceStore: PreferenceStore,
               private preferenceQuery: PreferenceQuery,
               private metamaskSubsignerService: MetamaskSubsignerService,
+              private magicSubsignerService: MagicSubsignerService,
               private walletConnectSubsignerService: WalletConnectSubsignerService,
               private venlySubsignerService: VenlySubsignerService,
               private signer: SignerService) {
@@ -30,6 +32,8 @@ export class PreferenceService {
         switch (pref.authProvider) {
           case AuthProvider.METAMASK:
             return this.signer.login(this.metamaskSubsignerService, {force: false})
+          case AuthProvider.MAGIC:
+            return this.signer.login(this.magicSubsignerService, {force: false})
           case AuthProvider.WALLET_CONNECT:
             return this.signer.login(this.walletConnectSubsignerService, {force: false})
           case AuthProvider.VENLY:

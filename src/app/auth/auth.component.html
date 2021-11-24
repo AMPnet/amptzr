@@ -1,19 +1,63 @@
-<div class="min-h-md w-full max-w-md my-5 px-2 py-8 bg-white">
-  <!-- Upper Holder - contains Logo -->
-  <div class="w-full h-2/6 rounded-t-md flex justify-center items-center">
-    <ng-container *ngIf="(issuer$ | async) as issuerRes">
-      <ng-container *ngIf="issuerRes.value as issuer">
-        <img src="{{ issuer.infoData.logo | toUrlIPFS }}" class="w-60 h-20 object-contain" alt="Logo image">
-      </ng-container>
-    </ng-container>
-  </div>
-
-  <!-- Bottom Holder Screen - Contains login options -->
+<div class="min-h-md w-full max-w-md min-w-[15rem] my-5 px-2 py-8 bg-white">
   <div class="w-full h-4/6 bg-white rounded-b-md flex items-center">
     <div class="flex flex-col w-full">
-      <div class="w-full text-center text-2xl text-gray-700 mt-12">Login</div>
+      <div class="w-full text-center text-2xl text-gray-700 mt-12">
+        Login
+      </div>
 
-      <!-- Venly Powered Login options (FB, Google, Twitter, etc...) -->
+      <form [formGroup]="emailForm" class="mt-8">
+        <label class="text-sm uppercase" for="email">
+          Email address
+        </label>
+
+        <div class="flex gap-1">
+          <input type="email" id="email" class="block w-full rounded-md border-gray-300 shadow-sm
+    focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+                 placeholder="john.smith@email.com" inputmode="email"
+                 formControlName="email">
+          <button app-action-button
+                  class="bg-blue-900 text-white px-4 py-2 rounded-full disabled:bg-gray-400"
+                  loadingText=""
+                  [onClick]="connectMagic.bind(this)"
+                  [disabled]="!emailForm.valid">
+            <ng-template #content>
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24"
+                   stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+              </svg>
+            </ng-template>
+          </button>
+        </div>
+      </form>
+
+      <ng-container *ngIf="(injectedWeb3$ | async) as injectedWeb3">
+        <div class="flex justify-center uppercase text-xl mt-8">
+          OR
+        </div>
+
+        <!-- Injected Web3 login option -->
+        <button app-action-button
+                class="border border-indigo-900 w-full py-2 mt-4 rounded-md hover:bg-indigo-50"
+                [onClick]="connectMetamask.bind(this)">
+          <ng-template #content>
+            <ng-container *ngIf="injectedWeb3.isMetaMask">
+              <ng-container *ngTemplateOutlet="metamaskIcon"></ng-container>
+            </ng-container>
+
+            <ng-container *ngIf="injectedWeb3.isTrust">
+              <ng-container *ngTemplateOutlet="trustWalletIcon"></ng-container>
+            </ng-container>
+          </ng-template>
+
+          <ng-template #loadingContent>
+            <app-spinner class="flex justify-center items-center h-6 my-1">
+            </app-spinner>
+          </ng-template>
+        </button>
+      </ng-container>
+
+
+      <!-- Venly (deprecated) -->
       <button class="border border-indigo-900 w-full py-3 rounded-md mt-12 hover:bg-indigo-50"
               *ngIf="venlyAvailable$ | async"
               app-action-button [onClick]="connectVenly.bind(this)">
@@ -66,26 +110,6 @@
 
         <ng-template #loadingContent>
           <app-spinner class="flex justify-center items-center h-6">
-          </app-spinner>
-        </ng-template>
-      </button>
-
-      <!-- Injected Web3 login option -->
-      <button app-action-button *ngIf="(injectedWeb3$ | async) as injectedWeb3"
-              class="border border-indigo-900 w-full py-2 mt-12 rounded-md hover:bg-indigo-50"
-              [onClick]="connectMetamask.bind(this)">
-        <ng-template #content>
-          <ng-container *ngIf="injectedWeb3.isMetaMask">
-            <ng-container *ngTemplateOutlet="metamaskIcon"></ng-container>
-          </ng-container>
-
-          <ng-container *ngIf="injectedWeb3.isTrust">
-            <ng-container *ngTemplateOutlet="trustWalletIcon"></ng-container>
-          </ng-container>
-        </ng-template>
-
-        <ng-template #loadingContent>
-          <app-spinner class="flex justify-center items-center h-6 my-1">
           </app-spinner>
         </ng-template>
       </button>

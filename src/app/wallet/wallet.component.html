@@ -74,6 +74,14 @@
           Connected with:
           <ng-container *ngIf="(authProvider$ | async) as authProvider">
             <b>{{ authProvider | authProviderName }}</b>
+
+            <button app-action-button *ngIf="authProvider === authProviderType.MAGIC"
+                    [onClick]="manageMagicWallet.bind(this)">
+              <ng-template #content #loadingContent>
+                <span class="underline mx-1">(settings)</span>
+              </ng-template>
+            </button>
+
             <button app-action-button *ngIf="authProvider === authProviderType.VENLY"
                     [onClick]="manageVenlyWallets.bind(this)">
               <ng-template #content #loadingContent>

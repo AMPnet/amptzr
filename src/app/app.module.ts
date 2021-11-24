@@ -86,6 +86,7 @@ import {AdminIssuerEditCampaignVisibilityComponent} from './admin/admin-issuer-e
 import {AdminIssuerEditCampaignVisibilityCardComponent} from './admin/admin-issuer-edit-campaign-visibility/admin-issuer-edit-campaign-visibility-card/admin-issuer-edit-campaign-visibility-card.component'
 import {AddToMetamaskComponent} from './shared/components/add-to-metamask/add-to-metamask.component'
 import {ExplorerLinkComponent} from './shared/components/explorer-link/explorer-link.component'
+import {AuthMagicComponent} from './auth/auth-magic/auth-magic.component'
 
 @NgModule({
   declarations: [
@@ -104,6 +105,7 @@ import {ExplorerLinkComponent} from './shared/components/explorer-link/explorer-
     SpinnerComponent,
     InlineAsyncComponent,
     AuthComponent,
+    AuthMagicComponent,
     OfferComponent,
     DepositComponent,
     InvestComponent,

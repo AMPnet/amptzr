@@ -19,6 +19,8 @@ export class AuthProviderNamePipe implements PipeTransform {
     switch (value) {
       case AuthProvider.METAMASK:
         return 'Metamask'
+      case AuthProvider.MAGIC:
+        return 'Magic'
       case AuthProvider.WALLET_CONNECT:
         return 'Wallet Connect'
       case AuthProvider.VENLY:

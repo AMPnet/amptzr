@@ -1,0 +1,23 @@
+<div class="max-w-xs">
+  <form [formGroup]="emailForm">
+    <p class="text-sm">
+      Enter your email address and we will send you a magic link on your email. Fast and easy!
+    </p>
+
+    <label class="block mt-4">
+      <span class="text-sm uppercase">Email address</span>
+      <input type="email" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm
+    focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+             placeholder="john.smith@email.com" inputmode="email"
+             formControlName="email">
+    </label>
+
+    <div class="flex justify-center mt-4">
+      <button class="bg-blue-900 text-white mt-2 px-4 py-2 rounded-full disabled:bg-gray-400"
+              (click)="loginWithEmail()"
+              [disabled]="!emailForm.valid">
+        Send
+      </button>
+    </div>
+  </form>
+</div>

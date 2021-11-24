@@ -9,6 +9,7 @@ export const environment = {
   production: false,
   commitHash: preBuildEnv.COMMIT_HASH,
   appVersion: preBuildEnv.APP_VERSION,
+  magicApiKey: postBuildEnv?.MAGIC_API_KEY || 'pk_live_F261F3E91438080B',
   arkane: {
     clientID: postBuildEnv?.ARKANE_ID || 'AMPnet',
   },
