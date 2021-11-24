@@ -46,7 +46,7 @@ export class VenlySubsignerService implements Subsigner {
         return from(lib.Arkane.createArkaneProviderEngine({
           clientId: environment.arkane.clientID,
           skipAuthentication: true,
-          secretType: venlyConfig.secretType,
+          secretType: venlyConfig.secretType as any,
           environment: venlyConfig.env,
         }))
       }),
