@@ -41,7 +41,7 @@ jobs:
           git config --global url."https://".insteadOf ssh://
 
       - name: Install dependencies
-        run: npm ci --debug
+        run: npm i
 
       - name: Run linter
         run: npm run lint
