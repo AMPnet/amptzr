@@ -17,7 +17,6 @@ export interface Window {
 }
 
 interface PostBuildEnv {
-  MAGIC_API_KEY: string
   ARKANE_ID: string
   ARKANE_ENV: string
   IPFS_API_URL: string

@@ -25,6 +25,7 @@ export class AuthComponent {
 
   issuer$ = this.issuerService.issuerWithStatus$
   injectedWeb3$: Observable<any> = defer(() => of(getWindow()?.ethereum))
+  magicLinkAvailable$ = this.magicSubsignerService.isAvailable$
   venlyAvailable$ = this.venlySubsignerService.isAvailable$
 
   constructor(private signer: SignerService,

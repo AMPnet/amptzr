@@ -5,30 +5,32 @@
         Login
       </div>
 
-      <form [formGroup]="emailForm" class="mt-8">
-        <label class="text-sm uppercase" for="email">
-          Email address
-        </label>
+      <ng-container *ngIf="magicLinkAvailable$ | async">
+        <form [formGroup]="emailForm" class="mt-8">
+          <label class="text-sm uppercase" for="email">
+            Email address
+          </label>
 
-        <div class="flex gap-1">
-          <input type="email" id="email" class="block w-full rounded-md border-gray-300 shadow-sm
+          <div class="flex gap-1">
+            <input type="email" id="email" class="block w-full rounded-md border-gray-300 shadow-sm
     focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
-                 placeholder="john.smith@email.com" inputmode="email"
-                 formControlName="email">
-          <button app-action-button
-                  class="bg-blue-900 text-white px-4 py-2 rounded-full disabled:bg-gray-400"
-                  loadingText=""
-                  [onClick]="connectMagic.bind(this)"
-                  [disabled]="!emailForm.valid">
-            <ng-template #content>
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24"
-                   stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
-              </svg>
-            </ng-template>
-          </button>
-        </div>
-      </form>
+                   placeholder="john.smith@email.com" inputmode="email"
+                   formControlName="email">
+            <button app-action-button
+                    class="bg-blue-900 text-white px-4 py-2 rounded-full disabled:bg-gray-400"
+                    loadingText=""
+                    [onClick]="connectMagic.bind(this)"
+                    [disabled]="!emailForm.valid">
+              <ng-template #content>
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24"
+                     stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                </svg>
+              </ng-template>
+            </button>
+          </div>
+        </form>
+      </ng-container>
 
       <ng-container *ngIf="(injectedWeb3$ | async) as injectedWeb3">
         <!-- Injected Web3 login option -->

@@ -1,14 +1,14 @@
 import {Injectable} from '@angular/core'
 import {Subsigner, SubsignerLoginOpts} from './metamask-subsigner.service'
-import {from, Observable, of, throwError} from 'rxjs'
+import {combineLatest, defer, from, Observable, of, throwError} from 'rxjs'
 import {providers} from 'ethers'
-import {catchError, concatMap, map, switchMap, tap} from 'rxjs/operators'
+import {catchError, concatMap, map, switchMap, take, tap} from 'rxjs/operators'
 import {AuthProvider, PreferenceStore} from '../../../preference/state/preference.store'
 import {PreferenceQuery} from '../../../preference/state/preference.query'
 import {SDKBase} from '@magic-sdk/provider/dist/types/core/sdk'
 import {AuthMagicComponent, MagicLoginInput} from '../../../auth/auth-magic/auth-magic.component'
 import {MatDialog} from '@angular/material/dialog'
-import {environment} from '../../../../environments/environment'
+import {IssuerService} from '../blockchain/issuer/issuer.service'
 
 @Injectable({
   providedIn: 'root',
@@ -16,9 +16,16 @@ import {environment} from '../../../../environments/environment'
 export class MagicSubsignerService implements Subsigner {
   subprovider: SDKBase | undefined
 
+  apiKey$: Observable<string> = defer(() => combineLatest([this.issuerService.issuer$]).pipe(
+    take(1),
+    map(([issuer]) => issuer.infoData.magicLinkApiKey),
+  ))
+  isAvailable$: Observable<boolean> = defer(() => this.apiKey$.pipe(map(apiKey => !!apiKey)))
+
   constructor(
     private preferenceStore: PreferenceStore,
     private preferenceQuery: PreferenceQuery,
+    private issuerService: IssuerService,
     private matDialog: MatDialog,
   ) {
   }
@@ -48,20 +55,29 @@ export class MagicSubsignerService implements Subsigner {
   }
 
   private get registerMagic() {
-    return from(
-      import(
-        /* webpackChunkName: "magic-sdk" */
-        'magic-sdk')).pipe(
-      map((lib) => {
-        return new lib.Magic(environment.magicApiKey, {
-          network: {
-            chainId: this.preferenceQuery.network.chainID,
-            rpcUrl: this.preferenceQuery.network.rpcURLs[0],
-          },
-        })
+    return combineLatest([this.apiKey$]).pipe(
+      take(1),
+      switchMap(([apiKey]) => {
+        if (!apiKey) {
+          return throwError('Magic link is not configured for this issuer.')
+        }
+
+        return from(
+          import(
+            /* webpackChunkName: "magic-sdk" */
+            'magic-sdk')).pipe(
+          map((lib) => {
+            return new lib.Magic(apiKey, {
+              network: {
+                chainId: this.preferenceQuery.network.chainID,
+                rpcUrl: this.preferenceQuery.network.rpcURLs[0],
+              },
+            })
+          }),
+          tap(subprovider => this.subprovider = subprovider),
+          map(subprovider => subprovider.rpcProvider),
+        )
       }),
-      tap(subprovider => this.subprovider = subprovider),
-      map(subprovider => subprovider.rpcProvider),
     )
   }
 
