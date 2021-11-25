@@ -19,10 +19,12 @@
   </ng-container>
   <ng-template #noLoadingContent>
     <div class="flex justify-around">
-      <div class="flex justify-start items-center space-x-2">
+      <div class="flex justify-start items-center">
         <app-spinner class="inline-flex items-center">
         </app-spinner>
-        <span>{{ loadingText }}</span>
+        <span *ngIf="loadingText" class="ml-2">
+          {{ loadingText }}
+        </span>
       </div>
     </div>
   </ng-template>

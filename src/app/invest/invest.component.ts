@@ -12,6 +12,7 @@ import {InvestService, PreInvestData} from '../shared/services/invest.service'
 import {CampaignService, CampaignWithInfo} from '../shared/services/blockchain/campaign/campaign.service'
 import {NameService} from '../shared/services/blockchain/name.service'
 import {CampaignFlavor} from '../shared/services/blockchain/flavors'
+import {AuthProvider} from '../preference/state/preference.store'
 
 @Component({
   selector: 'app-invest',
@@ -112,11 +113,17 @@ export class InvestComponent {
   }
 
   private approveFlow(amount: number) {
-    return this.dialogService.info(
-      'You will be asked to sign the transaction to allow investment from your wallet.',
-    ).pipe(
-      switchMap(res => res ? this.approveAmount(amount) : throwError('USER_DISMISSED_APPROVE_FLOW')),
-    )
+    const approveAmount$ = this.approveAmount(amount)
+    switch (this.sessionQuery.getValue().authProvider) {
+      case AuthProvider.MAGIC:
+        return approveAmount$
+      default:
+        return this.dialogService.info(
+          'You will be asked to sign the transaction to allow investment from your wallet.',
+        ).pipe(
+          switchMap(res => res ? approveAmount$ : throwError('USER_DISMISSED_APPROVE_FLOW')),
+        )
+    }
   }
 
   private approveAmount(amount: number) {
