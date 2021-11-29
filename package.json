@@ -45,6 +45,7 @@
     "@walletconnect/web3-provider": "^1.4.1",
     "browserify-zlib": "^0.2.0",
     "ethers": "^5.1.4",
+    "magic-sdk": "^6.2.1",
     "fx-percentage": "^3.0.1",
     "ipfs-core-types": "^0.5.2",
     "ipfs-http-client": "^50.1.2",
@@ -99,7 +100,7 @@
     "stream-browserify": "^3.0.0",
     "stream-http": "^3.2.0",
     "tailwindcss": "2.2.4",
-    "tokenizer-prototype": "1.0.22",
+    "tokenizer-prototype": "1.0.23",
     "ts-node": "~8.3.0",
     "typechain": "^5.0.0",
     "typescript": "~4.4.4"

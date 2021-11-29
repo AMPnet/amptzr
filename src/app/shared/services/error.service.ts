@@ -32,6 +32,10 @@ export class ErrorService {
         errorRes = errorRes.error
       }
 
+      if (errorRes.message.includes('Magic RPC Error')) {
+        errorRes = errorRes.message as any
+      }
+
       if (errorRes.error instanceof ErrorEvent) { // client-side error
         return action$
       } else if (errorRes.status === 400) {  // server-side error
