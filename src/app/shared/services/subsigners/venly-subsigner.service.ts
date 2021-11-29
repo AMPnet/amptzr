@@ -9,6 +9,7 @@ import {VenlyNetworks} from '../../networks'
 import {environment} from '../../../../environments/environment'
 import {DialogService} from '../dialog.service'
 import {getWindow} from '../../utils/browser'
+import {PreferenceQuery} from '../../../preference/state/preference.query'
 
 @Injectable({
   providedIn: 'root',
@@ -16,7 +17,10 @@ import {getWindow} from '../../utils/browser'
 export class VenlySubsignerService implements Subsigner {
   subprovider!: ArkaneSubprovider
 
+  isAvailable$: Observable<boolean> = defer(() => of(!!this.preferenceQuery.network.venlyConfig))
+
   constructor(private preferenceStore: PreferenceStore,
+              private preferenceQuery: PreferenceQuery,
               private dialogService: DialogService) {
   }
 
@@ -33,12 +37,17 @@ export class VenlySubsignerService implements Subsigner {
       /* webpackChunkName: "@arkane-network/web3-arkane-provider" */
       '@arkane-network/web3-arkane-provider')).pipe(
       concatMap(lib => {
-        const network = VenlyNetworks[this.preferenceStore.getValue().chainID]
+        const venlyConfig = VenlyNetworks[this.preferenceStore.getValue().chainID]
+
+        if (!venlyConfig) {
+          return throwError('Venly not configured for this network.')
+        }
+
         return from(lib.Arkane.createArkaneProviderEngine({
           clientId: environment.arkane.clientID,
           skipAuthentication: true,
-          secretType: network.secretType,
-          environment: network.env,
+          secretType: venlyConfig.secretType as any,
+          environment: venlyConfig.env,
         }))
       }),
       tap(() => this.subprovider = getWindow().Arkane),
@@ -77,9 +86,15 @@ export class VenlySubsignerService implements Subsigner {
   }
 
   manageWallets() {
+    const venlyConfig = VenlyNetworks[this.preferenceStore.getValue().chainID]
+
+    if (!venlyConfig) {
+      return throwError('Venly not configured for this network.')
+    }
+
     return of(this.subprovider.arkaneConnect()).pipe(
       concatMap(arkaneConnect => arkaneConnect.manageWallets(
-        VenlyNetworks[this.preferenceStore.getValue().chainID].secretType,
+        venlyConfig.secretType,
       )),
     )
   }

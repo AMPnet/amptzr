@@ -5,13 +5,15 @@ import {catchError, switchMap, tap} from 'rxjs/operators'
 import {PreferenceQuery} from '../../preference/state/preference.query'
 import {PreferenceStore} from '../../preference/state/preference.store'
 import {ChainID, Networks} from '../networks'
+import {SignerService} from '../services/signer.service'
 
 @Injectable({
   providedIn: 'root',
 })
 export class NetworkGuard implements CanActivate {
   constructor(private preferenceQuery: PreferenceQuery,
-              private preferenceStore: PreferenceStore) {
+              private preferenceStore: PreferenceStore,
+              private signerService: SignerService) {
   }
 
   canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<boolean | UrlTree> {
@@ -27,6 +29,7 @@ export class NetworkGuard implements CanActivate {
           })
         }
       }),
+      switchMap(() => this.signerService.ensureNetwork),
       switchMap(() => of(true)),
       catchError(() => of(false)),
     )

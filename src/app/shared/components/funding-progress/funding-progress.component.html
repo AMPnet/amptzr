@@ -36,9 +36,9 @@
       </div>
       <div *ngIf="data.raised >= data.total || data.softCap > data.total" class="w-full">
         <div>
-            <span class="mt-6 font-bold text-indigo-900 text-lg uppercase">
-              {{ data.raised | currencyDefault }}
-            </span> raised
+          <span class="mt-6 font-bold text-indigo-900 text-lg uppercase">
+            {{ data.raised | currencyDefault }}
+          </span> raised
         </div>
 
         <div class="flex justify-between mt-2">

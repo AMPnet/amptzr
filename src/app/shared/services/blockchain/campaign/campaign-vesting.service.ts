@@ -4,10 +4,10 @@ import {IpfsService} from '../../ipfs/ipfs.service'
 import {PreferenceQuery} from '../../../../preference/state/preference.query'
 import {StablecoinService} from '../stablecoin.service'
 import {
-  CfManagerSoftcap,
-  CfManagerSoftcap__factory,
-  CfManagerSoftcapFactory,
-  CfManagerSoftcapFactory__factory,
+  CfManagerSoftcapVesting,
+  CfManagerSoftcapVesting__factory,
+  CfManagerSoftcapVestingFactory,
+  CfManagerSoftcapVestingFactory__factory,
 } from '../../../../../../types/ethers-contracts'
 import {GasService} from '../gas.service'
 import {BigNumber, BigNumberish, Signer} from 'ethers'
@@ -25,10 +25,10 @@ import {CampaignFlavor} from '../flavors'
 @Injectable({
   providedIn: 'root',
 })
-export class CampaignBasicService {
-  factoryContract$: Observable<CfManagerSoftcapFactory> = this.sessionQuery.provider$.pipe(
-    map(provider => CfManagerSoftcapFactory__factory.connect(
-      this.preferenceQuery.network.tokenizerConfig.cfManagerFactory.basic, provider,
+export class CampaignVestingService {
+  factoryContract$: Observable<CfManagerSoftcapVestingFactory> = this.sessionQuery.provider$.pipe(
+    map(provider => CfManagerSoftcapVestingFactory__factory.connect(
+      this.preferenceQuery.network.tokenizerConfig.cfManagerFactory.vesting, provider,
     )),
   )
 
@@ -42,23 +42,23 @@ export class CampaignBasicService {
               private preferenceQuery: PreferenceQuery) {
   }
 
-  contract(address: string, signerOrProvider: Signer | Provider): CfManagerSoftcap {
-    return CfManagerSoftcap__factory.connect(address, signerOrProvider)
+  contract(address: string, signerOrProvider: Signer | Provider): CfManagerSoftcapVesting {
+    return CfManagerSoftcapVesting__factory.connect(address, signerOrProvider)
   }
 
-  getState(address: string): Observable<CampaignBasicState> {
+  getState(address: string): Observable<CampaignVestingState> {
     return this.sessionQuery.provider$.pipe(
       map(provider => this.contract(address, provider)),
       switchMap(contract => contract.getState()),
     )
   }
 
-  getStateFromCommon(campaign: CampaignCommonState): Observable<CampaignBasicState | undefined> {
-    return campaign.flavor === CampaignFlavor.BASIC ?
+  getStateFromCommon(campaign: CampaignCommonState): Observable<CampaignVestingState | undefined> {
+    return campaign.flavor === CampaignFlavor.VESTING ?
       this.getState(campaign.contractAddress) : of(undefined)
   }
 
-  create(data: CreateBasicCampaignData): Observable<string | undefined> {
+  create(data: CreateVestingCampaignData): Observable<string | undefined> {
     return combineLatest([
       this.signerService.ensureAuth,
       this.factoryContract$,
@@ -85,7 +85,7 @@ export class CampaignBasicService {
             'Processing transaction...',
           )),
           map(receipt => findLog(
-            receipt, contract, contract.interface.getEvent('CfManagerSoftcapCreated'),
+            receipt, contract, contract.interface.getEvent('CfManagerSoftcapVestingCreated'),
           )?.args?.cfManager),
         )
       }),
@@ -106,7 +106,7 @@ export class CampaignBasicService {
     )
   }
 
-  stats(campaignAddress: string): Observable<BasicCampaignStats> {
+  stats(campaignAddress: string): Observable<VestingCampaignStats> {
     return this.getState(campaignAddress).pipe(
       map(campaign => {
         const userMin = this.stablecoin.format(campaign.minInvestment)
@@ -184,7 +184,7 @@ export class CampaignBasicService {
   }
 }
 
-export interface CampaignBasicState {
+export interface CampaignVestingState {
   flavor: string;
   version: string;
   contractAddress: string;
@@ -201,14 +201,19 @@ export interface CampaignBasicState {
   canceled: boolean;
   totalClaimableTokens: BigNumber;
   totalInvestorsCount: BigNumber;
-  totalClaimsCount: BigNumber;
   totalFundsRaised: BigNumber;
   totalTokensSold: BigNumber;
   totalTokensBalance: BigNumber;
   info: string;
+  vestingStarted: boolean;
+  start: BigNumber;
+  cliff: BigNumber;
+  duration: BigNumber;
+  revocable: boolean;
+  revoked: boolean;
 }
 
-interface CreateBasicCampaignData {
+interface CreateVestingCampaignData {
   slug: string,
   assetAddress: string,
   initialPricePerToken: BigNumberish,
@@ -219,7 +224,7 @@ interface CreateBasicCampaignData {
   info: string,
 }
 
-interface BasicCampaignStats {
+interface VestingCampaignStats {
   userMin: number
   userMax: number
   tokenBalance: number

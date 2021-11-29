@@ -26,4 +26,16 @@ export class PreferenceQuery extends Query<PreferenceState> {
   get issuer() {
     return this.getValue().issuer
   }
+
+  get issuerFactories() {
+    return Object.values(this.network.tokenizerConfig.issuerFactory).filter(i => i)
+  }
+
+  get assetFactories() {
+    return Object.values(this.network.tokenizerConfig.assetFactory).filter(i => i)
+  }
+
+  get campaignFactories() {
+    return Object.values(this.network.tokenizerConfig.cfManagerFactory).filter(i => i)
+  }
 }

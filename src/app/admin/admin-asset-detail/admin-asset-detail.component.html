@@ -15,8 +15,12 @@
             <div class="flex flex-col text-lg lg:pr-8">
               <span class="text-4xl mb-8">{{ asset.name ?? 'Unknown' }}</span>
 
-              <div class="flex items-center gap-2">
+              <div class="flex items-center gap-1">
                 <span>Token symbol:</span><b>{{ asset.symbol }}</b>
+                <app-explorer-link [value]="asset.contractAddress" type="token">
+                </app-explorer-link>
+                <app-add-to-metamask [value]="asset.contractAddress">
+                </app-add-to-metamask>
               </div>
 
               <div class="flex items-center gap-2">

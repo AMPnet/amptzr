@@ -9,6 +9,9 @@
                type="text" appCurrencyMask
                id="depositAmount"
                formControlName="amount"/>
+        <p class="py-4" *ngIf="(depositAvailable$ | async) === false">
+          Deposit is currently unavailable for this network. Consider another options.
+        </p>
       </form>
       <div class="flex items-center gap-2 mt-4">
         <p class="text-sm">powered by:</p>
@@ -104,7 +107,8 @@
                      disabled:bg-gray-400"
               text="Next"
               [disabled]="depositForm.get('amount')?.errors?.amountTooLow ||
-                          depositForm.get('amount')?.errors?.amountTooHigh"
+                          depositForm.get('amount')?.errors?.amountTooHigh ||
+                          (depositAvailable$ | async) === false"
               [onClick]="showRamp.bind(this)">
         <ng-template #content>
           Next

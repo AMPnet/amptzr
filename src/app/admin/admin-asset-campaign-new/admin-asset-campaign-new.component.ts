@@ -22,6 +22,8 @@ import {
   CreateCampaignData,
 } from '../../shared/services/blockchain/campaign/campaign.service'
 import {NameService} from '../../shared/services/blockchain/name.service'
+import {CampaignFlavor} from '../../shared/services/blockchain/flavors'
+import {dateToIsoString} from '../../shared/utils/date'
 
 @Component({
   selector: 'app-admin-asset-campaign-new',
@@ -37,6 +39,9 @@ export class AdminAssetCampaignNewComponent {
     this.resolvedAssetData = assetData
     return this.resolvedAssetData
   }
+
+  campaignFlavor = CampaignFlavor
+  campaignFactory = this.preferenceQuery.network.tokenizerConfig.cfManagerFactory
 
   stepType = Step
   step$ = new BehaviorSubject<Step>(Step.CREATION_FIRST)
@@ -102,6 +107,7 @@ export class AdminAssetCampaignNewComponent {
       returnFrom: [{value: undefined, disabled: true}, [Validators.required, Validators.min(0.01), Validators.max(1)]],
       returnTo: [{value: undefined, disabled: true}, [Validators.required, Validators.min(0.01), Validators.max(1)]],
       isIdVerificationRequired: [false, Validators.required],
+      flavor: [CampaignFlavor.BASIC, Validators.required],
     }, {
       validators: [
         this.validMonetaryValues.bind(this),
@@ -149,7 +155,7 @@ export class AdminAssetCampaignNewComponent {
     }
 
     const pricePerToken = this.createForm1.value.hardCap / numOfTokensToSell
-    return Math.round(pricePerToken * 10_000) / 10_000
+    return Math.floor(pricePerToken * 10_000) / 10_000
   }
 
   softCapTokensPercentage(data: AssetData) {
@@ -277,7 +283,7 @@ export class AdminAssetCampaignNewComponent {
         switchMap(uploadRes => this.campaignService.create({
           ...this.preview.data,
           info: uploadRes.path,
-        }, 'CfManagerSoftcapV1')), // TODO: set a correct campaign type from dropdown
+        }, this.preview.flavor)),
         switchMap(campaignAddress =>
           this.dialogService.info(
             'Campaign successfully created! You will be asked to sign a transaction to transfer' +
@@ -458,7 +464,8 @@ export class AdminAssetCampaignNewComponent {
     return this.assetService.transferTokensToCampaign(
       data.asset.contractAddress,
       campaignAddress,
-      this.preview.hardCapTokens,
+      this.preview.hardCap,
+      this.preview.tokenPrice,
     )
   }
 
@@ -480,8 +487,8 @@ export class AdminAssetCampaignNewComponent {
         photo: this.createForm2.value.logo?.[0],
         about: this.createForm2.value.about,
         description: this.createForm2.value.description,
-        startDate: AdminAssetCampaignNewComponent.dateToIsoString(this.createForm2.value.startDate)!,
-        endDate: AdminAssetCampaignNewComponent.dateToIsoString(this.createForm2.value.endDate)!,
+        startDate: dateToIsoString(this.createForm2.value.startDate) || '',
+        endDate: dateToIsoString(this.createForm2.value.endDate) || '',
         return: this.createCampaignReturnObject(),
         newDocuments: this.createForm2.value.documents,
         newsURLs: this.newsUrls.value,
@@ -495,6 +502,7 @@ export class AdminAssetCampaignNewComponent {
         maxInvestment: this.getMaxInvestmentValue(hasMinAndMaxInvestment, data),
         whitelistRequired: this.createForm1.value.isIdVerificationRequired,
       },
+      flavor: this.createForm1.value.flavor as CampaignFlavor,
       tokenPrice: tokenPrice,
       hardCap: this.createForm1.value.hardCap,
       hardCapTokens: hardCapTokens,
@@ -502,14 +510,6 @@ export class AdminAssetCampaignNewComponent {
       softCapTokens: softCapTokens,
       softCapTokensPercentage: this.softCapTokensPercentage(data),
     }
-  }
-
-  private static dateToIsoString(date?: string): string | undefined {
-    if (!date) {
-      return undefined
-    }
-
-    return new Date(date).toISOString()
   }
 }
 
@@ -525,6 +525,7 @@ interface AssetData {
 interface CampaignPreview {
   info: Omit<CampaignUploadInfoData, 'photo' | 'documents'> & { photo?: File }
   data: Omit<CreateCampaignData, 'info'>
+  flavor: CampaignFlavor,
   tokenPrice: number
   hardCap: number
   hardCapTokens: number

@@ -26,7 +26,7 @@ export function createInitialState(): PreferenceState {
     chainID: environment.fixed.chainID || MaticNetwork.chainID,
     issuer: {
       address: environment.fixed.issuer || '',
-      flavor: 'IssuerV1',
+      flavor: IssuerFlavor.BASIC,
     },
   }
 }

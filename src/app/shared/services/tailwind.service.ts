@@ -19,7 +19,7 @@ export class TailwindService {
   )
 
   constructor() {
-    const screens: { [breakpoint: string]: string } = resolveConfig(tailwindConfig).theme.screens || {}
+    const screens: { [breakpoint: string]: string } = (resolveConfig(tailwindConfig).theme.screens as any) || {}
     this.screens = Object.keys(screens)
       .map(key => ({
         name: key,

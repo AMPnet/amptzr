@@ -66,6 +66,10 @@ export class StablecoinService {
               private issuerService: IssuerService) {
   }
 
+  get address() {
+    return this.preferenceQuery.network.tokenizerConfig.defaultStableCoin
+  }
+
   get precision() {
     return this.precisionSub.value
   }

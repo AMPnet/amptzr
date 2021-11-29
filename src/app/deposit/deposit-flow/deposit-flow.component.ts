@@ -15,6 +15,7 @@ import {switchMap} from 'rxjs/operators'
 })
 export class DepositFlowComponent {
   depositForm: FormGroup
+  depositAvailable$ = this.depositRampService.isAvailable$
 
   constructor(private fb: FormBuilder,
               private routerService: RouterService,
