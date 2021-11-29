@@ -9,6 +9,7 @@ export interface IPFSIssuer {
   logo: url | cid
 
   rampApiKey: string
+  magicLinkApiKey: string
   offersDisplaySettings?: cid
 }
 

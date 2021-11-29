@@ -82,10 +82,15 @@ import {AdminCampaignAddTokensComponent} from './admin/admin-campaign-add-tokens
 import {AdminCampaignDetailComponent} from './admin/admin-campaign-detail/admin-campaign-detail.component'
 import {AdminAssetCampaignNewComponent} from './admin/admin-asset-campaign-new/admin-asset-campaign-new.component'
 import {AdminIssuerNewComponent} from './admin/admin-issuer-new/admin-issuer-new.component'
-import {AdminIssuerEditCampaignVisibilityComponent} from './admin/admin-issuer-edit-campaign-visibility/admin-issuer-edit-campaign-visibility.component'
-import {AdminIssuerEditCampaignVisibilityCardComponent} from './admin/admin-issuer-edit-campaign-visibility/admin-issuer-edit-campaign-visibility-card/admin-issuer-edit-campaign-visibility-card.component'
+import {
+  AdminIssuerEditCampaignVisibilityComponent,
+} from './admin/admin-issuer-edit-campaign-visibility/admin-issuer-edit-campaign-visibility.component'
+import {
+  AdminIssuerEditCampaignVisibilityCardComponent,
+} from './admin/admin-issuer-edit-campaign-visibility/admin-issuer-edit-campaign-visibility-card/admin-issuer-edit-campaign-visibility-card.component'
 import {AddToMetamaskComponent} from './shared/components/add-to-metamask/add-to-metamask.component'
 import {ExplorerLinkComponent} from './shared/components/explorer-link/explorer-link.component'
+import {AuthMagicComponent} from './auth/auth-magic/auth-magic.component'
 
 @NgModule({
   declarations: [
@@ -104,6 +109,7 @@ import {ExplorerLinkComponent} from './shared/components/explorer-link/explorer-
     SpinnerComponent,
     InlineAsyncComponent,
     AuthComponent,
+    AuthMagicComponent,
     OfferComponent,
     DepositComponent,
     InvestComponent,

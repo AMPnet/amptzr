@@ -25,7 +25,9 @@ import {AdminCampaignEditComponent} from './admin/admin-campaign-edit/admin-camp
 import {AdminCampaignDetailComponent} from './admin/admin-campaign-detail/admin-campaign-detail.component'
 import {AdminCampaignAddTokensComponent} from './admin/admin-campaign-add-tokens/admin-campaign-add-tokens.component'
 import {AdminIssuerNewComponent} from './admin/admin-issuer-new/admin-issuer-new.component'
-import {AdminIssuerEditCampaignVisibilityComponent} from './admin/admin-issuer-edit-campaign-visibility/admin-issuer-edit-campaign-visibility.component'
+import {
+  AdminIssuerEditCampaignVisibilityComponent,
+} from './admin/admin-issuer-edit-campaign-visibility/admin-issuer-edit-campaign-visibility.component'
 
 const appRoutes: Routes = [
   {

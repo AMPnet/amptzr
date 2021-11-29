@@ -9,6 +9,7 @@ import {DialogService} from '../dialog.service'
 import {SessionQuery} from '../../../session/state/session.query'
 import {SignerService} from '../signer.service'
 import {RouterService} from '../router.service'
+import {AuthProvider} from '../../../preference/state/preference.store'
 
 @Injectable({
   providedIn: 'root',
@@ -76,9 +77,7 @@ export class BackendHttpClient {
     return this.signerService.ensureAuth.pipe(
       map(() => this.sessionQuery.getValue().address!),
       switchMap(address => this.jwtTokenService.getSignPayload(address).pipe(
-        switchMap(resToSign => this.dialogService.info(
-          'You will be asked to authorize yourself by signing a message.',
-        ).pipe(switchMap(confirm => confirm ? of(resToSign) : throwError('SIGNING_DISMISSED')))),
+        switchMap(resToSign => this.authDialog(resToSign)),
         switchMap(resToSign => this.signerService.signMessage(resToSign.payload).pipe(
           catchError(() => throwError('SIGNING_INTERRUPTED')),
         )),
@@ -86,6 +85,17 @@ export class BackendHttpClient {
         this.errorService.handleError(false, true),
       )),
     )
+  }
+
+  private authDialog<T>(payload: T) {
+    switch (this.sessionQuery.getValue().authProvider) {
+      case AuthProvider.MAGIC:
+        return of(payload)
+      default:
+        return this.dialogService.info(
+          'You will be asked to authorize yourself by signing a message.',
+        ).pipe(switchMap(confirm => confirm ? of(payload) : throwError('SIGNING_DISMISSED')))
+    }
   }
 
   logout(): Observable<void> {

@@ -13,6 +13,7 @@ import {TransactionType} from '../shared/services/backend/report.service'
 import {BackendHttpClient} from '../shared/services/backend/backend-http-client.service'
 import {PreferenceQuery} from '../preference/state/preference.query'
 import {BackendUser, BackendUserService} from '../shared/services/backend/backend-user.service'
+import {MagicSubsignerService} from '../shared/services/subsigners/magic-subsigner.service'
 
 @Component({
   selector: 'app-wallet',
@@ -48,7 +49,8 @@ export class WalletComponent {
               public stablecoin: StablecoinService,
               private userService: UserService,
               private backendUserService: BackendUserService,
-              private venly: VenlySubsignerService,
+              private venlySubsignerService: VenlySubsignerService,
+              private magicSubsignerService: MagicSubsignerService,
               private http: BackendHttpClient,
               private router: RouterService) {
   }
@@ -60,9 +62,14 @@ export class WalletComponent {
   }
 
   manageVenlyWallets(): Observable<unknown> {
-    return this.venly.manageWallets().pipe(
-      switchMap(res => res ? this.signerService.login(this.venly, {force: false}) : EMPTY),
+    return this.venlySubsignerService.manageWallets().pipe(
+      switchMap(res => res ? this.signerService.login(this.venlySubsignerService, {force: false}) : EMPTY),
       switchMap(() => this.http.logout()),
     )
   }
+
+  manageMagicWallet(): Observable<unknown> {
+    return this.magicSubsignerService.showSettings()
+  }
+
 }

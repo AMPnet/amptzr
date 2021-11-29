@@ -35,6 +35,7 @@ export class AdminIssuerEditComponent {
       name: ['', Validators.required],
       logo: [undefined],
       rampApiKey: [''],
+      magicLinkApiKey: [''],
     })
     this.updateWalletApproverAddressForm = this.fb.group({
       walletApproverAddress: ['', [Validators.required, AdminIssuerEditComponent.validAddress]],
@@ -55,6 +56,7 @@ export class AdminIssuerEditComponent {
             ...this.updateForm.value,
             name: issuer.infoData.name || '',
             rampApiKey: issuer.infoData.rampApiKey || '',
+            magicLinkApiKey: issuer.infoData.magicLinkApiKey || '',
           })
 
           this.updateWalletApproverAddressForm.reset()
@@ -77,6 +79,7 @@ export class AdminIssuerEditComponent {
         this.updateForm.value.name,
         this.updateForm.value.logo?.[0],
         this.updateForm.value.rampApiKey,
+        this.updateForm.value.magicLinkApiKey,
         issuer.infoData,
       ).pipe(
         switchMap(uploadRes => this.issuerService.updateInfo(issuer.contractAddress, uploadRes.path)),
