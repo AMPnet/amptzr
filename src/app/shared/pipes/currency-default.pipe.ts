@@ -27,11 +27,7 @@ export class CurrencyDefaultPipe implements PipeTransform {
   }
 
   private transformCurrency(value: number | string, format: string, symbol: string): string | null {
-    if (symbol === 'USDC') {
-      return this.currencyPipe.transform(value, 'USD', 'symbol', format, 'en')
-    }
-
-    return this.currencyPipe.transform(value, `${symbol} `, 'code', format, 'en')
+    return this.currencyPipe.transform(value, `${symbol} `, 'code', format, 'hr')
   }
 }
 

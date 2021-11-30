@@ -10,6 +10,8 @@ import {VenlySubsignerService} from '../../shared/services/subsigners/venly-subs
 import {environment} from '../../../environments/environment'
 import {IssuerFlavor} from '../../shared/services/blockchain/flavors'
 import {MagicSubsignerService} from '../../shared/services/subsigners/magic-subsigner.service'
+import {getWindow} from '../../shared/utils/browser'
+import {GnosisSubsignerService} from '../../shared/services/subsigners/gnosis-subsigner.service'
 
 @Injectable({providedIn: 'root'})
 export class PreferenceService {
@@ -17,12 +19,17 @@ export class PreferenceService {
               private preferenceQuery: PreferenceQuery,
               private metamaskSubsignerService: MetamaskSubsignerService,
               private magicSubsignerService: MagicSubsignerService,
+              private gnosisSubsignerService: GnosisSubsignerService,
               private walletConnectSubsignerService: WalletConnectSubsignerService,
               private venlySubsignerService: VenlySubsignerService,
               private signer: SignerService) {
   }
 
   initSigner(): Observable<unknown> {
+    if (getWindow() !== getWindow().parent) {
+      return this.signer.login(this.gnosisSubsignerService)
+    }
+
     return this.preferenceQuery.select().pipe(
       take(1),
       concatMap(pref => {

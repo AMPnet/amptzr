@@ -1,12 +1,13 @@
 import {BigNumber} from 'ethers'
 import {CampaignFlavor} from '../flavors'
+import {cid} from '../../../../../../types/ipfs/campaign'
 
 export interface CampaignCommonState {
   flavor: CampaignFlavor | string;
   version: string;
   contractAddress: string;
   owner: string;
-  info: string;
+  info: cid;
   asset: string;
   stablecoin: string;
   softCap: BigNumber;
