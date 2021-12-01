@@ -13,7 +13,7 @@ import {ErrorService} from '../../error.service'
 import {IPFSAddResult} from '../../ipfs/ipfs.service.types'
 import {Provider} from '@ethersproject/providers'
 import {CampaignBasicService} from './campaign-basic.service'
-import {AssetFlavor, CampaignFlavor} from '../flavors'
+import {CampaignFlavor} from '../flavors'
 import {CampaignCommonState} from './campaign.common'
 import {CampaignVestingService} from './campaign-vesting.service'
 
