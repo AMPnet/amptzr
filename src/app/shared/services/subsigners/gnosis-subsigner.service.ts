@@ -1,13 +1,9 @@
 import {Injectable} from '@angular/core'
 import {Subsigner, SubsignerLoginOpts} from './metamask-subsigner.service'
-import {combineLatest, defer, EMPTY, from, Observable, of} from 'rxjs'
+import {combineLatest, defer, EMPTY, from, Observable} from 'rxjs'
 import {providers} from 'ethers'
-import {concatMap, map, switchMap, take, tap} from 'rxjs/operators'
+import {concatMap, map, switchMap, tap} from 'rxjs/operators'
 import {AuthProvider, PreferenceStore} from '../../../preference/state/preference.store'
-import {PreferenceQuery} from '../../../preference/state/preference.query'
-import {MatDialog} from '@angular/material/dialog'
-import {IssuerService} from '../blockchain/issuer/issuer.service'
-import {getWindow} from '../../utils/browser'
 import {SafeAppProvider} from '@gnosis.pm/safe-apps-provider'
 
 @Injectable({
@@ -16,12 +12,7 @@ import {SafeAppProvider} from '@gnosis.pm/safe-apps-provider'
 export class GnosisSubsignerService implements Subsigner {
   subprovider!: SafeAppProvider
 
-  constructor(
-    private preferenceStore: PreferenceStore,
-    private preferenceQuery: PreferenceQuery,
-    private issuerService: IssuerService,
-    private matDialog: MatDialog,
-  ) {
+  constructor(private preferenceStore: PreferenceStore) {
   }
 
   login(opts: SubsignerLoginOpts): Observable<providers.JsonRpcSigner> {
@@ -39,7 +30,7 @@ export class GnosisSubsignerService implements Subsigner {
     return from(signer.getAddress()).pipe(
       tap(address => this.preferenceStore.update({
         address: address,
-        authProvider: AuthProvider.METAMASK,
+        authProvider: AuthProvider.GNOSIS_SAFE,
       })),
       map(() => signer),
     )

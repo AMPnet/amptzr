@@ -26,7 +26,7 @@ export class PreferenceService {
   }
 
   initSigner(): Observable<unknown> {
-    if (getWindow() !== getWindow().parent) {
+    if (getWindow() !== getWindow().parent) { // detect app running in iframe
       return this.signer.login(this.gnosisSubsignerService)
     }
 

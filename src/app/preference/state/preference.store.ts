@@ -43,5 +43,6 @@ export enum AuthProvider {
   METAMASK = 'METAMASK',
   MAGIC = 'MAGIC',
   WALLET_CONNECT = 'WALLET_CONNECT',
+  GNOSIS_SAFE = 'GNOSIS_SAFE',
   VENLY = 'VENLY',
 }
