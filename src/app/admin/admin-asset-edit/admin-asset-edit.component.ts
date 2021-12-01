@@ -1,5 +1,5 @@
 import {ChangeDetectionStrategy, Component} from '@angular/core'
-import {FormBuilder, FormGroup} from '@angular/forms'
+import {FormBuilder, FormGroup, Validators} from '@angular/forms'
 import {BehaviorSubject, Observable} from 'rxjs'
 import {withStatus, WithStatus} from '../../shared/utils/observables'
 import {RouterService} from '../../shared/services/router.service'
@@ -8,6 +8,8 @@ import {switchMap, tap} from 'rxjs/operators'
 import {ActivatedRoute} from '@angular/router'
 import {AssetService, CommonAssetWithInfo} from '../../shared/services/blockchain/asset/asset.service'
 import {NameService} from '../../shared/services/blockchain/name.service'
+import {AdminIssuerEditComponent} from '../admin-issuer-edit/admin-issuer-edit.component'
+import {AssetFlavor} from '../../shared/services/blockchain/flavors'
 
 @Component({
   selector: 'app-admin-asset-edit',
@@ -20,6 +22,9 @@ export class AdminAssetEditComponent {
   asset$: Observable<WithStatus<CommonAssetWithInfo>>
 
   updateForm: FormGroup
+  updateOwnerAddressForm: FormGroup
+
+  isAdvancedMode = false
 
   constructor(private route: ActivatedRoute,
               private routerService: RouterService,
@@ -27,8 +32,13 @@ export class AdminAssetEditComponent {
               private assetService: AssetService,
               private dialogService: DialogService,
               private fb: FormBuilder) {
+    this.isAdvancedMode = this.route.snapshot.queryParams.advanced
+
     this.updateForm = this.fb.group({
       logo: [undefined],
+    })
+    this.updateOwnerAddressForm = this.fb.group({
+      ownerAddress: ['', [Validators.required, AdminIssuerEditComponent.validAddress]],
     })
 
     const assetId = this.route.snapshot.params.id
@@ -45,6 +55,11 @@ export class AdminAssetEditComponent {
           this.updateForm.setValue({
             ...this.updateForm.value,
           })
+
+          this.updateOwnerAddressForm.reset()
+          this.updateOwnerAddressForm.setValue({
+            ownerAddress: asset.value.owner || '',
+          })
         }
       }),
     )
@@ -58,6 +73,17 @@ export class AdminAssetEditComponent {
         switchMap(uploadRes => this.assetService.updateInfo(asset.contractAddress, uploadRes.path)),
         switchMap(() => this.dialogService.info('Asset successfully updated!', false)),
         tap(() => this.routerService.navigate([`/admin/assets/${asset.contractAddress}`])),
+      )
+    }
+  }
+
+  updateOwnerAddress(asset: CommonAssetWithInfo, flavor: AssetFlavor | string) {
+    return () => {
+      return this.assetService.changeOwner(
+        asset.contractAddress, this.updateOwnerAddressForm.value.ownerAddress, flavor as AssetFlavor,
+      ).pipe(
+        switchMap(() => this.dialogService.info('Owner changed successfully!', false)),
+        tap(() => this.routerService.navigate(['/admin/issuer'])),
       )
     }
   }

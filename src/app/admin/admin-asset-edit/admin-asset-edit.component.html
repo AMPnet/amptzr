@@ -53,6 +53,24 @@
                     </button>
                   </div>
                 </div>
+
+                <form [formGroup]="updateOwnerAddressForm" *ngIf="isAdvancedMode">
+                  <div class="flex flex-col gap-1 mt-6 max-w-md">
+                    <label class="text-lg font-semibold">
+                      OWNER ADDRESS
+                    </label>
+                    <div class="flex gap-2">
+                      <input class="flex-grow border-gray-400 rounded-lg" type="text" formControlName="ownerAddress">
+                      <button app-action-button
+                              class="bg-indigo-800 disabled:bg-gray-400 text-white rounded-full px-6"
+                              text="Update"
+                              [disabled]="!updateOwnerAddressForm.dirty ||
+                                          !updateOwnerAddressForm.valid"
+                              [onClick]="updateOwnerAddress(asset, asset.flavor).bind(this)">
+                      </button>
+                    </div>
+                  </div>
+                </form>
               </div>
             </div>
           </div>

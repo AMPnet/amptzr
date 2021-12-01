@@ -14,7 +14,7 @@ import {IPFSAddResult} from '../../ipfs/ipfs.service.types'
 import {AssetBasicService, AssetState} from './asset-basic.service'
 import {Provider} from '@ethersproject/providers'
 import {AssetTransferableService, TransferableAssetState} from './asset-transferable.service'
-import {AssetFlavor} from '../flavors'
+import {AssetFlavor, IssuerFlavor} from '../flavors'
 import {AssetCommonState} from './asset.common'
 import {AssetSimpleService, SimpleAssetState} from './asset-simple.service'
 import {TokenPrice} from '../../../utils/token-price'
@@ -163,6 +163,17 @@ export class AssetService {
         switchMap(signerAddress => contract.balanceOf(signerAddress)),
       )),
     )
+  }
+
+  changeOwner(assetAddress: string, ownerAddress: string, flavor: AssetFlavor) {
+    switch (flavor) {
+      case AssetFlavor.BASIC:
+        return this.assetBasicService.changeOwner(assetAddress, ownerAddress)
+      case AssetFlavor.TRANSFERABLE:
+        return this.assetTransferableService.changeOwner(assetAddress, ownerAddress)
+      case AssetFlavor.SIMPLE:
+        return this.assetSimpleService.changeOwner(assetAddress, ownerAddress)
+    }
   }
 }
 

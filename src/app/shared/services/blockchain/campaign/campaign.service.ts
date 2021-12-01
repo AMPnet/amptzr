@@ -13,7 +13,7 @@ import {ErrorService} from '../../error.service'
 import {IPFSAddResult} from '../../ipfs/ipfs.service.types'
 import {Provider} from '@ethersproject/providers'
 import {CampaignBasicService} from './campaign-basic.service'
-import {CampaignFlavor} from '../flavors'
+import {AssetFlavor, CampaignFlavor} from '../flavors'
 import {CampaignCommonState} from './campaign.common'
 import {CampaignVestingService} from './campaign-vesting.service'
 
@@ -184,6 +184,15 @@ export class CampaignService {
         contract.investmentAmount(this.sessionQuery.getValue().address!)),
       map(res => this.stablecoin.format(res)),
     )
+  }
+
+  changeOwner(campaignAddress: string, ownerAddress: string, flavor: CampaignFlavor) {
+    switch (flavor) {
+      case CampaignFlavor.BASIC:
+        return this.campaignBasicService.changeOwner(campaignAddress, ownerAddress)
+      case CampaignFlavor.VESTING:
+        return this.campaignVestingService.changeOwner(campaignAddress, ownerAddress)
+    }
   }
 
   private uploadMultipleDocuments(documents: File[] | undefined): Observable<IPFSDocument[]> {
