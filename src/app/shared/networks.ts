@@ -1,5 +1,4 @@
 import {providers, utils} from 'ethers'
-import {SecretType} from '@arkane-network/arkane-connect/dist/src/models/SecretType'
 
 export enum ChainID {
   MATIC_MAINNET = 137, // Polygon
@@ -20,7 +19,6 @@ export interface Network {
   rpcURLs: string[],
   explorerURLs: string[],
   tokenizerConfig: TokenizerConfig,
-  venlyConfig?: VenlyConfig,
   ramp?: RampConfig,
 }
 
@@ -45,11 +43,6 @@ interface TokenizerConfig {
   feeManager: string,
   defaultWalletApprover: string,
   defaultStableCoin: string,
-}
-
-interface VenlyConfig {
-  secretType: SecretType
-  env: 'staging' | 'prod'
 }
 
 interface RampConfig {
@@ -90,10 +83,6 @@ export const MaticNetwork: Network = {
     defaultWalletApprover: '0xaE88C599DA07c186Ae575A336c92b1F20E64A9f9',
     defaultStableCoin: '0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174',
   },
-  venlyConfig: {
-    secretType: SecretType.MATIC,
-    env: 'prod',
-  },
   ramp: {
     swapAsset: 'MATIC_USDC',
   },
@@ -131,10 +120,6 @@ export const MumbaiNetwork: Network = {
     feeManager: '0x9448A98B90e3292379b58BF6CD7fB2EF872ba4e1',
     defaultWalletApprover: '0x622b12839a32FD4C9bc8B1Ff5D4D96DA41C86356',
     defaultStableCoin: '0x9733aa0fb74a01f058fbeb0ad9da3f483058908e',
-  },
-  venlyConfig: {
-    secretType: SecretType.MATIC,
-    env: 'staging',
   },
   ramp: {
     swapAsset: 'MATIC_USDC2',
@@ -223,8 +208,4 @@ const getMetamaskNetwork = (network: Network): AddEthereumChainParameter => ({
 
 export const MetamaskNetworks = Object.fromEntries(Object.entries(Networks)
   .map((entry) => [entry[0], getMetamaskNetwork(entry[1])]),
-)
-
-export const VenlyNetworks = Object.fromEntries(Object.entries(Networks)
-  .map((entry) => [entry[0], entry[1].venlyConfig]),
 )

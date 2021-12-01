@@ -25,8 +25,6 @@ export class AuthProviderNamePipe implements PipeTransform {
         return 'Wallet Connect'
       case AuthProvider.GNOSIS_SAFE:
         return 'Gnosis Safe'
-      case AuthProvider.VENLY:
-        return 'Venly'
     }
   }
 }
