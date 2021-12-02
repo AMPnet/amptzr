@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core'
-import {catchError, concatMap, take, timeout} from 'rxjs/operators'
+import {catchError, concatMap, switchMap, take, timeout} from 'rxjs/operators'
 import {AuthProvider, PreferenceStore} from './preference.store'
 import {EMPTY, Observable, of} from 'rxjs'
 import {PreferenceQuery} from './preference.query'
@@ -11,6 +11,7 @@ import {IssuerFlavor} from '../../shared/services/blockchain/flavors'
 import {MagicSubsignerService} from '../../shared/services/subsigners/magic-subsigner.service'
 import {getWindow} from '../../shared/utils/browser'
 import {GnosisSubsignerService} from '../../shared/services/subsigners/gnosis-subsigner.service'
+import {providers} from 'ethers'
 
 @Injectable({providedIn: 'root'})
 export class PreferenceService {
@@ -24,12 +25,26 @@ export class PreferenceService {
   }
 
   initSigner(): Observable<unknown> {
-    if (getWindow() !== getWindow().parent) { // detect app running in iframe
-      return this.signer.login(this.gnosisSubsignerService)
-    }
+    return this.tryImplicitLogin.pipe(
+      switchMap(() => this.tryPreviousLogin),
+      timeout(4000),
+      catchError(() => {
+        return this.signer.logout().pipe(concatMap(() => EMPTY))
+      }),
+    )
+  }
 
-    return this.preferenceQuery.select().pipe(
-      take(1),
+  private get tryImplicitLogin(): Observable<providers.JsonRpcSigner | undefined> {
+    return of(getWindow() !== getWindow().parent).pipe(
+      switchMap(isIframe => isIframe ?
+        this.signer.login(this.gnosisSubsignerService).pipe(
+          catchError(() => of(undefined)),
+        ) : of(undefined)),
+    )
+  }
+
+  private get tryPreviousLogin(): Observable<providers.JsonRpcSigner | undefined> {
+    return of(this.preferenceQuery.getValue()).pipe(
       concatMap(pref => {
         if (pref.address === '') {
           return EMPTY
@@ -44,10 +59,6 @@ export class PreferenceService {
           default:
             return EMPTY
         }
-      }),
-      timeout(4000),
-      catchError(() => {
-        return this.signer.logout().pipe(concatMap(() => EMPTY))
       }),
     )
   }
