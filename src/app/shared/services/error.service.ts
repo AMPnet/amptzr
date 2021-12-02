@@ -26,11 +26,11 @@ export class ErrorService {
       let errorRes = err as HttpErrorResponse
       let action$: Observable<any> = throwError(err)
 
-      if ((errorRes as any).code === 'UNPREDICTABLE_GAS_LIMIT') {
+      if ((errorRes as any)?.code === 'UNPREDICTABLE_GAS_LIMIT') {
         errorRes = errorRes.error
       }
 
-      if (errorRes.message.includes('Magic RPC Error')) {
+      if (errorRes.message?.includes('Magic RPC Error')) {
         errorRes = errorRes.message as any
       }
 

@@ -69,7 +69,6 @@ export class BackendHttpClient {
       concatMap(isLoggedIn => isLoggedIn ?
         of(undefined) : this.loginProcedure,
       ),
-      catchError(() => EMPTY),
     )
   }
 
@@ -79,7 +78,7 @@ export class BackendHttpClient {
       switchMap(address => this.jwtTokenService.getSignPayload(address).pipe(
         switchMap(resToSign => this.authDialog(resToSign)),
         switchMap(resToSign => this.signerService.signMessage(resToSign.payload).pipe(
-          catchError(() => throwError('SIGNING_INTERRUPTED')),
+          catchError(() => throwError(() => 'SIGNING_INTERRUPTED')),
         )),
         switchMap(signedPayload => this.jwtTokenService.authJWT(address, signedPayload)),
         this.errorService.handleError(false, true),
@@ -94,7 +93,7 @@ export class BackendHttpClient {
       default:
         return this.dialogService.info(
           'You will be asked to authorize yourself by signing a message.',
-        ).pipe(switchMap(confirm => confirm ? of(payload) : throwError('SIGNING_DISMISSED')))
+        ).pipe(switchMap(confirm => confirm ? of(payload) : throwError(() => 'SIGNING_DISMISSED')))
     }
   }
 

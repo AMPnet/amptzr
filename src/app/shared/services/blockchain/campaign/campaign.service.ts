@@ -116,7 +116,7 @@ export class CampaignService {
           case CampaignFlavor.VESTING:
             return this.campaignVestingService.create(data)
           default:
-            return throwError(`create not implemented for campaign flavor ${flavor}`)
+            return throwError(() => `create not implemented for campaign flavor ${flavor}`)
         }
       }),
     )
@@ -129,7 +129,7 @@ export class CampaignService {
       case CampaignFlavor.VESTING:
         return this.campaignVestingService.invest(address, amount)
       default:
-        return throwError(`invest not implemented for campaign flavor ${flavor}`)
+        return throwError(() => `invest not implemented for campaign flavor ${flavor}`)
     }
   }
 
@@ -140,7 +140,7 @@ export class CampaignService {
       case CampaignFlavor.VESTING:
         return this.campaignVestingService.cancelInvestment(address)
       default:
-        return throwError(`cancelInvestment not implemented for campaign flavor ${flavor}`)
+        return throwError(() => `cancelInvestment not implemented for campaign flavor ${flavor}`)
     }
   }
 
@@ -162,7 +162,7 @@ export class CampaignService {
       case CampaignFlavor.VESTING:
         return this.campaignVestingService.stats(address)
       default:
-        return throwError(`stats not implemented for campaign flavor ${flavor}`)
+        return throwError(() => `stats not implemented for campaign flavor ${flavor}`)
     }
   }
 
@@ -173,7 +173,7 @@ export class CampaignService {
       case CampaignFlavor.VESTING:
         return this.campaignVestingService.finalize(address)
       default:
-        return throwError(`finalize not implemented for campaign flavor ${flavor}`)
+        return throwError(() => `finalize not implemented for campaign flavor ${flavor}`)
     }
   }
 

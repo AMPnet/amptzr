@@ -26,7 +26,7 @@ export class MetamaskSubsignerService implements Subsigner {
     return of(getWindow()?.ethereum).pipe(
       concatMap(web3Provider => web3Provider ?
         of(new providers.Web3Provider(web3Provider, 'any')
-          .getSigner()) : throwError('NO_METAMASK')),
+          .getSigner()) : throwError(() => 'NO_METAMASK')),
     )
   }
 
@@ -48,18 +48,18 @@ export class MetamaskSubsignerService implements Subsigner {
       // TODO: wait for issue fix: https://github.com/MetaMask/metamask-mobile/issues/3312
       // catchError(err => err.code === 4902 ? this.addEthereumChain(signer).pipe(
       //   concatMap(() => this.checkChainID(signer, opts)),
-      // ) : throwError('UNHANDLED_SWITCH_CHAIN_ERROR')),
+      // ) : throwError(() => 'UNHANDLED_SWITCH_CHAIN_ERROR')),
       catchError(() => this.addEthereumChain(signer).pipe(
         concatMap(() => this.checkChainID(signer, opts)),
       )),
-    ).pipe(catchError(() => throwError('CANNOT_SWITCH_CHAIN')))
+    ).pipe(catchError(() => throwError(() => 'CANNOT_SWITCH_CHAIN')))
   }
 
   private addEthereumChain(signer: providers.JsonRpcSigner) {
     return from(signer.provider.send('wallet_addEthereumChain',
       [MetamaskNetworks[this.preferenceStore.getValue().chainID]])).pipe(
       concatMap(addChainResult => addChainResult === null ?
-        of(addChainResult) : throwError('CANNOT_CHANGE_NETWORK')),
+        of(addChainResult) : throwError(() => 'CANNOT_CHANGE_NETWORK')),
     )
   }
 
@@ -84,10 +84,10 @@ export class MetamaskSubsignerService implements Subsigner {
     return from(signer.getAddress()).pipe(
       catchError(() => opts.force ? from(signer.provider.send('eth_requestAccounts', [])).pipe(
         map(addresses => addresses?.[0]),
-      ) : throwError('NO_ADDRESS')),
-      concatMap(address => !!address ? of(address) : throwError('NO_ADDRESS')),
+      ) : throwError(() => 'NO_ADDRESS')),
+      concatMap(address => !!address ? of(address) : throwError(() => 'NO_ADDRESS')),
       concatMap(address => opts.wallet ? (
-        opts.wallet === address ? of(address) : throwError('WRONG_ADDRESS')
+        opts.wallet === address ? of(address) : throwError(() => 'WRONG_ADDRESS')
       ) : of(address)),
     )
   }

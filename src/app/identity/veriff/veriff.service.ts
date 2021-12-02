@@ -19,7 +19,7 @@ export class VeriffService {
   openVeriffDialog(): Observable<void> {
     return this.matDialog.open(VeriffComponent).afterClosed().pipe(
       switchMap(isSuccess => !!isSuccess ? of(undefined) :
-        throwError('VERIFF_DISMISSED')),
+        throwError(() => 'VERIFF_DISMISSED')),
     )
   }
 

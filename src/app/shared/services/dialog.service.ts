@@ -87,7 +87,7 @@ export class DialogService {
       onConfirm: action$,
     }).pipe(
       switchMap(res => res.confirmed ? of(res.onConfirmResult) :
-        throwError('PERMISSION_POPUP_DISMISSED')),
+        throwError(() => 'PERMISSION_POPUP_DISMISSED')),
     )
   }
 }
