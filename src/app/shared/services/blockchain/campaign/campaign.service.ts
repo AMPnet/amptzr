@@ -2,7 +2,6 @@ import {Injectable} from '@angular/core'
 import {combineLatest, from, Observable, of, throwError} from 'rxjs'
 import {IpfsService, IPFSText} from '../../ipfs/ipfs.service'
 import {StablecoinService} from '../stablecoin.service'
-import {cid, IPFSCampaign, IPFSDocument, iso8601, ReturnFrequency} from '../../../../../../types/ipfs/campaign'
 import {GasService} from '../gas.service'
 import {BigNumber, BigNumberish, Signer} from 'ethers'
 import {map, switchMap} from 'rxjs/operators'
@@ -16,6 +15,9 @@ import {CampaignBasicService} from './campaign-basic.service'
 import {CampaignFlavor} from '../flavors'
 import {CampaignCommonState} from './campaign.common'
 import {CampaignVestingService} from './campaign-vesting.service'
+import {IPFSCampaign, ReturnFrequency} from '../../../../../../types/ipfs/campaign'
+import {cid, IPFSDocument} from '../../../../../../types/ipfs/common'
+import {iso8601} from '../../../../../../types/common'
 
 @Injectable({
   providedIn: 'root',

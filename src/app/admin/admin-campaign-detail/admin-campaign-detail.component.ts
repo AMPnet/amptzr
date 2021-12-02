@@ -146,12 +146,12 @@ export class AdminCampaignDetailComponent {
 
   returnValue(campaign: CampaignWithInfo) {
     if (campaign.infoData.return?.to) {
-      const returnFrom = this.percentPipe.transform(campaign.infoData.return.from)
-      const returnTo = this.percentPipe.transform(campaign.infoData.return.to)
+      const returnFrom = this.percentPipe.transform(campaign.infoData.return.from, '1.0-2')
+      const returnTo = this.percentPipe.transform(campaign.infoData.return.to, '1.0-2')
       return `From ${returnFrom} to ${returnTo}`
     }
 
-    return this.percentPipe.transform(campaign.infoData.return?.from?.toString())
+    return this.percentPipe.transform(campaign.infoData.return?.from?.toString(), '1.0-2')
   }
 
   finalize(campaign: CampaignWithInfo) {

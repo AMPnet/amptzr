@@ -1,7 +1,7 @@
 import {BaseContract, providers} from 'ethers'
 import {EventFragment} from '@ethersproject/abi'
-import {TypedEventFilter, TypedListener} from '../../../../types/ethers-contracts/commons'
 import {fromEventPattern, Observable, of} from 'rxjs'
+import {TypedEvent, TypedEventFilter, TypedListener} from '../../../../types/ethers-contracts/common'
 
 export function findLog(
   receipt: providers.TransactionReceipt,
@@ -20,8 +20,8 @@ export function findLog(
 }
 
 export function contractEvent<T1 extends Array<any>, T2>(
-  contract: BaseContract, eventFilter: TypedEventFilter<T1, T2>,
-): Observable<TypedListener<T1, T2>> {
+  contract: BaseContract, eventFilter: TypedEventFilter<TypedEvent<T1, T2>>,
+): Observable<TypedListener<TypedEvent<T1, T2>>> {
   return fromEventPattern(
     handler => contract.on(eventFilter, handler),
     handler => contract.off(eventFilter, handler),

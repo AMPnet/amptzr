@@ -4,13 +4,13 @@ import {withStatus, WithStatus} from '../../shared/utils/observables'
 import {ActivatedRoute} from '@angular/router'
 import {switchMap, tap} from 'rxjs/operators'
 import {FormArray, FormBuilder, FormControl, FormGroup, ValidationErrors, Validators} from '@angular/forms'
-import {ReturnFrequencies, ReturnFrequency} from 'types/ipfs/campaign'
 import {quillMods} from 'src/app/shared/utils/quill'
 import {DialogService} from '../../shared/services/dialog.service'
 import {RouterService} from '../../shared/services/router.service'
 import {CampaignService, CampaignWithInfo} from '../../shared/services/blockchain/campaign/campaign.service'
 import {NameService} from '../../shared/services/blockchain/name.service'
 import {dateToIsoString} from '../../shared/utils/date'
+import {ReturnFrequency} from '../../../../types/ipfs/campaign'
 
 @Component({
   selector: 'app-admin-campaign-edit',
@@ -28,12 +28,11 @@ export class AdminCampaignEditComponent {
 
   quillMods = quillMods
 
-  readonly ReturnFrequencies: ReturnFrequencies = ['monthly', 'quarterly', 'semi-annual', 'annual']
-  readonly ReturnFrequencyNames = {
-    'monthly': 'Monthly',
-    'quarterly': 'Quarterly',
-    'semi-annual': 'Semi-annualy',
-    'annual': 'Annualy',
+  readonly returnFrequencyNames: { [key in ReturnFrequency]: string } = {
+    [ReturnFrequency.MONTHLY]: 'Monthly',
+    [ReturnFrequency.QUARTERLY]: 'Quarterly',
+    [ReturnFrequency.SEMI_ANNUALLY]: 'Semi-annualy',
+    [ReturnFrequency.ANNUALLY]: 'Annualy',
   }
 
   constructor(private campaignService: CampaignService,

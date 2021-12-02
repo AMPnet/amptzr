@@ -3,7 +3,6 @@ import {FormArray, FormBuilder, FormControl, FormGroup, ValidationErrors, Valida
 import {PreferenceQuery} from '../../preference/state/preference.query'
 import {getWindow} from '../../shared/utils/browser'
 import {IssuerPathPipe} from '../../shared/pipes/issuer-path.pipe'
-import {ReturnFrequencies, ReturnFrequency} from 'types/ipfs/campaign'
 import {DatePipe, PercentPipe, ViewportScroller} from '@angular/common'
 import {BigNumber} from 'ethers'
 import {StablecoinService} from '../../shared/services/blockchain/stablecoin.service'
@@ -24,6 +23,7 @@ import {
 import {NameService} from '../../shared/services/blockchain/name.service'
 import {CampaignFlavor} from '../../shared/services/blockchain/flavors'
 import {dateToIsoString} from '../../shared/utils/date'
+import {ReturnFrequency} from '../../../../types/ipfs/campaign'
 
 @Component({
   selector: 'app-admin-asset-campaign-new',
@@ -53,12 +53,11 @@ export class AdminAssetCampaignNewComponent {
 
   quillMods = quillMods
 
-  readonly ReturnFrequencies: ReturnFrequencies = ['monthly', 'quarterly', 'semi-annual', 'annual']
-  readonly ReturnFrequencyNames = {
-    'monthly': 'Monthly',
-    'quarterly': 'Quarterly',
-    'semi-annual': 'Semi-annually',
-    'annual': 'Annually',
+  readonly returnFrequencyNames: { [key in ReturnFrequency]: string } = {
+    [ReturnFrequency.MONTHLY]: 'Monthly',
+    [ReturnFrequency.QUARTERLY]: 'Quarterly',
+    [ReturnFrequency.SEMI_ANNUALLY]: 'Semi-annualy',
+    [ReturnFrequency.ANNUALLY]: 'Annualy',
   }
 
   constructor(private campaignService: CampaignService,
@@ -328,7 +327,7 @@ export class AdminAssetCampaignNewComponent {
 
   previewReturn() {
     if (this.preview.info.return.frequency) {
-      const frequency = this.ReturnFrequencyNames[this.preview.info.return.frequency]
+      const frequency = this.returnFrequencyNames[this.preview.info.return.frequency]
       const from = this.percentPipe.transform(this.preview.info.return.from)
 
       if (this.preview.info.return.to) {

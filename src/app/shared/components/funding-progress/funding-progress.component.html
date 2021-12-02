@@ -29,7 +29,7 @@
         </div>
         <div class="flex justify-between">
           <div class="font-bold text-indigo-800 text-sm uppercase">
-            {{ (data.raisedPercentage / data.softCapPercentage) | percent }} funded
+            {{ (data.raisedPercentage / data.softCapPercentage) | percent:'1.0-2' }} funded
           </div>
           <div class="font-light text-gray-500 text-sm">{{ dateRange(campaign) }}</div>
         </div>

@@ -26,7 +26,7 @@
             <span *ngIf="campaignData.tokensPercentage > 0">
               Selling <b>{{ campaignData.campaignTokens | number }}</b> of
               <b>{{ campaignData.assetTokens | number }}</b>
-              (<b>{{ campaignData.tokensPercentage | percent }}</b>) token shares
+              (<b>{{ campaignData.tokensPercentage | percent:'1.0-2' }}</b>) token shares
             </span>
 
             <span *ngIf="campaignData.tokensPercentage === 0">
