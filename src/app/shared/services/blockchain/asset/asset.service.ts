@@ -164,6 +164,17 @@ export class AssetService {
       )),
     )
   }
+
+  changeOwner(assetAddress: string, ownerAddress: string, flavor: AssetFlavor) {
+    switch (flavor) {
+      case AssetFlavor.BASIC:
+        return this.assetBasicService.changeOwner(assetAddress, ownerAddress)
+      case AssetFlavor.TRANSFERABLE:
+        return this.assetTransferableService.changeOwner(assetAddress, ownerAddress)
+      case AssetFlavor.SIMPLE:
+        return this.assetSimpleService.changeOwner(assetAddress, ownerAddress)
+    }
+  }
 }
 
 export type AssetInfo = { infoData: IPFSAsset }

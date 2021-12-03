@@ -121,7 +121,7 @@ export class AdminIssuerEditComponent {
     })
   }
 
-  private static validAddress(control: AbstractControl): ValidationErrors | null {
+  static validAddress(control: AbstractControl): ValidationErrors | null {
     if (/^0x[a-fA-F0-9]{40}$/.test(control.value)) {
       return null
     }

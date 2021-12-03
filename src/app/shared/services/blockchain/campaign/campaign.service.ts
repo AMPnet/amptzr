@@ -188,6 +188,15 @@ export class CampaignService {
     )
   }
 
+  changeOwner(campaignAddress: string, ownerAddress: string, flavor: CampaignFlavor) {
+    switch (flavor) {
+      case CampaignFlavor.BASIC:
+        return this.campaignBasicService.changeOwner(campaignAddress, ownerAddress)
+      case CampaignFlavor.VESTING:
+        return this.campaignVestingService.changeOwner(campaignAddress, ownerAddress)
+    }
+  }
+
   private uploadMultipleDocuments(documents: File[] | undefined): Observable<IPFSDocument[]> {
     if (documents && documents.length > 0) {
       return combineLatest(documents.map(this.uploadDocument.bind(this)))

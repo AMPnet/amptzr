@@ -11,6 +11,8 @@ import {CampaignService, CampaignWithInfo} from '../../shared/services/blockchai
 import {NameService} from '../../shared/services/blockchain/name.service'
 import {dateToIsoString} from '../../shared/utils/date'
 import {ReturnFrequency} from '../../../../types/ipfs/campaign'
+import {AdminIssuerEditComponent} from '../admin-issuer-edit/admin-issuer-edit.component'
+import {CampaignFlavor} from '../../shared/services/blockchain/flavors'
 
 @Component({
   selector: 'app-admin-campaign-edit',
@@ -25,6 +27,7 @@ export class AdminCampaignEditComponent {
   updateForm: FormGroup
   updateInfoForm: FormGroup
   newsUrls: FormArray
+  updateOwnerAddressForm: FormGroup
 
   quillMods = quillMods
 
@@ -41,6 +44,8 @@ export class AdminCampaignEditComponent {
               private routerService: RouterService,
               private dialogService: DialogService,
               private fb: FormBuilder) {
+    this.isAdvancedMode = this.route.snapshot.queryParams.advanced
+
     this.updateForm = this.fb.group({
       name: ['', Validators.required],
       logo: [undefined],
@@ -65,9 +70,11 @@ export class AdminCampaignEditComponent {
     })
     this.newsUrls = this.updateForm.get('newsUrls') as FormArray
 
-    this.isAdvancedMode = this.route.snapshot.queryParams.advanced
     this.updateInfoForm = this.fb.group({
       info: ['', Validators.required],
+    })
+    this.updateOwnerAddressForm = this.fb.group({
+      ownerAddress: ['', [Validators.required, AdminIssuerEditComponent.validAddress]],
     })
 
     const campaignId = this.route.snapshot.params.campaignId
@@ -100,6 +107,11 @@ export class AdminCampaignEditComponent {
 
           this.updateInfoForm.setValue({
             info: campaign.value.info,
+          })
+
+          this.updateOwnerAddressForm.reset()
+          this.updateOwnerAddressForm.setValue({
+            ownerAddress: campaign.value.owner || '',
           })
 
           if (!campaign.value.infoData.return.from) {
@@ -209,6 +221,17 @@ export class AdminCampaignEditComponent {
       return this.campaignService.updateInfo(campaign.contractAddress, this.updateInfoForm.value.info).pipe(
         switchMap(() => this.dialogService.info('Campaign info successfully updated!', false)),
         switchMap(() => this.routerService.navigate(['..'], {relativeTo: this.route})),
+      )
+    }
+  }
+
+  updateOwnerAddress(campaign: CampaignWithInfo, flavor: CampaignFlavor | string) {
+    return () => {
+      return this.campaignService.changeOwner(
+        campaign.contractAddress, this.updateOwnerAddressForm.value.ownerAddress, flavor as CampaignFlavor,
+      ).pipe(
+        switchMap(() => this.dialogService.info('Owner changed successfully!', false)),
+        tap(() => this.routerService.navigate([`/admin/assets/${campaign.asset}`])),
       )
     }
   }

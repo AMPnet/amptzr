@@ -3,4 +3,4 @@
 source scripts/prebuild.sh
 export APP_VERSION COMMIT_HASH
 
-NODE_ENV=production ng build && source scripts/postbuild.sh
+ng build && source scripts/postbuild.sh
