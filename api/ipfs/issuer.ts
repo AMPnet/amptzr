@@ -13,6 +13,8 @@ const ipfsService = new IpfsService(httpClient)
 export default async (request: VercelRequest, response: VercelResponse) => {
   const {hash} = request.query
 
+  // TODO: this doesn't work in Vercel environment anymore.
+  //  fix it by extracting IpfsService logic.
   return firstValueFrom(
     ipfsService.get<IPFSIssuer>(hash as string).pipe(
       tap(issuer => response.status(200).send(issuer)),

@@ -118,7 +118,9 @@ export class AdminCampaignDetailComponent {
   }
 
   shouldShowMin(stats: CampaignStats) {
-    return stats.userMin > 0
+    // TODO: should be set to userMin > 0
+    //  this is a workaround for campaigns that are incorrectly set.
+    return stats.userMin >= 1
   }
 
   shouldShowMax(stats: CampaignStats) {
