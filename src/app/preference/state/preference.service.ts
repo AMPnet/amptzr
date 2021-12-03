@@ -1,15 +1,17 @@
 import {Injectable} from '@angular/core'
-import {catchError, concatMap, take, timeout} from 'rxjs/operators'
+import {catchError, concatMap, switchMap, take, timeout} from 'rxjs/operators'
 import {AuthProvider, PreferenceStore} from './preference.store'
 import {EMPTY, Observable, of} from 'rxjs'
 import {PreferenceQuery} from './preference.query'
 import {SignerService} from '../../shared/services/signer.service'
 import {MetamaskSubsignerService} from '../../shared/services/subsigners/metamask-subsigner.service'
 import {WalletConnectSubsignerService} from '../../shared/services/subsigners/walletconnect-subsigner.service'
-import {VenlySubsignerService} from '../../shared/services/subsigners/venly-subsigner.service'
 import {environment} from '../../../environments/environment'
 import {IssuerFlavor} from '../../shared/services/blockchain/flavors'
 import {MagicSubsignerService} from '../../shared/services/subsigners/magic-subsigner.service'
+import {getWindow} from '../../shared/utils/browser'
+import {GnosisSubsignerService} from '../../shared/services/subsigners/gnosis-subsigner.service'
+import {providers} from 'ethers'
 
 @Injectable({providedIn: 'root'})
 export class PreferenceService {
@@ -17,14 +19,32 @@ export class PreferenceService {
               private preferenceQuery: PreferenceQuery,
               private metamaskSubsignerService: MetamaskSubsignerService,
               private magicSubsignerService: MagicSubsignerService,
+              private gnosisSubsignerService: GnosisSubsignerService,
               private walletConnectSubsignerService: WalletConnectSubsignerService,
-              private venlySubsignerService: VenlySubsignerService,
               private signer: SignerService) {
   }
 
   initSigner(): Observable<unknown> {
-    return this.preferenceQuery.select().pipe(
-      take(1),
+    return this.tryImplicitLogin.pipe(
+      switchMap(() => this.tryPreviousLogin),
+      timeout(4000),
+      catchError(() => {
+        return this.signer.logout().pipe(concatMap(() => EMPTY))
+      }),
+    )
+  }
+
+  private get tryImplicitLogin(): Observable<providers.JsonRpcSigner | undefined> {
+    return of(getWindow() !== getWindow().parent).pipe(
+      switchMap(isIframe => isIframe ?
+        this.signer.login(this.gnosisSubsignerService).pipe(
+          catchError(() => of(undefined)),
+        ) : of(undefined)),
+    )
+  }
+
+  private get tryPreviousLogin(): Observable<providers.JsonRpcSigner | undefined> {
+    return of(this.preferenceQuery.getValue()).pipe(
       concatMap(pref => {
         if (pref.address === '') {
           return EMPTY
@@ -36,15 +56,9 @@ export class PreferenceService {
             return this.signer.login(this.magicSubsignerService, {force: false})
           case AuthProvider.WALLET_CONNECT:
             return this.signer.login(this.walletConnectSubsignerService, {force: false})
-          case AuthProvider.VENLY:
-            return this.signer.login(this.venlySubsignerService, {force: false})
           default:
             return EMPTY
         }
-      }),
-      timeout(4000),
-      catchError(() => {
-        return this.signer.logout().pipe(concatMap(() => EMPTY))
       }),
     )
   }

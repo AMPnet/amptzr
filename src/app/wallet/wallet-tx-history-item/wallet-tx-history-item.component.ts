@@ -53,6 +53,8 @@ export class WalletTxHistoryItemComponent implements OnInit {
         return 'Investment'
       case TransactionType.CANCEL_INVESTMENT:
         return 'Cancel investment'
+      case TransactionType.COMPLETED_INVESTMENT:
+        return 'Completed investment'
       case TransactionType.REVENUE_SHARE:
         return 'Revenue claim'
     }
@@ -61,8 +63,8 @@ export class WalletTxHistoryItemComponent implements OnInit {
   getName(tx: Transaction): Observable<string> {
     switch (tx.type) {
       case TransactionType.RESERVE_INVESTMENT:
-        return this.campaignName(tx.contract)
       case TransactionType.CANCEL_INVESTMENT:
+      case TransactionType.COMPLETED_INVESTMENT:
         return this.campaignName(tx.contract)
       case TransactionType.REVENUE_SHARE:
         return of(tx.asset)

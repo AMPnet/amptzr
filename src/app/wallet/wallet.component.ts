@@ -2,8 +2,7 @@ import {ChangeDetectionStrategy, Component} from '@angular/core'
 import {SessionQuery} from '../session/state/session.query'
 import {SignerService} from '../shared/services/signer.service'
 import {finalize, switchMap} from 'rxjs/operators'
-import {EMPTY, Observable, of} from 'rxjs'
-import {VenlySubsignerService} from '../shared/services/subsigners/venly-subsigner.service'
+import {Observable, of} from 'rxjs'
 import {AuthProvider} from '../preference/state/preference.store'
 import {withStatus} from '../shared/utils/observables'
 import {RouterService} from '../shared/services/router.service'
@@ -49,7 +48,6 @@ export class WalletComponent {
               public stablecoin: StablecoinService,
               private userService: UserService,
               private backendUserService: BackendUserService,
-              private venlySubsignerService: VenlySubsignerService,
               private magicSubsignerService: MagicSubsignerService,
               private http: BackendHttpClient,
               private router: RouterService) {
@@ -61,15 +59,7 @@ export class WalletComponent {
     ).subscribe()
   }
 
-  manageVenlyWallets(): Observable<unknown> {
-    return this.venlySubsignerService.manageWallets().pipe(
-      switchMap(res => res ? this.signerService.login(this.venlySubsignerService, {force: false}) : EMPTY),
-      switchMap(() => this.http.logout()),
-    )
-  }
-
   manageMagicWallet(): Observable<unknown> {
     return this.magicSubsignerService.showSettings()
   }
-
 }

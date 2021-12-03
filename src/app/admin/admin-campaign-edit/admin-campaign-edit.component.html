@@ -62,8 +62,9 @@
                             [class.text-gray-400]="!updateForm.get('returnFrequency')?.value"
                             formControlName="returnFrequency">
                       <option value="" disabled selected hidden>Select answer</option>
-                      <option *ngFor="let item of ReturnFrequencies" value="{{ item }}">
-                        {{ ReturnFrequencyNames[item] }}
+                      <option *ngFor="let item of returnFrequencyNames | keyvalue"
+                              value="{{ item.key }}">
+                        {{ item.value }}
                       </option>
                     </select>
                   </div>
@@ -84,11 +85,12 @@
                                   transition-all ease-in-out duration-300"
                            [class]="updateForm.get('isReturnValueFixed')?.value ? 'lg:w-48 w-full' : 'lg:w-48 w-1/2'"
                            [placeholder]="updateForm.get('isReturnValueFixed')?.value ? 'Return' : 'From'"
-                           type="text" formControlName="returnFrom">
+                           type="text" [options]="{precision: 2}"
+                           formControlName="returnFrom">
                     <div class="flex overflow-hidden transition-all ease-in-out duration-300"
                          [class]="updateForm.get('isReturnValueFixed')?.value ? '-ml-4 w-0 invisible' : 'ml-0 w-1/2'">
                       <input appPercentageMask class="w-full border-gray-400 disabled:bg-gray-100 rounded-lg"
-                             type="text"
+                             type="text" [options]="{precision: 2}"
                              placeholder="To" formControlName="returnTo">
                     </div>
                   </div>

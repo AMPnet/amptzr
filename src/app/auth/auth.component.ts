@@ -5,7 +5,6 @@ import {PreferenceQuery} from '../preference/state/preference.query'
 import {PreferenceStore} from '../preference/state/preference.store'
 import {SignerService} from '../shared/services/signer.service'
 import {MetamaskSubsignerService} from '../shared/services/subsigners/metamask-subsigner.service'
-import {VenlySubsignerService} from '../shared/services/subsigners/venly-subsigner.service'
 import {WalletConnectSubsignerService} from '../shared/services/subsigners/walletconnect-subsigner.service'
 import {MatDialogRef} from '@angular/material/dialog'
 import {RouterService} from '../shared/services/router.service'
@@ -26,14 +25,12 @@ export class AuthComponent {
   issuer$ = this.issuerService.issuerWithStatus$
   injectedWeb3$: Observable<any> = defer(() => of(getWindow()?.ethereum))
   magicLinkAvailable$ = this.magicSubsignerService.isAvailable$
-  venlyAvailable$ = this.venlySubsignerService.isAvailable$
 
   constructor(private signer: SignerService,
               private preferenceStore: PreferenceStore,
               private metamaskSubsignerService: MetamaskSubsignerService,
               private magicSubsignerService: MagicSubsignerService,
               private walletConnectSubsignerService: WalletConnectSubsignerService,
-              private venlySubsignerService: VenlySubsignerService,
               private preferenceQuery: PreferenceQuery,
               private router: RouterService,
               private issuerService: IssuerService,
@@ -58,12 +55,6 @@ export class AuthComponent {
     return this.signer.login(this.magicSubsignerService, {
       email: this.emailForm.value.email, force: true,
     }).pipe(
-      tap(() => this.afterLoginActions()),
-    )
-  }
-
-  connectVenly(): Observable<unknown> {
-    return this.signer.login(this.venlySubsignerService).pipe(
       tap(() => this.afterLoginActions()),
     )
   }
