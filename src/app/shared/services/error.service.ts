@@ -1,11 +1,10 @@
 import {Injectable} from '@angular/core'
-import {defer, EMPTY, Observable, of, throwError} from 'rxjs'
+import {EMPTY, Observable, of, throwError} from 'rxjs'
 import {catchError, switchMap, tap} from 'rxjs/operators'
 import {HttpErrorResponse} from '@angular/common/http'
 import {JwtTokenService} from './backend/jwt-token.service'
 import {DialogService} from './dialog.service'
 import {RouterService} from './router.service'
-import {MatSnackBar} from '@angular/material/snack-bar'
 
 @Injectable({
   providedIn: 'root',
@@ -13,7 +12,6 @@ import {MatSnackBar} from '@angular/material/snack-bar'
 export class ErrorService {
   constructor(private router: RouterService,
               private dialogService: DialogService,
-              private snackbar: MatSnackBar,
               private jwtTokenService: JwtTokenService) {
   }
 
@@ -28,11 +26,11 @@ export class ErrorService {
       let errorRes = err as HttpErrorResponse
       let action$: Observable<any> = throwError(err)
 
-      if ((errorRes as any).code === 'UNPREDICTABLE_GAS_LIMIT') {
+      if ((errorRes as any)?.code === 'UNPREDICTABLE_GAS_LIMIT') {
         errorRes = errorRes.error
       }
 
-      if (errorRes.message.includes('Magic RPC Error')) {
+      if (errorRes.message?.includes('Magic RPC Error')) {
         errorRes = errorRes.message as any
       }
 
@@ -83,14 +81,8 @@ export class ErrorService {
         } else {
           action$ = this.displayMessage('Something went wrong.')
         }
-      } else if (err?.message?.includes('cannot estimate gas')) { // Venly out of gas
+      } else if (err?.message?.includes('cannot estimate gas')) {
         action$ = this.displayMessage(this.outOfGasMessage)
-      } else if (this.isPopupBlocker(err)) {
-        action$ = defer(() => of(
-          this.snackbar.open('Pop-ups blocked. Allow pop-ups for this site and try again.', undefined, {
-            duration: 3000,
-          })),
-        )
       }
 
       if (completeAfterAction) {
@@ -107,21 +99,6 @@ export class ErrorService {
 
   private displayMessage(message: string) {
     return this.dialogService.error(message)
-  }
-
-  private isPopupBlocker(err: any): boolean {
-    // Pop-up Venly issue in Safari and Firefox;
-    // Firefox. Happens every time when there is network request between user click and open pop-up action.
-    // In this case, pop-up blocker must be explicitly disabled.
-    // Safari. Happens sometimes when Venly backend requests are too long. Usually proceeds with
-    // the second click when the request is much quicker.
-
-    const popupErrors = [
-      'Something went wrong while trying to open the popup',
-      'You provided an invalid object where a stream was expected. You can provide an Observable, Promise, Array, or Iterable.',
-    ]
-
-    return !!(err?.message && popupErrors.some(error => err!.message.includes(error)))
   }
 
   private get outOfGasMessage() {

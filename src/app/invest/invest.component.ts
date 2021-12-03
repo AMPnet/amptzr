@@ -121,7 +121,7 @@ export class InvestComponent {
         return this.dialogService.info(
           'You will be asked to sign the transaction to allow investment from your wallet.',
         ).pipe(
-          switchMap(res => res ? approveAmount$ : throwError('USER_DISMISSED_APPROVE_FLOW')),
+          switchMap(res => res ? approveAmount$ : throwError(() => 'USER_DISMISSED_APPROVE_FLOW')),
         )
     }
   }

@@ -48,21 +48,6 @@ export class FaqComponent {
             " platform.",
         },
         {
-          question: "Do I need to have my own wallet? How can I create a wallet?",
-          answer: "If you already have a Metamask wallet, just connect it to the platform. If you don’t have the" +
-            " ability to create a blockchain wallet within the platform when you open the login screen, then you" +
-            " will be prompted to create a wallet and PIN. Before creating a wallet please" +
-            " <a href='https://help.venly.io/en/article/what-is-a-pin-2e4br3/' target='_blank'" +
-            " rel='noopener noreferrer' class='underline'>read this</a> first.",
-        },
-        {
-          question: "What if I forgot the PIN for my wallet?",
-          answer: "If you have created a wallet within our platform, we use the solution from a third party service" +
-            " provider called Venly. You can find more information about PIN recovery" +
-            " <a href='https://help.venly.io/en/article/i-forgot-my-pin-1hgc4ej/' target='_blank'" +
-            " rel='noopener noreferrer' class='underline'>here</a>.",
-        },
-        {
           question: "Can I invest directly from my bank account - with fiat?",
           answer: "You must have a blockchain wallet that will have USDC. Within the platform, you will buy USDC with" +
             " fiat currency, after which you will be shown the balance on your wallet with which you can invest in" +

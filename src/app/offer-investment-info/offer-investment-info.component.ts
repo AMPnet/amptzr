@@ -52,21 +52,24 @@ export class OfferInvestmentInfoComponent implements OnInit {
   }
 
   get returnRateRange(): string {
-    if (this.offer.infoData.return.from === this.offer.infoData.return.to || !this.offer.infoData.return.to) {
-      return this.percentPipe.transform(this.offer.infoData.return.from) || ''
+    const from = this.offer.infoData.return.from
+    const to = this.offer.infoData.return.to
+
+    if (from === to || !to) {
+      return this.formatPercent(from)
     }
 
-    return `${this.percentPipe.transform(this.offer.infoData.return.from)} - ${this.percentPipe.transform(this.offer.infoData.return.to)}`
+    return `${this.formatPercent(from)} - ${this.formatPercent(to)}`
   }
 
-  get returnRateFrequency(): string {
-    return this.offer.infoData.return.frequency ?? 'annual'
+  private formatPercent(value?: number): string {
+    return this.percentPipe.transform(value, '1.0-2') || ''
   }
 
   shouldShowMin(stats: CampaignStats) {
     // TODO: should be set to userMin > 0
     //  this is a workaround for campaigns that are incorrectly set.
-    return stats.userMin > 1
+    return stats.userMin >= 1
   }
 
   shouldShowMax(stats: CampaignStats) {

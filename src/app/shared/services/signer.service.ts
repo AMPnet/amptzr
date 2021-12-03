@@ -99,7 +99,7 @@ export class SignerService {
     return this.dialog.open(AuthComponent).afterClosed().pipe(
       concatMap(authCompleted => authCompleted ?
         this.sessionQuery.waitUntilLoggedIn() :
-        throwError('LOGIN_MODAL_DISMISSED')),
+        throwError(() => 'LOGIN_MODAL_DISMISSED')),
     )
   }
 
