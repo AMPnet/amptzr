@@ -23,7 +23,7 @@ export class ProfileService {
   private get openProfileAddModal(): Observable<void> {
     return this.matDialog.open(ProfileAddMandatoryComponent).afterClosed().pipe(
       switchMap(completed => completed ? of(undefined) :
-        throwError('PROFILE_ADD_MANDATORY_DISMISSED')),
+        throwError(() => 'PROFILE_ADD_MANDATORY_DISMISSED')),
     )
   }
 }

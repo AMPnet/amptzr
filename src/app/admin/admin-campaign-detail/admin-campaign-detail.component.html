@@ -46,7 +46,7 @@
                   Raising: <b>{{ campaignData.stats.valueTotal | currencyDefault }}</b>
                 </span>
                 <span>
-                  Selling: <b>{{ hardCapTokensPercentage(campaignData.stats, campaignData.asset) | percent }} of
+                  Selling: <b>{{ hardCapTokensPercentage(campaignData.stats, campaignData.asset) | percent:'1.0-2' }} of
                   asset shares</b>
                 </span>
                 <span>
@@ -54,7 +54,7 @@
                 </span>
                 <span>
                   Asset share to reach Min. Target:
-                  <b>{{ softCapTokensPercentage(campaignData.stats, campaignData.asset) | percent }}</b>
+                  <b>{{ softCapTokensPercentage(campaignData.stats, campaignData.asset) | percent:'1.0-2' }}</b>
                 </span>
               </div>
             </div>

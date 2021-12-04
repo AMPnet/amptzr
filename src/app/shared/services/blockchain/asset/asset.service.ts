@@ -56,7 +56,7 @@ export class AssetService {
           case AssetFlavor.BASIC:
             return this.assetBasicService.getState(address, signerOrProvider)
           default:
-            return throwError(`getState not implemented for asset flavor ${flavor}`)
+            return throwError(() => `getState not implemented for asset flavor ${flavor}`)
         }
       }),
     )
@@ -127,7 +127,7 @@ export class AssetService {
           case AssetFlavor.BASIC:
             return this.assetBasicService.create(data)
           default:
-            return throwError(`create not implemented for asset flavor ${flavor}`)
+            return throwError(() => `create not implemented for asset flavor ${flavor}`)
         }
       }),
     )
@@ -163,6 +163,17 @@ export class AssetService {
         switchMap(signerAddress => contract.balanceOf(signerAddress)),
       )),
     )
+  }
+
+  changeOwner(assetAddress: string, ownerAddress: string, flavor: AssetFlavor) {
+    switch (flavor) {
+      case AssetFlavor.BASIC:
+        return this.assetBasicService.changeOwner(assetAddress, ownerAddress)
+      case AssetFlavor.TRANSFERABLE:
+        return this.assetTransferableService.changeOwner(assetAddress, ownerAddress)
+      case AssetFlavor.SIMPLE:
+        return this.assetSimpleService.changeOwner(assetAddress, ownerAddress)
+    }
   }
 }
 

@@ -9,9 +9,6 @@ export const environment = {
   production: false,
   commitHash: preBuildEnv.COMMIT_HASH,
   appVersion: preBuildEnv.APP_VERSION,
-  arkane: {
-    clientID: postBuildEnv?.ARKANE_ID || 'AMPnet',
-  },
   ipfs: {
     apiURL: postBuildEnv?.IPFS_API_URL || 'https://ipfs.infura.io:5001',
     gatewayURL: postBuildEnv?.IPFS_API_URL || 'https://ampnet.mypinata.cloud',

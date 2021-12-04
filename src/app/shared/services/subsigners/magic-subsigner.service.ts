@@ -59,7 +59,7 @@ export class MagicSubsignerService implements Subsigner {
       take(1),
       switchMap(([apiKey]) => {
         if (!apiKey) {
-          return throwError('Magic link is not configured for this issuer.')
+          return throwError(() => 'Magic link is not configured for this issuer.')
         }
 
         return from(
@@ -88,7 +88,7 @@ export class MagicSubsignerService implements Subsigner {
         this.forceLogin(opts) :
         from(this.subprovider!.user.isLoggedIn()),
       ),
-      concatMap(authRes => authRes ? of(authRes) : throwError('NO_ADDRESS')),
+      concatMap(authRes => authRes ? of(authRes) : throwError(() => 'NO_ADDRESS')),
       concatMap(() => of(signer)),
     )
   }

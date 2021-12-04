@@ -68,7 +68,7 @@ export class IssuerService {
           case IssuerFlavor.BASIC:
             return this.issuerBasicService.getState(address)
           default:
-            return throwError(`getState not implemented issuer flavor ${flavor}`)
+            return throwError(() => `getState not implemented issuer flavor ${flavor}`)
         }
       }),
     )
@@ -160,7 +160,7 @@ export class IssuerService {
           case IssuerFlavor.BASIC:
             return this.issuerBasicService.changeWalletApprover(issuerAddress, walletApproverAddress)
           default:
-            return throwError(`changeWalletApprover not implemented issuer flavor ${issuer.flavor}`)
+            return throwError(() => `changeWalletApprover not implemented issuer flavor ${issuer.flavor}`)
         }
       }),
     )
@@ -173,7 +173,7 @@ export class IssuerService {
           case IssuerFlavor.BASIC:
             return this.issuerBasicService.changeOwner(issuerAddress, ownerAddress)
           default:
-            return throwError(`changeOwner not implemented for issuer flavor ${issuer.flavor}`)
+            return throwError(() => `changeOwner not implemented for issuer flavor ${issuer.flavor}`)
         }
       }),
     )

@@ -87,7 +87,7 @@
                       <div class="text-sm">
                         I will sell
                         <b class="px-2">
-                          {{ softCapTokensPercentage(assetData) | percent }}
+                          {{ softCapTokensPercentage(assetData) | percent:'1.0-2' }}
                         </b>
                         of my {{ assetData.asset.name | uppercase }} tokens
                       </div>
@@ -156,8 +156,8 @@
                       <option value="" disabled selected hidden>
                         Select answer
                       </option>
-                      <option *ngFor="let item of ReturnFrequencies" value="{{ item }}">
-                        {{ ReturnFrequencyNames[item] }}
+                      <option *ngFor="let item of returnFrequencyNames | keyvalue" value="{{ item.key }}">
+                        {{ item.value }}
                       </option>
                     </select>
                   </div>
@@ -472,7 +472,8 @@
                   <span class="text-lg font-semibold">Maximum amount to raise</span>
                   <span>
                     <b>{{ preview.hardCap | currencyDefault }}</b> by selling
-                    <b>{{ preview.hardCapTokens | number }} ({{ preview.hardCapTokensPercentage | percent }})</b> of my
+                    <b>{{ preview.hardCapTokens | number }} ({{ preview.hardCapTokensPercentage | percent:'1.0-2' }}
+                      )</b> of my
                     {{ assetData.asset.name | uppercase }} tokens
                   </span>
                 </div>
@@ -481,7 +482,8 @@
                   <span class="text-lg font-semibold">Minimum amount to raise (Soft cap)</span>
                   <span>
                     <b>{{ preview.data.softCap | formatUnit:'bignumToWei' | currencyDefault }}</b> by selling
-                    <b>{{ preview.softCapTokens | number }} ({{ preview.softCapTokensPercentage | percent }})</b> of my
+                    <b>{{ preview.softCapTokens | number }} ({{ preview.softCapTokensPercentage | percent:'1.0-2' }}
+                      )</b> of my
                     {{ assetData.asset.name | uppercase }} tokens
                   </span>
                 </div>
