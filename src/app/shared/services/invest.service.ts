@@ -1,10 +1,12 @@
 import {Injectable} from '@angular/core'
 import {combineLatest, Observable} from 'rxjs'
-import {map, take} from 'rxjs/operators'
-import {StablecoinService} from './blockchain/stablecoin.service'
+import {map} from 'rxjs/operators'
+import {StablecoinBigNumber, StablecoinService} from './blockchain/stablecoin.service'
 import {CampaignService} from './blockchain/campaign/campaign.service'
 import {CampaignCommonStateWithName} from './blockchain/query.service'
 import {CampaignFlavor} from './blockchain/flavors'
+import {constants} from 'ethers'
+import {BigNumberMin} from '../utils/ethersjs'
 
 @Injectable({
   providedIn: 'root',
@@ -16,19 +18,22 @@ export class InvestService {
   }
 
   preInvestData(campaign: CampaignCommonStateWithName): Observable<PreInvestData> {
-    const balance$ = combineLatest([this.stablecoin.balance$]).pipe(take(1), map(([balance]) => balance))
+    const balance$ = this.stablecoin.balance$
     const alreadyInvested$ = this.campaignService.alreadyInvested(campaign.campaign.contractAddress)
     const stats$ = this.campaignService.stats(
       campaign.campaign.contractAddress, campaign.campaign.flavor as CampaignFlavor,
     )
 
     return combineLatest([balance$, alreadyInvested$, stats$]).pipe(
-      map(([balance, alreadyInvested, campaignStats]) => {
-        const walletBalance = this.stablecoin.format(balance)
-        const userInvestGap = this.floorDecimals(campaignStats.userMax - alreadyInvested)
+      map(([walletBalance, alreadyInvested, campaignStats]) => {
+        const userInvestGap = campaignStats.userMax.sub(alreadyInvested)
 
-        const max = Math.min(userInvestGap, this.floorDecimals(campaignStats.valueToInvest))
-        const min = Math.min(alreadyInvested > 0 ? 0 : campaignStats.userMin, userInvestGap, max)
+        const max = BigNumberMin(userInvestGap, campaignStats.valueToInvest)
+        const min = BigNumberMin(
+          alreadyInvested.gt(constants.Zero) ? constants.Zero : campaignStats.userMin,
+          userInvestGap,
+          max,
+        )
 
         return {
           min, max,
@@ -39,14 +44,14 @@ export class InvestService {
     )
   }
 
-  private floorDecimals(value: number): number {
-    return Math.floor(value * 100) / 100
-  }
+  // private floorDecimals(value: number): number {
+  //   return Math.floor(value * 100) / 100
+  // }
 }
 
 export interface PreInvestData {
-  min: number,
-  max: number,
-  walletBalance: number
-  userInvestGap: number
+  min: StablecoinBigNumber
+  max: StablecoinBigNumber
+  walletBalance: StablecoinBigNumber | undefined
+  userInvestGap: StablecoinBigNumber
 }

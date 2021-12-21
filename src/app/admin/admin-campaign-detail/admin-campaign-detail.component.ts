@@ -1,7 +1,7 @@
 import {ChangeDetectionStrategy, Component} from '@angular/core'
 import {combineLatest, Observable, of} from 'rxjs'
 import {withStatus, WithStatus} from '../../shared/utils/observables'
-import {BigNumber} from 'ethers'
+import {BigNumber, constants} from 'ethers'
 import {ActivatedRoute} from '@angular/router'
 import {map, switchMap, tap} from 'rxjs/operators'
 import {quillMods} from '../../shared/utils/quill'
@@ -21,6 +21,7 @@ import {
   CampaignBasicService,
   CampaignBasicState,
 } from '../../shared/services/blockchain/campaign/campaign-basic.service'
+import {ConversionService} from '../../shared/services/conversion.service'
 
 @Component({
   selector: 'app-admin-campaign-detail',
@@ -48,6 +49,7 @@ export class AdminCampaignDetailComponent {
               private nameService: NameService,
               private linkPreviewService: LinkPreviewService,
               private stablecoinService: StablecoinService,
+              private conversion: ConversionService,
               private dialogService: DialogService,
               private route: ActivatedRoute) {
     const campaignId = this.route.snapshot.params.campaignId
@@ -88,43 +90,27 @@ export class AdminCampaignDetailComponent {
   }
 
   hardCapTokensPercentage(stats: CampaignStats, asset: CommonAssetWithInfo) {
-    const pricePerToken = stats.tokenPrice
-    if (pricePerToken === 0) {
-      return 0
-    }
+    const tokens = this.conversion.calcTokens(stats.valueTotal, stats.tokenPrice)
 
-    const numOfTokensToSell = stats.valueTotal / pricePerToken
-    if (numOfTokensToSell === 0) {
-      return 0
-    }
-
-    const totalTokens = this.stablecoinService.format(asset.totalSupply, 18)
-    return numOfTokensToSell / totalTokens
+    return this.conversion.parseToken(tokens) /
+      this.conversion.parseToken(asset.totalSupply)
   }
 
   softCapTokensPercentage(stats: CampaignStats, asset: CommonAssetWithInfo) {
-    const pricePerToken = stats.tokenPrice
-    if (pricePerToken === 0) {
-      return 0
-    }
+    const tokens = this.conversion.calcTokens(stats.softCap, stats.tokenPrice)
 
-    const numOfTokensToSell = stats.softCap / pricePerToken
-    if (numOfTokensToSell === 0) {
-      return 0
-    }
-
-    const totalTokens = this.stablecoinService.format(asset.totalSupply, 18)
-    return numOfTokensToSell / totalTokens
+    return this.conversion.parseToken(tokens) /
+      this.conversion.parseToken(asset.totalSupply)
   }
 
   shouldShowMin(stats: CampaignStats) {
     // TODO: should be set to userMin > 0
     //  this is a workaround for campaigns that are incorrectly set.
-    return stats.userMin >= 1
+    return stats.userMin.gte(constants.One)
   }
 
   shouldShowMax(stats: CampaignStats) {
-    return stats.userMax < stats.valueTotal
+    return stats.userMax.lt(stats.valueTotal)
   }
 
   returnFrequency(campaign: CampaignWithInfo) {

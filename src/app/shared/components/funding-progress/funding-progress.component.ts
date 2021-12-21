@@ -5,6 +5,9 @@ import {CampaignFlavor} from '../../services/blockchain/flavors'
 import {map} from 'rxjs/operators'
 import {Observable} from 'rxjs'
 import {withStatus, WithStatus} from '../../utils/observables'
+import {constants} from 'ethers'
+import {StablecoinBigNumber} from '../../services/blockchain/stablecoin.service'
+import {ConversionService} from '../../services/conversion.service'
 
 @Component({
   selector: 'app-funding-progress',
@@ -17,6 +20,7 @@ export class FundingProgressComponent implements OnInit {
   progressData$!: Observable<WithStatus<ProgressData>>
 
   constructor(private campaignService: CampaignService,
+              private conversion: ConversionService,
               private datePipe: DatePipe) {
   }
 
@@ -26,18 +30,22 @@ export class FundingProgressComponent implements OnInit {
         this.campaign.contractAddress, this.campaign.flavor as CampaignFlavor,
       ).pipe(
         map(stats => {
-          const raisedPercentage = stats.valueTotal !== 0 ?
-            stats.valueInvested / stats.valueTotal : 0
+          let raisedPercentage = 0
+          let softCapPercentage = 0
 
-          const softCapPercentage = stats.valueTotal !== 0 ?
-            stats.softCap / stats.valueTotal : 0
+          if (!stats.valueTotal.eq(constants.Zero)) {
+            raisedPercentage = this.conversion.parseStablecoin(stats.valueInvested) /
+              this.conversion.parseStablecoin(stats.valueTotal)
+            softCapPercentage = this.conversion.parseStablecoin(stats.softCap) /
+              this.conversion.parseStablecoin(stats.valueTotal)
+          }
 
           return {
             raised: stats.valueInvested,
-            raisedPercentage: raisedPercentage,
+            raisedPercentage,
             total: stats.valueTotal,
             softCap: stats.softCap,
-            softCapPercentage: softCapPercentage,
+            softCapPercentage,
           }
         }),
       ),
@@ -66,9 +74,9 @@ export class FundingProgressComponent implements OnInit {
 }
 
 interface ProgressData {
-  raised: number,
+  raised: StablecoinBigNumber,
   raisedPercentage: number,
-  total: number,
-  softCap: number,
+  total: StablecoinBigNumber,
+  softCap: StablecoinBigNumber,
   softCapPercentage: number,
 }

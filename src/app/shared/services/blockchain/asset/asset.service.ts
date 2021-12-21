@@ -1,6 +1,6 @@
 import {IpfsService, IPFSText} from '../../ipfs/ipfs.service'
 import {PreferenceQuery} from '../../../../preference/state/preference.query'
-import {StablecoinService} from '../stablecoin.service'
+import {StablecoinBigNumber, StablecoinService} from '../stablecoin.service'
 import {GasService} from '../gas.service'
 import {BigNumber, BigNumberish, Signer} from 'ethers'
 import {combineLatest, from, Observable, of, throwError} from 'rxjs'
@@ -17,7 +17,8 @@ import {AssetTransferableService, TransferableAssetState} from './asset-transfer
 import {AssetFlavor} from '../flavors'
 import {AssetCommonState} from './asset.common'
 import {AssetSimpleService, SimpleAssetState} from './asset-simple.service'
-import {TokenPrice} from '../../../utils/token-price'
+import {TokenPriceBigNumber} from '../../../utils/token-price'
+import {ConversionService} from '../../conversion.service'
 
 @Injectable({
   providedIn: 'root',
@@ -33,6 +34,7 @@ export class AssetService {
     private signerService: SignerService,
     private dialogService: DialogService,
     private stablecoin: StablecoinService,
+    private conversion: ConversionService,
     private gasService: GasService,
   ) {
   }
@@ -134,19 +136,16 @@ export class AssetService {
   }
 
   transferTokensToCampaign(
-    assetAddress: string, campaignAddress: string, stablecoinValue: number, tokenPrice: number,
+    assetAddress: string, campaignAddress: string,
+    stablecoin: StablecoinBigNumber, tokenPrice: TokenPriceBigNumber,
   ) {
-    const tokens = this.stablecoin.parse(stablecoinValue)
-      .mul(BigNumber.from((10 ** TokenPrice.precision).toString()))
-      .mul(BigNumber.from((10 ** 18).toString())) // token precision
-      .div(BigNumber.from(TokenPrice.format(tokenPrice)))
-      .div(BigNumber.from((10 ** this.stablecoin.precision).toString()))
+    const tokens = this.conversion.calcTokens(stablecoin, tokenPrice)
 
     return this.signerService.ensureAuth.pipe(
       map(signer => this.assetBasicService.contract(assetAddress, signer)),
       switchMap(contract => combineLatest([of(contract), this.gasService.overrides])),
       switchMap(([contract, overrides]) => contract.populateTransaction.transfer(
-        campaignAddress, tokens, overrides),
+        campaignAddress, tokens.toString(), overrides),
       ),
       switchMap(tx => this.signerService.sendTransaction(tx)),
       switchMap(tx => this.dialogService.loading(

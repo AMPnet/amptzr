@@ -1,35 +1,41 @@
 import {Pipe, PipeTransform} from '@angular/core'
-import {TokenPrice} from '../utils/token-price'
-import {StablecoinService} from '../services/blockchain/stablecoin.service'
+import {ConversionService} from '../services/conversion.service'
 
 @Pipe({
   name: 'formatUnit',
 })
 export class FormatUnitPipe implements PipeTransform {
-  constructor(private stablecoin: StablecoinService) {
+  constructor(private conversion: ConversionService) {
   }
 
   public transform(value: any, operation: Operation | string, precision?: number) {
     switch (operation) {
-      case Operation.BIGNUM_TO_WEI:
-        switch (typeof value) {
-          case 'number':
-            return this.stablecoin.format(BigInt(value).toString(), precision)
-          default:
-            return this.stablecoin.format(value, precision)
-        }
-      case Operation.PARSE_TOKEN_PRICE:
-        return TokenPrice.parse(value)
+      case Operation.STABLECOIN:
+        return this.conversion.parseStablecoin(this.toBigNumberish(value))
+      case Operation.TOKEN:
+        return this.conversion.parseToken(this.toBigNumberish(value))
+      case Operation.TOKEN_PRICE:
+        return this.conversion.parseTokenPrice(value)
       case Operation.TO_NUMBER:
         return Number(value)
       default:
         throw new Error(`Invalid format unit type specified: ${operation}`)
     }
   }
+
+  private toBigNumberish(value: any) {
+    switch (typeof value) {
+      case 'number':
+        return BigInt(value).toString()
+      default:
+        return value
+    }
+  }
 }
 
 enum Operation {
-  BIGNUM_TO_WEI = 'bignumToWei',
-  PARSE_TOKEN_PRICE = 'parseTokenPrice',
+  STABLECOIN = 'stablecoin',
+  TOKEN = 'token',
+  TOKEN_PRICE = 'tokenPrice',
   TO_NUMBER = 'toNumber',
 }

@@ -5,9 +5,10 @@ import {PortfolioItem, QueryService} from '../shared/services/blockchain/query.s
 import {map, shareReplay, switchMap, tap} from 'rxjs/operators'
 import {BehaviorSubject, combineLatest, Observable, of} from 'rxjs'
 import {DialogService} from '../shared/services/dialog.service'
-import {StablecoinService} from '../shared/services/blockchain/stablecoin.service'
+import {StablecoinBigNumber, StablecoinService} from '../shared/services/blockchain/stablecoin.service'
 import {CampaignService, CampaignWithInfo} from '../shared/services/blockchain/campaign/campaign.service'
 import {CampaignFlavor} from '../shared/services/blockchain/flavors'
+import {constants} from 'ethers'
 
 @Component({
   selector: 'app-portfolio',
@@ -29,10 +30,9 @@ export class PortfolioComponent {
   )
   portfolioWithStatus$ = withStatus(this.portfolio$)
 
-  totalInvested$: Observable<{ value: number }> = this.portfolio$.pipe(
+  totalInvested$: Observable<{ value: StablecoinBigNumber }> = this.portfolio$.pipe(
     map(portfolio => portfolio.length > 0 ?
-      portfolio.map(item => this.stablecoin.format(item.tokenValue))
-        .reduce((prev, curr) => prev + curr) : 0),
+      portfolio.map(item => item.tokenValue).reduce((prev, curr) => prev.add(curr)) : constants.Zero),
     map(v => ({value: v})),
   )
 

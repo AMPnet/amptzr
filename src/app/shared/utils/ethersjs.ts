@@ -1,4 +1,4 @@
-import {BaseContract, providers} from 'ethers'
+import {BaseContract, BigNumber, constants, providers} from 'ethers'
 import {EventFragment} from '@ethersproject/abi'
 import {fromEventPattern, Observable, of} from 'rxjs'
 import {TypedEvent, TypedEventFilter, TypedListener} from '../../../../types/ethers-contracts/common'
@@ -37,3 +37,22 @@ export function resolveAddress(
     return resolveByName$
   }
 }
+
+export function BigNumberMin(...values: BigNumber[]): BigNumber {
+  let lowest = constants.MaxUint256
+  for (const i in values) {
+    if (values[i].lt(lowest)) lowest = values[i]
+  }
+
+  return lowest
+}
+
+export function BigNumberMax(...values: BigNumber[]): BigNumber {
+  let highest = constants.MinInt256
+  for (const i in values) {
+    if (values[i].gt(highest)) highest = values[i]
+  }
+
+  return highest
+}
+

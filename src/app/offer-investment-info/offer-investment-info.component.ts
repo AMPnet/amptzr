@@ -5,6 +5,7 @@ import {Observable, of} from 'rxjs'
 import {CampaignFlavor} from '../shared/services/blockchain/flavors'
 import {CampaignBasicService, CampaignBasicState} from '../shared/services/blockchain/campaign/campaign-basic.service'
 import {map, shareReplay, switchMap, tap} from 'rxjs/operators'
+import {constants} from 'ethers'
 
 @Component({
   selector: 'app-offer-investment-info',
@@ -69,7 +70,7 @@ export class OfferInvestmentInfoComponent implements OnInit {
   shouldShowMin(stats: CampaignStats) {
     // TODO: should be set to userMin > 0
     //  this is a workaround for campaigns that are incorrectly set.
-    return stats.userMin >= 1
+    return stats.userMin.gte(constants.One)
   }
 
   shouldShowMax(stats: CampaignStats) {

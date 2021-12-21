@@ -2,7 +2,7 @@ import {Injectable} from '@angular/core'
 import {combineLatest, from, Observable, of} from 'rxjs'
 import {IpfsService} from '../../ipfs/ipfs.service'
 import {PreferenceQuery} from '../../../../preference/state/preference.query'
-import {StablecoinService} from '../stablecoin.service'
+import {StablecoinBigNumber, StablecoinService} from '../stablecoin.service'
 import {
   CfManagerSoftcapVesting,
   CfManagerSoftcapVesting__factory,
@@ -10,17 +10,19 @@ import {
   CfManagerSoftcapVestingFactory__factory,
 } from '../../../../../../types/ethers-contracts'
 import {GasService} from '../gas.service'
-import {BigNumber, BigNumberish, Signer} from 'ethers'
+import {BigNumber, BigNumberish, constants, Signer} from 'ethers'
 import {first, map, switchMap, take} from 'rxjs/operators'
 import {DialogService} from '../../dialog.service'
 import {SignerService} from '../../signer.service'
 import {SessionQuery} from '../../../../session/state/session.query'
-import {findLog} from '../../../utils/ethersjs'
+import {BigNumberMax, findLog} from '../../../utils/ethersjs'
 import {ErrorService} from '../../error.service'
-import {TokenPrice} from '../../../utils/token-price'
+import {TokenPriceBigNumber} from '../../../utils/token-price'
 import {Provider} from '@ethersproject/providers'
 import {CampaignCommonState} from './campaign.common'
 import {CampaignFlavor} from '../flavors'
+import {TokenBigNumber} from '../../../utils/token'
+import {ConversionService} from '../../conversion.service'
 
 @Injectable({
   providedIn: 'root',
@@ -38,6 +40,7 @@ export class CampaignVestingService {
               private errorService: ErrorService,
               private dialogService: DialogService,
               private stablecoin: StablecoinService,
+              private conversion: ConversionService,
               private gasService: GasService,
               private preferenceQuery: PreferenceQuery) {
   }
@@ -109,27 +112,21 @@ export class CampaignVestingService {
   stats(campaignAddress: string): Observable<VestingCampaignStats> {
     return this.getState(campaignAddress).pipe(
       map(campaign => {
-        const userMin = this.stablecoin.format(campaign.minInvestment)
-        const userMax = this.stablecoin.format(campaign.maxInvestment)
-        const tokenBalance = this.stablecoin.format(campaign.totalTokensBalance, 18)
-        const tokensSold = this.stablecoin.format(campaign.totalTokensSold, 18)
-        const tokensClaimable = this.stablecoin.format(campaign.totalClaimableTokens, 18)
-        const softCap = this.stablecoin.format(campaign.softCap)
-        const tokensClaimed = tokensSold - tokensClaimable
-        const tokenPrice = TokenPrice.parse(campaign.tokenPrice.toNumber())
-        const tokensAvailable = Math.max(0, tokenBalance - tokensSold)
+        const userMin = campaign.minInvestment
+        const userMax = campaign.maxInvestment
+        const tokenBalance = campaign.totalTokensBalance
+        const tokensSold = campaign.totalTokensSold
+        const tokensClaimable = campaign.totalClaimableTokens
+        const softCap = campaign.softCap
+        const tokensClaimed = tokensSold.sub(tokensClaimable)
+        const tokenPrice = campaign.tokenPrice
+        const tokensAvailable = BigNumberMax(constants.Zero, tokenBalance.sub(tokensSold))
 
-        const valueInvested = tokensSold * tokenPrice
-        const valueTotal = Math.max(tokenBalance, tokensSold) * tokenPrice
-        const valueToInvest = tokensAvailable * tokenPrice
+        const valueInvested = this.conversion.calcStablecoin(tokensSold, tokenPrice)
+        const valueTotal = this.conversion.calcStablecoin(tokenBalance, tokenPrice)
+        const valueToInvest = this.conversion.calcStablecoin(tokensAvailable, tokenPrice)
 
-        const tokenValue = campaign.totalTokensBalance
-          .mul(campaign.tokenPrice)
-          .mul(BigNumber.from((10 ** this.stablecoin.precision).toString()))
-          .div(BigNumber.from((10 ** TokenPrice.precision).toString()))
-          .div(BigNumber.from((10 ** 18).toString())) // token precision
-
-        const softCapReached = tokenValue.gte(campaign.softCap)
+        const softCapReached = valueTotal.gte(campaign.softCap)
 
         return {
           userMin,
@@ -237,16 +234,16 @@ interface CreateVestingCampaignData {
 }
 
 interface VestingCampaignStats {
-  userMin: number
-  userMax: number
-  tokenBalance: number
-  tokensSold: number
-  tokensClaimed: number
-  softCap: number
-  tokenPrice: number
-  tokensAvailable: number
-  valueInvested: number
-  valueTotal: number
-  valueToInvest: number
+  userMin: StablecoinBigNumber
+  userMax: StablecoinBigNumber
+  tokenBalance: TokenBigNumber
+  tokensSold: TokenBigNumber
+  tokensClaimed: TokenBigNumber
+  softCap: StablecoinBigNumber
+  tokenPrice: TokenPriceBigNumber
+  tokensAvailable: TokenBigNumber
+  valueInvested: StablecoinBigNumber
+  valueTotal: StablecoinBigNumber
+  valueToInvest: StablecoinBigNumber
   softCapReached: boolean
 }

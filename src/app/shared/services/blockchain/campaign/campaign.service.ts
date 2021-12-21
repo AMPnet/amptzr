@@ -1,9 +1,9 @@
 import {Injectable} from '@angular/core'
 import {combineLatest, from, Observable, of, throwError} from 'rxjs'
 import {IpfsService, IPFSText} from '../../ipfs/ipfs.service'
-import {StablecoinService} from '../stablecoin.service'
+import {StablecoinBigNumber, StablecoinService} from '../stablecoin.service'
 import {GasService} from '../gas.service'
-import {BigNumber, BigNumberish, Signer} from 'ethers'
+import {BigNumber, Signer} from 'ethers'
 import {map, switchMap} from 'rxjs/operators'
 import {DialogService} from '../../dialog.service'
 import {SignerService} from '../../signer.service'
@@ -18,6 +18,8 @@ import {CampaignVestingService} from './campaign-vesting.service'
 import {IPFSCampaign, ReturnFrequency} from '../../../../../../types/ipfs/campaign'
 import {cid, IPFSDocument} from '../../../../../../types/ipfs/common'
 import {iso8601} from '../../../../../../types/common'
+import {TokenBigNumber} from '../../../utils/token'
+import {TokenPriceBigNumber} from '../../../utils/token-price'
 
 @Injectable({
   providedIn: 'root',
@@ -177,14 +179,13 @@ export class CampaignService {
     }
   }
 
-  alreadyInvested(address: string): Observable<number> {
+  alreadyInvested(address: string): Observable<StablecoinBigNumber> {
     return combineLatest([
       of(this.campaignBasicService.contract(address, this.sessionQuery.provider)),
       this.signerService.ensureAuth,
     ]).pipe(
       switchMap(([contract, _signer]) =>
         contract.investmentAmount(this.sessionQuery.getValue().address!)),
-      map(res => this.stablecoin.format(res)),
     )
   }
 
@@ -220,10 +221,10 @@ export type CampaignWithInfo = CampaignCommonState & CampaignInfo
 export interface CreateCampaignData {
   slug: string,
   assetAddress: string,
-  initialPricePerToken: BigNumberish,
-  softCap: BigNumberish,
-  minInvestment: BigNumberish,
-  maxInvestment: BigNumberish,
+  initialPricePerToken: BigNumber,
+  softCap: BigNumber,
+  minInvestment: BigNumber,
+  maxInvestment: BigNumber,
   whitelistRequired: boolean,
   info: string,
 }
@@ -246,16 +247,16 @@ export interface CampaignUploadInfoData {
 }
 
 export interface CampaignStats {
-  userMin: number
-  userMax: number
-  tokenBalance: number
-  tokensSold: number
-  tokensClaimed: number
-  softCap: number
-  tokenPrice: number
-  tokensAvailable: number
-  valueInvested: number
-  valueTotal: number
-  valueToInvest: number
+  userMin: StablecoinBigNumber
+  userMax: StablecoinBigNumber
+  tokenBalance: TokenBigNumber
+  tokensSold: TokenBigNumber
+  tokensClaimed: TokenBigNumber
+  softCap: StablecoinBigNumber
+  tokenPrice: TokenPriceBigNumber
+  tokensAvailable: TokenBigNumber
+  valueInvested: StablecoinBigNumber
+  valueTotal: StablecoinBigNumber
+  valueToInvest: StablecoinBigNumber
   softCapReached: boolean
 }

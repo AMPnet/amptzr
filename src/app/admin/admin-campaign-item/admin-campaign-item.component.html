@@ -19,13 +19,13 @@
           </a>
 
           <div class="flex flex-col lg:flex-row gap-2 mt-4">
-            <span *ngIf="campaignData.total > 0">
-              Raising: <b>{{ campaignData.total | currencyDefault }}</b>
+            <span *ngIf="campaignData.total.gt(bigNumberConstants.Zero)">
+              Raising: <b>{{ campaignData.total | formatUnit:'stablecoin' | currencyDefault }}</b>
             </span>
 
             <span *ngIf="campaignData.tokensPercentage > 0">
-              Selling <b>{{ campaignData.campaignTokens | number }}</b> of
-              <b>{{ campaignData.assetTokens | number }}</b>
+              Selling <b>{{ campaignData.campaignTokens | formatUnit:'token' | number }}</b> of
+              <b>{{ campaignData.assetTokens | formatUnit:'token' | number }}</b>
               (<b>{{ campaignData.tokensPercentage | percent:'1.0-2' }}</b>) token shares
             </span>
 
@@ -34,7 +34,8 @@
             </span>
           </div>
           <div class="mt-2 mb-4">
-            Price per token: <b>{{ campaignData.tokenPrice | currencyDefault:'tokenPrice' }}</b>
+            Price per token:
+            <b>{{ campaignData.tokenPrice | formatUnit:'tokenPrice' | currencyDefault:'tokenPrice' }}</b>
           </div>
 
           <app-funding-progress class="lg:w-3/4" [campaign]="campaign"></app-funding-progress>

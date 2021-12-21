@@ -201,6 +201,7 @@ import {AuthMagicComponent} from './auth/auth-magic/auth-magic.component'
     TruncatePipe,
     UnescapePipe,
     PercentPipe,
+    FormatUnitPipe,
     DatePipe,
   ],
   bootstrap: [AppComponent],
