@@ -1,7 +1,7 @@
 import {ChangeDetectionStrategy, Component} from '@angular/core'
 import {combineLatest, Observable, of} from 'rxjs'
 import {withStatus, WithStatus} from '../../shared/utils/observables'
-import {BigNumber, constants} from 'ethers'
+import {BigNumber} from 'ethers'
 import {ActivatedRoute} from '@angular/router'
 import {map, switchMap, tap} from 'rxjs/operators'
 import {quillMods} from '../../shared/utils/quill'
@@ -106,7 +106,7 @@ export class AdminCampaignDetailComponent {
   shouldShowMin(stats: CampaignStats) {
     // TODO: should be set to userMin > 0
     //  this is a workaround for campaigns that are incorrectly set.
-    return stats.userMin.gte(constants.One)
+    return stats.userMin.gte(this.conversion.toStablecoin(1))
   }
 
   shouldShowMax(stats: CampaignStats) {
