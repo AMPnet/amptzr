@@ -1,11 +1,10 @@
 import {ChangeDetectionStrategy, Component, HostBinding, Input, OnInit} from '@angular/core'
 import {PercentPipe} from "@angular/common"
 import {CampaignService, CampaignStats, CampaignWithInfo} from '../shared/services/blockchain/campaign/campaign.service'
-import {Observable, of} from 'rxjs'
+import {Observable} from 'rxjs'
 import {CampaignFlavor} from '../shared/services/blockchain/flavors'
-import {CampaignBasicService, CampaignBasicState} from '../shared/services/blockchain/campaign/campaign-basic.service'
-import {map, shareReplay, switchMap, tap} from 'rxjs/operators'
-import {constants} from 'ethers'
+import {map, shareReplay, tap} from 'rxjs/operators'
+import {ConversionService} from '../shared/services/conversion.service'
 
 @Component({
   selector: 'app-offer-investment-info',
@@ -19,13 +18,11 @@ export class OfferInvestmentInfoComponent implements OnInit {
   stats$!: Observable<CampaignStats>
   hidden$!: Observable<boolean>
 
-  campaignBasic$!: Observable<CampaignBasicState | undefined>
-
   @HostBinding('class.hidden') hidden: boolean = true
 
   constructor(private percentPipe: PercentPipe,
               private campaignService: CampaignService,
-              private campaignBasicService: CampaignBasicService,
+              private conversion: ConversionService,
   ) {
   }
 
@@ -34,10 +31,6 @@ export class OfferInvestmentInfoComponent implements OnInit {
       this.offer.contractAddress, this.offer.flavor as CampaignFlavor,
     ).pipe(
       shareReplay(1),
-    )
-
-    this.campaignBasic$ = of(this.offer).pipe(
-      switchMap(campaign => this.campaignBasicService.getStateFromCommon(campaign)),
     )
 
     this.hidden$ = this.stats$.pipe(
@@ -70,10 +63,10 @@ export class OfferInvestmentInfoComponent implements OnInit {
   shouldShowMin(stats: CampaignStats) {
     // TODO: should be set to userMin > 0
     //  this is a workaround for campaigns that are incorrectly set.
-    return stats.userMin.gte(constants.One)
+    return stats.userMin.gte(this.conversion.toStablecoin(1))
   }
 
   shouldShowMax(stats: CampaignStats) {
-    return this.display === 'wide' && stats.userMax < stats.valueTotal
+    return this.display === 'wide' && stats.userMax.lt(stats.valueTotal)
   }
 }

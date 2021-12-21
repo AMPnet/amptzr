@@ -7,22 +7,20 @@
       </span>
     </div>
 
-    <ng-container *ngIf="(campaignBasic$ | async) as campaignBasic">
-      <ng-container *ngIf="(stats$ | async) as stats">
-        <div class="mt-1 lg:mt-auto" *ngIf="shouldShowMin(stats)">
-          <span class="font-bold lg:text-lg">
-            {{ campaignBasic.minInvestment | formatUnit:'stablecoin' | currencyDefault }}
-          </span>
-          <span class="ml-2 font-light" [class.text-sm]="display === 'wide'">Minimum investment</span>
-        </div>
+    <ng-container *ngIf="(stats$ | async) as stats">
+      <div class="mt-1 lg:mt-auto" *ngIf="shouldShowMin(stats)">
+        <span class="font-bold lg:text-lg">
+          {{ stats.userMin | formatUnit:'stablecoin' | currencyDefault:'stablecoin':'implicit' }}
+        </span>
+        <span class="ml-2 font-light" [class.text-sm]="display === 'wide'">Minimum investment</span>
+      </div>
 
-        <div class="mt-1 lg:mt-auto" *ngIf="shouldShowMax(stats)">
-          <span class="font-bold lg:text-lg">
-            {{ campaignBasic.maxInvestment | formatUnit:'stablecoin' | currencyDefault }}
-          </span>
-          <span class="ml-2 font-light text-sm">Max investment</span>
-        </div>
-      </ng-container>
+      <div class="mt-1 lg:mt-auto" *ngIf="shouldShowMax(stats)">
+        <span class="font-bold lg:text-lg">
+          {{ stats.userMax | formatUnit:'stablecoin' | currencyDefault:'stablecoin':'implicit' }}
+        </span>
+        <span class="ml-2 font-light text-sm">Max investment</span>
+      </div>
     </ng-container>
   </div>
 </ng-container>
