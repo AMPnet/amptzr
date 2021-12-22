@@ -3,21 +3,40 @@ import {StablecoinBigNumber, StablecoinService} from './blockchain/stablecoin.se
 import {BigNumber, BigNumberish} from 'ethers'
 import {TokenPrice, TokenPriceBigNumber} from '../utils/token-price'
 import {Token, TokenBigNumber} from '../utils/token'
-import {formatUnits} from 'ethers/lib/utils'
+import {formatUnits, parseUnits} from 'ethers/lib/utils'
+import {getWindow} from '../utils/browser'
 
 @Injectable({
   providedIn: 'root',
 })
 export class ConversionService {
   constructor(private stablecoin: StablecoinService) {
+    getWindow().bignum = BigNumber
+    getWindow().parseUnits = parseUnits
   }
 
+
   toStablecoin(amount: number | string): StablecoinBigNumber {
-    return BigNumber.from(Number(amount) * (10 ** this.stablecoin.precision))
+    // return BigNumber.from((Number(amount) * (10 ** this.stablecoin.precision)).toFixed().toString())
+    console.log('toStablecoin')
+    console.log(amount)
+    console.log(String(amount))
+    console.log(parseUnits(String(amount), this.stablecoin.precision))
+    return parseUnits(String(amount), this.stablecoin.precision)
+  }
+
+  toToken(amount: number | string): StablecoinBigNumber {
+    // return BigNumber.from((Number(amount) * (10 ** 18)).toString())
+    console.log('toToken')
+    console.log(amount)
+    console.log(String(amount))
+    console.log(parseUnits(String(amount), 18))
+    return parseUnits(String(amount), 18)
   }
 
   toTokenPrice(amount: number | string): TokenPriceBigNumber {
-    return BigNumber.from(TokenPrice.format(Number(amount)))
+    // return BigNumber.from((TokenPrice.format(Number(amount))).toString())
+    return parseUnits(String(amount), TokenPrice.precision)
   }
 
   parseStablecoin(value: StablecoinBigNumber): number {

@@ -1,268 +1,260 @@
-<!--<div class="w-full h-full flex justify-center mt-8 px-2">-->
-<!--  <div class="w-full max-w-5xl">-->
-<!--    <ng-container *ngIf="(campaignWithStatus$ | async) as campaignRes">-->
-<!--      <ng-container *ngIf="campaignRes.value as campaign">-->
-<!--        <form [formGroup]="investmentForm">-->
-<!--          &lt;!&ndash; Input investment card &ndash;&gt;-->
-<!--          <div *ngIf="(investState$ | async) === investState.Editing">-->
-<!--            <div class="flex flex-col lg:flex-row mt-8 shadow-lg rounded-3xl bg-white lg:min-h-[24rem]">-->
-<!--              <img-->
-<!--                class="lg:w-5/12 w-full rounded-t-3xl lg:rounded-l-3xl object-cover-->
-<!--                card-corner-radius-override"-->
-<!--                src="{{ campaign.infoData.photo | toUrlIPFS }}" alt="Project image">-->
-<!--              <div class="w-full flex flex-col p-4 lg:p-8">-->
-<!--                &lt;!&ndash; Input with label, min invest and max invest amounts &ndash;&gt;-->
-<!--                <h1 class="pt-2 lg:pt-8 text-4xl uppercase">-->
-<!--                  {{ campaign.infoData.name }}-->
-<!--                </h1>-->
+<div class="w-full h-full flex justify-center mt-8 px-2">
+  <div class="w-full max-w-5xl">
+    <ng-container *ngIf="(stateWithStatus$ | async) as stateRes">
+      <ng-container *ngIf="stateRes.value as state">
+        <form [formGroup]="investmentForm">
+          <!-- Input investment card -->
+          <!--          <div *ngIf="(investState$ | async) === investState.Editing">-->
+          <!--            <div class="flex flex-col lg:flex-row mt-8 shadow-lg rounded-3xl bg-white lg:min-h-[24rem]">-->
+          <!--              <img-->
+          <!--                class="lg:w-5/12 w-full rounded-t-3xl lg:rounded-l-3xl object-cover-->
+          <!--                card-corner-radius-override"-->
+          <!--                src="{{ campaign.infoData.photo | toUrlIPFS }}" alt="Project image">-->
+          <!--              <div class="w-full flex flex-col p-4 lg:p-8">-->
+          <!--                &lt;!&ndash; Input with label, min invest and max invest amounts &ndash;&gt;-->
+          <!--                <h1 class="pt-2 lg:pt-8 text-4xl uppercase">-->
+          <!--                  {{ campaign.infoData.name }}-->
+          <!--                </h1>-->
 
-<!--                <ng-container *ngIf="(preInvestDataWithStatus$ | async) as preInvestDataRes">-->
-<!--                  <ng-container *ngIf="preInvestDataRes.value as preInvestData">-->
-<!--                    <div class="mt-4 flex flex-col lg:flex-row justify-between">-->
-<!--                      <div class="w-full h-full mr-16">-->
-<!--                        <label for="investmentAmount" class="text-sm">-->
-<!--                          I want to invest-->
-<!--                        </label>-->
-<!--                        <input class="w-full mt-2 p-3 border outline-none rounded-xl disabled:bg-gray-100"-->
-<!--                               [attr.disabled]="investmentForm.get('amount')?.errors?.userMaxReached-->
-<!--                             || investmentForm.get('amount')?.errors?.campaignMaxReached"-->
-<!--                               type="text" appCurrencyMask-->
-<!--                               id="investmentAmount"-->
-<!--                               formControlName="amount"/>-->
-<!--                        <div class="mt-4 w-full flex items-end justify-between">-->
-<!--                          <div class="text-sm flex">-->
-<!--                            <ng-container *ngIf="preInvestData.max > 0 && preInvestData.min > 0">-->
-<!--                              <span class="font-semibold mr-1">-->
-<!--                                {{ preInvestData.min | currencyDefault }}-->
-<!--                              </span>-->
-<!--                              Min. Investment-->
-<!--                            </ng-container>-->
-<!--                          </div>-->
-<!--                          <div class="text-sm flex">-->
-<!--                            <ng-container *ngIf="preInvestData.max > 0">-->
-<!--                              <span class="font-semibold mr-1">-->
-<!--                                {{ preInvestData.max | currencyDefault }}-->
-<!--                              </span>-->
-<!--                              Max Investment-->
-<!--                            </ng-container>-->
-<!--                          </div>-->
-<!--                        </div>-->
-<!--                      </div>-->
+          <!--                <ng-container *ngIf="(preInvestDataWithStatus$ | async) as preInvestDataRes">-->
+          <!--                  <ng-container *ngIf="preInvestDataRes.value as preInvestData">-->
+          <!--                    <div class="mt-4 flex flex-col lg:flex-row justify-between">-->
+          <!--                      <div class="w-full h-full mr-16">-->
+          <!--                        <label for="investmentAmount" class="text-sm">-->
+          <!--                          I want to invest-->
+          <!--                        </label>-->
+          <!--                        <input class="w-full mt-2 p-3 border outline-none rounded-xl disabled:bg-gray-100"-->
+          <!--                               [attr.disabled]="investmentForm.get('amount')?.errors?.userMaxReached-->
+          <!--                             || investmentForm.get('amount')?.errors?.campaignMaxReached"-->
+          <!--                               type="text" appCurrencyMask-->
+          <!--                               id="investmentAmount"-->
+          <!--                               formControlName="amount"/>-->
+          <!--                        <div class="mt-4 w-full flex items-end justify-between">-->
+          <!--                          <div class="text-sm flex">-->
+          <!--                            <ng-container *ngIf="preInvestData.max > 0 && preInvestData.min > 0">-->
+          <!--                              <span class="font-semibold mr-1">-->
+          <!--                                {{ preInvestData.min | currencyDefault }}-->
+          <!--                              </span>-->
+          <!--                              Min. Investment-->
+          <!--                            </ng-container>-->
+          <!--                          </div>-->
+          <!--                          <div class="text-sm flex">-->
+          <!--                            <ng-container *ngIf="preInvestData.max > 0">-->
+          <!--                              <span class="font-semibold mr-1">-->
+          <!--                                {{ preInvestData.max | currencyDefault }}-->
+          <!--                              </span>-->
+          <!--                              Max Investment-->
+          <!--                            </ng-container>-->
+          <!--                          </div>-->
+          <!--                        </div>-->
+          <!--                      </div>-->
 
-<!--                      &lt;!&ndash; Wallet view section &ndash;&gt;-->
-<!--                      <div class="lg:ml-8 mt-8 flex flex-col items-end bg-gray-200 p-4 rounded-2xl">-->
-<!--                        <div class="text-lg">-->
-<!--                          {{ preInvestData.walletBalance | currencyDefault }}-->
-<!--                        </div>-->
-<!--                        <div class="text-sm text-gray-500 whitespace-nowrap flex items-center mt-1">-->
-<!--                          <svg width="20" height="20" viewBox="0 0 20 20" fill="none"-->
-<!--                               xmlns="http://www.w3.org/2000/svg">-->
-<!--                            <path-->
-<!--                              d="M18.6087 1.78261C18.8246 1.78261 19 1.60721 19 1.3913C19 1.1754 18.8246 1 18.6087 1H2.95652C1.87776 1 1 1.87776 1 2.95652V17.0435C1 18.1222 1.87776 19 2.95652 19H18.6087C18.8246 19 19 18.8252 19 18.6087V4.52174C19 4.30583 18.8246 4.13044 18.6087 4.13044C17.9616 4.13044 17.4348 3.60366 17.4348 2.95652C17.4348 2.30938 17.9616 1.78261 18.6087 1.78261ZM2.95652 1.78261H17.0442C16.7985 2.10971 16.6522 2.5163 16.6522 2.95652C16.6522 3.39674 16.7985 3.80333 17.0442 4.13044H2.95652C2.30938 4.13044 1.78261 3.60366 1.78261 2.95652C1.78261 2.30938 2.30938 1.78261 2.95652 1.78261ZM18.2174 13.5217H11.5652C10.4865 13.5217 9.6087 12.644 9.6087 11.5652C9.6087 10.4865 10.4865 9.6087 11.5652 9.6087H18.2174V13.5217ZM18.2174 4.91304V8.82609H11.5652C10.0548 8.82609 8.82609 10.0548 8.82609 11.5652C8.82609 13.0752 10.0548 14.3043 11.5652 14.3043H18.2174V18.2174H2.95652C2.30938 18.2174 1.78261 17.6906 1.78261 17.0435V4.52097C2.10971 4.76669 2.5163 4.91304 2.95652 4.91304H18.2174Z"-->
-<!--                              fill="black" stroke="#6B7280"/>-->
-<!--                          </svg>-->
-<!--                          <span class="ml-2">Available in wallet</span>-->
-<!--                        </div>-->
-<!--                      </div>-->
-<!--                    </div>-->
+          <!--                      &lt;!&ndash; Wallet view section &ndash;&gt;-->
+          <!--                      <div class="lg:ml-8 mt-8 flex flex-col items-end bg-gray-200 p-4 rounded-2xl">-->
+          <!--                        <div class="text-lg">-->
+          <!--                          {{ preInvestData.walletBalance | currencyDefault }}-->
+          <!--                        </div>-->
+          <!--                        <div class="text-sm text-gray-500 whitespace-nowrap flex items-center mt-1">-->
+          <!--                          <svg width="20" height="20" viewBox="0 0 20 20" fill="none"-->
+          <!--                               xmlns="http://www.w3.org/2000/svg">-->
+          <!--                            <path-->
+          <!--                              d="M18.6087 1.78261C18.8246 1.78261 19 1.60721 19 1.3913C19 1.1754 18.8246 1 18.6087 1H2.95652C1.87776 1 1 1.87776 1 2.95652V17.0435C1 18.1222 1.87776 19 2.95652 19H18.6087C18.8246 19 19 18.8252 19 18.6087V4.52174C19 4.30583 18.8246 4.13044 18.6087 4.13044C17.9616 4.13044 17.4348 3.60366 17.4348 2.95652C17.4348 2.30938 17.9616 1.78261 18.6087 1.78261ZM2.95652 1.78261H17.0442C16.7985 2.10971 16.6522 2.5163 16.6522 2.95652C16.6522 3.39674 16.7985 3.80333 17.0442 4.13044H2.95652C2.30938 4.13044 1.78261 3.60366 1.78261 2.95652C1.78261 2.30938 2.30938 1.78261 2.95652 1.78261ZM18.2174 13.5217H11.5652C10.4865 13.5217 9.6087 12.644 9.6087 11.5652C9.6087 10.4865 10.4865 9.6087 11.5652 9.6087H18.2174V13.5217ZM18.2174 4.91304V8.82609H11.5652C10.0548 8.82609 8.82609 10.0548 8.82609 11.5652C8.82609 13.0752 10.0548 14.3043 11.5652 14.3043H18.2174V18.2174H2.95652C2.30938 18.2174 1.78261 17.6906 1.78261 17.0435V4.52097C2.10971 4.76669 2.5163 4.91304 2.95652 4.91304H18.2174Z"-->
+          <!--                              fill="black" stroke="#6B7280"/>-->
+          <!--                          </svg>-->
+          <!--                          <span class="ml-2">Available in wallet</span>-->
+          <!--                        </div>-->
+          <!--                      </div>-->
+          <!--                    </div>-->
 
-<!--                    <div class="w-full lg:flex lg:justify-between">-->
-<!--                      &lt;!&ndash; Error message for invalid investment amount &ndash;&gt;-->
-<!--                      <div class="flex lg:items-center mt-4 lg:mt-auto">-->
-<!--                        <div class="flex items-center" *ngIf="investmentForm.dirty && investmentForm.invalid">-->
-<!--                          <svg width="26" height="26" viewBox="0 0 26 26" fill="none"-->
-<!--                               xmlns="http://www.w3.org/2000/svg">-->
-<!--                            <path-->
-<!--                              d="M14.3333 18.3333H13V13H11.6667M13 7.66667H13.0133M25 13C25 14.5759 24.6896 16.1363 24.0866 17.5922C23.4835 19.0481 22.5996 20.371 21.4853 21.4853C20.371 22.5996 19.0481 23.4835 17.5922 24.0866C16.1363 24.6896 14.5759 25 13 25C11.4241 25 9.86371 24.6896 8.4078 24.0866C6.95189 23.4835 5.62902 22.5996 4.51472 21.4853C3.40042 20.371 2.5165 19.0481 1.91345 17.5922C1.31039 16.1363 1 14.5759 1 13C1 9.8174 2.26428 6.76516 4.51472 4.51472C6.76516 2.26428 9.8174 1 13 1C16.1826 1 19.2348 2.26428 21.4853 4.51472C23.7357 6.76516 25 9.8174 25 13Z"-->
-<!--                              stroke="#EF4444" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>-->
-<!--                          </svg>-->
-<!--                          <span class="ml-3 text-red-600 text-sm font-semibold">-->
-<!--                            <ng-container *ngIf="investmentForm.get('amount')?.errors?.amountEmpty">-->
-<!--                              The amount cannot be empty.-->
-<!--                            </ng-container>-->
-<!--                            <ng-container *ngIf="investmentForm.get('amount')?.errors?.amountTooLow">-->
-<!--                              The amount is lower than minimum required investment.-->
-<!--                            </ng-container>-->
-<!--                            <ng-container *ngIf="investmentForm.get('amount')?.errors?.amountTooHigh">-->
-<!--                              The amount exceeds maximum allowed investment.-->
-<!--                            </ng-container>-->
-<!--                            <ng-container *ngIf="investmentForm.get('amount')?.errors?.walletBalanceTooLow">-->
-<!--                              Not enough funds. Please top up your wallet.-->
-<!--                            </ng-container>-->
-<!--                          </span>-->
-<!--                        </div>-->
+          <!--                    <div class="w-full lg:flex lg:justify-between">-->
+          <!--                      &lt;!&ndash; Error message for invalid investment amount &ndash;&gt;-->
+          <!--                      <div class="flex lg:items-center mt-4 lg:mt-auto">-->
+          <!--                        <div class="flex items-center" *ngIf="investmentForm.dirty && investmentForm.invalid">-->
+          <!--                          <svg width="26" height="26" viewBox="0 0 26 26" fill="none"-->
+          <!--                               xmlns="http://www.w3.org/2000/svg">-->
+          <!--                            <path-->
+          <!--                              d="M14.3333 18.3333H13V13H11.6667M13 7.66667H13.0133M25 13C25 14.5759 24.6896 16.1363 24.0866 17.5922C23.4835 19.0481 22.5996 20.371 21.4853 21.4853C20.371 22.5996 19.0481 23.4835 17.5922 24.0866C16.1363 24.6896 14.5759 25 13 25C11.4241 25 9.86371 24.6896 8.4078 24.0866C6.95189 23.4835 5.62902 22.5996 4.51472 21.4853C3.40042 20.371 2.5165 19.0481 1.91345 17.5922C1.31039 16.1363 1 14.5759 1 13C1 9.8174 2.26428 6.76516 4.51472 4.51472C6.76516 2.26428 9.8174 1 13 1C16.1826 1 19.2348 2.26428 21.4853 4.51472C23.7357 6.76516 25 9.8174 25 13Z"-->
+          <!--                              stroke="#EF4444" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>-->
+          <!--                          </svg>-->
+          <!--                          <span class="ml-3 text-red-600 text-sm font-semibold">-->
+          <!--                            <ng-container *ngIf="investmentForm.get('amount')?.errors?.amountEmpty">-->
+          <!--                              The amount cannot be empty.-->
+          <!--                            </ng-container>-->
+          <!--                            <ng-container *ngIf="investmentForm.get('amount')?.errors?.amountTooLow">-->
+          <!--                              The amount is lower than minimum required investment.-->
+          <!--                            </ng-container>-->
+          <!--                            <ng-container *ngIf="investmentForm.get('amount')?.errors?.amountTooHigh">-->
+          <!--                              The amount exceeds maximum allowed investment.-->
+          <!--                            </ng-container>-->
+          <!--                            <ng-container *ngIf="investmentForm.get('amount')?.errors?.walletBalanceTooLow">-->
+          <!--                              Not enough funds. Please top up your wallet.-->
+          <!--                            </ng-container>-->
+          <!--                          </span>-->
+          <!--                        </div>-->
 
-<!--                        <div class="text-sm font-semibold" *ngIf="investmentForm.get('amount')?.errors?.userMaxReached">-->
-<!--                          You have invested the maximum allowed amount in this project.-->
-<!--                        </div>-->
-<!--                        <div class="text-sm font-semibold"-->
-<!--                             *ngIf="investmentForm.get('amount')?.errors?.campaignMaxReached">-->
-<!--                          The project is closed for funding.-->
-<!--                        </div>-->
-<!--                      </div>-->
+          <!--                        <div class="text-sm font-semibold" *ngIf="investmentForm.get('amount')?.errors?.userMaxReached">-->
+          <!--                          You have invested the maximum allowed amount in this project.-->
+          <!--                        </div>-->
+          <!--                        <div class="text-sm font-semibold"-->
+          <!--                             *ngIf="investmentForm.get('amount')?.errors?.campaignMaxReached">-->
+          <!--                          The project is closed for funding.-->
+          <!--                        </div>-->
+          <!--                      </div>-->
 
-<!--                      &lt;!&ndash; Submit Button for Amount input form &ndash;&gt;-->
-<!--                      <button *ngIf="investmentForm.get('amount')?.errors?.walletBalanceTooLow"-->
-<!--                              [routerLink]="'/wallet' | issuerPath"-->
-<!--                              class="bg-indigo-800 rounded-full w-full lg:w-auto px-16 py-2 text-sm mt-4-->
-<!--                                 lg:mt-8 text-white float-right disabled:bg-gray-500">-->
-<!--                        Open Wallet-->
-<!--                      </button>-->
-<!--                      <button app-action-button-->
-<!--                              *ngIf="!investmentForm.get('amount')?.errors?.walletBalanceTooLow"-->
-<!--                              [onClick]="goToReview.bind(this)"-->
-<!--                              [disabled]="!investmentForm.valid || investmentForm.get('amount')?.errors?.userMaxReached-->
-<!--                          || investmentForm.get('amount')?.errors?.campaignMaxReached"-->
-<!--                              text="Next"-->
-<!--                              class="bg-indigo-800 rounded-full w-full lg:w-auto px-16 py-2 text-sm mt-4-->
-<!--                        lg:mt-8 text-white float-right disabled:bg-gray-500">-->
-<!--                      </button>-->
-<!--                    </div>-->
-<!--                  </ng-container>-->
+          <!--                      &lt;!&ndash; Submit Button for Amount input form &ndash;&gt;-->
+          <!--                      <button *ngIf="investmentForm.get('amount')?.errors?.walletBalanceTooLow"-->
+          <!--                              [routerLink]="'/wallet' | issuerPath"-->
+          <!--                              class="bg-indigo-800 rounded-full w-full lg:w-auto px-16 py-2 text-sm mt-4-->
+          <!--                                 lg:mt-8 text-white float-right disabled:bg-gray-500">-->
+          <!--                        Open Wallet-->
+          <!--                      </button>-->
+          <!--                      <button app-action-button-->
+          <!--                              *ngIf="!investmentForm.get('amount')?.errors?.walletBalanceTooLow"-->
+          <!--                              [onClick]="goToReview.bind(this)"-->
+          <!--                              [disabled]="!investmentForm.valid || investmentForm.get('amount')?.errors?.userMaxReached-->
+          <!--                          || investmentForm.get('amount')?.errors?.campaignMaxReached"-->
+          <!--                              text="Next"-->
+          <!--                              class="bg-indigo-800 rounded-full w-full lg:w-auto px-16 py-2 text-sm mt-4-->
+          <!--                        lg:mt-8 text-white float-right disabled:bg-gray-500">-->
+          <!--                      </button>-->
+          <!--                    </div>-->
+          <!--                  </ng-container>-->
 
-<!--                  <ng-container *ngIf="preInvestDataRes.error">-->
-<!--                    Cannot fetch pre-investment data.-->
-<!--                    <div hidden>{{ preInvestDataRes.error | json }}</div>-->
-<!--                  </ng-container>-->
+          <!--                  <ng-container *ngIf="preInvestDataRes.error">-->
+          <!--                    Cannot fetch pre-investment data.-->
+          <!--                    <div hidden>{{ preInvestDataRes.error | json }}</div>-->
+          <!--                  </ng-container>-->
 
-<!--                  <ng-container *ngIf="preInvestDataRes.loading">-->
-<!--                    <div class="flex justify-center items-center h-36">-->
-<!--                      <app-spinner class="self-center"></app-spinner>-->
-<!--                    </div>-->
-<!--                  </ng-container>-->
-<!--                </ng-container>-->
-<!--              </div>-->
-<!--            </div>-->
-<!--          </div>-->
+          <!--                  <ng-container *ngIf="preInvestDataRes.loading">-->
+          <!--                    <div class="flex justify-center items-center h-36">-->
+          <!--                      <app-spinner class="self-center"></app-spinner>-->
+          <!--                    </div>-->
+          <!--                  </ng-container>-->
+          <!--                </ng-container>-->
+          <!--              </div>-->
+          <!--            </div>-->
+          <!--          </div>-->
 
-<!--          <div class="max-w-md mx-auto bg-white rounded-3xl shadow-lg px-4 py-3">-->
-<!--            <h2 class="uppercase font-semibold text-lg">-->
-<!--              Buy Order-->
-<!--            </h2>-->
+          <div class="max-w-md mx-auto bg-white rounded-3xl shadow-lg px-4 py-3">
+            <h2 class="uppercase font-semibold text-lg">
+              Buy Order
+            </h2>
 
-<!--            <form [formGroup]="buyForm">-->
-<!--              &lt;!&ndash; Stablecoin box &ndash;&gt;-->
-<!--              <div class="mt-2 bg-gray-100 border-gray-300 border-[1px] rounded-lg p-3">-->
-<!--                <div class="flex justify-between">-->
-<!--                  <div class="flex items-center">-->
-<!--                    <div class="flex rounded-full items-center bg-white shadow-md">-->
-<!--                      <div class="w-6 h-6 bg-white rounded-full overflow-hidden m-1">-->
-<!--                        &lt;!&ndash; TODO: change icon to specific stablecoin &ndash;&gt;-->
-<!--                        <img class="h-full w-full object-contain" src="/assets/usdc.png" alt="Logo">-->
-<!--                      </div>-->
+            <form [formGroup]="investmentForm">
+              <!-- Stablecoin box -->
+              <div class="mt-2 bg-gray-100 border-gray-300 border-[1px] rounded-lg p-3">
+                <div class="flex justify-between">
+                  <div class="flex items-center">
+                    <div class="flex rounded-full items-center bg-white shadow-md">
+                      <div class="w-6 h-6 bg-white rounded-full overflow-hidden m-1">
+                        <!-- TODO: change icon to specific stablecoin -->
+                        <img class="h-full w-full object-contain" src="/assets/usdc.png" alt="Logo">
+                      </div>
 
-<!--                      <span class="ml-1 mr-3">-->
-<!--                        {{ state.stablecoinSymbol }}-->
-<!--                      </span>-->
-<!--                    </div>-->
-<!--                  </div>-->
+                      <span class="ml-1 mr-3">
+                        {{ state.stablecoinSymbol }}
+                      </span>
+                    </div>
+                  </div>
 
-<!--                  <input class="w-full text-right bg-transparent border-none focus:ring-0 font-mono text-xl"-->
-<!--                         appCurrInput formControlName="stablecoinAmount"-->
-<!--                         (input)="onStablecoinAmountChange()">-->
-<!--                </div>-->
+                  <input class="w-full text-right bg-transparent border-none focus:ring-0 font-mono text-xl"
+                         appCurrInput formControlName="stablecoinAmount"
+                         (input)="onStablecoinAmountChange(state.campaign)">
+                </div>
 
-<!--                <div class="flex items-center min-h-[1rem] mt-1">-->
-<!--                  <ng-container *ngIf="buyForm.dirty && buyForm.invalid">-->
-<!--                    <span class="text-red-600 text-xs font-semibold">-->
-<!--                      <ng-container *ngIf="buyForm.errors?.walletBalanceTooLow">-->
-<!--                        Not enough funds. Please top up your wallet.-->
-<!--                      </ng-container>-->
-<!--                    </span>-->
-<!--                  </ng-container>-->
-<!--                </div>-->
+                <div class="flex items-center min-h-[1rem] mt-1">
+                  <ng-container *ngIf="investmentForm.dirty && investmentForm.invalid">
+                    <span class="text-red-600 text-xs font-semibold">
+                      <ng-container *ngIf="investmentForm.errors?.walletBalanceTooLow">
+                        Not enough funds. Please top up your wallet.
+                      </ng-container>
+                    </span>
+                  </ng-container>
+                </div>
 
-<!--                <div class="flex justify-between mt-5 text-xs">-->
-<!--                  <div>-->
-<!--                    <span class="text-gray-400">-->
-<!--                      Balance: {{ state.stablecoinBalance | formatUnit:'stablecoin' | currencyDefault }}-->
-<!--                    </span>-->
-<!--                  </div>-->
-<!--                </div>-->
-<!--              </div>-->
+                <div class="flex justify-between mt-5 text-xs">
+                  <div>
+                    <span class="text-gray-400">
+                      Balance: {{ state.stablecoinBalance | formatUnit:'stablecoin' | currencyDefault }}
+                    </span>
+                  </div>
+                </div>
+              </div>
 
-<!--              &lt;!&ndash; Stock box &ndash;&gt;-->
-<!--              <div class="mt-2 bg-gray-100 border-gray-300 border-[1px] rounded-lg p-3">-->
-<!--                <div class="flex justify-between">-->
-<!--                  <div class="flex items-center">-->
-<!--                    <div class="flex rounded-full items-center bg-white shadow-md">-->
-<!--                      <div class="w-6 h-6 bg-white rounded-full overflow-hidden m-1">-->
-<!--                        <img class="h-full w-full object-contain" src="/assets/stock.png" alt="Logo">-->
-<!--                      </div>-->
+              <!-- Token box -->
+              <div class="mt-2 bg-gray-100 border-gray-300 border-[1px] rounded-lg p-3">
+                <div class="flex justify-between">
+                  <div class="flex items-center">
+                    <div class="flex rounded-full items-center bg-white shadow-md">
+                      <div class="w-6 h-6 bg-white rounded-full overflow-hidden m-1">
+                        <img class="h-full w-full object-contain" src="{{ state.asset.infoData.logo | toUrlIPFS }}"
+                             alt="Logo">
+                      </div>
 
-<!--                      <span class="ml-1 mr-3">-->
-<!--                        {{ state.stock.symbol }}-->
-<!--                      </span>-->
-<!--                    </div>-->
-<!--                  </div>-->
+                      <span class="ml-1 mr-3">
+                        {{ state.asset.symbol }}
+                      </span>
+                    </div>
+                  </div>
 
-<!--                  <input class="w-full text-right bg-transparent border-none focus:ring-0 font-mono text-xl"-->
-<!--                         appCurrInput formControlName="stockAmount"-->
-<!--                         (input)="onStockAmountChange()">-->
-<!--                </div>-->
+                  <input class="w-full text-right bg-transparent border-none focus:ring-0 font-mono text-xl"
+                         appCurrInput formControlName="tokenAmount"
+                         (input)="onTokenAmountChange(state.campaign)">
+                </div>
 
-<!--                <div class="flex flex-col gap-2 min-h-[1rem] mt-1">-->
-<!--                  <ng-container *ngIf="buyForm.dirty && buyForm.invalid">-->
-<!--                    <span class="text-red-600 text-xs font-semibold">-->
-<!--                      <ng-container *ngIf="buyForm.errors?.stockAmountTooLow">-->
-<!--                        The amount cannot be less than one share.-->
-<!--                      </ng-container>-->
-<!--                    </span>-->
-<!--                  </ng-container>-->
+                <div class="flex flex-col gap-2 min-h-[1rem] mt-1">
+                  <ng-container *ngIf="investmentForm.dirty && investmentForm.invalid">
+                    <span class="text-red-600 text-xs font-semibold">
+                      <ng-container *ngIf="investmentForm.errors?.stockAmountTooLow">
+                        The amount cannot be less than one share.
+                      </ng-container>
+                    </span>
+                  </ng-container>
+                </div>
 
-<!--                  <span *ngIf="isFractionalAmount(buyForm.get('stockAmount')?.value) && buyForm.valid"-->
-<!--                        class="text-yellow-500 text-xs font-semibold">-->
-<!--                    As fractional amounts are not supported, you-->
-<!--                    will get at most {{ floorAmount(buyForm.get('stockAmount')?.value) }} share(s).-->
-<!--                  </span>-->
-<!--                </div>-->
+                <div class="flex justify-between mt-10 text-xs">
+                  <div class="flex gap-2 flex-wrap">
+                    <span class="text-gray-400">
+                      {{ state.asset.name }}
+                    </span>
+                    <span class="font-semibold">
+                      Token
+                      price: {{ state.campaign.pricePerToken | formatUnit:'tokenPrice' | currencyDefault:'tokenPrice' }}
+                    </span>
+                  </div>
 
-<!--                <div class="flex justify-between mt-10 text-xs">-->
-<!--                  <div class="flex gap-2 flex-wrap">-->
-<!--                    <span class="text-gray-400">-->
-<!--                      {{ state.stock.name }}-->
-<!--                    </span>-->
-<!--                    <span class="font-semibold">-->
-<!--                      Share price: {{ state.stock.price | currencyDefault }}-->
-<!--                    </span>-->
-<!--                  </div>-->
+                  <div>
+                    <!-- right placeholder -->
+                  </div>
+                </div>
+              </div>
 
-<!--                  <div>-->
-<!--                    <span class="text-gray-400">-->
-<!--                      Shares to issue-->
-<!--                    </span>-->
-<!--                  </div>-->
-<!--                </div>-->
-<!--              </div>-->
+              <div class="mt-4">
+                <button app-action-button
+                        class="w-full bg-blue-900 text-white px-8 py-2 rounded-full
+                         uppercase font-semibold disabled:bg-gray-500"
+                        text="Buy"
+                        [onClick]="this.invest(state.campaign).bind(this)"
+                        [disabled]="investmentForm.invalid">
+                </button>
+              </div>
+            </form>
+          </div>
+        </form>
+      </ng-container>
 
-<!--              <div class="mt-4">-->
-<!--                <button app-action-button-->
-<!--                        class="w-full bg-blue-900 text-white px-8 py-2 rounded-full-->
-<!--                         uppercase font-semibold disabled:bg-gray-500"-->
-<!--                        text="Place order"-->
-<!--                        [onClick]="this.placeOrder.bind(this)"-->
-<!--                        [disabled]="buyForm.invalid">-->
-<!--                </button>-->
-<!--              </div>-->
-<!--            </form>-->
-<!--          </div>-->
+      <ng-container *ngIf="stateRes.error">
+        <div class="flex justify-center py-8">
+          Cannot fetch data.
+        </div>
+        <div hidden>{{ stateRes.error | json }}</div>
+      </ng-container>
 
-
-<!--        </form>-->
-<!--      </ng-container>-->
-
-<!--      <ng-container *ngIf="campaignRes.error">-->
-<!--        <div class="flex justify-center py-8">-->
-<!--          Cannot fetch project.-->
-<!--        </div>-->
-<!--        <div hidden>{{ campaignRes.error | json }}</div>-->
-<!--      </ng-container>-->
-
-<!--      <ng-container *ngIf="campaignRes.loading">-->
-<!--        <div class="flex justify-center py-8">-->
-<!--          <app-spinner type="overlay">Loading project...</app-spinner>-->
-<!--        </div>-->
-<!--      </ng-container>-->
-<!--    </ng-container>-->
-<!--  </div>-->
-<!--</div>-->
+      <ng-container *ngIf="stateRes.loading">
+        <div class="flex justify-center py-8">
+          <app-spinner type="overlay">Loading...</app-spinner>
+        </div>
+      </ng-container>
+    </ng-container>
+  </div>
+</div>

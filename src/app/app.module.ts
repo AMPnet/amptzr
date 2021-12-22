@@ -91,6 +91,7 @@ import {
 import {AddToMetamaskComponent} from './shared/components/add-to-metamask/add-to-metamask.component'
 import {ExplorerLinkComponent} from './shared/components/explorer-link/explorer-link.component'
 import {AuthMagicComponent} from './auth/auth-magic/auth-magic.component'
+import {CurrInputDirective} from './shared/directives/curr-input.directive'
 
 @NgModule({
   declarations: [
@@ -155,6 +156,7 @@ import {AuthMagicComponent} from './auth/auth-magic/auth-magic.component'
     FormYesNoButtonsComponent,
     AdminAssetCampaignNewComponent,
     DateMaskDirective,
+    CurrInputDirective,
     AdminCampaignEditComponent,
     AdminCampaignAddTokensComponent,
     AdminCampaignDetailComponent,
