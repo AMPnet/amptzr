@@ -130,29 +130,19 @@ export class InvestComponent {
     const stablecoinAmount = this.conversion.toStablecoin(this.investmentForm.value.stablecoinAmount)
     const tokenAmount = this.conversion.calcTokens(stablecoinAmount, campaign.pricePerToken)
 
-    this.investmentForm.patchValue({tokenAmount: this.conversion.parseToken(tokenAmount)})
+    this.investmentForm.patchValue({
+      tokenAmount: this.conversion.parseToken(tokenAmount).replace(/(\.0$)/, ''),
+    })
   }
 
   onTokenAmountChange(campaign: CampaignWithInfo) {
     const tokenAmount = this.conversion.toToken(this.investmentForm.value.tokenAmount)
     const stablecoinAmount = this.conversion.calcStablecoin(tokenAmount, campaign.pricePerToken)
 
-    this.investmentForm.patchValue({stablecoinAmount: this.conversion.parseStablecoin(stablecoinAmount)})
+    this.investmentForm.patchValue({
+      stablecoinAmount: this.conversion.parseStablecoin(stablecoinAmount).replace(/(\.0$)/, ''),
+    })
   }
-
-  // private approveFlow(campaign: CampaignWithInfo) {
-  //   const approveAmount$ = this.approveAmount(campaign)
-  //   switch (this.sessionQuery.getValue().authProvider) {
-  //     case AuthProvider.MAGIC:
-  //       return approveAmount$
-  //     default:
-  //       return this.dialogService.info(
-  //         'You will be asked to sign the transaction to allow investment from your wallet.',
-  //       ).pipe(
-  //         switchMap(res => res ? approveAmount$ : throwError(() => 'USER_DISMISSED_APPROVE_FLOW')),
-  //       )
-  //   }
-  // }
 
   approveAmount(campaign: CampaignWithInfo) {
     return () => {
