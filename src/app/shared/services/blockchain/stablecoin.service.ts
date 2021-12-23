@@ -1,10 +1,10 @@
 import {Injectable} from '@angular/core'
 import {BehaviorSubject, combineLatest, from, merge, Observable, of} from 'rxjs'
-import {distinctUntilChanged, map, switchMap, tap} from 'rxjs/operators'
+import {distinctUntilChanged, map, shareReplay, switchMap, tap} from 'rxjs/operators'
 import {ERC20__factory} from '../../../../../types/ethers-contracts'
 import {SessionQuery} from '../../../session/state/session.query'
 import {PreferenceQuery} from '../../../preference/state/preference.query'
-import {BigNumber} from 'ethers'
+import {BigNumber, constants} from 'ethers'
 import {SignerService} from '../signer.service'
 import {contractEvent} from '../../utils/ethersjs'
 import {DialogService} from '../dialog.service'
@@ -51,9 +51,11 @@ export class StablecoinService {
       of(undefined),
       contractEvent(contract, contract.filters.Transfer(address)),
       contractEvent(contract, contract.filters.Transfer(null, address)),
+      contractEvent(contract, contract.filters.Approval(null, address)),
     ).pipe(
       switchMap(() => contract.balanceOf(address)),
     )),
+    shareReplay(1)
   )
 
   constructor(private sessionQuery: SessionQuery,
@@ -83,13 +85,18 @@ export class StablecoinService {
     return parseUnits(String(roundedAmount), precision ?? this.precision)
   }
 
-  getAllowance(campaignAddress: string): Observable<StablecoinBigNumber> {
+  getAllowance$(campaignAddress: string): Observable<StablecoinBigNumber> {
     return combineLatest([
       this.contract$,
-      this.signerService.ensureAuth,
+      this.sessionQuery.address$,
     ]).pipe(
-      switchMap(([contract, _signer]) =>
-        contract.allowance(this.sessionQuery.getValue().address!, campaignAddress)),
+      switchMap(([contract, address]) => !address ? of(constants.Zero) : merge(
+        of(undefined),
+        contractEvent(contract, contract.filters.Approval(address, campaignAddress)),
+      ).pipe(
+        switchMap(() => contract.allowance(address, campaignAddress)),
+      )),
+      shareReplay(1)
     )
   }
 

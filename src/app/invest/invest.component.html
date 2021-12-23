@@ -136,6 +136,9 @@
           <!--          </div>-->
 
           <div class="max-w-md mx-auto bg-white rounded-3xl shadow-lg px-4 py-3">
+            <div class="absolute w-full h-full" *ngIf="investmentForm.errors?.campaignMaxReached">
+            </div>
+
             <h2 class="uppercase font-semibold text-lg">
               Buy Order
             </h2>
@@ -158,23 +161,32 @@
                   </div>
 
                   <input class="w-full text-right bg-transparent border-none focus:ring-0 font-mono text-xl"
-                         appCurrInput formControlName="stablecoinAmount"
+                         appBigNumberInput formControlName="stablecoinAmount"
                          (input)="onStablecoinAmountChange(state.campaign)">
                 </div>
 
                 <div class="flex items-center min-h-[1rem] mt-1">
                   <ng-container *ngIf="investmentForm.dirty && investmentForm.invalid">
                     <span class="text-red-600 text-xs font-semibold">
-                      <ng-container *ngIf="investmentForm.errors?.walletBalanceTooLow">
-                        Not enough funds. Please top up your wallet.
+                      <ng-container *ngIf="investmentForm.errors?.stablecoinAmountBelowMin">
+                        The amount is below minimum investment.
+                      </ng-container>
+
+                      <ng-container *ngIf="investmentForm.errors?.stablecoinAmountAboveMax">
+                        The amount is above maximum investment.
                       </ng-container>
                     </span>
                   </ng-container>
+
+                  <span *ngIf="investmentForm.errors?.campaignMaxReached"
+                        class="text-yellow-600 text-xs font-semibold">
+                    The campaign has reached its maximum target value.
+                  </span>
                 </div>
 
                 <div class="flex justify-between mt-5 text-xs">
                   <div>
-                    <span class="text-gray-400">
+                    <span class="text-gray-400" *ngIf="state.stablecoinBalance">
                       Balance: {{ state.stablecoinBalance | formatUnit:'stablecoin' | currencyDefault }}
                     </span>
                   </div>
@@ -198,18 +210,8 @@
                   </div>
 
                   <input class="w-full text-right bg-transparent border-none focus:ring-0 font-mono text-xl"
-                         appCurrInput formControlName="tokenAmount"
+                         appBigNumberInput bigNumberType="token" formControlName="tokenAmount"
                          (input)="onTokenAmountChange(state.campaign)">
-                </div>
-
-                <div class="flex flex-col gap-2 min-h-[1rem] mt-1">
-                  <ng-container *ngIf="investmentForm.dirty && investmentForm.invalid">
-                    <span class="text-red-600 text-xs font-semibold">
-                      <ng-container *ngIf="investmentForm.errors?.stockAmountTooLow">
-                        The amount cannot be less than one share.
-                      </ng-container>
-                    </span>
-                  </ng-container>
                 </div>
 
                 <div class="flex justify-between mt-10 text-xs">
@@ -218,8 +220,8 @@
                       {{ state.asset.name }}
                     </span>
                     <span class="font-semibold">
-                      Token
-                      price: {{ state.campaign.pricePerToken | formatUnit:'tokenPrice' | currencyDefault:'tokenPrice' }}
+                      Token price:
+                      {{ state.campaign.pricePerToken | formatUnit:'tokenPrice' | currencyDefault:'tokenPrice':'implicit' }}
                     </span>
                   </div>
 
@@ -229,14 +231,51 @@
                 </div>
               </div>
 
+              <div class="flex justify-between text-xs mt-2">
+                <div>
+                  <span *ngIf="state.preInvestData.min.gt(bigNumberConstants.Zero)">
+                    {{ state.preInvestData.min | formatUnit:'stablecoin' | currencyDefault:'stablecoin':'implicit' }}
+                    Minimum investment
+                  </span>
+                </div>
+                <div>
+                  <span *ngIf="state.preInvestData.max.gt(bigNumberConstants.Zero)">
+                    {{ state.preInvestData.max | formatUnit:'stablecoin' | currencyDefault:'stablecoin':'implicit' }}
+                    Maximum investment
+                  </span>
+                </div>
+              </div>
+
               <div class="mt-4">
                 <button app-action-button
                         class="w-full bg-blue-900 text-white px-8 py-2 rounded-full
                          uppercase font-semibold disabled:bg-gray-500"
+                        *ngIf="(isUserLoggedIn$ | async) === false"
+                        [onClick]="login.bind(this)"
+                        text="Log in"></button>
+
+                <button app-action-button
+                        class="w-full bg-blue-900 text-white px-8 py-2 rounded-full
+                         uppercase font-semibold disabled:bg-gray-500"
+                        *ngIf="shouldApprove$ | async"
+                        [onClick]="approveAmount(state.campaign).bind(this)"
+                        text="Approve"></button>
+
+                <button app-action-button
+                        class="w-full bg-blue-900 text-white px-8 py-2 rounded-full
+                         uppercase font-semibold disabled:bg-gray-500"
                         text="Buy"
-                        [onClick]="this.invest(state.campaign).bind(this)"
+                        *ngIf="shouldBuy$ | async"
+                        [onClick]="invest(state.campaign).bind(this)"
                         [disabled]="investmentForm.invalid">
                 </button>
+              </div>
+
+              <div>
+                {{ investmentForm.errors | json }}
+              </div>
+              <div>
+                approvedAmount: {{ state.stablecoinAllowance | formatUnit:'stablecoin' | currencyDefault }}
               </div>
             </form>
           </div>

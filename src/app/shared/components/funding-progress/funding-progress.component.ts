@@ -34,10 +34,10 @@ export class FundingProgressComponent implements OnInit {
           let softCapPercentage = 0
 
           if (!stats.valueTotal.eq(constants.Zero)) {
-            raisedPercentage = this.conversion.parseStablecoin(stats.valueInvested) /
-              this.conversion.parseStablecoin(stats.valueTotal)
-            softCapPercentage = this.conversion.parseStablecoin(stats.softCap) /
-              this.conversion.parseStablecoin(stats.valueTotal)
+            raisedPercentage = this.conversion.parseStablecoinToNumber(stats.valueInvested) /
+              this.conversion.parseStablecoinToNumber(stats.valueTotal)
+            softCapPercentage = this.conversion.parseStablecoinToNumber(stats.softCap) /
+              this.conversion.parseStablecoinToNumber(stats.valueTotal)
           }
 
           return {

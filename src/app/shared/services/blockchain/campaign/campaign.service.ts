@@ -1,9 +1,9 @@
 import {Injectable} from '@angular/core'
-import {combineLatest, from, Observable, of, throwError} from 'rxjs'
+import {combineLatest, from, merge, Observable, of, throwError} from 'rxjs'
 import {IpfsService, IPFSText} from '../../ipfs/ipfs.service'
 import {StablecoinBigNumber, StablecoinService} from '../stablecoin.service'
 import {GasService} from '../gas.service'
-import {BigNumber, Signer} from 'ethers'
+import {BigNumber, constants, Signer} from 'ethers'
 import {map, switchMap} from 'rxjs/operators'
 import {DialogService} from '../../dialog.service'
 import {SignerService} from '../../signer.service'
@@ -20,6 +20,7 @@ import {cid, IPFSDocument} from '../../../../../../types/ipfs/common'
 import {iso8601} from '../../../../../../types/common'
 import {TokenBigNumber} from '../../../utils/token'
 import {TokenPriceBigNumber} from '../../../utils/token-price'
+import {contractEvent} from '../../../utils/ethersjs'
 
 @Injectable({
   providedIn: 'root',
@@ -39,6 +40,21 @@ export class CampaignService {
   getCommonState(address: string, signerOrProvider: Signer | Provider): Observable<CampaignCommonState> {
     return of(this.campaignBasicService.contract(address, signerOrProvider)).pipe(
       switchMap(contract => contract.commonState()),
+    )
+  }
+
+  getCommonStateChanges$(
+    address: string, first: CampaignCommonState | undefined = undefined,
+  ): Observable<CampaignCommonState> {
+    return this.sessionQuery.provider$.pipe(
+      switchMap(provider => of(this.campaignBasicService.contract(address, provider)).pipe(
+        switchMap(contract => merge(
+          of(first),
+          contractEvent(contract, contract.filters.Invest()),
+          contractEvent(contract, contract.filters.CancelInvestment()),
+        )),
+        switchMap(() => this.getCommonState(address, provider)),
+      )),
     )
   }
 
@@ -124,7 +140,7 @@ export class CampaignService {
     )
   }
 
-  invest(address: string, flavor: CampaignFlavor, amount: number) {
+  invest(address: string, flavor: CampaignFlavor, amount: StablecoinBigNumber) {
     switch (flavor) {
       case CampaignFlavor.BASIC:
         return this.campaignBasicService.invest(address, amount)
@@ -180,6 +196,10 @@ export class CampaignService {
   }
 
   alreadyInvested(address: string): Observable<StablecoinBigNumber> {
+    if (!this.sessionQuery.isLoggedIn()) {
+      return of(constants.Zero)
+    }
+
     return combineLatest([
       of(this.campaignBasicService.contract(address, this.sessionQuery.provider)),
       this.signerService.ensureAuth,

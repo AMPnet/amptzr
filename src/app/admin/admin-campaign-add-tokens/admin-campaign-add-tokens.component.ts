@@ -104,7 +104,7 @@ export class AdminCampaignAddTokensComponent {
 
     const tokens = this.conversion.calcTokens(amount, tokenPrice)
 
-    return this.conversion.parseToken(tokens) / this.conversion.parseToken(data.asset.totalSupply)
+    return this.conversion.parseTokenToNumber(tokens) / this.conversion.parseTokenToNumber(data.asset.totalSupply)
   }
 
   addTokens(data: CampaignData) {

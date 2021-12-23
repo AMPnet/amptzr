@@ -39,8 +39,8 @@ export class AdminCampaignItemComponent implements OnInit {
           tokenPrice: stats.tokenPrice,
           campaignTokens: stats.tokenBalance,
           assetTokens: this.asset.totalSupply,
-          tokensPercentage: this.conversion.parseToken(stats.tokenBalance) /
-            this.conversion.parseToken(this.asset.totalSupply),
+          tokensPercentage: this.conversion.parseTokenToNumber(stats.tokenBalance) /
+            this.conversion.parseTokenToNumber(this.asset.totalSupply),
         }
       }),
     )

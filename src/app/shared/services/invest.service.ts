@@ -3,10 +3,10 @@ import {combineLatest, Observable} from 'rxjs'
 import {map} from 'rxjs/operators'
 import {StablecoinBigNumber, StablecoinService} from './blockchain/stablecoin.service'
 import {CampaignService} from './blockchain/campaign/campaign.service'
-import {CampaignCommonStateWithName} from './blockchain/query.service'
 import {CampaignFlavor} from './blockchain/flavors'
 import {constants} from 'ethers'
 import {BigNumberMin} from '../utils/ethersjs'
+import {CampaignCommonState} from './blockchain/campaign/campaign.common'
 
 @Injectable({
   providedIn: 'root',
@@ -17,11 +17,11 @@ export class InvestService {
   ) {
   }
 
-  preInvestData(campaign: CampaignCommonStateWithName): Observable<PreInvestData> {
+  preInvestData(campaign: CampaignCommonState): Observable<PreInvestData> {
     const balance$ = this.stablecoin.balance$
-    const alreadyInvested$ = this.campaignService.alreadyInvested(campaign.campaign.contractAddress)
+    const alreadyInvested$ = this.campaignService.alreadyInvested(campaign.contractAddress)
     const stats$ = this.campaignService.stats(
-      campaign.campaign.contractAddress, campaign.campaign.flavor as CampaignFlavor,
+      campaign.contractAddress, campaign.flavor as CampaignFlavor,
     )
 
     return combineLatest([balance$, alreadyInvested$, stats$]).pipe(

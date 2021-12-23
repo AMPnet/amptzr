@@ -95,11 +95,11 @@ export class CampaignBasicService {
     )
   }
 
-  invest(address: string, amount: number) {
+  invest(address: string, amount: StablecoinBigNumber) {
     return this.signerService.ensureAuth.pipe(
       map(signer => this.contract(address, signer)),
       switchMap(contract => combineLatest([of(contract), this.gasService.overrides])),
-      switchMap(([contract, overrides]) => contract.populateTransaction.invest(this.stablecoin.parse(amount), overrides)),
+      switchMap(([contract, overrides]) => contract.populateTransaction.invest(amount, overrides)),
       switchMap(tx => this.signerService.sendTransaction(tx)),
       switchMap(tx => this.dialogService.loading(
         from(this.sessionQuery.provider.waitForTransaction(tx.hash)),

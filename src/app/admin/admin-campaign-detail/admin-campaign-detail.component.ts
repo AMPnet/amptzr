@@ -92,15 +92,15 @@ export class AdminCampaignDetailComponent {
   hardCapTokensPercentage(stats: CampaignStats, asset: CommonAssetWithInfo) {
     const tokens = this.conversion.calcTokens(stats.valueTotal, stats.tokenPrice)
 
-    return this.conversion.parseToken(tokens) /
-      this.conversion.parseToken(asset.totalSupply)
+    return this.conversion.parseTokenToNumber(tokens) /
+      this.conversion.parseTokenToNumber(asset.totalSupply)
   }
 
   softCapTokensPercentage(stats: CampaignStats, asset: CommonAssetWithInfo) {
     const tokens = this.conversion.calcTokens(stats.softCap, stats.tokenPrice)
 
-    return this.conversion.parseToken(tokens) /
-      this.conversion.parseToken(asset.totalSupply)
+    return this.conversion.parseTokenToNumber(tokens) /
+      this.conversion.parseTokenToNumber(asset.totalSupply)
   }
 
   shouldShowMin(stats: CampaignStats) {

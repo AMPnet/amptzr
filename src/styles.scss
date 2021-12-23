@@ -9,7 +9,7 @@
 
 @import '~@angular/material/theming';
 
-@import url('https://fonts.googleapis.com/css2?family=Raleway:wght@400;600;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;800&display=swap');
 
 @include mat-core();
 $candy-app-primary: mat-palette($mat-indigo);
@@ -32,7 +32,7 @@ html, body {
 
 body {
   margin: 0;
-  font-family: 'Raleway', sans-serif;
+  font-family: 'Manrope', sans-serif;
 }
 
 button, textarea, input, select, a {
@@ -52,7 +52,7 @@ button, textarea, input, select, a {
   overflow-x: hidden;
 
   @apply text-base;
-  font-family: 'Raleway', sans-serif;
+  font-family: 'Manrope', sans-serif;
 
   h1 {
     @apply pb-4 text-indigo-800 text-xl font-bold;

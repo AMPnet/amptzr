@@ -11,11 +11,11 @@ export class FormatUnitPipe implements PipeTransform {
   public transform(value: any, operation: Operation | string, precision?: number) {
     switch (operation) {
       case Operation.STABLECOIN:
-        return this.conversion.parseStablecoin(this.toBigNumberish(value))
+        return this.conversion.parseStablecoinToNumber(this.toBigNumberish(value))
       case Operation.TOKEN:
-        return this.conversion.parseToken(this.toBigNumberish(value))
+        return this.conversion.parseTokenToNumber(this.toBigNumberish(value))
       case Operation.TOKEN_PRICE:
-        return this.conversion.parseTokenPrice(value)
+        return this.conversion.parseTokenPriceToNumber(value)
       case Operation.TO_NUMBER:
         return Number(value)
       default:

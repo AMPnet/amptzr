@@ -35,9 +35,9 @@ const appRoutes: Routes = [
       {path: '', pathMatch: 'full', redirectTo: 'offers'},
       {path: 'offers', component: OffersComponent},
       {path: 'offers/:id', component: OfferComponent},
+      {path: 'offers/:id/invest', component: InvestComponent},
       {
         path: '', canActivate: [AuthGuard], children: [
-          {path: 'offers/:id/invest', component: InvestComponent},
           {path: 'wallet', component: WalletComponent},
           {path: 'deposit', component: DepositComponent},
           {path: 'portfolio', component: PortfolioComponent},

@@ -136,7 +136,7 @@ export class AdminAssetCampaignNewComponent {
     const softCap = this.conversion.toStablecoin(stablecoin)
     const tokensToSell = this.conversion.calcTokens(softCap, tokenPrice)
 
-    return this.conversion.parseToken(tokensToSell) / this.conversion.parseToken(state.asset.totalSupply)
+    return this.conversion.parseTokenToNumber(tokensToSell) / this.conversion.parseTokenToNumber(state.asset.totalSupply)
   }
 
   toggleMinAndMaxInvestmentControls(value: boolean) {
