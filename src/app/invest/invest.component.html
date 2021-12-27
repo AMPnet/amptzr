@@ -259,7 +259,9 @@
                          uppercase font-semibold disabled:bg-gray-500"
                         *ngIf="shouldApprove$ | async"
                         [onClick]="approveAmount(state.campaign).bind(this)"
-                        text="Approve"></button>
+                        [disabled]="investmentForm.invalid"
+                        text="Approve">
+                </button>
 
                 <button app-action-button
                         class="w-full bg-blue-900 text-white px-8 py-2 rounded-full

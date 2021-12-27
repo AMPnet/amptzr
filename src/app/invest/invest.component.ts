@@ -3,7 +3,7 @@ import {InvestService, PreInvestData} from '../shared/services/invest.service'
 import {CampaignService, CampaignWithInfo} from '../shared/services/blockchain/campaign/campaign.service'
 import {constants} from 'ethers'
 import {StablecoinBigNumber, StablecoinService} from '../shared/services/blockchain/stablecoin.service'
-import {combineLatest, Observable, of} from 'rxjs'
+import {combineLatest, Observable, of, timer} from 'rxjs'
 import {AbstractControl, FormBuilder, FormGroup, ValidationErrors} from '@angular/forms'
 import {CampaignFlavor} from '../shared/services/blockchain/flavors'
 import {ActivatedRoute} from '@angular/router'
@@ -27,12 +27,13 @@ export class InvestComponent {
   state$!: Observable<InvestmentState>
   stateWithStatus$!: Observable<WithStatus<InvestmentState>>
 
-  shouldApprove$: Observable<boolean>
-  shouldBuy$: Observable<boolean>
-
   investmentForm: FormGroup
 
   isUserLoggedIn$ = this.sessionQuery.isLoggedIn$
+
+  shouldApprove$: Observable<boolean>
+  shouldBuy$: Observable<boolean>
+
   bigNumberConstants = constants
 
   constructor(private fb: FormBuilder,
@@ -65,9 +66,6 @@ export class InvestComponent {
       campaign$,
     ]).pipe(
       switchMap(([_address, campaign]) => this.investService.preInvestData(campaign)),
-      tap(stats => {
-        if (stats.min === stats.max) this.investmentForm.setValue({stablecoinAmount: stats.min})
-      }),
       shareReplay(1),
     )
 
@@ -84,8 +82,9 @@ export class InvestComponent {
         stablecoinSymbol, stablecoinBalance, stablecoinAllowance, campaign, asset, preInvestData,
       })),
       tap(() => {
-        this.investmentForm.get('stablecoinAmount')?.updateValueAndValidity()
-        // TODO: fix updating validator function
+        timer(0).pipe(tap(() => {
+          this.investmentForm.get('stablecoinAmount')!.updateValueAndValidity()
+        })).subscribe()
       }),
       shareReplay(1),
     )
