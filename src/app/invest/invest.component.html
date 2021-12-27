@@ -246,7 +246,7 @@
                 </div>
               </div>
 
-              <div class="mt-4">
+              <div class="mt-4" *ngIf="!investmentForm.errors?.campaignMaxReached">
                 <button app-action-button
                         class="w-full bg-blue-900 text-white px-8 py-2 rounded-full
                          uppercase font-semibold disabled:bg-gray-500"

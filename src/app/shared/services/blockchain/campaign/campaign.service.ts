@@ -4,7 +4,7 @@ import {IpfsService, IPFSText} from '../../ipfs/ipfs.service'
 import {StablecoinBigNumber, StablecoinService} from '../stablecoin.service'
 import {GasService} from '../gas.service'
 import {BigNumber, constants, Signer} from 'ethers'
-import {map, switchMap} from 'rxjs/operators'
+import {map, shareReplay, switchMap} from 'rxjs/operators'
 import {DialogService} from '../../dialog.service'
 import {SignerService} from '../../signer.service'
 import {SessionQuery} from '../../../../session/state/session.query'
@@ -54,6 +54,7 @@ export class CampaignService {
           contractEvent(contract, contract.filters.CancelInvestment()),
         )),
         switchMap(() => this.getCommonState(address, provider)),
+        shareReplay({bufferSize: 1, refCount: true}),
       )),
     )
   }

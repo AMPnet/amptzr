@@ -1,4 +1,5 @@
 import {providers, utils} from 'ethers'
+import {ReconnectingWebsocketProvider} from './ethersjs/reconnecting-websocket-provider'
 
 export enum ChainID {
   MATIC_MAINNET = 137, // Polygon
@@ -17,6 +18,7 @@ export interface Network {
   },
   maxGasPrice: number,
   rpcURLs: string[],
+  wssRpcURLs?: string[],
   explorerURLs: string[],
   tokenizerConfig: TokenizerConfig,
   ramp?: RampConfig,
@@ -60,6 +62,7 @@ export const MaticNetwork: Network = {
   },
   maxGasPrice: 100,
   rpcURLs: ['https://polygon-rpc.com'],
+  wssRpcURLs: ['wss://ws-matic-mainnet.chainstacklabs.com'],
   explorerURLs: ['https://polygonscan.com/'],
   tokenizerConfig: {
     apxRegistry: '0x992EF576A79b7D3d05C31DfBCc389362F158c812',
@@ -98,6 +101,7 @@ export const MumbaiNetwork: Network = {
   },
   maxGasPrice: 20,
   rpcURLs: ['https://rpc-mumbai.maticvigil.com'],
+  wssRpcURLs: ['wss://ws-matic-mumbai.chainstacklabs.com'],
   explorerURLs: ['https://mumbai.polygonscan.com/'],
   tokenizerConfig: {
     apxRegistry: '0x2D3B123C7D53E537D449186386618301b4a93B22',
@@ -171,16 +175,24 @@ export const Networks: { [key in ChainID]: Network } = {
 const getEthersNetwork = (network: Network): providers.Network => ({
   name: network.shortName,
   chainId: network.chainID,
-  _defaultProvider: (_providers: any) =>
-    new providers.StaticJsonRpcProvider({
-      url: network.rpcURLs[0],
-    }),
+  _defaultProvider: (_providers: any) => {
+    if (network.wssRpcURLs?.[0]) {
+      return new ReconnectingWebsocketProvider(network.wssRpcURLs![0], network.chainID)
+    }
+
+    return new providers.StaticJsonRpcProvider(network.rpcURLs[0], network.chainID)
+  },
 })
 
 export const EthersNetworks = Object.fromEntries(Object.entries(Networks)
   .map((entry) => [entry[0], getEthersNetwork(entry[1])]),
 )
 
+/**
+ * Interface from wallet_addEthereumChain response.
+ * Source: https://docs.metamask.io/guide/rpc-api.html#other-rpc-methods
+ * Last date accessed: 20211227
+ */
 interface AddEthereumChainParameter {
   chainId: string; // A 0x-prefixed hexadecimal string
   chainName: string;

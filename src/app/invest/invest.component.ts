@@ -50,7 +50,7 @@ export class InvestComponent {
               private route: ActivatedRoute) {
     const campaignId = this.route.snapshot.params.id
     const campaignWithName$ = this.nameService.getCampaign(campaignId).pipe(
-      shareReplay(1),
+      shareReplay({bufferSize: 1, refCount: true}),
     )
 
     const campaign$: Observable<CampaignWithInfo> = campaignWithName$.pipe(
@@ -58,7 +58,7 @@ export class InvestComponent {
         campaignWithName.campaign.contractAddress, campaignWithName.campaign,
       )),
       switchMap(campaignCommon => this.campaignService.getCampaignInfo(campaignCommon)),
-      shareReplay(1),
+      shareReplay({bufferSize: 1, refCount: true}),
     )
 
     const preInvestData$: Observable<PreInvestData> = combineLatest([
@@ -66,7 +66,7 @@ export class InvestComponent {
       campaign$,
     ]).pipe(
       switchMap(([_address, campaign]) => this.investService.preInvestData(campaign)),
-      shareReplay(1),
+      shareReplay({bufferSize: 1, refCount: true}),
     )
 
     this.state$ = campaign$.pipe(
@@ -86,7 +86,7 @@ export class InvestComponent {
           this.investmentForm.get('stablecoinAmount')!.updateValueAndValidity()
         })).subscribe()
       }),
-      shareReplay(1),
+      shareReplay({bufferSize: 1, refCount: true}),
     )
     this.stateWithStatus$ = withStatus(this.state$)
 
@@ -111,7 +111,7 @@ export class InvestComponent {
 
         return state.stablecoinAllowance.lt(amount)
       }),
-      shareReplay(1),
+      shareReplay({bufferSize: 1, refCount: true}),
     )
 
     this.shouldBuy$ = combineLatest([
@@ -121,7 +121,7 @@ export class InvestComponent {
       map(([isUserLoggedIn, shouldApprove]) => {
         return isUserLoggedIn && !shouldApprove
       }),
-      shareReplay(1),
+      shareReplay({bufferSize: 1, refCount: true}),
     )
   }
 

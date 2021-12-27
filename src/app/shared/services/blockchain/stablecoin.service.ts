@@ -8,11 +8,11 @@ import {BigNumber, constants} from 'ethers'
 import {SignerService} from '../signer.service'
 import {contractEvent} from '../../utils/ethersjs'
 import {DialogService} from '../dialog.service'
-import {parseUnits} from 'ethers/lib/utils'
 import {GasService} from './gas.service'
 import {IssuerService} from './issuer/issuer.service'
 import {NameService} from './name.service'
 import {IssuerFlavor} from './flavors'
+import {parseUnits} from 'ethers/lib/utils'
 
 @Injectable({
   providedIn: 'root',
@@ -51,11 +51,10 @@ export class StablecoinService {
       of(undefined),
       contractEvent(contract, contract.filters.Transfer(address)),
       contractEvent(contract, contract.filters.Transfer(null, address)),
-      contractEvent(contract, contract.filters.Approval(null, address)),
     ).pipe(
       switchMap(() => contract.balanceOf(address)),
     )),
-    shareReplay(1)
+    shareReplay({bufferSize: 1, refCount: true}),
   )
 
   constructor(private sessionQuery: SessionQuery,
@@ -96,7 +95,7 @@ export class StablecoinService {
       ).pipe(
         switchMap(() => contract.allowance(address, campaignAddress)),
       )),
-      shareReplay(1)
+      shareReplay({bufferSize: 1, refCount: true}),
     )
   }
 
