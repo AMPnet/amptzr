@@ -16,6 +16,7 @@ import {RouterService} from '../shared/services/router.service'
 import {ConversionService} from '../shared/services/conversion.service'
 import {AssetService, CommonAssetWithInfo} from '../shared/services/blockchain/asset/asset.service'
 import {SignerService} from '../shared/services/signer.service'
+import {IdentityService} from '../identity/identity.service'
 
 @Component({
   selector: 'app-invest',
@@ -46,6 +47,7 @@ export class InvestComponent {
               private conversion: ConversionService,
               private dialogService: DialogService,
               private investService: InvestService,
+              private identityService: IdentityService,
               private router: RouterService,
               private route: ActivatedRoute) {
     const campaignId = this.route.snapshot.params.id
@@ -147,7 +149,10 @@ export class InvestComponent {
     return () => {
       const amount = this.conversion.toStablecoin(this.investmentForm.value.stablecoinAmount)
 
-      return this.stablecoin.approveAmount(campaign.contractAddress, amount)
+      // TODO: ensure identity check on a new way...
+      return this.identityService.ensureIdentityChecked(campaign).pipe(
+        switchMap(() => this.stablecoin.approveAmount(campaign.contractAddress, amount)),
+      )
     }
   }
 

@@ -100,20 +100,22 @@ export class StablecoinService {
   }
 
   approveAmount(campaignAddress: string, amount: StablecoinBigNumber): Observable<unknown> {
-    return combineLatest([
-      this.contract$,
-      this.signerService.ensureAuth,
-    ]).pipe(
-      map(([contract, signer]) => contract.connect(signer)),
-      switchMap(contract => combineLatest([of(contract), this.gasService.overrides])),
-      switchMap(([contract, overrides]) =>
-        contract.populateTransaction.approve(campaignAddress, amount, overrides),
-      ),
-      switchMap(tx => this.signerService.sendTransaction(tx)),
-      switchMap(tx => this.dialogService.loading(
-        from(this.sessionQuery.provider.waitForTransaction(tx.hash)),
-        'Processing transaction...',
-      )),
+    return this.dialogService.loading(
+      combineLatest([
+        this.contract$,
+        this.signerService.ensureAuth,
+      ]).pipe(
+        map(([contract, signer]) => contract.connect(signer)),
+        switchMap(contract => combineLatest([of(contract), this.gasService.overrides])),
+        switchMap(([contract, overrides]) =>
+          contract.populateTransaction.approve(campaignAddress, amount, overrides),
+        ),
+        switchMap(tx => this.signerService.sendTransaction(tx)),
+        switchMap(tx => this.dialogService.loading(
+          from(this.sessionQuery.provider.waitForTransaction(tx.hash)),
+          'Processing transaction...',
+        )),
+      ), 'Waiting for approval...',
     )
   }
 }

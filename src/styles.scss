@@ -77,3 +77,7 @@ button, textarea, input, select, a {
 .ngx-quill-view > div.ql-editor {
   @apply p-0;
 }
+
+.rounded-4xl .mat-dialog-container {
+  @apply rounded-4xl
+}
