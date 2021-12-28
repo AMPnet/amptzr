@@ -30,7 +30,7 @@
         <!-- Action buttons (deposit, withdraw...) -->
         <div class="flex items-center justify-between space-x-2 mt-2 lg:mt-0">
           <button class="flex items-center justify-center text-white w-full lg:w-auto text-sm rounded-full
-                         bg-green-600 hover:bg-green-700 py-2 mt-2 lg:mt-0 lg:px-8"
+                         bg-emerald-600 hover:bg-emerald-700 py-2 mt-2 lg:mt-0 lg:px-8"
                   [routerLink]="'/deposit' | issuerPath">
             <svg class="h-3.5 w-3.5 mr-2" width="18" height="14" viewBox="0 0 18 14" fill="none"
                  xmlns="http://www.w3.org/2000/svg">
@@ -63,7 +63,7 @@
         </p>
         <div class="flex items-center">
           <ng-container *ngIf="(address$ | async) as address">
-            <span class="flex-grow-0">Wallet address: {{ address | addrShort }}</span>
+            <span class="grow-0">Wallet address: {{ address | addrShort }}</span>
             <app-explorer-link [value]="address" class="ml-1">
             </app-explorer-link>
             <app-value-copy [value]="address" [delay]="800" class="ml-1">
@@ -72,7 +72,7 @@
         </div>
 
         <ng-container *ngIf="(authProvider$ | async) as authProvider">
-          <span class="flex-grow-0">
+          <span class="grow-0">
             Connected with:
             <b>{{ authProvider | authProviderName }}</b>
 
@@ -84,7 +84,7 @@
             </button>
           </span>
           <span class="flex flex-col items-end">
-            <button class="flex inline-flex items-center justify-center flex-grow-0 bg-gray-300 hover:bg-gray-400
+            <button class="flex inline-flex items-center justify-center grow-0 bg-gray-300 hover:bg-gray-400
                          rounded-full ml-4 py-1 px-2"
                     *ngIf="authProvider !== authProviderType.GNOSIS_SAFE"
                     (click)="logout()">

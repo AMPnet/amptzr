@@ -65,7 +65,7 @@ export class DialogService {
       disableClose: true,
       minWidth: 320,
       maxWidth: opts?.width,
-      panelClass: 'rounded-4xl'
+      panelClass: 'mat-rounded-4xl'
     })
 
     return obs$.pipe(
