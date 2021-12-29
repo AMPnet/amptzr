@@ -1,7 +1,7 @@
 {
   "rewrites": [
     {
-      "source": "/:networkID?/:issuerID?/offers/:offerID/?((invest)?)",
+      "source": "/:networkID?/:issuerID?/offers/:offerID/:opt((invest)?)",
       "destination": "/api/prerender",
       "has": [
         {
