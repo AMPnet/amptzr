@@ -35,7 +35,7 @@
       <ng-container *ngIf="(injectedWeb3$ | async) as injectedWeb3">
         <!-- Injected Web3 login option -->
         <button app-action-button
-                class="border border-indigo-900 w-full py-2 mt-4 rounded-md hover:bg-indigo-50"
+                class="border border-indigo-900 w-full py-2 mt-4 rounded-md hover:bg-[#F3F7F9]"
                 [onClick]="connectMetamask.bind(this)">
           <ng-template #content>
             <ng-container *ngIf="injectedWeb3.isMetaMask">

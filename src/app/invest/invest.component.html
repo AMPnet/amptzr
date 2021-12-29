@@ -135,37 +135,54 @@
           <!--            </div>-->
           <!--          </div>-->
 
-          <div class="max-w-md mx-auto bg-white rounded-3xl shadow-lg px-4 py-3">
+          <div class="max-w-md mx-auto bg-white rounded-4xl px-6 py-4">
             <div class="absolute w-full h-full" *ngIf="investmentForm.errors?.campaignMaxReached">
             </div>
 
-            <h2 class="uppercase font-semibold text-lg">
-              Buy Order
-            </h2>
+            <div class="flex justify-center">
+              <div class="w-32 h-32 bg-white rounded-full overflow-hidden m-1">
+                <img class="h-full w-full object-contain" src="{{ state.asset.infoData.logo | toUrlIPFS }}"
+                     alt="Logo">
+              </div>
+            </div>
+
+            <h1 class="flex justify-center mt-2 text-3xl font-medium">
+              {{ state.asset.name }}
+            </h1>
+
+            <h1 class="flex justify-center mt-4 mx-4 sm:mx-16 text-sm text-center text-gray-500">
+              Enter amount of {{ state.stablecoinSymbol }} you want to spend
+              or {{ state.asset.symbol }} you want to buy
+            </h1>
 
             <form [formGroup]="investmentForm">
               <!-- Stablecoin box -->
-              <div class="mt-2 bg-gray-100 border-gray-300 border-[1px] rounded-lg p-3">
+              <div class="mt-5 bg-[#F5F7F9] border-[#D8D8D8] border-[1px] rounded-lg px-2 pb-1">
+                <span class="flex justify-end mt-1 text-xxs font-medium text-gray-400">
+                  Amount of {{ state.stablecoinSymbol }} you will spend
+                </span>
+
                 <div class="flex justify-between">
                   <div class="flex items-center">
-                    <div class="flex rounded-full items-center bg-white shadow-md">
-                      <div class="w-6 h-6 bg-white rounded-full overflow-hidden m-1">
+                    <div class="flex rounded-full items-center bg-white shadow">
+                      <div class="w-7 h-7 bg-white rounded-full overflow-hidden m-1">
                         <!-- TODO: change icon to specific stablecoin -->
                         <img class="h-full w-full object-contain" src="/assets/usdc.png" alt="Logo">
                       </div>
 
-                      <span class="ml-1 mr-3">
+                      <span class="ml-1 mr-3 font-medium">
                         {{ state.stablecoinSymbol }}
                       </span>
                     </div>
                   </div>
 
-                  <input class="w-full text-right bg-transparent border-none focus:ring-0 font-mono text-xl"
+                  <input class="w-full py-0 pr-0 text-right bg-transparent border-none focus:ring-0 text-3xl
+                                text-gray-400 placeholder:text-current"
                          appBigNumberInput formControlName="stablecoinAmount"
                          (input)="onStablecoinAmountChange(state.campaign)">
                 </div>
 
-                <div class="flex items-center min-h-[1rem] mt-1">
+                <div class="flex items-center min-h-[1rem] mt-2">
                   <ng-container *ngIf="investmentForm.dirty && investmentForm.invalid">
                     <span class="text-red-600 text-xs font-semibold">
                       <ng-container *ngIf="investmentForm.errors?.stablecoinAmountBelowMin">
@@ -184,7 +201,7 @@
                   </span>
                 </div>
 
-                <div class="flex justify-between mt-5 text-xs">
+                <div class="flex justify-between mt-5 text-xxs font-medium">
                   <div>
                     <span class="text-gray-400" *ngIf="state.stablecoinBalance">
                       Balance: {{ state.stablecoinBalance | formatUnit:'stablecoin' | currencyDefault }}
@@ -193,28 +210,43 @@
                 </div>
               </div>
 
+              <!-- Arrow down -->
+              <div class="-mt-2 flex justify-center">
+                <div class="flex justify-center rounded-full bg-white p-0.5 z-10 shadow">
+                  <svg class="w-5 h-5" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="m13 11-3 3m0 0-3-3m3 3V6m0 13a9 9 0 1 1 0-18 9 9 0 0 1 0 18Z" stroke="#1D4ED8"
+                          stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </div>
+              </div>
+
               <!-- Token box -->
-              <div class="mt-2 bg-gray-100 border-gray-300 border-[1px] rounded-lg p-3">
+              <div class="-mt-1 bg-[#F5F7F9] border-[#D8D8D8] border-[1px] rounded-lg px-2 pb-1">
+                <span class="flex justify-end mt-1 text-xxs font-medium text-gray-400">
+                  Amount of {{ state.asset.symbol }} you will get
+                </span>
+
                 <div class="flex justify-between">
                   <div class="flex items-center">
-                    <div class="flex rounded-full items-center bg-white shadow-md">
-                      <div class="w-6 h-6 bg-white rounded-full overflow-hidden m-1">
+                    <div class="flex rounded-full items-center bg-white shadow">
+                      <div class="w-7 h-7 bg-white rounded-full overflow-hidden m-1">
                         <img class="h-full w-full object-contain" src="{{ state.asset.infoData.logo | toUrlIPFS }}"
                              alt="Logo">
                       </div>
 
-                      <span class="ml-1 mr-3">
+                      <span class="ml-1 mr-3 font-medium">
                         {{ state.asset.symbol }}
                       </span>
                     </div>
                   </div>
 
-                  <input class="w-full text-right bg-transparent border-none focus:ring-0 font-mono text-xl"
+                  <input class="w-full py-0 pr-0 text-right bg-transparent border-none focus:ring-0 text-3xl
+                                text-gray-400 placeholder:text-current"
                          appBigNumberInput bigNumberType="token" formControlName="tokenAmount"
                          (input)="onTokenAmountChange(state.campaign)">
                 </div>
 
-                <div class="flex justify-between mt-10 text-xs">
+                <div class="flex justify-between mt-10 text-xxs">
                   <div class="flex gap-2 flex-wrap">
                     <span class="text-gray-400">
                       {{ state.asset.name }}
@@ -231,32 +263,42 @@
                 </div>
               </div>
 
-              <div class="flex justify-between text-xs mt-2">
+              <div class="flex justify-between text-xxs text-gray-400 mt-1">
                 <div>
-                  <span *ngIf="state.preInvestData.min.gt(bigNumberConstants.Zero)">
-                    {{ state.preInvestData.min | formatUnit:'stablecoin' | currencyDefault:'stablecoin':'implicit' }}
-                    Minimum investment
-                  </span>
+                  <div class="flex gap-1" *ngIf="state.preInvestData.min.gt(bigNumberConstants.Zero)">
+                    <span class="font-bold">
+                      {{ state.preInvestData.min | formatUnit:'stablecoin' | currencyDefault:'stablecoin':'implicit' }}
+                    </span>
+                    <span class="font-medium">
+                      Min
+                    </span>
+                  </div>
                 </div>
                 <div>
-                  <span *ngIf="state.preInvestData.max.gt(bigNumberConstants.Zero)">
-                    {{ state.preInvestData.max | formatUnit:'stablecoin' | currencyDefault:'stablecoin':'implicit' }}
-                    Maximum investment
-                  </span>
+                  <div class="flex gap-1" *ngIf="state.preInvestData.max.gt(bigNumberConstants.Zero)">
+                    <span class="font-bold">
+                      {{ state.preInvestData.max | formatUnit:'stablecoin' | currencyDefault:'stablecoin':'implicit' }}
+                    </span>
+                    <span class="font-medium">
+                      Max
+                    </span>
+                  </div>
                 </div>
               </div>
 
               <div class="mt-4" *ngIf="!investmentForm.errors?.campaignMaxReached">
                 <button app-action-button
-                        class="w-full bg-blue-900 text-white px-8 py-2 rounded-full
-                         uppercase font-semibold disabled:bg-gray-500"
+                        class="w-full bg-gradient-to-r from-[#2493D2] to-[#22B3D3]
+                        text-white px-8 py-2 rounded-full
+                        font-semibold disabled:from-gray-400 disabled:to-gray-400"
                         *ngIf="(isUserLoggedIn$ | async) === false"
                         [onClick]="login.bind(this)"
                         text="Log in"></button>
 
                 <button app-action-button
-                        class="w-full bg-blue-900 text-white px-8 py-2 rounded-full
-                         uppercase font-semibold disabled:bg-gray-500"
+                        class="w-full bg-gradient-to-r from-[#2493D2] to-[#22B3D3]
+                        text-white px-8 py-2 rounded-full
+                        font-semibold disabled:from-gray-400 disabled:to-gray-400"
                         *ngIf="shouldApprove$ | async"
                         [onClick]="approveAmount(state.campaign).bind(this)"
                         [disabled]="investmentForm.invalid"
@@ -264,8 +306,9 @@
                 </button>
 
                 <button app-action-button
-                        class="w-full bg-blue-900 text-white px-8 py-2 rounded-full
-                         uppercase font-semibold disabled:bg-gray-500"
+                        class="w-full bg-gradient-to-r from-[#2493D2] to-[#22B3D3]
+                        text-white px-8 py-2 rounded-full
+                        font-semibold disabled:from-gray-400 disabled:to-gray-400"
                         text="Buy"
                         *ngIf="shouldBuy$ | async"
                         [onClick]="invest(state.campaign).bind(this)"

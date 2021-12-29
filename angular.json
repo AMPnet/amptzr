@@ -43,7 +43,9 @@
             "extractLicenses": false,
             "buildOptimizer": false,
             "sourceMap": {
-              "styles": false
+              "scripts": true,
+              "styles": false,
+              "vendor": false
             },
             "optimization": false,
             "namedChunks": true,
@@ -64,7 +66,7 @@
                 "fonts": true,
                 "styles": {
                   "minify": true,
-                  "inlineCritical": false
+                  "inlineCritical": true
                 }
               },
               "outputHashing": "all",

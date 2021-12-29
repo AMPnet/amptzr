@@ -2,7 +2,9 @@
          rounded-full text-gray-700 whitespace-nowrap flex items-center
          hover:bg-indigo-800 hover:text-white" [fragment]=""
         [routerLink]="'/wallet' | issuerPath" routerLinkActive="!text-white !bg-indigo-800">
-  <span class="text-3xl lg:text-sm font-semibold ml-3.5 py-0.5">Wallet</span>
+  <span class="text-3xl lg:text-sm font-semibold uppercase ml-3.5 py-0.5">
+    Wallet
+  </span>
   <span class="text-2xl lg:text-xs mx-2">{{ address$ | async | addrShort:3:0 }}</span>
   <span class="rounded-full bg-gray-700 inline-block p-2 lg:p-1"
         *ngIf="(authProvider$ | async) === AuthProvider.METAMASK">

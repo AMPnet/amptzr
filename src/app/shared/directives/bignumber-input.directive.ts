@@ -48,7 +48,7 @@ export class BigNumberInputDirective implements ControlValueAccessor {
   @HostBinding('autocomplete') autoComplete = 'off'
   @HostBinding('type') type = 'text'
   @HostBinding('pattern') pattern = '^[0-9]*[.,]?[0-9]*$'
-  @HostBinding('placeholder') placeholder = '0.0'
+  @HostBinding('placeholder') placeholder = '0'
   @HostBinding('minlength') minlength = '1'
   @HostBinding('maxlength') maxlength = '79'
   @HostBinding('spellcheck') spellcheck = 'false'
