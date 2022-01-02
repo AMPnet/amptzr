@@ -102,7 +102,7 @@ export class CampaignBasicService {
           switchMap(contract => combineLatest([of(contract), this.gasService.overrides])),
           switchMap(([contract, overrides]) => contract.populateTransaction.invest(amount, overrides)),
           switchMap(tx => this.signerService.sendTransaction(tx)),
-        )
+        ),
       )),
       switchMap(tx => this.dialogService.waitingTransaction(
         from(this.sessionQuery.provider.waitForTransaction(tx.hash)),
