@@ -9,16 +9,30 @@ import {
 } from '../components/info-dialog/info-dialog.component'
 import {finalize, map, switchMap} from 'rxjs/operators'
 import {LoadingDialogComponent, LoadingDialogData} from '../components/loading-dialog/loading-dialog.component'
+import {
+  LoadingDialogApprovalComponent,
+  LoadingDialogApprovalData,
+} from '../components/loading-dialog/loading-dialog-approval/loading-dialog-approval.component'
+import {
+  LoadingDialogTransactionComponent,
+  LoadingDialogTransactionData,
+} from '../components/loading-dialog/loading-dialog-transaction/loading-dialog-transaction.component'
 
 @Injectable({
   providedIn: 'root',
 })
 export class DialogService {
+  readonly matDialogConfigDefaults: Partial<MatDialogConfig> = {
+    minWidth: 320,
+    panelClass: 'mat-rounded-4xl',
+  }
+
   constructor(private dialog: MatDialog) {
   }
 
   info(message: string, cancelable = true): Observable<boolean> {
     return this.dialog.open(InfoDialogComponent, {
+      ...this.matDialogConfigDefaults,
       data: {
         message,
         cancelable,
@@ -31,6 +45,7 @@ export class DialogService {
 
   infoWithOnConfirm<T>(data: Partial<InfoDialogData<T>>): Observable<InfoDialogResponse<T>> {
     return this.dialog.open(InfoDialogComponent, {
+      ...this.matDialogConfigDefaults,
       data,
     }).afterClosed().pipe(
       map(res => res ?? {confirmed: false}),
@@ -39,7 +54,9 @@ export class DialogService {
 
   success(message: string): Observable<void> {
     return this.dialog.open(InfoDialogComponent, {
+      ...this.matDialogConfigDefaults,
       data: {
+        icon: DialogIcon.SUCCESS,
         title: 'Success',
         message,
         cancelable: false,
@@ -49,6 +66,7 @@ export class DialogService {
 
   error(message: string): Observable<void> {
     return this.dialog.open(InfoDialogComponent, {
+      ...this.matDialogConfigDefaults,
       data: {
         icon: DialogIcon.ERROR,
         title: 'Error',
@@ -60,12 +78,12 @@ export class DialogService {
 
   loading<T>(obs$: Observable<T>, title: string, message?: string, opts?: MatDialogConfig): Observable<T> {
     const dialogRef = this.dialog.open(LoadingDialogComponent, {
+      ...this.matDialogConfigDefaults,
       ...opts,
       data: {title, message} as LoadingDialogData,
       disableClose: true,
-      minWidth: 320,
       maxWidth: opts?.width,
-      panelClass: 'mat-rounded-4xl',
+      panelClass: opts?.panelClass !== undefined ? opts.panelClass : 'mat-rounded-4xl',
     })
 
     return obs$.pipe(
@@ -77,7 +95,34 @@ export class DialogService {
     return this.loading(obs$, title, '', {
       width: '100vw',
       height: '100vh',
+      panelClass: '',
     })
+  }
+
+  waitingApproval<T>(obs$: Observable<T>, title?: string, message?: string, opts?: MatDialogConfig): Observable<T> {
+    const dialogRef = this.dialog.open(LoadingDialogApprovalComponent, {
+      ...this.matDialogConfigDefaults,
+      ...opts,
+      data: {title, message} as LoadingDialogApprovalData,
+      disableClose: true,
+    })
+
+    return obs$.pipe(
+      finalize(() => dialogRef.close()),
+    )
+  }
+
+  waitingTransaction<T>(obs$: Observable<T>, title?: string, message?: string, opts?: MatDialogConfig): Observable<T> {
+    const dialogRef = this.dialog.open(LoadingDialogTransactionComponent, {
+      ...this.matDialogConfigDefaults,
+      ...opts,
+      data: {title, message} as LoadingDialogTransactionData,
+      disableClose: true,
+    })
+
+    return obs$.pipe(
+      finalize(() => dialogRef.close()),
+    )
   }
 
   withPermission<T>(action$: Observable<T>) {

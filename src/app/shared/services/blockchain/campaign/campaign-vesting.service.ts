@@ -97,13 +97,15 @@ export class CampaignVestingService {
 
   invest(address: string, amount: StablecoinBigNumber) {
     return this.signerService.ensureAuth.pipe(
-      map(signer => this.contract(address, signer)),
-      switchMap(contract => combineLatest([of(contract), this.gasService.overrides])),
-      switchMap(([contract, overrides]) => contract.populateTransaction.invest(amount, overrides)),
-      switchMap(tx => this.signerService.sendTransaction(tx)),
-      switchMap(tx => this.dialogService.loading(
+      switchMap(signer => this.dialogService.waitingApproval(
+        of(this.contract(address, signer)).pipe(
+          switchMap(contract => combineLatest([of(contract), this.gasService.overrides])),
+          switchMap(([contract, overrides]) => contract.populateTransaction.invest(amount, overrides)),
+          switchMap(tx => this.signerService.sendTransaction(tx)),
+        ),
+      )),
+      switchMap(tx => this.dialogService.waitingTransaction(
         from(this.sessionQuery.provider.waitForTransaction(tx.hash)),
-        'Processing transaction...',
       )),
       this.errorService.handleError(),
     )
@@ -155,12 +157,14 @@ export class CampaignVestingService {
   cancelInvestment(address: string) {
     return this.signerService.ensureAuth.pipe(
       map(signer => this.contract(address, signer)),
-      switchMap(contract => combineLatest([of(contract), this.gasService.overrides])),
-      switchMap(([contract, overrides]) => contract.populateTransaction.cancelInvestment(overrides)),
-      switchMap(tx => this.signerService.sendTransaction(tx)),
-      switchMap(tx => this.dialogService.loading(
+      switchMap(contract => this.dialogService.waitingApproval(
+        combineLatest([of(contract), this.gasService.overrides]).pipe(
+          switchMap(([contract, overrides]) => contract.populateTransaction.cancelInvestment(overrides)),
+          switchMap(tx => this.signerService.sendTransaction(tx)),
+        ),
+      )),
+      switchMap(tx => this.dialogService.waitingTransaction(
         from(this.sessionQuery.provider.waitForTransaction(tx.hash)),
-        'Processing transaction...',
       )),
       this.errorService.handleError(),
     )

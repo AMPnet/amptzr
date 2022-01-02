@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core'
-import {combineLatest, defer, from, merge, Observable, of, throwError} from 'rxjs'
+import {combineLatest, from, merge, Observable, of, throwError} from 'rxjs'
 import {IpfsService, IPFSText} from '../../ipfs/ipfs.service'
 import {StablecoinBigNumber, StablecoinService} from '../stablecoin.service'
 import {GasService} from '../gas.service'
@@ -142,31 +142,25 @@ export class CampaignService {
   }
 
   invest(address: string, flavor: CampaignFlavor, amount: StablecoinBigNumber) {
-    return this.dialogService.loading(defer(() => {
-          switch (flavor) {
-            case CampaignFlavor.BASIC:
-              return this.campaignBasicService.invest(address, amount)
-            case CampaignFlavor.VESTING:
-              return this.campaignVestingService.invest(address, amount)
-            default:
-              return throwError(() => `invest not implemented for campaign flavor ${flavor}`)
-          }
-        },
-      ), 'Waiting for approval...',
-    )
+    switch (flavor) {
+      case CampaignFlavor.BASIC:
+        return this.campaignBasicService.invest(address, amount)
+      case CampaignFlavor.VESTING:
+        return this.campaignVestingService.invest(address, amount)
+      default:
+        return throwError(() => `invest not implemented for campaign flavor ${flavor}`)
+    }
   }
 
   cancelInvestment(address: string, flavor: CampaignFlavor) {
-    return this.dialogService.loading(defer(() => {
-      switch (flavor) {
-        case CampaignFlavor.BASIC:
-          return this.campaignBasicService.cancelInvestment(address)
-        case CampaignFlavor.VESTING:
-          return this.campaignVestingService.cancelInvestment(address)
-        default:
-          return throwError(() => `cancelInvestment not implemented for campaign flavor ${flavor}`)
-      }
-    }), 'Waiting for approval...')
+    switch (flavor) {
+      case CampaignFlavor.BASIC:
+        return this.campaignBasicService.cancelInvestment(address)
+      case CampaignFlavor.VESTING:
+        return this.campaignVestingService.cancelInvestment(address)
+      default:
+        return throwError(() => `cancelInvestment not implemented for campaign flavor ${flavor}`)
+    }
   }
 
   isWhitelistRequired(campaign: CampaignWithInfo): Observable<boolean> {

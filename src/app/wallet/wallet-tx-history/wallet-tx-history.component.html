@@ -23,13 +23,13 @@
   </div>
   <div class="flex flex-col my-4">
     <div *ngIf="(isBackendAuthorized$ | async) === false"
-         class="flex flex-col items-center gap-2 mt-4">
+         class="flex flex-col items-center gap-4 mt-4">
       <p>
         In order to see the transactions, authorization is needed.
       </p>
 
       <button app-action-button
-              class="bg-indigo-800 text-white px-4 py-2 rounded-full disabled:bg-gray-400"
+              class="bg-indigo-800 text-white px-8 py-2 rounded-full disabled:bg-gray-400"
               text="Authorize" loadingText="Authorizing"
               [onClick]="backendAuthorize.bind(this)">
       </button>

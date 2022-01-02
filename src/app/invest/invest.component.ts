@@ -93,8 +93,8 @@ export class InvestComponent {
     this.stateWithStatus$ = withStatus(this.state$)
 
     this.investmentForm = this.fb.group({
-      stablecoinAmount: ['0'],
-      tokenAmount: ['0'],
+      stablecoinAmount: [''],
+      tokenAmount: [''],
     }, {
       asyncValidators: this.amountValidator.bind(this),
     })
@@ -102,14 +102,14 @@ export class InvestComponent {
     this.shouldApprove$ = combineLatest([
       this.isUserLoggedIn$,
       this.investmentForm.get('stablecoinAmount')!.valueChanges.pipe(
-        startWith('0'),
+        startWith(''),
       ),
       this.state$,
     ]).pipe(
       map(([isUserLoggedIn, stablecoinAmount, state]) => {
         if (!isUserLoggedIn) return false
 
-        const amount = this.conversion.toStablecoin(stablecoinAmount)
+        const amount = this.conversion.toStablecoin(stablecoinAmount || 0)
 
         return state.stablecoinAllowance.lt(amount)
       }),

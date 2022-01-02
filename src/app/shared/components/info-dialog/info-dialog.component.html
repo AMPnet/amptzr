@@ -7,6 +7,11 @@
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
               d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
       </svg>
+
+      <img *ngIf="data.icon === iconType.SUCCESS"
+           class="w-48 h-48 object-cover rounded-full"
+           src="/assets/dialog-icons/success.png" alt="Success logo">
+
       <svg *ngIf="data.icon === iconType.ERROR" xmlns="http://www.w3.org/2000/svg"
            class="h-16 w-16 text-indigo-800"
            fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -21,11 +26,11 @@
       </h1>
     </div>
 
-    <div class="px-4 py-8">
+    <div class="px-4 py-8 text-center text-sm text-indigo-800">
       <p>{{ data.message }}</p>
     </div>
 
-    <div class="flex flex-col space-y-2 sm:flex-row sm:space-x-4 sm:space-y-0 px-4 pb-8 justify-center">
+    <div class="flex flex-col space-y-2 sm:flex-row sm:space-x-4 sm:space-y-0 px-4 justify-center">
       <button app-action-button
               [text]="data.confirm_text"
               [onClick]="confirm(data.onConfirm).bind(this)"
