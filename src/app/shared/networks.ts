@@ -101,7 +101,7 @@ export const MumbaiNetwork: Network = {
   },
   maxGasPrice: 20,
   rpcURLs: ['https://rpc-mumbai.maticvigil.com'],
-  // wssRpcURLs: ['wss://ws-matic-mumbai.chainstacklabs.com'],
+  wssRpcURLs: ['wss://ws-matic-mumbai.chainstacklabs.com'],
   explorerURLs: ['https://mumbai.polygonscan.com/'],
   tokenizerConfig: {
     apxRegistry: '0x2D3B123C7D53E537D449186386618301b4a93B22',
