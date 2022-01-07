@@ -3,7 +3,7 @@ import {InvestService, PreInvestData} from '../shared/services/invest.service'
 import {CampaignService, CampaignWithInfo} from '../shared/services/blockchain/campaign/campaign.service'
 import {constants} from 'ethers'
 import {StablecoinBigNumber, StablecoinService} from '../shared/services/blockchain/stablecoin.service'
-import {combineLatest, Observable, of, timer} from 'rxjs'
+import {combineLatest, concat, Observable, of, timer} from 'rxjs'
 import {AbstractControl, FormBuilder, FormGroup, ValidationErrors} from '@angular/forms'
 import {CampaignFlavor} from '../shared/services/blockchain/flavors'
 import {ActivatedRoute} from '@angular/router'
@@ -17,6 +17,7 @@ import {ConversionService} from '../shared/services/conversion.service'
 import {AssetService, CommonAssetWithInfo} from '../shared/services/blockchain/asset/asset.service'
 import {SignerService} from '../shared/services/signer.service'
 import {IdentityService} from '../identity/identity.service'
+import {DepositService} from '../deposit/deposit.service'
 
 @Component({
   selector: 'app-invest',
@@ -31,7 +32,9 @@ export class InvestComponent {
   investmentForm: FormGroup
 
   isUserLoggedIn$ = this.sessionQuery.isLoggedIn$
-
+  shouldOnlyPassKyc$: Observable<boolean>
+  shouldOnlyGetFunds$: Observable<boolean>
+  shouldPassKycAndGetFunds$: Observable<boolean>
   shouldApprove$: Observable<boolean>
   shouldBuy$: Observable<boolean>
 
@@ -46,6 +49,7 @@ export class InvestComponent {
               private stablecoin: StablecoinService,
               private conversion: ConversionService,
               private dialogService: DialogService,
+              private depositService: DepositService,
               private investService: InvestService,
               private identityService: IdentityService,
               private router: RouterService,
@@ -99,17 +103,90 @@ export class InvestComponent {
       asyncValidators: this.amountValidator.bind(this),
     })
 
-    this.shouldApprove$ = combineLatest([
+    const stablecoinAmountChanged$ = this.investmentForm.get('stablecoinAmount')!.valueChanges.pipe(
+      startWith(''),
+      shareReplay({bufferSize: 1, refCount: true}),
+    )
+
+    const shouldPassKYC$ = combineLatest([
       this.isUserLoggedIn$,
-      this.investmentForm.get('stablecoinAmount')!.valueChanges.pipe(
-        startWith(''),
-      ),
       this.state$,
+      this.sessionQuery.address$,
     ]).pipe(
-      map(([isUserLoggedIn, stablecoinAmount, state]) => {
-        if (!isUserLoggedIn) return false
+      switchMap(([isUserLoggedIn, state]) => {
+        if (!isUserLoggedIn) return of(false)
+
+        return this.identityService.checkOnIssuer$(state.campaign).pipe(
+          map(kycPassed => !kycPassed),
+        )
+      }),
+      shareReplay({bufferSize: 1, refCount: true}),
+    )
+
+    const shouldGetFunds$ = combineLatest([
+      this.isUserLoggedIn$,
+      this.state$,
+      stablecoinAmountChanged$,
+    ]).pipe(
+      map(([isUserLoggedIn, state, stablecoinAmount]) => {
+        if (!isUserLoggedIn || !state.stablecoinBalance) return false
 
         const amount = this.conversion.toStablecoin(stablecoinAmount || 0)
+
+        return state.stablecoinBalance.lt(amount)
+      }),
+      shareReplay({bufferSize: 1, refCount: true}),
+    )
+
+    this.shouldOnlyPassKyc$ = combineLatest([
+      shouldPassKYC$,
+      shouldGetFunds$,
+    ]).pipe(
+      map(([shouldPassKYC, shouldGetFunds]) =>
+        shouldPassKYC && !shouldGetFunds,
+      ),
+    )
+
+    this.shouldOnlyGetFunds$ = combineLatest([
+      shouldPassKYC$,
+      shouldGetFunds$,
+    ]).pipe(
+      map(([shouldPassKYC, shouldGetFunds]) =>
+        !shouldPassKYC && shouldGetFunds,
+      ),
+    )
+
+    this.shouldPassKycAndGetFunds$ = combineLatest([
+      shouldPassKYC$,
+      shouldGetFunds$,
+    ]).pipe(
+      map(([shouldPassKYC, shouldGetFunds]) =>
+        shouldPassKYC && shouldGetFunds,
+      ),
+    )
+
+    const preInvestStepsRequired$ = combineLatest([
+      this.shouldOnlyPassKyc$,
+      this.shouldOnlyGetFunds$,
+      this.shouldPassKycAndGetFunds$,
+    ]).pipe(
+      map(([shouldOnlyPassKyc, shouldOnlyGetFunds, shouldPassKycAndGetFunds]) =>
+        shouldOnlyPassKyc || shouldOnlyGetFunds || shouldPassKycAndGetFunds,
+      ),
+    )
+
+    this.shouldApprove$ = combineLatest([
+      this.isUserLoggedIn$,
+      this.state$,
+      preInvestStepsRequired$,
+      stablecoinAmountChanged$,
+    ]).pipe(
+      map(([isUserLoggedIn, state, preInvestStepsRequired, stablecoinAmount]) => {
+        if (!isUserLoggedIn || preInvestStepsRequired || !state.stablecoinBalance) return false
+
+        const amount = this.conversion.toStablecoin(stablecoinAmount || 0)
+
+        if (state.stablecoinBalance.lt(amount)) return false
 
         return state.stablecoinAllowance.lt(amount)
       }),
@@ -118,10 +195,11 @@ export class InvestComponent {
 
     this.shouldBuy$ = combineLatest([
       this.isUserLoggedIn$,
+      preInvestStepsRequired$,
       this.shouldApprove$,
     ]).pipe(
-      map(([isUserLoggedIn, shouldApprove]) => {
-        return isUserLoggedIn && !shouldApprove
+      map(([isUserLoggedIn, preInvestStepsRequired, shouldApprove]) => {
+        return isUserLoggedIn && !preInvestStepsRequired && !shouldApprove
       }),
       shareReplay({bufferSize: 1, refCount: true}),
     )
@@ -149,10 +227,7 @@ export class InvestComponent {
     return () => {
       const amount = this.conversion.toStablecoin(this.investmentForm.value.stablecoinAmount)
 
-      // TODO: ensure identity check on a new way...
-      return this.identityService.ensureIdentityChecked(campaign).pipe(
-        switchMap(() => this.stablecoin.approveAmount(campaign.contractAddress, amount)),
-      )
+      return this.stablecoin.approveAmount(campaign.contractAddress, amount)
     }
   }
 
@@ -184,14 +259,14 @@ export class InvestComponent {
           return {tokenAmountBelowZero: true}
         } else if (data.preInvestData.userInvestGap.isZero()) {
           return {userMaxReached: true}
-        } else if (data.stablecoinBalance.isZero()) {
-          return {walletBalanceTooLow: true}
         } else if (stablecoinAmount.lt(data.preInvestData.min)) {
           return {stablecoinAmountBelowMin: true}
         } else if (stablecoinAmount.gt(data.preInvestData.max)) {
           return {stablecoinAmountAboveMax: true}
         } else if (stablecoinAmount.gt(data.stablecoinBalance)) {
           return {stablecoinAmountAboveBalance: true}
+        } else if (data.stablecoinBalance.isZero()) {
+          return {walletBalanceTooLow: true}
         }
 
         return null
@@ -202,6 +277,27 @@ export class InvestComponent {
 
   login(): Observable<unknown> {
     return this.signerService.ensureAuth
+  }
+
+  passKyc(campaign: CampaignWithInfo) {
+    return () => {
+      return this.identityService.ensureIdentityChecked(campaign)
+    }
+  }
+
+  getFunds() {
+    const stablecoinAmount = this.conversion.toStablecoin(this.investmentForm.value.stablecoinAmount || 0)
+
+    return this.depositService.ensureBalance(stablecoinAmount)
+  }
+
+  passKycAndGetFunds(campaign: CampaignWithInfo) {
+    return () => {
+      return concat(
+        this.passKyc(campaign)(),
+        this.getFunds(),
+      )
+    }
   }
 }
 

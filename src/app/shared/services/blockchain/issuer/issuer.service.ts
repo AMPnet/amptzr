@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core'
-import {combineLatest, from, Observable, of, throwError} from 'rxjs'
-import {filter, map, shareReplay, switchMap} from 'rxjs/operators'
+import {combineLatest, from, merge, Observable, of, throwError} from 'rxjs'
+import {delay, filter, map, repeatWhen, shareReplay, switchMap, take} from 'rxjs/operators'
 import {WithStatus, withStatus} from '../../../utils/observables'
 import {PreferenceQuery} from '../../../../preference/state/preference.query'
 import {IpfsService} from '../../ipfs/ipfs.service'
@@ -141,8 +141,8 @@ export class IssuerService {
   }
 
   isWalletApproved(address: string): Observable<boolean> {
-    return this.preferenceQuery.issuer$.pipe(
-      switchMap(issuer => {
+    return combineLatest([this.preferenceQuery.issuer$]).pipe(take(1),
+      switchMap(([issuer]) => {
         switch (issuer.flavor) {
           case IssuerFlavor.BASIC:
             return this.issuerBasicService.isWalletApproved(address)
@@ -150,6 +150,40 @@ export class IssuerService {
             return of(true)
         }
       }),
+    )
+  }
+
+  // TODO: use this when the address from event is indexed
+  // isWalletApproved$(address: string): Observable<boolean> {
+  //   return this.isWalletApproved(address).pipe(
+  //     switchMap(isApproved => isApproved ? of(true) :
+  //       this.signerService.provider$.pipe(
+  //         map(provider => this.issuerBasicService.contract(address, provider)),
+  //         switchMap(contract => contractEvent(contract, contract.filters.WalletWhitelist(null, address)).pipe(
+  //           take(1),
+  //           map(() => true)
+  //         )),
+  //       )
+  //     )
+  //   )
+  // }
+
+  isWalletApproved$(address: string): Observable<boolean> {
+    return this.isWalletApproved(address).pipe(
+      switchMap(isApproved => isApproved ? of(true) :
+        this.signerService.provider$.pipe(
+          map(provider => this.issuerBasicService.contract(address, provider)),
+          switchMap(() => merge(
+              of(false),
+              this.isWalletApproved(address).pipe(
+                repeatWhen(obs => obs.pipe(delay(1000))),
+                filter(hasPassed => hasPassed),
+                take(1),
+              ),
+            ),
+          ),
+        ),
+      ),
     )
   }
 

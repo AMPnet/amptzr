@@ -171,6 +171,33 @@
                         class="w-full bg-gradient-to-r from-[#2493D2] to-[#22B3D3]
                         text-white px-8 py-2 rounded-full
                         font-semibold disabled:from-gray-400 disabled:to-gray-400"
+                        *ngIf="shouldOnlyPassKyc$ | async"
+                        [disabled]="investmentForm.invalid"
+                        [onClick]="passKyc(state.campaign).bind(this)"
+                        text="Next 📝"></button>
+
+                <button app-action-button
+                        class="w-full bg-gradient-to-r from-[#2493D2] to-[#22B3D3]
+                        text-white px-8 py-2 rounded-full
+                        font-semibold disabled:from-gray-400 disabled:to-gray-400"
+                        *ngIf="shouldOnlyGetFunds$ | async"
+                        [disabled]="!investmentForm.errors?.stablecoinAmountAboveBalance"
+                        [onClick]="getFunds.bind(this)"
+                        text="Next 💰"></button>
+
+                <button app-action-button
+                        class="w-full bg-gradient-to-r from-[#2493D2] to-[#22B3D3]
+                        text-white px-8 py-2 rounded-full
+                        font-semibold disabled:from-gray-400 disabled:to-gray-400"
+                        *ngIf="shouldPassKycAndGetFunds$ | async"
+                        [disabled]="!investmentForm.errors?.stablecoinAmountAboveBalance"
+                        [onClick]="passKycAndGetFunds(state.campaign).bind(this)"
+                        text="Next 📝+💰"></button>
+
+                <button app-action-button
+                        class="w-full bg-gradient-to-r from-[#2493D2] to-[#22B3D3]
+                        text-white px-8 py-2 rounded-full
+                        font-semibold disabled:from-gray-400 disabled:to-gray-400"
                         *ngIf="shouldApprove$ | async"
                         [onClick]="approveAmount(state.campaign).bind(this)"
                         [disabled]="investmentForm.invalid"
@@ -181,10 +208,10 @@
                         class="w-full bg-gradient-to-r from-[#2493D2] to-[#22B3D3]
                         text-white px-8 py-2 rounded-full
                         font-semibold disabled:from-gray-400 disabled:to-gray-400"
-                        text="Buy"
                         *ngIf="shouldBuy$ | async"
+                        [disabled]="investmentForm.invalid"
                         [onClick]="invest(state.campaign).bind(this)"
-                        [disabled]="investmentForm.invalid">
+                        text="Buy">
                 </button>
               </div>
             </form>

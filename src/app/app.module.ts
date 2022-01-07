@@ -98,6 +98,8 @@ import {
 import {
   LoadingDialogTransactionComponent,
 } from './shared/components/loading-dialog/loading-dialog-transaction/loading-dialog-transaction.component'
+import {LoadingOverlayComponent} from './shared/components/loading-dialog/loading-overlay/loading-overlay.component'
+import {DepositDialogComponent} from './deposit/deposit-dialog/deposit-dialog.component'
 
 @NgModule({
   declarations: [
@@ -171,6 +173,8 @@ import {
     AdminIssuerEditCampaignVisibilityCardComponent,
     LoadingDialogApprovalComponent,
     LoadingDialogTransactionComponent,
+    LoadingOverlayComponent,
+    DepositDialogComponent,
   ],
   imports: [
     BrowserModule,

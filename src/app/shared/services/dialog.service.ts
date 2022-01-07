@@ -17,22 +17,23 @@ import {
   LoadingDialogTransactionComponent,
   LoadingDialogTransactionData,
 } from '../components/loading-dialog/loading-dialog-transaction/loading-dialog-transaction.component'
+import {LoadingOverlayComponent} from '../components/loading-dialog/loading-overlay/loading-overlay.component'
 
 @Injectable({
   providedIn: 'root',
 })
 export class DialogService {
-  readonly matDialogConfigDefaults: Partial<MatDialogConfig> = {
+  readonly configDefaults: Partial<MatDialogConfig> = {
     minWidth: 320,
     panelClass: 'mat-rounded-4xl',
   }
 
-  constructor(private dialog: MatDialog) {
+  constructor(public dialog: MatDialog) {
   }
 
   info(message: string, cancelable = true): Observable<boolean> {
     return this.dialog.open(InfoDialogComponent, {
-      ...this.matDialogConfigDefaults,
+      ...this.configDefaults,
       data: {
         message,
         cancelable,
@@ -45,7 +46,7 @@ export class DialogService {
 
   infoWithOnConfirm<T>(data: Partial<InfoDialogData<T>>): Observable<InfoDialogResponse<T>> {
     return this.dialog.open(InfoDialogComponent, {
-      ...this.matDialogConfigDefaults,
+      ...this.configDefaults,
       data,
     }).afterClosed().pipe(
       map(res => res ?? {confirmed: false}),
@@ -54,7 +55,7 @@ export class DialogService {
 
   success(message: string): Observable<void> {
     return this.dialog.open(InfoDialogComponent, {
-      ...this.matDialogConfigDefaults,
+      ...this.configDefaults,
       data: {
         icon: DialogIcon.SUCCESS,
         title: 'Success',
@@ -66,7 +67,7 @@ export class DialogService {
 
   error(message: string): Observable<void> {
     return this.dialog.open(InfoDialogComponent, {
-      ...this.matDialogConfigDefaults,
+      ...this.configDefaults,
       data: {
         icon: DialogIcon.ERROR,
         title: 'Error',
@@ -78,7 +79,7 @@ export class DialogService {
 
   loading<T>(obs$: Observable<T>, title: string, message?: string, opts?: MatDialogConfig): Observable<T> {
     const dialogRef = this.dialog.open(LoadingDialogComponent, {
-      ...this.matDialogConfigDefaults,
+      ...this.configDefaults,
       ...opts,
       data: {title, message} as LoadingDialogData,
       disableClose: true,
@@ -91,17 +92,22 @@ export class DialogService {
     )
   }
 
-  overlayLoading<T>(obs$: Observable<T>, title: string): Observable<T> {
-    return this.loading(obs$, title, '', {
+  overlayLoading<T>(obs$: Observable<T>): Observable<T> {
+    const dialogRef = this.dialog.open(LoadingOverlayComponent, {
       width: '100vw',
+      maxWidth: '100vw',
       height: '100vh',
-      panelClass: '',
+      disableClose: true,
     })
+
+    return obs$.pipe(
+      finalize(() => dialogRef.close()),
+    )
   }
 
   waitingApproval<T>(obs$: Observable<T>, title?: string, message?: string, opts?: MatDialogConfig): Observable<T> {
     const dialogRef = this.dialog.open(LoadingDialogApprovalComponent, {
-      ...this.matDialogConfigDefaults,
+      ...this.configDefaults,
       ...opts,
       data: {title, message} as LoadingDialogApprovalData,
       disableClose: true,
@@ -114,7 +120,7 @@ export class DialogService {
 
   waitingTransaction<T>(obs$: Observable<T>, title?: string, message?: string, opts?: MatDialogConfig): Observable<T> {
     const dialogRef = this.dialog.open(LoadingDialogTransactionComponent, {
-      ...this.matDialogConfigDefaults,
+      ...this.configDefaults,
       ...opts,
       data: {title, message} as LoadingDialogTransactionData,
       disableClose: true,

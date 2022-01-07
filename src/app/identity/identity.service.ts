@@ -25,12 +25,12 @@ export class IdentityService {
   }
 
   ensureIdentityChecked(campaign: CampaignWithInfo): Observable<void> {
-    return this.checkOnIssuerProcedure(campaign).pipe(
+    return this.checkOnIssuer(campaign).pipe(
       switchMap(identityChecked => identityChecked ? of(undefined) : this.checkOnBackendProcedure),
     )
   }
 
-  private checkOnIssuerProcedure(campaign: CampaignWithInfo): Observable<boolean> {
+  checkOnIssuer(campaign: CampaignWithInfo): Observable<boolean> {
     return this.signerService.ensureAuth.pipe(take(1),
       switchMap(() => this.campaignService.isWhitelistRequired(campaign).pipe(
         switchMap(isWhitelistRequired => !isWhitelistRequired ? of(true) :
@@ -39,20 +39,30 @@ export class IdentityService {
     )
   }
 
+  checkOnIssuer$(campaign: CampaignWithInfo): Observable<boolean> {
+    return this.signerService.ensureAuth.pipe(take(1),
+      switchMap(() => this.campaignService.isWhitelistRequired(campaign).pipe(
+        switchMap(isWhitelistRequired => !isWhitelistRequired ? of(true) :
+          this.issuerService.isWalletApproved$(this.sessionQuery.getValue().address!),
+        ))),
+    )
+  }
+
   private get checkOnBackendProcedure(): Observable<void> {
-    return this.backendCheck.pipe(
+    return this.checkOnBackend.pipe(
       switchMap(whitelistedOnBackend => whitelistedOnBackend ?
         of(undefined) : this.openIdentityDialog),
       switchMap(() => this.whitelistOnBackend()),
       switchMap(() => this.dialogService.loading(
         this.waitUntilIssuerCheckPassed,
-        'Wallet whitelisting',
-        'This is usually a short process, but it might take up to a few minutes. Stay patient or return to invest later.',
+        'Approving wallet',
+        'This is usually a short process, but it might take up to a few minutes. Please wait.',
       )),
+      switchMap(() => this.dialogService.success('Identity verified successfully!')),
     )
   }
 
-  private get backendCheck(): Observable<boolean> {
+  private get checkOnBackend(): Observable<boolean> {
     return this.backendUser.getUser().pipe(
       map(user => user.kyc_completed),
     )
