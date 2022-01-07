@@ -33,15 +33,6 @@ export class WalletComponent {
   address$ = this.sessionQuery.address$
   balance$ = withStatus(this.stablecoin.balance$)
 
-  // TODO: base currency balance will probably be used here in the future for gas indicator.
-  // nativeTokenBalance$ = combineLatest([this.sessionQuery.provider$, this.sessionQuery.address$]).pipe(
-  //   switchMap(([provider, address]) => withStatus(
-  //     from(provider.getBalance(address!)).pipe(
-  //       map(value => this.stablecoin.format(value)),
-  //     ),
-  //   )),
-  // )
-
   constructor(private sessionQuery: SessionQuery,
               private preferenceQuery: PreferenceQuery,
               private signerService: SignerService,

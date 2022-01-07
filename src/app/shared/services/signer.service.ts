@@ -4,7 +4,6 @@ import {defer, from, fromEvent, merge, Observable, of, Subject, throwError} from
 import {catchError, concatMap, finalize, map, switchMap, take, tap} from 'rxjs/operators'
 import {SessionStore} from '../../session/state/session.store'
 import {SessionQuery} from '../../session/state/session.query'
-import {DialogService} from './dialog.service'
 import {PreferenceStore} from '../../preference/state/preference.store'
 import {MetamaskSubsignerService, Subsigner} from './subsigners/metamask-subsigner.service'
 import {MatDialog} from '@angular/material/dialog'
@@ -55,8 +54,7 @@ export class SignerService {
               private ngZone: NgZone,
               private router: RouterService,
               private dialog: MatDialog,
-              private errorService: ErrorService,
-              private dialogService: DialogService) {
+              private errorService: ErrorService) {
     this.subscribeToChanges()
   }
 

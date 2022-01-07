@@ -182,7 +182,7 @@
                         font-semibold disabled:from-gray-400 disabled:to-gray-400"
                         *ngIf="shouldOnlyGetFunds$ | async"
                         [disabled]="!investmentForm.errors?.stablecoinAmountAboveBalance"
-                        [onClick]="getFunds.bind(this)"
+                        [onClick]="getFunds(state.campaign).bind(this)"
                         text="Next 💰"></button>
 
                 <button app-action-button

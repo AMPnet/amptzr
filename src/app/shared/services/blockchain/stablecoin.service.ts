@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core'
 import {BehaviorSubject, combineLatest, from, merge, Observable, of} from 'rxjs'
-import {distinctUntilChanged, map, shareReplay, switchMap, tap} from 'rxjs/operators'
+import {distinctUntilChanged, map, shareReplay, switchMap, take, tap} from 'rxjs/operators'
 import {ERC20__factory} from '../../../../../types/ethers-contracts'
 import {SessionQuery} from '../../../session/state/session.query'
 import {PreferenceQuery} from '../../../preference/state/preference.query'
@@ -103,7 +103,7 @@ export class StablecoinService {
         return combineLatest([
             this.contract$,
             this.signerService.ensureAuth,
-        ]).pipe(
+        ]).pipe(take(1),
             switchMap(([contract, signer]) => this.dialogService.waitingApproval(
                 of(contract.connect(signer)).pipe(
                     switchMap(contract => combineLatest([of(contract), this.gasService.overrides])),

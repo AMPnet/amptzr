@@ -9,6 +9,7 @@ import {StablecoinBigNumber, StablecoinService} from '../shared/services/blockch
 import {CampaignService, CampaignWithInfo} from '../shared/services/blockchain/campaign/campaign.service'
 import {CampaignFlavor} from '../shared/services/blockchain/flavors'
 import {constants} from 'ethers'
+import {AutoInvestService} from '../shared/services/backend/auto-invest.service'
 
 @Component({
   selector: 'app-portfolio',
@@ -36,10 +37,15 @@ export class PortfolioComponent {
     map(v => ({value: v})),
   )
 
+  pendingAutoInvest$ = this.autoInvestService.status().pipe(
+    map(res => res.auto_invests.length > 0 ? res.auto_invests[0] : undefined),
+  )
+
   constructor(private sessionQuery: SessionQuery,
               private queryService: QueryService,
               private dialogService: DialogService,
               private stablecoin: StablecoinService,
+              private autoInvestService: AutoInvestService,
               private campaignService: CampaignService) {
   }
 

@@ -2,15 +2,17 @@ import {Injectable} from '@angular/core'
 import {SignerService} from './signer.service'
 import {distinctUntilChanged, map, shareReplay, switchMap} from 'rxjs/operators'
 import {BackendHttpClient} from './backend/backend-http-client.service'
-import {combineLatest, Observable} from 'rxjs'
+import {combineLatest, from, Observable} from 'rxjs'
 import {SessionQuery} from '../../session/state/session.query'
 import {IssuerService} from './blockchain/issuer/issuer.service'
+import {BigNumber} from 'ethers'
 
 @Injectable({
   providedIn: 'root',
 })
 export class UserService {
   isAdmin$: Observable<boolean>
+  nativeTokenBalance$: Observable<BigNumber>
 
   constructor(private signerService: SignerService,
               private sessionQuery: SessionQuery,
@@ -30,6 +32,11 @@ export class UserService {
       }),
       distinctUntilChanged(),
       shareReplay(1),
+    )
+
+    this.nativeTokenBalance$ = combineLatest([this.sessionQuery.provider$, this.sessionQuery.address$]).pipe(
+      switchMap(([provider, address]) => from(provider.getBalance(address!))),
+      shareReplay({bufferSize: 1, refCount: true}),
     )
   }
 

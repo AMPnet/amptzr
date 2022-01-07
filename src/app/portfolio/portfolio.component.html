@@ -30,6 +30,21 @@
           </div>
         </section>
 
+        <!-- Pending auto invest status -->
+        <ng-container *ngIf="pendingAutoInvest$ | async as pending">
+          <div>
+            <div>
+              Pending transaction
+            </div>
+            <div>
+              For address: {{ pending.campaign_address }}
+            </div>
+            <div>
+              With amount: {{ pending.amount | formatUnit:'stablecoin' | currencyDefault }}
+            </div>
+          </div>
+        </ng-container>
+
         <!-- Portfolio investments -->
         <section class="w-full mt-8">
           <div *ngFor="let item of portfolio" class="w-full rounded-3xl shadow-lg flex flex-col lg:flex-row mt-4">

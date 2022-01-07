@@ -285,17 +285,19 @@ export class InvestComponent {
     }
   }
 
-  getFunds() {
-    const stablecoinAmount = this.conversion.toStablecoin(this.investmentForm.value.stablecoinAmount || 0)
+  getFunds(campaign: CampaignWithInfo) {
+    return () => {
+      const stablecoinAmount = this.conversion.toStablecoin(this.investmentForm.value.stablecoinAmount || 0)
 
-    return this.depositService.ensureBalance(stablecoinAmount)
+      return this.depositService.ensureBalance(stablecoinAmount, campaign.contractAddress)
+    }
   }
 
   passKycAndGetFunds(campaign: CampaignWithInfo) {
     return () => {
       return concat(
         this.passKyc(campaign)(),
-        this.getFunds(),
+        this.getFunds(campaign)(),
       )
     }
   }
