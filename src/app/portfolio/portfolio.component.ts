@@ -1,9 +1,9 @@
 import {ChangeDetectionStrategy, Component} from '@angular/core'
-import {withStatus} from '../shared/utils/observables'
+import {withInterval, withStatus} from '../shared/utils/observables'
 import {SessionQuery} from '../session/state/session.query'
 import {PortfolioItem, QueryService} from '../shared/services/blockchain/query.service'
-import {map, shareReplay, switchMap, tap} from 'rxjs/operators'
-import {BehaviorSubject, combineLatest, Observable, of} from 'rxjs'
+import {distinctUntilChanged, filter, map, shareReplay, switchMap, tap} from 'rxjs/operators'
+import {BehaviorSubject, combineLatest, defer, Observable, of} from 'rxjs'
 import {DialogService} from '../shared/services/dialog.service'
 import {StablecoinBigNumber, StablecoinService} from '../shared/services/blockchain/stablecoin.service'
 import {CampaignService, CampaignWithInfo} from '../shared/services/blockchain/campaign/campaign.service'
@@ -37,8 +37,16 @@ export class PortfolioComponent {
     map(v => ({value: v})),
   )
 
-  pendingAutoInvest$ = this.autoInvestService.status().pipe(
-    map(res => res.auto_invests.length > 0 ? res.auto_invests[0] : undefined),
+  pending$: Observable<PendingItem> = withInterval(defer(() => this.autoInvestService.status()), 8000).pipe(
+    distinctUntilChanged(),
+    filter(res => res.auto_invests.length > 0),
+    map(res => res.auto_invests[res.auto_invests.length - 1]),
+    switchMap(item => this.campaignService.getCampaignWithInfo(item.campaign_address).pipe(
+      map(campaign => ({
+        campaign,
+        amount: item.amount,
+      })),
+    )),
   )
 
   constructor(private sessionQuery: SessionQuery,
@@ -61,4 +69,9 @@ export class PortfolioComponent {
 
 interface PortfolioItemView extends PortfolioItem {
   campaign: CampaignWithInfo;
+}
+
+interface PendingItem {
+  campaign: CampaignWithInfo
+  amount: string
 }

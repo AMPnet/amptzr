@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core'
 import {combineLatest, Observable, of} from 'rxjs'
-import {delay, filter, map, repeatWhen, switchMap, take} from 'rxjs/operators'
+import {filter, map, switchMap, take} from 'rxjs/operators'
 import {VeriffService} from './veriff/veriff.service'
 import {BackendUserService} from '../shared/services/backend/backend-user.service'
 import {SignerService} from '../shared/services/signer.service'
@@ -9,6 +9,7 @@ import {PreferenceQuery} from '../preference/state/preference.query'
 import {CampaignService, CampaignWithInfo} from '../shared/services/blockchain/campaign/campaign.service'
 import {IssuerService} from '../shared/services/blockchain/issuer/issuer.service'
 import {DialogService} from '../shared/services/dialog.service'
+import {withInterval} from '../shared/utils/observables'
 
 @Injectable({
   providedIn: 'root',
@@ -40,7 +41,7 @@ export class IdentityService {
   }
 
   checkOnIssuer$(campaign: CampaignWithInfo): Observable<boolean> {
-    return this.signerService.ensureAuth.pipe(take(1),
+    return this.signerService.ensureAuth.pipe(
       switchMap(() => this.campaignService.isWhitelistRequired(campaign).pipe(
         switchMap(isWhitelistRequired => !isWhitelistRequired ? of(true) :
           this.issuerService.isWalletApproved$(this.sessionQuery.getValue().address!),
@@ -71,13 +72,11 @@ export class IdentityService {
   private get issuerCheck(): Observable<boolean> {
     return this.signerService.ensureAuth.pipe(
       switchMap(() => this.issuerService.isWalletApproved(this.sessionQuery.getValue().address!)),
-      take(1),
     )
   }
 
   private get waitUntilIssuerCheckPassed(): Observable<void> {
-    return this.issuerCheck.pipe(
-      repeatWhen(obs => obs.pipe(delay(1000))),
+    return withInterval(this.issuerCheck, 1000).pipe(
       filter(hasPassed => hasPassed),
       take(1),
       map(() => undefined),

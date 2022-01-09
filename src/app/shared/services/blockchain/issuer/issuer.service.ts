@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core'
-import {combineLatest, from, merge, Observable, of, throwError} from 'rxjs'
+import {combineLatest, from, merge, Observable, of, takeWhile, throwError} from 'rxjs'
 import {delay, filter, map, repeatWhen, shareReplay, switchMap, take} from 'rxjs/operators'
-import {WithStatus, withStatus} from '../../../utils/observables'
+import {withInterval, WithStatus, withStatus} from '../../../utils/observables'
 import {PreferenceQuery} from '../../../../preference/state/preference.query'
 import {IpfsService} from '../../ipfs/ipfs.service'
 import {DialogService} from '../../dialog.service'
@@ -175,13 +175,13 @@ export class IssuerService {
           map(provider => this.issuerBasicService.contract(address, provider)),
           switchMap(() => merge(
               of(false),
-              this.isWalletApproved(address).pipe(
-                repeatWhen(obs => obs.pipe(delay(1000))),
+              withInterval(this.isWalletApproved(address), 1000).pipe(
                 filter(hasPassed => hasPassed),
                 take(1),
               ),
             ),
           ),
+          takeWhile(hasPassed => !hasPassed, true)
         ),
       ),
     )

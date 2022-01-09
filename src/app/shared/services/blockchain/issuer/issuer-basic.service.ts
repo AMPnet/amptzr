@@ -86,10 +86,9 @@ export class IssuerBasicService {
       this.signerService.ensureAuth,
       this.sessionQuery.provider$,
       this.preferenceQuery.issuer$,
-    ]).pipe(
+    ]).pipe(take(1),
       map(([_signer, provider, issuer]) => this.contract(issuer.address, provider)),
       switchMap(contract => contract.isWalletApproved(address)),
-      take(1),
     )
   }
 

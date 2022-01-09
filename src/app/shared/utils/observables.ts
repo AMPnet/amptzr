@@ -1,11 +1,9 @@
-import {combineLatest, concat, interval, Observable, of} from 'rxjs'
-import {catchError, map, startWith} from 'rxjs/operators'
+import {concat, Observable, of, timer} from 'rxjs'
+import {catchError, map, switchMap} from 'rxjs/operators'
 
 export function withInterval<T>(observable$: Observable<T>, offset: number): Observable<T> {
-  return combineLatest([
-    observable$, interval(offset).pipe(startWith(0)),
-  ]).pipe(
-    map(([result, _]) => result),
+  return timer(0, offset).pipe(
+    switchMap(() => observable$),
   )
 }
 

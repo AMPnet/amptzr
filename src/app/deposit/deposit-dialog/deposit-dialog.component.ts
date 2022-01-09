@@ -67,6 +67,7 @@ export class DepositDialogComponent implements OnInit {
           event: undefined as unknown,
         } as RampWidgetEventState),
         tap(eventState => {
+          console.info('event', eventState.event.type)
           if (eventState.event.type === RampInstantEventTypes.PURCHASE_CREATED) {
             this.faucetService.topUp.subscribe()
           }
@@ -84,7 +85,7 @@ export class DepositDialogComponent implements OnInit {
           return eventState.successFinish ?
             of(eventState).pipe(
               tap(() => this.dialogRef.close()),
-              switchMap(() => this.router.navigate(['/portfolio']))
+              switchMap(() => this.router.navigate(['/portfolio'])),
             ) :
             of(eventState)
         }),
