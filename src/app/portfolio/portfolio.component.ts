@@ -2,8 +2,8 @@ import {ChangeDetectionStrategy, Component} from '@angular/core'
 import {withInterval, withStatus} from '../shared/utils/observables'
 import {SessionQuery} from '../session/state/session.query'
 import {PortfolioItem, QueryService} from '../shared/services/blockchain/query.service'
-import {distinctUntilChanged, filter, map, shareReplay, switchMap, tap} from 'rxjs/operators'
-import {BehaviorSubject, combineLatest, defer, Observable, of} from 'rxjs'
+import {distinctUntilChanged, map, shareReplay, switchMap, tap} from 'rxjs/operators'
+import {BehaviorSubject, combineLatest, Observable, of} from 'rxjs'
 import {DialogService} from '../shared/services/dialog.service'
 import {StablecoinBigNumber, StablecoinService} from '../shared/services/blockchain/stablecoin.service'
 import {CampaignService, CampaignWithInfo} from '../shared/services/blockchain/campaign/campaign.service'
@@ -20,7 +20,10 @@ import {AutoInvestService} from '../shared/services/backend/auto-invest.service'
 export class PortfolioComponent {
   portfolioSub = new BehaviorSubject<void>(undefined)
 
-  portfolio$: Observable<PortfolioItemView[]> = this.portfolioSub.asObservable().pipe(
+  portfolio$: Observable<PortfolioItemView[]> = combineLatest([
+    this.portfolioSub.asObservable(),
+    this.sessionQuery.address$,
+  ]).pipe(
     switchMap(() => this.queryService.portfolio$),
     switchMap(portfolio => portfolio.length > 0 ? combineLatest(
       portfolio.map(item => this.campaignService.getCampaignInfo(item.campaign).pipe(
@@ -37,16 +40,17 @@ export class PortfolioComponent {
     map(v => ({value: v})),
   )
 
-  pending$: Observable<PendingItem> = withInterval(defer(() => this.autoInvestService.status()), 8000).pipe(
+  pending$: Observable<PendingItem | undefined> = this.sessionQuery.address$.pipe(
+    switchMap(() => withInterval(this.autoInvestService.status(), 8000)),
     distinctUntilChanged(),
-    filter(res => res.auto_invests.length > 0),
-    map(res => res.auto_invests[res.auto_invests.length - 1]),
-    switchMap(item => this.campaignService.getCampaignWithInfo(item.campaign_address).pipe(
-      map(campaign => ({
-        campaign,
-        amount: item.amount,
-      })),
-    )),
+    switchMap(res => res.auto_invests.length > 0 ? of(res.auto_invests[res.auto_invests.length - 1]).pipe(
+      switchMap(item => this.campaignService.getCampaignWithInfo(item.campaign_address).pipe(
+        map(campaign => ({
+          campaign,
+          amount: item.amount,
+        })),
+      )),
+    ) : of(undefined)),
   )
 
   constructor(private sessionQuery: SessionQuery,

@@ -126,7 +126,7 @@ export class SignerService {
   signMessage(message: string | utils.Bytes): Observable<string> {
     return this.ensureAuth.pipe(
       switchMap(signer => from(signer.signMessage(message))),
-      this.errorService.handleError(),
+      this.errorService.handleError(true, true),
     )
   }
 

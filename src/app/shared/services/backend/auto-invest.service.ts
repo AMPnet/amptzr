@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core'
-import {EMPTY, Observable, of} from 'rxjs'
+import {Observable, of} from 'rxjs'
 import {environment} from '../../../../environments/environment'
 import {catchError} from "rxjs/operators"
 import {BackendHttpClient} from "./backend-http-client.service"
