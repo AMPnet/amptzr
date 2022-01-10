@@ -26,12 +26,7 @@ $candy-app-theme: mat-light-theme((
 
 @include angular-material-theme($candy-app-theme);
 
-html, body {
-  height: 100%;
-}
-
 body {
-  margin: 0;
   font-family: 'Manrope', sans-serif;
 }
 
