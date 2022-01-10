@@ -3,13 +3,16 @@ import {withInterval, withStatus} from '../shared/utils/observables'
 import {SessionQuery} from '../session/state/session.query'
 import {PortfolioItem, QueryService} from '../shared/services/blockchain/query.service'
 import {distinctUntilChanged, map, shareReplay, switchMap, tap} from 'rxjs/operators'
-import {BehaviorSubject, combineLatest, Observable, of} from 'rxjs'
+import {BehaviorSubject, combineLatest, Observable, of, takeWhile} from 'rxjs'
 import {DialogService} from '../shared/services/dialog.service'
 import {StablecoinBigNumber, StablecoinService} from '../shared/services/blockchain/stablecoin.service'
 import {CampaignService, CampaignWithInfo} from '../shared/services/blockchain/campaign/campaign.service'
 import {CampaignFlavor} from '../shared/services/blockchain/flavors'
-import {constants} from 'ethers'
+import {BigNumber, constants} from 'ethers'
 import {AutoInvestService} from '../shared/services/backend/auto-invest.service'
+import {AssetService, CommonAssetWithInfo} from '../shared/services/blockchain/asset/asset.service'
+import {ConversionService} from '../shared/services/conversion.service'
+import {TokenBigNumber} from '../shared/utils/token'
 
 @Component({
   selector: 'app-portfolio',
@@ -27,7 +30,8 @@ export class PortfolioComponent {
     switchMap(() => this.queryService.portfolio$),
     switchMap(portfolio => portfolio.length > 0 ? combineLatest(
       portfolio.map(item => this.campaignService.getCampaignInfo(item.campaign).pipe(
-        map(i => ({...item, campaign: i})),
+        switchMap(campaign => this.getCampaignWithAsset(campaign)),
+        map(campaignWithAsset => ({...item, ...campaignWithAsset})),
       )),
     ) : of([])),
     shareReplay({bufferSize: 1, refCount: true}),
@@ -41,13 +45,30 @@ export class PortfolioComponent {
   )
 
   pending$: Observable<PendingItem | undefined> = this.sessionQuery.address$.pipe(
-    switchMap(() => withInterval(this.autoInvestService.status(), 8000)),
-    distinctUntilChanged(),
-    switchMap(res => res.auto_invests.length > 0 ? of(res.auto_invests[res.auto_invests.length - 1]).pipe(
+    switchMap(address => withInterval(this.autoInvestService.status(address || ''), 8000)),
+    map(res => res.auto_invests),
+    distinctUntilChanged((prev, curr) => JSON.stringify(prev) === JSON.stringify(curr)),
+    switchMap(items => items.length > 0 ? of(items[0]).pipe(
+      map(item => ({...item, amount: BigNumber.from(item.amount)})),
       switchMap(item => this.campaignService.getCampaignWithInfo(item.campaign_address).pipe(
-        map(campaign => ({
-          campaign,
-          amount: item.amount,
+        switchMap(campaign => combineLatest([
+          this.getCampaignWithAsset(campaign),
+          this.stablecoin.getAllowance$(campaign.contractAddress).pipe(
+            map(allowance => allowance.gte(item.amount)),
+            takeWhile(enoughAllowance => !enoughAllowance, true),
+          ),
+          this.stablecoin.balance$.pipe(
+            map(balance => !!balance?.gte(item.amount)),
+            takeWhile(enoughBalance => !enoughBalance, true),
+          ),
+        ])),
+        map(([campaignWithAsset, enoughAllowance, enoughBalance]) => ({
+          campaign: campaignWithAsset.campaign,
+          asset: campaignWithAsset.asset,
+          enoughAllowance,
+          enoughBalance,
+          tokenValue: item.amount,
+          tokenAmount: this.conversion.calcTokens(item.amount, campaignWithAsset.campaign.pricePerToken),
         })),
       )),
     ) : of(undefined)),
@@ -56,9 +77,11 @@ export class PortfolioComponent {
   constructor(private sessionQuery: SessionQuery,
               private queryService: QueryService,
               private dialogService: DialogService,
-              private stablecoin: StablecoinService,
+              public stablecoin: StablecoinService,
               private autoInvestService: AutoInvestService,
-              private campaignService: CampaignService) {
+              private conversion: ConversionService,
+              private campaignService: CampaignService,
+              private assetService: AssetService) {
   }
 
   cancel(contractAddress: string, flavor: CampaignFlavor | string) {
@@ -69,13 +92,30 @@ export class PortfolioComponent {
       )
     }
   }
+
+  approveFunds(campaignAddress: string, amount: StablecoinBigNumber) {
+    return () => {
+      return this.stablecoin.approveAmount(campaignAddress, amount)
+    }
+  }
+
+  private getCampaignWithAsset(campaign: CampaignWithInfo) {
+    return this.assetService.getAssetWithInfo(campaign.asset).pipe(
+      map(asset => ({campaign, asset})),
+    )
+  }
 }
 
 interface PortfolioItemView extends PortfolioItem {
   campaign: CampaignWithInfo;
+  asset: CommonAssetWithInfo
 }
 
 interface PendingItem {
   campaign: CampaignWithInfo
-  amount: string
+  asset: CommonAssetWithInfo
+  enoughAllowance: boolean
+  enoughBalance: boolean
+  tokenAmount: StablecoinBigNumber
+  tokenValue: TokenBigNumber
 }

@@ -62,7 +62,10 @@ export const MaticNetwork: Network = {
   },
   maxGasPrice: 100,
   rpcURLs: ['https://polygon-rpc.com'],
-  wssRpcURLs: ['wss://ws-matic-mainnet.chainstacklabs.com'],
+  wssRpcURLs: [
+    'wss://polygon-mainnet.g.alchemy.com/v2/A8PZz3PJWwX_yQAW5q0JjqaNPPshI9Qg',
+    'wss://ws-matic-mainnet.chainstacklabs.com',
+  ],
   explorerURLs: ['https://polygonscan.com/'],
   tokenizerConfig: {
     apxRegistry: '0x992EF576A79b7D3d05C31DfBCc389362F158c812',
@@ -101,7 +104,10 @@ export const MumbaiNetwork: Network = {
   },
   maxGasPrice: 20,
   rpcURLs: ['https://rpc-mumbai.maticvigil.com'],
-  wssRpcURLs: ['wss://ws-matic-mumbai.chainstacklabs.com'],
+  wssRpcURLs: [
+    'wss://polygon-mumbai.g.alchemy.com/v2/w8tKRA88CQYBQEwGO2HlKKHtSD_qHOoU',
+    'wss://ws-matic-mumbai.chainstacklabs.com',
+  ],
   explorerURLs: ['https://mumbai.polygonscan.com/'],
   tokenizerConfig: {
     apxRegistry: '0x2D3B123C7D53E537D449186386618301b4a93B22',

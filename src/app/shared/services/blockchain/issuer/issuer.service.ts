@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core'
 import {combineLatest, from, merge, Observable, of, takeWhile, throwError} from 'rxjs'
-import {delay, filter, map, repeatWhen, shareReplay, switchMap, take} from 'rxjs/operators'
+import {filter, map, shareReplay, switchMap, take} from 'rxjs/operators'
 import {withInterval, WithStatus, withStatus} from '../../../utils/observables'
 import {PreferenceQuery} from '../../../../preference/state/preference.query'
 import {IpfsService} from '../../ipfs/ipfs.service'
@@ -181,14 +181,14 @@ export class IssuerService {
               ),
             ),
           ),
-          takeWhile(hasPassed => !hasPassed, true)
+          takeWhile(hasPassed => !hasPassed, true),
         ),
       ),
     )
   }
 
   changeWalletApprover(issuerAddress: string, walletApproverAddress: string) {
-    return this.preferenceQuery.issuer$.pipe(
+    return this.preferenceQuery.issuer$.pipe(take(1),
       switchMap(issuer => {
         switch (issuer.flavor) {
           case IssuerFlavor.BASIC:

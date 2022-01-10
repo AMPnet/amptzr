@@ -2,24 +2,27 @@
   <div class="flex flex-row justify-between items-center">
     <span class="font-semibold">Transaction History</span>
 
-    <button app-action-button
-            class="flex items-center justify-center text-white lg:w-auto text-sm rounded-full
+    <div>
+      <button app-action-button
+              *ngIf="(isBackendAuthorized$ | async) === true"
+              class="flex items-center justify-center text-white lg:w-auto text-sm rounded-full
                    bg-indigo-800 hover:bg-indigo-900 py-2 lg:mt-0 lg:px-8 px-4 disabled:bg-gray-400
                    font-semibold tracking-wider"
-            text="Download"
-            [onClick]="downloadTransactionHistory.bind(this)">
-      <ng-template #content>
-        <svg class="h-3.5 w-3.5 mr-2" width="22" height="18" viewBox="0 0 22 18" fill="none"
-             xmlns="http://www.w3.org/2000/svg">
-          <path
-            d="M1.47461 13V14C1.47461 14.7956 1.85599 15.5587 2.53485 16.1213C3.21371 16.6839 4.13444 17 5.0945 17H17.1608C18.1209 17 19.0416 16.6839 19.7204 16.1213C20.3993 15.5587 20.7807 14.7956 20.7807 14V13M15.9542 9L11.1276 13M11.1276 13L6.30113 9M11.1276 13V1"
-            stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
-        <span>
-          Download
-        </span>
-      </ng-template>
-    </button>
+              text="Download"
+              [onClick]="downloadTransactionHistory.bind(this)">
+        <ng-template #content>
+          <svg class="h-3.5 w-3.5 mr-2" width="22" height="18" viewBox="0 0 22 18" fill="none"
+               xmlns="http://www.w3.org/2000/svg">
+            <path
+              d="M1.47461 13V14C1.47461 14.7956 1.85599 15.5587 2.53485 16.1213C3.21371 16.6839 4.13444 17 5.0945 17H17.1608C18.1209 17 19.0416 16.6839 19.7204 16.1213C20.3993 15.5587 20.7807 14.7956 20.7807 14V13M15.9542 9L11.1276 13M11.1276 13L6.30113 9M11.1276 13V1"
+              stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          <span>
+            Download
+          </span>
+        </ng-template>
+      </button>
+    </div>
   </div>
   <div class="flex flex-col my-4">
     <div *ngIf="(isBackendAuthorized$ | async) === false"
