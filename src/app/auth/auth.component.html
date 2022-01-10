@@ -1,65 +1,60 @@
-<div class="min-h-md w-full max-w-md min-w-[15rem] my-5 px-2 py-8 bg-white">
-  <div class="w-full h-4/6 bg-white rounded-b-md flex items-center">
-    <div class="flex flex-col w-full">
-      <div class="w-full text-center text-2xl text-gray-700 mt-12">
-        Login
-      </div>
-
-      <ng-container *ngIf="magicLinkAvailable$ | async">
-        <form [formGroup]="emailForm" class="mt-8">
-          <label class="text-sm uppercase" for="email">
-            Email address
-          </label>
-
-          <div class="flex gap-1">
-            <input type="email" id="email" class="block w-full rounded-md border-gray-300 shadow-sm
-    focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
-                   placeholder="john.smith@email.com" inputmode="email"
-                   formControlName="email">
-            <button app-action-button
-                    class="bg-blue-900 text-white px-4 py-2 rounded-full disabled:bg-gray-400"
-                    loadingText=""
-                    [onClick]="connectMagic.bind(this)"
-                    [disabled]="!emailForm.valid">
-              <ng-template #content>
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24"
-                     stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
-                </svg>
-              </ng-template>
-            </button>
-          </div>
-        </form>
-      </ng-container>
-
-      <ng-container *ngIf="(injectedWeb3$ | async) as injectedWeb3">
-        <!-- Injected Web3 login option -->
-        <button app-action-button
-                class="border border-indigo-900 w-full py-2 mt-4 rounded-md hover:bg-[#F3F7F9]"
-                [onClick]="connectMetamask.bind(this)">
-          <ng-template #content>
-            <ng-container *ngIf="injectedWeb3.isMetaMask">
-              <ng-container *ngTemplateOutlet="metamaskIcon"></ng-container>
-            </ng-container>
-
-            <ng-container *ngIf="injectedWeb3.isTrust">
-              <ng-container *ngTemplateOutlet="trustWalletIcon"></ng-container>
-            </ng-container>
-          </ng-template>
-
-          <ng-template #loadingContent>
-            <app-spinner class="flex justify-center items-center h-6 my-1">
-            </app-spinner>
-          </ng-template>
-        </button>
-      </ng-container>
-    </div>
+<div class="flex flex-col my-8 mx-4">
+  <div class="w-full text-center text-3xl text-gray-700 font-medium mt-4">
+    Login
   </div>
+
+  <ng-container *ngIf="magicLinkAvailable$ | async">
+    <form [formGroup]="emailForm" class="mt-8">
+      <label class="text-xs text-gray-400 uppercase" for="email">
+        Email address
+      </label>
+
+      <input type="email" id="email" class="block w-full rounded-md border-gray-200 shadow-sm
+    focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+             placeholder="john.smith@email.com" inputmode="email"
+             formControlName="email">
+
+      <button app-action-button
+              class="w-full bg-cyan-500 text-white px-4 py-2 mt-4 rounded-full disabled:bg-gray-400"
+              text="Log in / Sign up"
+              loadingText="Logging in"
+              [onClick]="connectMagic.bind(this)"
+              [disabled]="!emailForm.valid">
+      </button>
+    </form>
+  </ng-container>
+
+  <ng-container *ngIf="(injectedWeb3$ | async) as injectedWeb3">
+
+    <div class="text-sm text-gray-400 text-center mt-9">
+      Connect wallet
+    </div>
+
+    <!-- Injected Web3 login option -->
+    <button app-action-button
+            class="border border-gray-200 w-full py-2 mt-2 rounded-full hover:bg-cyan-50"
+            [onClick]="connectMetamask.bind(this)">
+      <ng-template #content>
+        <ng-container *ngIf="injectedWeb3.isMetaMask">
+          <ng-container *ngTemplateOutlet="metamaskIcon"></ng-container>
+        </ng-container>
+
+        <ng-container *ngIf="injectedWeb3.isTrust">
+          <ng-container *ngTemplateOutlet="trustWalletIcon"></ng-container>
+        </ng-container>
+      </ng-template>
+
+      <ng-template #loadingContent>
+        <app-spinner class="flex justify-center items-center h-6 my-1">
+        </app-spinner>
+      </ng-template>
+    </button>
+  </ng-container>
 </div>
 
 <ng-template #metamaskIcon>
   <svg width="1311" height="242" viewBox="0 0 1311 242" fill="none" xmlns="http://www.w3.org/2000/svg"
-       class="h-8 w-full px-2 py-1">
+       class="h-8 w-full px-2 py-0.5">
     <path
       d="M1157.6 121.7C1150.8 117.2 1143.3 114 1136.2 110C1131.6 107.4 1126.7 105.1 1122.7 101.8C1115.9 96.2 1117.3 85.2 1124.4 80.4C1134.6 73.6 1151.5 77.4 1153.3 91.3C1153.3 91.6 1153.6 91.8 1153.9 91.8H1169.3C1169.7 91.8 1170 91.5 1169.9 91.1C1169.1 81.5 1165.4 73.5 1158.6 68.4C1152.1 63.5 1144.7 60.9 1136.8 60.9C1096.1 60.9 1092.4 104 1114.3 117.6C1116.8 119.2 1138.3 130 1145.9 134.7C1153.5 139.4 1155.9 148 1152.6 154.8C1149.6 161 1141.8 165.3 1134 164.8C1125.5 164.3 1118.9 159.7 1116.6 152.5C1116.2 151.2 1116 148.7 1116 147.6C1116 147.3 1115.7 147 1115.4 147H1098.7C1098.4 147 1098.1 147.3 1098.1 147.6C1098.1 159.7 1101.1 166.4 1109.3 172.5C1117 178.3 1125.4 180.7 1134.1 180.7C1156.9 180.7 1168.7 167.8 1171.1 154.4C1173.2 141.3 1169.3 129.5 1157.6 121.7Z"
       fill="#161616"/>
