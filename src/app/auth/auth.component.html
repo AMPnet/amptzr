@@ -15,7 +15,7 @@
              formControlName="email">
 
       <button app-action-button
-              class="w-full bg-cyan-500 text-white px-4 py-2 mt-4 rounded-full disabled:bg-gray-400"
+              class="w-full app-button mt-4"
               text="Log in / Sign up"
               loadingText="Logging in"
               [onClick]="connectMagic.bind(this)"
@@ -32,7 +32,7 @@
 
     <!-- Injected Web3 login option -->
     <button app-action-button
-            class="border border-gray-200 w-full py-2 mt-2 rounded-full hover:bg-cyan-50"
+            class="border border-gray-200 w-full py-2 mt-2 rounded-full hover:shadow"
             [onClick]="connectMetamask.bind(this)">
       <ng-template #content>
         <ng-container *ngIf="injectedWeb3.isMetaMask">

@@ -31,14 +31,15 @@ export class DialogService {
   constructor(public dialog: MatDialog) {
   }
 
-  info(message: string, cancelable = true): Observable<boolean> {
+  info(data: DialogData): Observable<boolean> {
     return this.dialog.open(InfoDialogComponent, {
       ...this.configDefaults,
       data: {
-        message,
-        cancelable,
+        title: data.title ?? 'Info',
+        message: data.message,
+        cancelable: data.cancelable ?? true,
       } as InfoDialogData<unknown>,
-      disableClose: !cancelable,
+      disableClose: !(data.cancelable ?? true),
     }).afterClosed().pipe(
       map(res => !!(res as InfoDialogResponse<unknown>)?.confirmed),
     )
@@ -53,27 +54,29 @@ export class DialogService {
     )
   }
 
-  success(message: string): Observable<void> {
+  success(data: DialogData): Observable<void> {
     return this.dialog.open(InfoDialogComponent, {
       ...this.configDefaults,
       data: {
         icon: DialogIcon.SUCCESS,
-        title: 'Success',
-        message,
-        cancelable: false,
+        title: data.title ?? 'Success',
+        message: data.message,
+        cancelable: data.cancelable ?? false,
       } as InfoDialogData<unknown>,
+      disableClose: !(data.cancelable ?? false),
     }).afterClosed()
   }
 
-  error(message: string): Observable<void> {
+  error(data: DialogData): Observable<void> {
     return this.dialog.open(InfoDialogComponent, {
       ...this.configDefaults,
       data: {
         icon: DialogIcon.ERROR,
-        title: 'Error',
-        message,
-        cancelable: false,
+        title: data.title ?? 'Error',
+        message: data.message,
+        cancelable: data.cancelable ?? false,
       } as InfoDialogData<unknown>,
+      disableClose: !(data.cancelable ?? false),
     }).afterClosed()
   }
 
@@ -131,10 +134,12 @@ export class DialogService {
     )
   }
 
-  withPermission<T>(action$: Observable<T>) {
+  withPermission<T>(action$: Observable<T>, data: DialogPermissionData) {
     return this.infoWithOnConfirm({
-      message: 'Permission required to open external window.',
-      confirm_text: 'Open',
+      icon: DialogIcon.INFO,
+      title: data.message ?? 'Are you sure?',
+      confirm_text: data.confirmText ?? 'OK',
+      cancel_text: data.cancelText ?? 'Cancel',
       cancelable: false,
       onConfirm: action$,
     }).pipe(
@@ -142,4 +147,17 @@ export class DialogService {
         throwError(() => 'PERMISSION_POPUP_DISMISSED')),
     )
   }
+}
+
+interface DialogData {
+  title?: string
+  message?: string
+  cancelable?: boolean
+}
+
+interface DialogPermissionData {
+  title?: string
+  message?: string
+  confirmText?: string
+  cancelText?: string
 }

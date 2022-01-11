@@ -26,6 +26,10 @@ $candy-app-theme: mat-light-theme((
 
 @include angular-material-theme($candy-app-theme);
 
+html, body {
+  height: 100%;
+}
+
 body {
   font-family: 'Manrope', sans-serif;
 }
@@ -50,11 +54,11 @@ button, textarea, input, select, a {
   font-family: 'Manrope', sans-serif;
 
   h1 {
-    @apply pb-4 text-indigo-800 text-xl font-bold;
+    @apply pb-4 text-cyan-700 text-xl font-bold;
   }
 
   h2 {
-    @apply pb-4 text-indigo-800 text-lg font-bold;
+    @apply pb-4 text-cyan-700 text-lg font-bold;
   }
 
   pre.ql-syntax {
@@ -73,6 +77,12 @@ button, textarea, input, select, a {
   @apply p-0;
 }
 
+/* Required for material dialogs */
 .mat-rounded-4xl .mat-dialog-container {
   @apply rounded-4xl
+}
+
+.app-button {
+  @apply bg-cyan-500 text-white font-semibold px-4 py-3 rounded-full
+  hover:drop-shadow disabled:bg-gray-400
 }

@@ -100,17 +100,17 @@ export class IssuerService {
     )
   }
 
-  uploadInfo(name: string, logo: File, rampApiKey: string, magicLinkApiKey: string, issuer?: IPFSIssuer): Observable<IPFSAddResult> {
+  uploadInfo(data: IssuerUploadInfoData): Observable<IPFSAddResult> {
     return combineLatest([
-      logo ? this.ipfsService.addFile(logo) : of(undefined),
+      data.logo ? this.ipfsService.addFile(data.logo) : of(undefined),
     ]).pipe(
       switchMap(([logo]) => this.ipfsService.addObject<IPFSIssuer>({
         version: 0.1,
-        name: name || issuer?.name || '',
-        logo: logo?.path || issuer?.logo || '',
-        rampApiKey: rampApiKey || issuer?.rampApiKey || '',
-        magicLinkApiKey: magicLinkApiKey || issuer?.magicLinkApiKey || '',
-        offersDisplaySettings: issuer?.offersDisplaySettings || '',
+        name: data.name || data.issuer?.name || '',
+        logo: logo?.path || data.issuer?.logo || '',
+        rampApiKey: data.rampApiKey || data.issuer?.rampApiKey || '',
+        magicLinkApiKey: data.magicLinkApiKey || data.issuer?.magicLinkApiKey || '',
+        offersDisplaySettings: data.issuer?.offersDisplaySettings || '',
       })),
     )
   }
@@ -218,6 +218,15 @@ export type IssuerInfo = { infoData: IPFSIssuer }
 export type IssuerWithInfo = IssuerCommonState & IssuerInfo
 
 interface CreateIssuerData {
-  mappedName: string,
-  info: string,
+  mappedName: string
+  stablecoinAddress: string
+  info: string
+}
+
+interface IssuerUploadInfoData {
+  name: string
+  logo: File
+  rampApiKey: string
+  magicLinkApiKey: string
+  issuer?: IPFSIssuer
 }

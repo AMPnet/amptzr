@@ -147,7 +147,9 @@ export class AdminCampaignDetailComponent {
       return this.campaignService.finalize(
         campaign.contractAddress, campaign.flavor as CampaignFlavor,
       ).pipe(
-        switchMap(() => this.dialogService.success('The project has been finalized successfully.')),
+        switchMap(() => this.dialogService.success({
+          title: 'The project has been finalized',
+        })),
         tap(() => campaign.finalized = true), // TODO: this could result in bad behavior in some cases
       )
     }

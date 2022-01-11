@@ -107,7 +107,9 @@ export class OfferComponent {
       return this.campaignService.finalize(
         campaign.contractAddress, campaign.flavor as CampaignFlavor,
       ).pipe(
-        switchMap(() => this.dialogService.success('The project has been finalized successfully.')),
+        switchMap(() => this.dialogService.success({
+          title: 'The project has been finalized',
+        })),
         tap(() => this.campaignSub.next()),
       )
     }

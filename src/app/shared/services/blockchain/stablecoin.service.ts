@@ -13,6 +13,7 @@ import {IssuerService} from './issuer/issuer.service'
 import {NameService} from './name.service'
 import {IssuerFlavor} from './flavors'
 import {parseUnits} from 'ethers/lib/utils'
+import {switchMapTap} from '../../utils/observables'
 
 @Injectable({
   providedIn: 'root',
@@ -28,13 +29,12 @@ export class StablecoinService {
     ).pipe(
       map(issuer => ERC20__factory.connect(issuer.stablecoin, provider)),
     )),
-    switchMap(contract => of(contract).pipe(
+    switchMapTap(contract => of(contract).pipe(
       switchMap(contract => combineLatest([contract.decimals(), contract.symbol()])),
       tap(([decimals, symbol]) => {
         this.precisionSub.next(decimals)
         this.symbolSub.next(symbol)
       }),
-      map(() => contract),
     )),
   )
 

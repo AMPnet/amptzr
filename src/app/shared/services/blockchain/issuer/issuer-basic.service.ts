@@ -58,7 +58,7 @@ export class IssuerBasicService {
         const createData: CreateBasicContractIssuerData = {
           owner: this.sessionQuery.getValue().address!,
           mappedName: data.mappedName,
-          stablecoin: this.preferenceQuery.network.tokenizerConfig.defaultStableCoin,
+          stablecoin: data.stablecoinAddress,
           walletApprover: this.preferenceQuery.network.tokenizerConfig.defaultWalletApprover,
           info: data.info,
           nameRegistry: this.preferenceQuery.network.tokenizerConfig.nameRegistry,
@@ -129,8 +129,9 @@ export interface IssuerBasicState {
 }
 
 interface CreateBasicIssuerData {
-  mappedName: string,
-  info: string,
+  mappedName: string
+  stablecoinAddress: string
+  info: string
 }
 
 interface CreateBasicContractIssuerData {

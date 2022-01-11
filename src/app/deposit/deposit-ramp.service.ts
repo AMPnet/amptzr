@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core'
-import {combineLatest, defer, Observable, of} from 'rxjs'
+import {combineLatest, defer, Observable, of, scan} from 'rxjs'
 import {RampInstantEvents, RampInstantEventTypes, RampInstantSDK} from '@ramp-network/ramp-instant-sdk'
 import {SessionQuery} from '../session/state/session.query'
 import {ToUrlIPFSPipe} from '../shared/pipes/to-url-ipfs.pipe'
@@ -26,7 +26,7 @@ export class DepositRampService {
               private preferenceQuery: PreferenceQuery) {
   }
 
-  showWidget(depositAmount: StablecoinBigNumber): Observable<RampInstantEvents> {
+  showWidget(depositAmount: StablecoinBigNumber): Observable<EventWithState> {
     return combineLatest([
       this.issuer$, this.address$,
     ]).pipe(take(1),
@@ -60,6 +60,25 @@ export class DepositRampService {
           rampWindow.show()
         })
       }),
+      scan((acc, event) => {
+        return ({
+          purchaseCreated: acc.purchaseCreated ? true :
+            event.type === RampInstantEventTypes.PURCHASE_CREATED,
+          successFinish: acc.successFinish ? true :
+            event.type === RampInstantEventTypes.WIDGET_CLOSE && !!event.payload,
+          event: event,
+        }) as EventWithState
+      }, {
+        purchaseCreated: false,
+        successFinish: false,
+        event: undefined as unknown,
+      } as EventWithState),
     )
   }
+}
+
+interface EventWithState {
+  purchaseCreated: boolean
+  successFinish: boolean
+  event: RampInstantEvents
 }

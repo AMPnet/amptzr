@@ -34,7 +34,7 @@ export class MetamaskSubsignerService implements Subsigner {
     return from(signer.getChainId()).pipe(
       concatMap(chainID => chainID === this.preferenceStore.getValue().chainID ?
         of(chainID) : opts.force ? this.switchEthereumChain(signer, opts) :
-          throwError('WRONG_NETWORK'),
+          throwError(() => 'WRONG_NETWORK'),
       ),
       map(() => signer),
     )

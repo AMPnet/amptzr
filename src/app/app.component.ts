@@ -27,8 +27,12 @@ export class AppComponent {
     tap(() => this.updates.checkForUpdate()),
   )
 
-  appUpdate$ = this.updates.available.pipe(
-    switchMap(() => this.dialog.info('New version available. The app will be reloaded.', false)),
+  appUpdate$ = this.updates.versionUpdates.pipe(
+    switchMap(() => this.dialog.info({
+      title: 'New version available',
+      message: 'The application must be reloaded.',
+      cancelable: false,
+    })),
     switchMap(() => from(this.updates.activateUpdate())),
     tap(() => document.location.reload()),
   )

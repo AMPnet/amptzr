@@ -59,7 +59,9 @@ export class IdentityService {
         'Approving wallet',
         'This is usually a short process, but it might take up to a few minutes. Please wait.',
       )),
-      switchMap(() => this.dialogService.success('Identity verified successfully!')),
+      switchMap(() => this.dialogService.success({
+        title: 'Identity verified successfully!',
+      })),
     )
   }
 

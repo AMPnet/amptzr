@@ -86,9 +86,15 @@ export class PortfolioComponent {
 
   cancel(contractAddress: string, flavor: CampaignFlavor | string) {
     return () => {
-      return this.campaignService.cancelInvestment(contractAddress, flavor as CampaignFlavor).pipe(
-        switchMap(() => this.dialogService.success('Investment has been cancelled successfully.')),
-        tap(() => this.portfolioSub.next()),
+      return this.dialogService.withPermission(
+        this.campaignService.cancelInvestment(contractAddress, flavor as CampaignFlavor).pipe(
+          switchMap(() => this.dialogService.success({
+            title: 'Investment has been cancelled',
+          })),
+          tap(() => this.portfolioSub.next()),
+        ), {
+          message: 'If you cancel the investment, somebody could take your place in the campaign.',
+        },
       )
     }
   }

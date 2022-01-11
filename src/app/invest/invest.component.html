@@ -1,4 +1,4 @@
-<div class="w-full h-full flex justify-center mt-8 px-2">
+<div class="w-full h-full flex justify-center my-8 px-2">
   <div class="w-full max-w-5xl">
     <ng-container *ngIf="(stateWithStatus$ | async) as stateRes">
       <ng-container *ngIf="stateRes.value as state">
@@ -160,44 +160,34 @@
 
               <div class="mt-4" *ngIf="!investmentForm.errors?.campaignMaxReached">
                 <button app-action-button
-                        class="w-full bg-gradient-to-r from-[#2493D2] to-[#22B3D3]
-                        text-white px-8 py-2 rounded-full
-                        font-semibold disabled:from-gray-400 disabled:to-gray-400"
+                        class="w-full app-button"
                         *ngIf="(isUserLoggedIn$ | async) === false"
                         [onClick]="login.bind(this)"
                         text="Log in"></button>
 
                 <button app-action-button
-                        class="w-full bg-gradient-to-r from-[#2493D2] to-[#22B3D3]
-                        text-white px-8 py-2 rounded-full
-                        font-semibold disabled:from-gray-400 disabled:to-gray-400"
+                        class="w-full app-button"
                         *ngIf="shouldOnlyPassKyc$ | async"
                         [disabled]="investmentForm.invalid"
                         [onClick]="passKyc(state.campaign).bind(this)"
                         text="Next 📝"></button>
 
                 <button app-action-button
-                        class="w-full bg-gradient-to-r from-[#2493D2] to-[#22B3D3]
-                        text-white px-8 py-2 rounded-full
-                        font-semibold disabled:from-gray-400 disabled:to-gray-400"
+                        class="w-full app-button"
                         *ngIf="shouldOnlyGetFunds$ | async"
                         [disabled]="!investmentForm.errors?.stablecoinAmountAboveBalance"
                         [onClick]="getFunds(state.campaign).bind(this)"
                         text="Next 💰"></button>
 
                 <button app-action-button
-                        class="w-full bg-gradient-to-r from-[#2493D2] to-[#22B3D3]
-                        text-white px-8 py-2 rounded-full
-                        font-semibold disabled:from-gray-400 disabled:to-gray-400"
+                        class="w-full app-button"
                         *ngIf="shouldPassKycAndGetFunds$ | async"
                         [disabled]="!investmentForm.errors?.stablecoinAmountAboveBalance"
                         [onClick]="passKycAndGetFunds(state.campaign).bind(this)"
-                        text="Next 📝,💰"></button>
+                        text="Next 📝💰"></button>
 
                 <button app-action-button
-                        class="w-full bg-gradient-to-r from-[#2493D2] to-[#22B3D3]
-                        text-white px-8 py-2 rounded-full
-                        font-semibold disabled:from-gray-400 disabled:to-gray-400"
+                        class="w-full app-button"
                         *ngIf="shouldApprove$ | async"
                         [onClick]="approveAmount(state.campaign).bind(this)"
                         [disabled]="investmentForm.invalid"
@@ -205,9 +195,7 @@
                 </button>
 
                 <button app-action-button
-                        class="w-full bg-gradient-to-r from-[#2493D2] to-[#22B3D3]
-                        text-white px-8 py-2 rounded-full
-                        font-semibold disabled:from-gray-400 disabled:to-gray-400"
+                        class="w-full app-button"
                         *ngIf="shouldBuy$ | async"
                         [disabled]="investmentForm.invalid"
                         [onClick]="invest(state.campaign).bind(this)"

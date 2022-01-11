@@ -115,7 +115,10 @@ export class AdminCampaignAddTokensComponent {
         this.conversion.toStablecoin(this.fundingForm.value.amount),
         data.stats.tokenPrice,
       ).pipe(
-        switchMap(() => this.dialogService.info('Tokens added to campaign.', false)),
+        switchMap(() => this.dialogService.info({
+          title: 'Tokens added to the campaign',
+          cancelable: false,
+        })),
         switchMap(() => this.routerService.navigate(['..'], {relativeTo: this.route})),
       )
     }

@@ -1,7 +1,6 @@
 import {Injectable} from '@angular/core'
-import {EMPTY, Observable} from 'rxjs'
+import {Observable} from 'rxjs'
 import {environment} from '../../../../environments/environment'
-import {catchError} from "rxjs/operators"
 import {BackendHttpClient} from "./backend-http-client.service"
 import {PreferenceQuery} from '../../../preference/state/preference.query'
 
@@ -18,8 +17,6 @@ export class FaucetService {
   get topUp(): Observable<void> {
     return this.http.post<void>(`${this.path}/${this.preferenceQuery.network.chainID}`, {
       re_captcha_token: 'token', // TODO: implement recaptcha
-    }, false, false).pipe(
-      catchError(() => EMPTY),
-    )
+    })
   }
 }

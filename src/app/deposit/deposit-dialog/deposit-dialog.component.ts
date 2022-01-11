@@ -1,16 +1,18 @@
 import {ChangeDetectionStrategy, Component, Inject, OnInit, Optional} from '@angular/core'
-import {BehaviorSubject, last, of, scan} from 'rxjs'
+import {BehaviorSubject, last, of} from 'rxjs'
 import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog'
 import {StablecoinBigNumber, StablecoinService} from '../../shared/services/blockchain/stablecoin.service'
 import {constants} from 'ethers'
 import {DepositRampService} from '../deposit-ramp.service'
-import {map, switchMap, tap} from 'rxjs/operators'
-import {RampInstantEvents, RampInstantEventTypes} from '@ramp-network/ramp-instant-sdk'
+import {switchMap, tap} from 'rxjs/operators'
 import {SwapUniswapService} from '../swap-uniswap.service'
 import {UserService} from '../../shared/services/user.service'
 import {FaucetService} from '../../shared/services/backend/faucet.service'
 import {AutoInvestService} from '../../shared/services/backend/auto-invest.service'
 import {RouterService} from '../../shared/services/router.service'
+import {switchMapTap} from '../../shared/utils/observables'
+import {DialogService} from '../../shared/services/dialog.service'
+import {BackendHttpClient} from '../../shared/services/backend/backend-http-client.service'
 
 
 @Component({
@@ -30,8 +32,10 @@ export class DepositDialogComponent implements OnInit {
 
   constructor(@Inject(MAT_DIALOG_DATA) @Optional() public data: DepositDialogData,
               @Optional() private dialogRef: MatDialogRef<DepositDialogComponent>,
+              private dialogService: DialogService,
               private router: RouterService,
               public stablecoin: StablecoinService,
+              private http: BackendHttpClient,
               private userService: UserService,
               private faucetService: FaucetService,
               private autoInvestService: AutoInvestService,
@@ -52,42 +56,28 @@ export class DepositDialogComponent implements OnInit {
 
   showRamp(amount: StablecoinBigNumber, campaignAddress?: string) {
     return () => {
-      return this.depositRampService.showWidget(amount).pipe(
-        scan((acc, event) => {
-          return ({
-            purchaseCreated: acc.purchaseCreated ? true :
-              event.type === RampInstantEventTypes.PURCHASE_CREATED,
-            successFinish: acc.successFinish ? true :
-              event.type === RampInstantEventTypes.WIDGET_CLOSE && !!event.payload,
-            event: event,
-          }) as RampWidgetEventState
-        }, {
-          purchaseCreated: false,
-          successFinish: false,
-          event: undefined as unknown,
-        } as RampWidgetEventState),
-        tap(eventState => {
-          console.info('event', eventState.event.type)
-          if (eventState.event.type === RampInstantEventTypes.PURCHASE_CREATED) {
-            this.faucetService.topUp.subscribe()
-          }
+      return this.http.ensureAuth.pipe(
+        switchMap(() => this.depositRampService.showWidget(amount)),
+        tap(state => {
+          if (state.purchaseCreated) this.faucetService.topUp.subscribe()
         }),
         last(),
-        switchMap(eventState => {
-          return eventState.purchaseCreated && campaignAddress ?
+        switchMapTap(state => {
+          return state.purchaseCreated && campaignAddress ?
             this.autoInvestService.submit(amount, campaignAddress).pipe(
+              switchMap(() => this.dialogService.success({
+                title: 'Your investment has been noted',
+                message: 'We will execute the investment as soon as you receive the funds on your Wallet. ' +
+                  'In the meantime, check RAMP emails and view the investment status on Portfolio page.',
+              })),
               switchMap(() => this.stablecoin.approveAmount(campaignAddress, amount)),
-              map(() => eventState),
-            ) :
-            of(eventState)
+            ) : of(undefined)
         }),
-        switchMap(eventState => {
-          return eventState.successFinish ?
-            of(eventState).pipe(
-              tap(() => this.dialogRef.close()),
+        switchMapTap(state => {
+          return state.successFinish ?
+            of(this.dialogRef.close()).pipe(
               switchMap(() => this.router.navigate(['/portfolio'])),
-            ) :
-            of(eventState)
+            ) : of(undefined)
         }),
       )
     }
@@ -101,10 +91,4 @@ export class DepositDialogComponent implements OnInit {
 export interface DepositDialogData {
   amount: StablecoinBigNumber
   campaignAddress?: string
-}
-
-interface RampWidgetEventState {
-  purchaseCreated: boolean
-  successFinish: boolean
-  event: RampInstantEvents
 }

@@ -210,7 +210,10 @@ export class AdminCampaignEditComponent {
         campaign.infoData,
       ).pipe(
         switchMap(uploadRes => this.campaignService.updateInfo(campaign.contractAddress, uploadRes.path)),
-        switchMap(() => this.dialogService.info('Campaign successfully updated!', false)),
+        switchMap(() => this.dialogService.info({
+          title: 'Campaign has been updated',
+          cancelable: false,
+        })),
         switchMap(() => this.routerService.navigate(['..'], {relativeTo: this.route})),
       )
     }
@@ -219,7 +222,10 @@ export class AdminCampaignEditComponent {
   updateInfo(campaign: CampaignWithInfo) {
     return () => {
       return this.campaignService.updateInfo(campaign.contractAddress, this.updateInfoForm.value.info).pipe(
-        switchMap(() => this.dialogService.info('Campaign info successfully updated!', false)),
+        switchMap(() => this.dialogService.info({
+          title: 'Campaign info has been updated',
+          cancelable: false,
+        })),
         switchMap(() => this.routerService.navigate(['..'], {relativeTo: this.route})),
       )
     }
@@ -230,7 +236,10 @@ export class AdminCampaignEditComponent {
       return this.campaignService.changeOwner(
         campaign.contractAddress, this.updateOwnerAddressForm.value.ownerAddress, flavor as CampaignFlavor,
       ).pipe(
-        switchMap(() => this.dialogService.info('Owner changed successfully!', false)),
+        switchMap(() => this.dialogService.info({
+          title: 'The owner has been changed',
+          cancelable: false,
+        })),
         tap(() => this.routerService.navigate([`/admin/assets/${campaign.asset}`])),
       )
     }

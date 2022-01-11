@@ -54,7 +54,10 @@ export class AdminAssetNewComponent {
         whitelistRequiredForLiquidationClaim: this.createForm.value.whitelistRequiredForLiquidationClaim,
         info: uploadRes.path,
       }, this.createForm.value.flavor)),
-      switchMap(assetAddress => this.dialogService.info('Asset successfully created!', false).pipe(
+      switchMap(assetAddress => this.dialogService.info({
+        title: 'Asset has been created',
+        cancelable: false,
+      }).pipe(
         tap(() => this.routerService.navigate([`/admin/assets/${assetAddress}`])),
       )),
     )

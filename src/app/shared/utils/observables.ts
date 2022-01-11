@@ -1,4 +1,4 @@
-import {concat, Observable, of, timer} from 'rxjs'
+import {concat, MonoTypeOperatorFunction, Observable, of, timer} from 'rxjs'
 import {catchError, map, switchMap} from 'rxjs/operators'
 
 export function withInterval<T>(observable$: Observable<T>, offset: number): Observable<T> {
@@ -24,6 +24,12 @@ export function withStatus<T>(observable$: Observable<T>, opts?: Options): Obser
   return concat(
     ...stream,
   )
+}
+
+export function switchMapTap<T>(next: (value: T) => Observable<unknown>): MonoTypeOperatorFunction<T> {
+  return switchMap(source => next(source).pipe(
+    map(() => source),
+  ))
 }
 
 export interface WithStatus<T> {

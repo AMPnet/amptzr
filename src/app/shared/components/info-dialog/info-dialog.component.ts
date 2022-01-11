@@ -74,5 +74,5 @@ export enum DialogIcon {
 
 export interface InfoDialogResponse<T> {
   confirmed: boolean;
-  onConfirmResult: T
+  onConfirmResult?: T
 }
