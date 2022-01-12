@@ -9,7 +9,6 @@ import {PreferenceQuery} from '../preference/state/preference.query'
 import {CampaignService, CampaignWithInfo} from '../shared/services/blockchain/campaign/campaign.service'
 import {IssuerService} from '../shared/services/blockchain/issuer/issuer.service'
 import {DialogService} from '../shared/services/dialog.service'
-import {withInterval} from '../shared/utils/observables'
 
 @Injectable({
   providedIn: 'root',
@@ -71,14 +70,8 @@ export class IdentityService {
     )
   }
 
-  private get issuerCheck(): Observable<boolean> {
-    return this.signerService.ensureAuth.pipe(
-      switchMap(() => this.issuerService.isWalletApproved(this.sessionQuery.getValue().address!)),
-    )
-  }
-
   private get waitUntilIssuerCheckPassed(): Observable<void> {
-    return withInterval(this.issuerCheck, 1000).pipe(
+    return this.issuerService.isWalletApproved$(this.sessionQuery.getValue().address!).pipe(
       filter(hasPassed => hasPassed),
       take(1),
       map(() => undefined),

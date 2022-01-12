@@ -238,7 +238,7 @@ export class InvestComponent {
         campaign.flavor as CampaignFlavor,
         this.conversion.toStablecoin(this.investmentForm.value.stablecoinAmount),
       ).pipe(
-        switchMap(() => this.router.navigate(['/portfolio'])),
+        tap(() => this.router.navigate(['/portfolio'])),
       )
     }
   }

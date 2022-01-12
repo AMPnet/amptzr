@@ -158,7 +158,7 @@ export class IssuerService {
     return this.isWalletApproved(address).pipe(
       switchMap(isApproved => isApproved ? of(true) :
         this.signerService.provider$.pipe(
-          map(provider => this.issuerBasicService.contract(address, provider)),
+          map(provider => this.issuerBasicService.contract(this.preferenceQuery.issuer.address, provider)),
           switchMap(contract => merge(
             of(false),
             contractEvent(contract, contract.filters.WalletWhitelist(null, address)).pipe(map(() => true)),

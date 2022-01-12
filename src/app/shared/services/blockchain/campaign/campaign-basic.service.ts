@@ -107,7 +107,7 @@ export class CampaignBasicService {
       switchMap(tx => this.dialogService.waitingTransaction(
         from(this.sessionQuery.provider.waitForTransaction(tx.hash)),
       )),
-      this.errorService.handleError(),
+      this.errorService.handleError(false, true),
     )
   }
 
