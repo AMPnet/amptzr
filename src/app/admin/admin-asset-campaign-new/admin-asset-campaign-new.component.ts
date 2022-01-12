@@ -1,14 +1,13 @@
-import {ChangeDetectionStrategy, Component} from '@angular/core'
+import {ChangeDetectionStrategy, Component, ɵmarkDirty} from '@angular/core'
 import {FormArray, FormBuilder, FormControl, FormGroup, ValidationErrors, Validators} from '@angular/forms'
 import {PreferenceQuery} from '../../preference/state/preference.query'
 import {getWindow} from '../../shared/utils/browser'
 import {IssuerPathPipe} from '../../shared/pipes/issuer-path.pipe'
 import {DatePipe, PercentPipe, ViewportScroller} from '@angular/common'
-import {BigNumber} from 'ethers'
-import {StablecoinService} from '../../shared/services/blockchain/stablecoin.service'
+import {BigNumber, constants} from 'ethers'
+import {StablecoinBigNumber, StablecoinService} from '../../shared/services/blockchain/stablecoin.service'
 import {quillMods} from '../../shared/utils/quill'
-import {map, switchMap} from 'rxjs/operators'
-import {TokenPrice} from '../../shared/utils/token-price'
+import {map, shareReplay, switchMap, take, tap} from 'rxjs/operators'
 import {RouterService} from '../../shared/services/router.service'
 import {DialogService} from '../../shared/services/dialog.service'
 import {ActivatedRoute} from '@angular/router'
@@ -24,6 +23,8 @@ import {NameService} from '../../shared/services/blockchain/name.service'
 import {CampaignFlavor} from '../../shared/services/blockchain/flavors'
 import {dateToIsoString} from '../../shared/utils/date'
 import {ReturnFrequency} from '../../../../types/ipfs/campaign'
+import {ConversionService} from '../../shared/services/conversion.service'
+import {FormatUnitPipe} from '../../shared/pipes/format-unit.pipe'
 
 @Component({
   selector: 'app-admin-asset-campaign-new',
@@ -32,13 +33,8 @@ import {ReturnFrequency} from '../../../../types/ipfs/campaign'
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AdminAssetCampaignNewComponent {
-  assetData$: Observable<WithStatus<AssetData>>
-  resolvedAssetData?: AssetData
-
-  setResolvedAssetData(assetData?: AssetData) {
-    this.resolvedAssetData = assetData
-    return this.resolvedAssetData
-  }
+  state$: Observable<State>
+  stateWithStatus$: Observable<WithStatus<State>>
 
   campaignFlavor = CampaignFlavor
   campaignFactory = this.preferenceQuery.network.tokenizerConfig.cfManagerFactory
@@ -56,8 +52,8 @@ export class AdminAssetCampaignNewComponent {
   readonly returnFrequencyNames: { [key in ReturnFrequency]: string } = {
     [ReturnFrequency.MONTHLY]: 'Monthly',
     [ReturnFrequency.QUARTERLY]: 'Quarterly',
-    [ReturnFrequency.SEMI_ANNUALLY]: 'Semi-annualy',
-    [ReturnFrequency.ANNUALLY]: 'Annualy',
+    [ReturnFrequency.SEMI_ANNUALLY]: 'Semi-annually',
+    [ReturnFrequency.ANNUALLY]: 'Annually',
   }
 
   constructor(private campaignService: CampaignService,
@@ -67,7 +63,9 @@ export class AdminAssetCampaignNewComponent {
               private issuerPathPipe: IssuerPathPipe,
               private datePipe: DatePipe,
               private percentPipe: PercentPipe,
+              private formatUnitPipe: FormatUnitPipe,
               private stablecoinService: StablecoinService,
+              private conversion: ConversionService,
               private route: ActivatedRoute,
               private assetService: AssetService,
               private routerService: RouterService,
@@ -77,25 +75,24 @@ export class AdminAssetCampaignNewComponent {
     const asset$ = this.nameService.getAsset(assetId).pipe(
       switchMap(asset => this.assetService.getAssetWithInfo(asset.asset.contractAddress, true)),
     )
-    const tokenBalance$ = asset$.pipe(
+    const userTokenBalance$ = asset$.pipe(
       switchMap(asset => this.assetService.balance(asset.contractAddress)),
     )
 
-    this.assetData$ = withStatus(
-      combineLatest([
-        asset$,
-        tokenBalance$,
-      ]).pipe(
-        map(([asset, balance]) => ({asset, balance})),
-      ),
+    this.state$ = combineLatest([
+      asset$,
+      userTokenBalance$,
+    ]).pipe(
+      map(([asset, userTokenBalance]) => ({asset, userTokenBalance})),
+      shareReplay(1),
     )
+    this.stateWithStatus$ = withStatus(this.state$)
 
     this.createForm1 = this.fb.group({
       name: ['', Validators.required],
       slug: ['', [Validators.required, Validators.pattern('[A-Za-z0-9][A-Za-z0-9_-]*')]],
       hardCap: [0, Validators.required],
       softCap: [0, Validators.required],
-      hardCapTokensPercentage: [0, Validators.required],
       tokenPrice: [0, Validators.required],
       hasMinAndMaxInvestment: [false, Validators.required],
       minInvestment: [{value: undefined, disabled: true}, Validators.required],
@@ -108,10 +105,8 @@ export class AdminAssetCampaignNewComponent {
       isIdVerificationRequired: [false, Validators.required],
       flavor: [CampaignFlavor.BASIC, Validators.required],
     }, {
-      validators: [
-        this.validMonetaryValues.bind(this),
-        AdminAssetCampaignNewComponent.validReturnFromTo,
-      ],
+      validators: [AdminAssetCampaignNewComponent.validReturnFromTo],
+      asyncValidators: [this.validMonetaryValues.bind(this)],
     })
 
     this.createForm2 = this.fb.group({
@@ -134,68 +129,14 @@ export class AdminAssetCampaignNewComponent {
     return getWindow().location.origin + this.issuerPathPipe.transform(`/offers/`)
   }
 
-  maxTokensPercentage(data?: AssetData) {
-    if (!data) {
-      return 0
-    }
+  allocationFromTotalSupply(stablecoin: number | string, state: State): number {
+    const tokenPrice = this.conversion.toTokenPrice(this.createForm1.value.tokenPrice)
+    if (tokenPrice.eq(constants.Zero)) return 0
 
-    const currentSupply = this.stablecoinService.format(data.balance, 18)
-    const initialSupply = this.stablecoinService.format(data.asset.totalSupply, 18)
-    return currentSupply / initialSupply
-  }
+    const softCap = this.conversion.toStablecoin(stablecoin)
+    const tokensToSell = this.conversion.calcTokens(softCap, tokenPrice)
 
-  pricePerToken(data: AssetData) {
-    const totalTokens = this.stablecoinService.format(data.asset.totalSupply, 18)
-    const percentage = this.createForm1.value.hardCapTokensPercentage
-    const numOfTokensToSell = (totalTokens * percentage)
-
-    if (numOfTokensToSell === 0) {
-      return 0
-    }
-
-    const pricePerToken = this.createForm1.value.hardCap / numOfTokensToSell
-    return Math.floor(pricePerToken * 10_000) / 10_000
-  }
-
-  softCapTokensPercentage(data: AssetData) {
-    const pricePerToken = this.pricePerToken(data)
-    if (pricePerToken === 0) {
-      return 0
-    }
-
-    const numOfTokensToSell = this.createForm1.value.softCap / pricePerToken
-    if (numOfTokensToSell === 0) {
-      return 0
-    }
-
-    const totalTokens = this.stablecoinService.format(data.asset.totalSupply, 18)
-    return numOfTokensToSell / totalTokens
-  }
-
-  onHardCapBlur(data: AssetData) {
-    this.createForm1.controls.tokenPrice.setValue(this.pricePerToken(data))
-  }
-
-  onHardCapTokensPercentageBlur(data: AssetData) {
-    this.createForm1.controls.tokenPrice.setValue(this.pricePerToken(data))
-  }
-
-  onTokenPriceBlur(data: AssetData) {
-    const tokenPercentage = this.tokenPercentage(
-      this.createForm1.value.tokenPrice, this.createForm1.value.hardCap, data,
-    )
-    const maxTokensPercentage = this.maxTokensPercentage(data)
-
-    if (tokenPercentage < maxTokensPercentage) {
-      this.createForm1.controls.hardCapTokensPercentage.setValue(
-        this.tokenPercentage(this.createForm1.value.tokenPrice, this.createForm1.value.hardCap, data),
-      )
-    } else {
-      this.createForm1.controls.hardCapTokensPercentage.setValue(maxTokensPercentage)
-      this.createForm1.controls.hardCap.setValue(
-        this.stablecoinService.format(data.balance, 18) * this.createForm1.value.tokenPrice,
-      )
-    }
+    return this.conversion.parseTokenToNumber(tokensToSell) / this.conversion.parseTokenToNumber(state.asset.totalSupply)
   }
 
   toggleMinAndMaxInvestmentControls(value: boolean) {
@@ -243,8 +184,8 @@ export class AdminAssetCampaignNewComponent {
     this.viewportScroller.scrollToPosition([0, 0])
   }
 
-  previewCampaignStep(data: AssetData) {
-    this.preparePreviewData(data)
+  previewCampaignStep(state: State) {
+    this.preparePreviewData(state)
     this.step$.next(Step.PREVIEW)
     this.viewportScroller.scrollToPosition([0, 0])
   }
@@ -276,7 +217,7 @@ export class AdminAssetCampaignNewComponent {
     this.newsUrls.markAsDirty()
   }
 
-  create(data: AssetData) {
+  create(state: State) {
     return () => {
       return this.campaignService.uploadInfo(this.preview.info).pipe(
         switchMap(uploadRes => this.campaignService.create({
@@ -284,13 +225,17 @@ export class AdminAssetCampaignNewComponent {
           info: uploadRes.path,
         }, this.preview.flavor)),
         switchMap(campaignAddress =>
-          this.dialogService.info(
-            'Campaign successfully created! You will be asked to sign a transaction to transfer' +
-            ' your ' + data.asset.symbol + ' tokens to your campaign.',
-            false,
-          ).pipe(
-            switchMap(() => this.addTokensToCampaign(campaignAddress!, data)),
-            switchMap(() => this.dialogService.info('Tokens added to campaign.', false)),
+          this.dialogService.info({
+            title: 'Campaign has been created',
+            message: `You will be asked to sign a transaction to
+            transfer your ${state.asset.symbol} tokens to the campaign.`,
+            cancelable: false,
+          }).pipe(
+            switchMap(() => this.addTokensToCampaign(campaignAddress!, state)),
+            switchMap(() => this.dialogService.info({
+              title: 'Tokens added to the campaign',
+              cancelable: false,
+            })),
             switchMap(() => this.routerService.navigate([`/admin/campaigns/${campaignAddress}`])),
           ),
         ),
@@ -314,17 +259,6 @@ export class AdminAssetCampaignNewComponent {
     return 'Not specified'
   }
 
-  previewHasMinInvestment() {
-    return this.preview.data.minInvestment > BigNumber.from(1)
-  }
-
-  previewHasMaxInvestment(assetData: AssetData) {
-    const maxInvestment = this.stablecoinService.format(this.preview.data.maxInvestment)
-    const maxValue = this.stablecoinService.format(assetData.asset.totalSupply, 18) * this.preview.tokenPrice
-
-    return Number(maxInvestment.toFixed(2)) < Number(maxValue.toFixed(2))
-  }
-
   previewReturn() {
     if (this.preview.info.return.frequency) {
       const frequency = this.returnFrequencyNames[this.preview.info.return.frequency]
@@ -341,53 +275,50 @@ export class AdminAssetCampaignNewComponent {
     return 'No'
   }
 
-  private tokenPercentage(pricePerToken: number, totalValue: number, data: AssetData) {
-    if (pricePerToken === 0) {
-      return 0
-    }
+  private validMonetaryValues(control: FormGroup): Observable<ValidationErrors | null> {
+    return combineLatest([this.state$]).pipe(take(1),
+      map(([state]) => {
+        const hardCap = this.conversion.toStablecoin(control.value.hardCap || 0)
+        const softCap = this.conversion.toStablecoin(control.value.softCap || 0)
+        const tokenPrice = this.conversion.toTokenPrice(control.value.tokenPrice || 0)
 
-    const numOfTokensToSell = totalValue / pricePerToken
-    if (numOfTokensToSell === 0) {
-      return 0
-    }
+        if (hardCap.lte(constants.Zero)) {
+          return {hardCapBelowZero: true}
+        } else if (tokenPrice.lte(constants.Zero)) {
+          return {tokenPriceBelowZero: true}
+        }
 
-    const totalTokens = this.stablecoinService.format(data.asset.totalSupply, 18)
-    return numOfTokensToSell / totalTokens
-  }
+        const hardCapTokens = this.conversion.calcTokens(hardCap, tokenPrice)
+        if (hardCapTokens.gt(state.userTokenBalance)) {
+          return {hardCapAboveUserBalance: true}
+        }
 
-  private validMonetaryValues(formGroup: FormGroup): ValidationErrors | null {
-    const hardCap = formGroup.value.hardCap
-    if (hardCap <= 0) {
-      return {invalidHardCap: true}
-    }
+        if (softCap.lte(constants.Zero)) {
+          return {softCapBelowZero: true}
+        } else if (softCap.gt(hardCap)) {
+          return {softCapOverHardCap: true}
+        }
 
-    const softCap = formGroup.value.softCap
-    if (softCap <= 0 || softCap > hardCap) {
-      return {invalidSoftCap: true}
-    }
 
-    const hardCapTokensPercentage = formGroup.value.hardCapTokensPercentage
-    if (hardCapTokensPercentage <= 0 || hardCapTokensPercentage > this.maxTokensPercentage(this.resolvedAssetData)) {
-      return {invalidHardCapTokensMaxPercentage: true}
-    }
+        if (control.value.hasMinAndMaxInvestment) {
+          const min = this.conversion.toStablecoin(control.value.minInvestment || 0)
+          const max = this.conversion.toStablecoin(control.value.maxInvestment || 0)
 
-    if (formGroup.value.tokenPrice <= 0) {
-      return {invalidTokenPrice: true}
-    }
+          if (min.lt(constants.Zero)) {
+            return {minBelowZero: true}
+          } else if (min.gt(max)) {
+            return {minOverMax: true}
+          } else if (max.lte(constants.Zero)) {
+            return {maxBelowZero: true}
+          } else if (max.gt(hardCap)) {
+            return {maxOverHardCap: true}
+          }
+        }
 
-    if (formGroup.value.hasMinAndMaxInvestment) {
-      const minInvestment = formGroup.value.minInvestment
-      const maxInvestment = formGroup.value.maxInvestment
-      if (minInvestment <= 0 || minInvestment > maxInvestment) {
-        return {invalidMinInvestment: true}
-      }
-
-      if (maxInvestment <= 0 || maxInvestment > formGroup.value.hardCap) {
-        return {invalidMaxInvestment: true}
-      }
-    }
-
-    return null
+        return null
+      }),
+      tap(() => ɵmarkDirty(this)),
+    )
   }
 
   private static validReturnFromTo(formGroup: FormGroup): ValidationErrors | null {
@@ -441,30 +372,30 @@ export class AdminAssetCampaignNewComponent {
     return {}
   }
 
-  private getMinInvestmentValue(hasMinAndMaxInvestment: boolean) {
+  private getMinInvestmentValue(hasMinAndMaxInvestment: boolean): StablecoinBigNumber {
     if (hasMinAndMaxInvestment) {
-      return this.stablecoinService.parse(this.createForm1.value.minInvestment)
+      return this.conversion.toStablecoin(this.createForm1.value.minInvestment)
     }
 
-    return BigNumber.from(1)
+    return BigNumber.from(constants.Zero)
   }
 
-  private getMaxInvestmentValue(hasMinAndMaxInvestment: boolean, data: AssetData) {
+  private getMaxInvestmentValue(hasMinAndMaxInvestment: boolean, state: State) {
     if (hasMinAndMaxInvestment) {
-      return this.stablecoinService.parse(this.createForm1.value.maxInvestment)
+      return this.conversion.toStablecoin(this.createForm1.value.maxInvestment)
     }
 
-    return this.stablecoinService.parse(
-      this.stablecoinService.format(data.asset.totalSupply, 18) * this.createForm1.value.tokenPrice,
-    )
+    const tokenPrice = this.conversion.toTokenPrice(this.createForm1.value.tokenPrice)
+
+    return this.conversion.calcStablecoin(state.asset.totalSupply, tokenPrice)
   }
 
-  private addTokensToCampaign(campaignAddress: string, data: AssetData) {
+  private addTokensToCampaign(campaignAddress: string, state: State) {
     return this.assetService.transferTokensToCampaign(
-      data.asset.contractAddress,
+      state.asset.contractAddress,
       campaignAddress,
       this.preview.hardCap,
-      this.preview.tokenPrice,
+      this.preview.data.initialPricePerToken,
     )
   }
 
@@ -472,14 +403,9 @@ export class AdminAssetCampaignNewComponent {
     return this.datePipe.transform(value, 'mediumDate')
   }
 
-  private preparePreviewData(data: AssetData) {
-    const hasMinAndMaxInvestment = this.createForm1.value.hasMinAndMaxInvestment
-    const tokenBalance = this.stablecoinService.format(data.balance)
-    const tokenPrice = this.createForm1.value.tokenPrice
-    // Due to possible rounding errors, we use min(specifiedCampaignTokens, assetTokenBalance) to ensure that valid
-    // amount is always sent here.
-    const hardCapTokens = Math.min(this.createForm1.value.hardCap / tokenPrice, tokenBalance)
-    const softCapTokens = Math.min(this.createForm1.value.softCap / tokenPrice, tokenBalance)
+  private preparePreviewData(state: State) {
+    const hasMinAndMaxInvestment: boolean = this.createForm1.value.hasMinAndMaxInvestment
+
     this.preview = {
       info: {
         name: this.createForm1.value.name,
@@ -494,20 +420,15 @@ export class AdminAssetCampaignNewComponent {
       },
       data: {
         slug: this.createForm1.value.slug,
-        assetAddress: data.asset.contractAddress,
-        initialPricePerToken: TokenPrice.format(tokenPrice),
-        softCap: this.stablecoinService.parse(this.createForm1.value.softCap),
+        assetAddress: state.asset.contractAddress,
+        initialPricePerToken: this.conversion.toTokenPrice(this.createForm1.value.tokenPrice),
+        softCap: this.conversion.toStablecoin(this.createForm1.value.softCap),
         minInvestment: this.getMinInvestmentValue(hasMinAndMaxInvestment),
-        maxInvestment: this.getMaxInvestmentValue(hasMinAndMaxInvestment, data),
+        maxInvestment: this.getMaxInvestmentValue(hasMinAndMaxInvestment, state),
         whitelistRequired: this.createForm1.value.isIdVerificationRequired,
       },
       flavor: this.createForm1.value.flavor as CampaignFlavor,
-      tokenPrice: tokenPrice,
-      hardCap: this.createForm1.value.hardCap,
-      hardCapTokens: hardCapTokens,
-      hardCapTokensPercentage: this.createForm1.value.hardCapTokensPercentage,
-      softCapTokens: softCapTokens,
-      softCapTokensPercentage: this.softCapTokensPercentage(data),
+      hardCap: this.conversion.toStablecoin(this.createForm1.value.hardCap),
     }
   }
 }
@@ -516,19 +437,14 @@ enum Step {
   CREATION_FIRST, CREATION_SECOND, PREVIEW
 }
 
-interface AssetData {
+interface State {
   asset: CommonAssetWithInfo,
-  balance: BigNumber,
+  userTokenBalance: BigNumber,
 }
 
 interface CampaignPreview {
   info: Omit<CampaignUploadInfoData, 'photo' | 'documents'> & { photo?: File }
   data: Omit<CreateCampaignData, 'info'>
   flavor: CampaignFlavor,
-  tokenPrice: number
-  hardCap: number
-  hardCapTokens: number
-  hardCapTokensPercentage: number
-  softCapTokens: number
-  softCapTokensPercentage: number
+  hardCap: StablecoinBigNumber
 }

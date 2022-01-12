@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core'
-import {combineLatest, from, Observable, of, throwError} from 'rxjs'
-import {filter, map, shareReplay, switchMap} from 'rxjs/operators'
+import {combineLatest, from, merge, Observable, of, throwError} from 'rxjs'
+import {filter, map, shareReplay, switchMap, take} from 'rxjs/operators'
 import {WithStatus, withStatus} from '../../../utils/observables'
 import {PreferenceQuery} from '../../../../preference/state/preference.query'
 import {IpfsService} from '../../ipfs/ipfs.service'
@@ -17,6 +17,7 @@ import {QueryService} from '../query.service'
 import {IssuerBasicService, IssuerBasicState} from './issuer-basic.service'
 import {IssuerCommonState} from './issuer.common'
 import {IssuerFlavor} from '../flavors'
+import {contractEvent} from '../../../utils/ethersjs'
 
 @Injectable({
   providedIn: 'root',
@@ -100,17 +101,17 @@ export class IssuerService {
     )
   }
 
-  uploadInfo(name: string, logo: File, rampApiKey: string, magicLinkApiKey: string, issuer?: IPFSIssuer): Observable<IPFSAddResult> {
+  uploadInfo(data: IssuerUploadInfoData): Observable<IPFSAddResult> {
     return combineLatest([
-      logo ? this.ipfsService.addFile(logo) : of(undefined),
+      data.logo ? this.ipfsService.addFile(data.logo) : of(undefined),
     ]).pipe(
       switchMap(([logo]) => this.ipfsService.addObject<IPFSIssuer>({
         version: 0.1,
-        name: name || issuer?.name || '',
-        logo: logo?.path || issuer?.logo || '',
-        rampApiKey: rampApiKey || issuer?.rampApiKey || '',
-        magicLinkApiKey: magicLinkApiKey || issuer?.magicLinkApiKey || '',
-        offersDisplaySettings: issuer?.offersDisplaySettings || '',
+        name: data.name || data.issuer?.name || '',
+        logo: logo?.path || data.issuer?.logo || '',
+        rampApiKey: data.rampApiKey || data.issuer?.rampApiKey || '',
+        magicLinkApiKey: data.magicLinkApiKey || data.issuer?.magicLinkApiKey || '',
+        offersDisplaySettings: data.issuer?.offersDisplaySettings || '',
       })),
     )
   }
@@ -141,8 +142,8 @@ export class IssuerService {
   }
 
   isWalletApproved(address: string): Observable<boolean> {
-    return this.preferenceQuery.issuer$.pipe(
-      switchMap(issuer => {
+    return combineLatest([this.preferenceQuery.issuer$]).pipe(take(1),
+      switchMap(([issuer]) => {
         switch (issuer.flavor) {
           case IssuerFlavor.BASIC:
             return this.issuerBasicService.isWalletApproved(address)
@@ -153,8 +154,23 @@ export class IssuerService {
     )
   }
 
+  isWalletApproved$(address: string): Observable<boolean> {
+    return this.isWalletApproved(address).pipe(
+      switchMap(isApproved => isApproved ? of(true) :
+        this.signerService.provider$.pipe(
+          map(provider => this.issuerBasicService.contract(address, provider)),
+          switchMap(contract => merge(
+            of(false),
+            contractEvent(contract, contract.filters.WalletWhitelist(null, address)).pipe(map(() => true)),
+            contractEvent(contract, contract.filters.WalletBlacklist(null, address)).pipe(map(() => false)),
+          )),
+        ),
+      ),
+    )
+  }
+
   changeWalletApprover(issuerAddress: string, walletApproverAddress: string) {
-    return this.preferenceQuery.issuer$.pipe(
+    return this.preferenceQuery.issuer$.pipe(take(1),
       switchMap(issuer => {
         switch (issuer.flavor) {
           case IssuerFlavor.BASIC:
@@ -184,6 +200,15 @@ export type IssuerInfo = { infoData: IPFSIssuer }
 export type IssuerWithInfo = IssuerCommonState & IssuerInfo
 
 interface CreateIssuerData {
-  mappedName: string,
-  info: string,
+  mappedName: string
+  stablecoinAddress: string
+  info: string
+}
+
+interface IssuerUploadInfoData {
+  name: string
+  logo: File
+  rampApiKey: string
+  magicLinkApiKey: string
+  issuer?: IPFSIssuer
 }

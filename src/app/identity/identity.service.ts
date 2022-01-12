@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core'
 import {combineLatest, Observable, of} from 'rxjs'
-import {delay, filter, map, repeatWhen, switchMap, take} from 'rxjs/operators'
+import {filter, map, switchMap, take} from 'rxjs/operators'
 import {VeriffService} from './veriff/veriff.service'
 import {BackendUserService} from '../shared/services/backend/backend-user.service'
 import {SignerService} from '../shared/services/signer.service'
@@ -9,6 +9,7 @@ import {PreferenceQuery} from '../preference/state/preference.query'
 import {CampaignService, CampaignWithInfo} from '../shared/services/blockchain/campaign/campaign.service'
 import {IssuerService} from '../shared/services/blockchain/issuer/issuer.service'
 import {DialogService} from '../shared/services/dialog.service'
+import {withInterval} from '../shared/utils/observables'
 
 @Injectable({
   providedIn: 'root',
@@ -25,12 +26,12 @@ export class IdentityService {
   }
 
   ensureIdentityChecked(campaign: CampaignWithInfo): Observable<void> {
-    return this.checkOnIssuerProcedure(campaign).pipe(
+    return this.checkOnIssuer(campaign).pipe(
       switchMap(identityChecked => identityChecked ? of(undefined) : this.checkOnBackendProcedure),
     )
   }
 
-  private checkOnIssuerProcedure(campaign: CampaignWithInfo): Observable<boolean> {
+  checkOnIssuer(campaign: CampaignWithInfo): Observable<boolean> {
     return this.signerService.ensureAuth.pipe(take(1),
       switchMap(() => this.campaignService.isWhitelistRequired(campaign).pipe(
         switchMap(isWhitelistRequired => !isWhitelistRequired ? of(true) :
@@ -39,20 +40,32 @@ export class IdentityService {
     )
   }
 
+  checkOnIssuer$(campaign: CampaignWithInfo): Observable<boolean> {
+    return this.signerService.ensureAuth.pipe(
+      switchMap(() => this.campaignService.isWhitelistRequired(campaign).pipe(
+        switchMap(isWhitelistRequired => !isWhitelistRequired ? of(true) :
+          this.issuerService.isWalletApproved$(this.sessionQuery.getValue().address!),
+        ))),
+    )
+  }
+
   private get checkOnBackendProcedure(): Observable<void> {
-    return this.backendCheck.pipe(
+    return this.checkOnBackend.pipe(
       switchMap(whitelistedOnBackend => whitelistedOnBackend ?
         of(undefined) : this.openIdentityDialog),
       switchMap(() => this.whitelistOnBackend()),
       switchMap(() => this.dialogService.loading(
         this.waitUntilIssuerCheckPassed,
-        'Wallet whitelisting',
-        'This is usually a short process, but it might take up to a few minutes. Stay patient or return to invest later.',
+        'Approving wallet',
+        'This is usually a short process, but it might take up to a few minutes. Please wait.',
       )),
+      switchMap(() => this.dialogService.success({
+        title: 'Identity verified successfully!',
+      })),
     )
   }
 
-  private get backendCheck(): Observable<boolean> {
+  private get checkOnBackend(): Observable<boolean> {
     return this.backendUser.getUser().pipe(
       map(user => user.kyc_completed),
     )
@@ -61,13 +74,11 @@ export class IdentityService {
   private get issuerCheck(): Observable<boolean> {
     return this.signerService.ensureAuth.pipe(
       switchMap(() => this.issuerService.isWalletApproved(this.sessionQuery.getValue().address!)),
-      take(1),
     )
   }
 
   private get waitUntilIssuerCheckPassed(): Observable<void> {
-    return this.issuerCheck.pipe(
-      repeatWhen(obs => obs.pipe(delay(1000))),
+    return withInterval(this.issuerCheck, 1000).pipe(
       filter(hasPassed => hasPassed),
       take(1),
       map(() => undefined),

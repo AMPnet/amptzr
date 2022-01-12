@@ -18,7 +18,7 @@ import {WithStatus, withStatus} from '../../shared/utils/observables'
 })
 export class AdminIssuerEditComponent {
   issuer$: Observable<WithStatus<IssuerView>>
-  stableCoinSymbol = this.stableCoinService.symbol
+  stableCoinSymbol = this.stablecoin.config.symbol
 
   updateForm: FormGroup
   updateWalletApproverAddressForm: FormGroup
@@ -27,7 +27,7 @@ export class AdminIssuerEditComponent {
   constructor(private routerService: RouterService,
               private issuerService: IssuerService,
               private issuerBasicService: IssuerBasicService,
-              private stableCoinService: StablecoinService,
+              private stablecoin: StablecoinService,
               private preferenceStore: PreferenceStore,
               private dialogService: DialogService,
               private fb: FormBuilder) {
@@ -75,15 +75,18 @@ export class AdminIssuerEditComponent {
 
   updateNameAndLogo(issuer: IssuerWithInfo) {
     return () => {
-      return this.issuerService.uploadInfo(
-        this.updateForm.value.name,
-        this.updateForm.value.logo?.[0],
-        this.updateForm.value.rampApiKey,
-        this.updateForm.value.magicLinkApiKey,
-        issuer.infoData,
-      ).pipe(
+      return this.issuerService.uploadInfo({
+        name: this.updateForm.value.name,
+        logo: this.updateForm.value.logo?.[0],
+        rampApiKey: this.updateForm.value.rampApiKey,
+        magicLinkApiKey: this.updateForm.value.magicLinkApiKey,
+        issuer: issuer.infoData,
+      }).pipe(
         switchMap(uploadRes => this.issuerService.updateInfo(issuer.contractAddress, uploadRes.path)),
-        switchMap(() => this.dialogService.info('Issuer successfully updated!', false)),
+        switchMap(() => this.dialogService.info({
+          title: 'Issuer has been updated',
+          cancelable: false,
+        })),
         tap(() => this.refreshIssuer()),
         tap(() => this.routerService.navigate(['/admin'])),
       )
@@ -96,7 +99,10 @@ export class AdminIssuerEditComponent {
         issuer.contractAddress, this.updateWalletApproverAddressForm.value.walletApproverAddress,
       ).pipe(
         tap(() => this.updateWalletApproverAddressForm.markAsPristine()),
-        switchMap(() => this.dialogService.info('Wallet approver changed successfully!', false)),
+        switchMap(() => this.dialogService.info({
+          title: 'Wallet approver has been changed',
+          cancelable: false,
+        })),
       )
     }
   }
@@ -106,7 +112,10 @@ export class AdminIssuerEditComponent {
       return this.issuerService.changeOwner(
         issuer.contractAddress, this.updateOwnerAddressForm.value.ownerAddress,
       ).pipe(
-        switchMap(() => this.dialogService.info('Owner changed successfully!', false)),
+        switchMap(() => this.dialogService.info({
+          title: 'The owner has been changed',
+          cancelable: false,
+        })),
         tap(() => this.refreshIssuer()),
         tap(() => this.routerService.navigate(['/'])),
       )

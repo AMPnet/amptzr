@@ -43,14 +43,15 @@
 
               <div class="flex flex-col gap-2 text-sm p-4 mt-2 bg-gray-100 rounded-lg">
                 <span>
-                  Raising: <b>{{ campaignData.stats.valueTotal | currencyDefault }}</b>
+                  Raising: <b>{{ campaignData.stats.valueTotal | formatUnit:'stablecoin' | currencyDefault }}</b>
                 </span>
                 <span>
                   Selling: <b>{{ hardCapTokensPercentage(campaignData.stats, campaignData.asset) | percent:'1.0-2' }} of
                   asset shares</b>
                 </span>
                 <span>
-                  Min. Target (Soft Cap): <b>{{ campaignData.stats.softCap | currencyDefault }}</b>
+                  Min. Target (Soft Cap):
+                  <b>{{ campaignData.stats.softCap | formatUnit:'stablecoin' | currencyDefault }}</b>
                 </span>
                 <span>
                   Asset share to reach Min. Target:
@@ -117,19 +118,30 @@
                   </app-add-to-metamask>
                 </div>
 
-                <span>Price per token: <b>{{ campaignData.stats.tokenPrice | currencyDefault:'tokenPrice' }}</b></span>
-                <span>Tokens sold: <b>{{ campaignData.stats.tokensSold | number }}</b></span>
-                <span>Tokens for sale: <b>{{ campaignData.stats.tokensAvailable | number }}</b></span>
+                <span>
+                  Price per token:
+                  <b>{{ campaignData.stats.tokenPrice | formatUnit:'tokenPrice' | currencyDefault:'tokenPrice' }}</b>
+                </span>
+
+                <span>
+                  Tokens sold:
+                  <b>{{ campaignData.stats.tokensSold | formatUnit:'token' | number }}</b>
+                </span>
+
+                <span>
+                  Tokens for sale:
+                  <b>{{ campaignData.stats.tokensAvailable | formatUnit:'token' | number }}</b>
+                </span>
 
                 <span class="text-2xl text-indigo-900 my-2">Investors</span>
                 <ng-container *ngIf="campaignData.campaignBasic as campaignBasic">
                   <div *ngIf="shouldShowMin">
                     Min investment:
-                    <b>{{ campaignBasic.minInvestment | formatUnit:'bignumToWei' | currencyDefault }}</b>
+                    <b>{{ campaignBasic.minInvestment | formatUnit:'stablecoin' | currencyDefault }}</b>
                   </div>
                   <div *ngIf="shouldShowMax">
                     Max investment:
-                    <b>{{ campaignBasic.maxInvestment | formatUnit:'bignumToWei' | currencyDefault }}</b>
+                    <b>{{ campaignBasic.maxInvestment | formatUnit:'stablecoin' | currencyDefault }}</b>
                   </div>
                 </ng-container>
                 <span>Returning profits: <b>{{ returnFrequency(campaignData.campaign) }}</b></span>
@@ -143,7 +155,8 @@
                   </div>
                   <span>Total investor count: <b>{{ campaignBasic.totalInvestorsCount.toNumber() | number }}</b></span>
                   <span>Total claim count: <b>{{ campaignBasic.totalClaimsCount.toNumber() | number }}</b></span>
-                  <span>Tokens claimed: <b>{{ campaignData.stats.tokensClaimed | number }}</b></span>
+                  <span>Tokens claimed:
+                    <b>{{ campaignData.stats.tokensClaimed | formatUnit:'token' | number }}</b></span>
                 </ng-container>
 
 

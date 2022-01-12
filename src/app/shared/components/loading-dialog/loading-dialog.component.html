@@ -1,16 +1,21 @@
 <ng-container *ngIf="(data$ | async) as data">
-  <div class="px-8 max-w-sm mx-auto">
-    <app-spinner type="overlay">
-      <div class="flex flex-col justify-center gap-4">
-        <h3 class="self-center">
-          {{ data.title }}
-        </h3>
-
-        <p *ngIf="data.message"
-           class="text-sm text-indigo-800">
-          {{ data.message }}
-        </p>
+  <div class="px-8 py-8 max-w-sm mx-auto">
+    <div class="flex justify-center mt-6">
+      <div class="flex justify-center w-36 h-36">
+        <img class="h-full w-full object-cover"
+             src="/assets/dialog-icons/waiting.gif"
+             alt="Waiting icon">
       </div>
-    </app-spinner>
+    </div>
+
+    <h3 *ngIf="data.title"
+        class="text-center text-2xl font-medium mt-4">
+      {{ data.title }}
+    </h3>
+
+    <p *ngIf="data.message"
+       class="text-center text-sm mt-4">
+      {{ data.message }}
+    </p>
   </div>
 </ng-container>

@@ -91,6 +91,15 @@ import {
 import {AddToMetamaskComponent} from './shared/components/add-to-metamask/add-to-metamask.component'
 import {ExplorerLinkComponent} from './shared/components/explorer-link/explorer-link.component'
 import {AuthMagicComponent} from './auth/auth-magic/auth-magic.component'
+import {BigNumberInputDirective} from './shared/directives/bignumber-input.directive'
+import {
+  LoadingDialogApprovalComponent,
+} from './shared/components/loading-dialog/loading-dialog-approval/loading-dialog-approval.component'
+import {
+  LoadingDialogTransactionComponent,
+} from './shared/components/loading-dialog/loading-dialog-transaction/loading-dialog-transaction.component'
+import {LoadingOverlayComponent} from './shared/components/loading-dialog/loading-overlay/loading-overlay.component'
+import {DepositDialogComponent} from './deposit/deposit-dialog/deposit-dialog.component'
 
 @NgModule({
   declarations: [
@@ -155,12 +164,17 @@ import {AuthMagicComponent} from './auth/auth-magic/auth-magic.component'
     FormYesNoButtonsComponent,
     AdminAssetCampaignNewComponent,
     DateMaskDirective,
+    BigNumberInputDirective,
     AdminCampaignEditComponent,
     AdminCampaignAddTokensComponent,
     AdminCampaignDetailComponent,
     AdminIssuerNewComponent,
     AdminIssuerEditCampaignVisibilityComponent,
     AdminIssuerEditCampaignVisibilityCardComponent,
+    LoadingDialogApprovalComponent,
+    LoadingDialogTransactionComponent,
+    LoadingOverlayComponent,
+    DepositDialogComponent,
   ],
   imports: [
     BrowserModule,
@@ -201,6 +215,7 @@ import {AuthMagicComponent} from './auth/auth-magic/auth-magic.component'
     TruncatePipe,
     UnescapePipe,
     PercentPipe,
+    FormatUnitPipe,
     DatePipe,
   ],
   bootstrap: [AppComponent],

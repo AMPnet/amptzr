@@ -10,6 +10,17 @@
           "value": "Googlebot|Twitterbot|TelegramBot|facebookexternalhit|Slackbot|redditbot|Applebot|WhatsApp|Bingbot|Yandex|Baiduspider|rogerbot|LinkedInBot|Embedly|Quora Link Preview|vkShare|W3C_Validator|Flipboard|Tumblr|bitlybot|SkypeUriPreview|Nuzzel|Discordbot|Google Page Speed|Qwantify|Pinterestbot|Bitrix link preview|XING-contenttabreceiver|Chrome-Lighthouse|ShowyouBot"
         }
       ]
+    },
+    {
+      "source": "/:networkID?/:issuerID?/offers/:offerID/invest",
+      "destination": "/api/prerender",
+      "has": [
+        {
+          "type": "header",
+          "key": "user-agent",
+          "value": "Googlebot|Twitterbot|TelegramBot|facebookexternalhit|Slackbot|redditbot|Applebot|WhatsApp|Bingbot|Yandex|Baiduspider|rogerbot|LinkedInBot|Embedly|Quora Link Preview|vkShare|W3C_Validator|Flipboard|Tumblr|bitlybot|SkypeUriPreview|Nuzzel|Discordbot|Google Page Speed|Qwantify|Pinterestbot|Bitrix link preview|XING-contenttabreceiver|Chrome-Lighthouse|ShowyouBot"
+        }
+      ]
     }
   ]
 }

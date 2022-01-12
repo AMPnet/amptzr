@@ -43,7 +43,9 @@
             "extractLicenses": false,
             "buildOptimizer": false,
             "sourceMap": {
-              "styles": false
+              "scripts": true,
+              "styles": false,
+              "vendor": false
             },
             "optimization": false,
             "namedChunks": true,

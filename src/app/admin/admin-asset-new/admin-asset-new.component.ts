@@ -9,6 +9,7 @@ import {IssuerPathPipe} from '../../shared/pipes/issuer-path.pipe'
 import {v4 as uuidV4} from 'uuid'
 import {AssetService} from '../../shared/services/blockchain/asset/asset.service'
 import {AssetFlavor} from '../../shared/services/blockchain/flavors'
+import {ConversionService} from '../../shared/services/conversion.service'
 
 @Component({
   selector: 'app-admin-asset-new',
@@ -28,6 +29,7 @@ export class AdminAssetNewComponent {
               private dialogService: DialogService,
               private routerService: RouterService,
               private issuerPathPipe: IssuerPathPipe,
+              private conversion: ConversionService,
               private fb: FormBuilder) {
     this.createForm = this.fb.group({
       name: ['', Validators.required],
@@ -48,13 +50,16 @@ export class AdminAssetNewComponent {
         issuer: this.preferenceQuery.issuer.address,
         slug: uuidV4(),
         name: this.createForm.value.name,
-        initialTokenSupply: this.stablecoinService.parse(this.createForm.value.initialTokenSupply, 18),
+        initialTokenSupply: this.conversion.toToken(this.createForm.value.initialTokenSupply),
         symbol: this.createForm.value.symbol,
         whitelistRequiredForRevenueClaim: this.createForm.value.whitelistRequiredForRevenueClaim,
         whitelistRequiredForLiquidationClaim: this.createForm.value.whitelistRequiredForLiquidationClaim,
         info: uploadRes.path,
       }, this.createForm.value.flavor)),
-      switchMap(assetAddress => this.dialogService.info('Asset successfully created!', false).pipe(
+      switchMap(assetAddress => this.dialogService.info({
+        title: 'Asset has been created',
+        cancelable: false,
+      }).pipe(
         tap(() => this.routerService.navigate([`/admin/assets/${assetAddress}`])),
       )),
     )

@@ -98,7 +98,7 @@ export class ErrorService {
   }
 
   private displayMessage(message: string) {
-    return this.dialogService.error(message)
+    return this.dialogService.error({message})
   }
 
   private get outOfGasMessage() {

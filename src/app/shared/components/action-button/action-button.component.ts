@@ -1,6 +1,5 @@
 import {
   ChangeDetectionStrategy,
-  ChangeDetectorRef,
   Component,
   ContentChild,
   HostBinding,
@@ -9,9 +8,9 @@ import {
   OnDestroy,
   OnInit,
   TemplateRef,
+  ɵmarkDirty,
 } from '@angular/core'
 import {EMPTY, Observable, Subscription} from 'rxjs'
-import {finalize} from 'rxjs/operators'
 
 @Component({
   // eslint-disable-next-line @angular-eslint/component-selector
@@ -35,7 +34,7 @@ export class ActionButtonComponent implements OnInit, OnDestroy {
 
   @Input() onClick: () => Observable<unknown> = () => EMPTY
 
-  constructor(private changeRef: ChangeDetectorRef) {
+  constructor() {
   }
 
   @HostBinding('class') get buttonClass(): string {
@@ -53,10 +52,16 @@ export class ActionButtonComponent implements OnInit, OnDestroy {
     }
 
     this.loading = true
-    this.sub = this.onClick().pipe(finalize(() => {
-      this.loading = false
-      this.changeRef.markForCheck()
-    })).subscribe()
+    this.sub = this.onClick().subscribe({
+      error: () => {
+        this.loading = false
+        ɵmarkDirty(this)
+      },
+      complete: () => {
+        this.loading = false
+        ɵmarkDirty(this)
+      },
+    })
   }
 
   ngOnInit(): void {

@@ -4,15 +4,14 @@ import {defer, from, fromEvent, merge, Observable, of, Subject, throwError} from
 import {catchError, concatMap, finalize, map, switchMap, take, tap} from 'rxjs/operators'
 import {SessionStore} from '../../session/state/session.store'
 import {SessionQuery} from '../../session/state/session.query'
-import {DialogService} from './dialog.service'
 import {PreferenceStore} from '../../preference/state/preference.store'
 import {MetamaskSubsignerService, Subsigner} from './subsigners/metamask-subsigner.service'
-import {MatDialog} from '@angular/material/dialog'
 import {AuthComponent} from '../../auth/auth.component'
 import {RouterService} from './router.service'
 import {ErrorService} from './error.service'
 import {PreferenceQuery} from '../../preference/state/preference.query'
 import {getWindow} from '../utils/browser'
+import {DialogService} from './dialog.service'
 
 @Injectable({
   providedIn: 'root',
@@ -54,9 +53,8 @@ export class SignerService {
               private metamaskSubsignerService: MetamaskSubsignerService,
               private ngZone: NgZone,
               private router: RouterService,
-              private dialog: MatDialog,
-              private errorService: ErrorService,
-              private dialogService: DialogService) {
+              private dialogService: DialogService,
+              private errorService: ErrorService) {
     this.subscribeToChanges()
   }
 
@@ -96,7 +94,9 @@ export class SignerService {
   }
 
   private get loginDialog() {
-    return this.dialog.open(AuthComponent).afterClosed().pipe(
+    return this.dialogService.dialog.open(AuthComponent, {
+      ...this.dialogService.configDefaults,
+    }).afterClosed().pipe(
       concatMap(authCompleted => authCompleted ?
         this.sessionQuery.waitUntilLoggedIn() :
         throwError(() => 'LOGIN_MODAL_DISMISSED')),
@@ -128,7 +128,7 @@ export class SignerService {
   signMessage(message: string | utils.Bytes): Observable<string> {
     return this.ensureAuth.pipe(
       switchMap(signer => from(signer.signMessage(message))),
-      this.errorService.handleError(),
+      this.errorService.handleError(true, true),
     )
   }
 
@@ -136,7 +136,7 @@ export class SignerService {
     Observable<providers.TransactionResponse> {
     return this.ensureAuth.pipe(
       switchMap(signer => from(signer.sendTransaction(transaction))),
-      this.errorService.handleError(),
+      this.errorService.handleError(true, true),
     )
   }
 

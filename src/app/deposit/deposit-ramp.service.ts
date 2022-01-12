@@ -1,12 +1,13 @@
 import {Injectable} from '@angular/core'
-import {combineLatest, defer, Observable, of} from 'rxjs'
+import {combineLatest, defer, Observable, of, scan} from 'rxjs'
 import {RampInstantEvents, RampInstantEventTypes, RampInstantSDK} from '@ramp-network/ramp-instant-sdk'
 import {SessionQuery} from '../session/state/session.query'
 import {ToUrlIPFSPipe} from '../shared/pipes/to-url-ipfs.pipe'
 import {PreferenceQuery} from '../preference/state/preference.query'
 import {switchMap, take} from 'rxjs/operators'
 import {IssuerService} from '../shared/services/blockchain/issuer/issuer.service'
-import {StablecoinService} from '../shared/services/blockchain/stablecoin.service'
+import {StablecoinBigNumber, StablecoinService} from '../shared/services/blockchain/stablecoin.service'
+import {ConversionService} from '../shared/services/conversion.service'
 
 @Injectable({
   providedIn: 'root',
@@ -21,10 +22,11 @@ export class DepositRampService {
               private issuerService: IssuerService,
               private toUrlIpfsPipe: ToUrlIPFSPipe,
               private stablecoinService: StablecoinService,
+              private conversion: ConversionService,
               private preferenceQuery: PreferenceQuery) {
   }
 
-  showWidget(depositAmount: number): Observable<RampInstantEvents> {
+  showWidget(depositAmount: StablecoinBigNumber): Observable<EventWithState> {
     return combineLatest([
       this.issuer$, this.address$,
     ]).pipe(take(1),
@@ -42,7 +44,7 @@ export class DepositRampService {
             hostLogoUrl: this.toUrlIpfsPipe.transform(issuer.infoData.logo),
             hostApiKey: issuer.infoData.rampApiKey,
             swapAsset: rampConfig.swapAsset,
-            swapAmount: this.stablecoinService.parse(depositAmount).toString(),
+            swapAmount: depositAmount.toString(),
             userAddress: address,
             url: rampConfig.url,
             variant: 'auto',
@@ -58,6 +60,25 @@ export class DepositRampService {
           rampWindow.show()
         })
       }),
+      scan((acc, event) => {
+        return ({
+          purchaseCreated: acc.purchaseCreated ? true :
+            event.type === RampInstantEventTypes.PURCHASE_CREATED,
+          successFinish: acc.successFinish ? true :
+            event.type === RampInstantEventTypes.WIDGET_CLOSE && !!event.payload,
+          event: event,
+        }) as EventWithState
+      }, {
+        purchaseCreated: false,
+        successFinish: false,
+        event: undefined as unknown,
+      } as EventWithState),
     )
   }
+}
+
+interface EventWithState {
+  purchaseCreated: boolean
+  successFinish: boolean
+  event: RampInstantEvents
 }

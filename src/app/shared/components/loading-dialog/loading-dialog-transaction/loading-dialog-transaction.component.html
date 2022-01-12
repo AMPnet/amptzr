@@ -1,0 +1,20 @@
+<ng-container *ngIf="(data$ | async) as data">
+  <div class="px-8 py-8 max-w-sm mx-auto">
+    <h3 class="text-center text-2xl font-medium">
+      {{ data.title }}
+    </h3>
+
+    <div class="flex justify-center mt-6">
+      <div class="flex justify-center w-36 h-36">
+        <img class="h-full w-full object-cover"
+             src="/assets/dialog-icons/waiting.gif"
+             alt="Waiting icon">
+      </div>
+    </div>
+
+    <p *ngIf="data.message"
+       class="text-center text-sm mt-4">
+      {{ data.message }}
+    </p>
+  </div>
+</ng-container>

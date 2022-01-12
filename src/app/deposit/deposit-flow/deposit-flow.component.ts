@@ -3,7 +3,6 @@ import {AbstractControl, FormBuilder, FormGroup, ValidationErrors} from "@angula
 import {of} from "rxjs"
 import {RouterService} from "../../shared/services/router.service"
 import {DialogService} from "../../shared/services/dialog.service"
-import {RampInstantEventTypes} from '@ramp-network/ramp-instant-sdk'
 import {DepositRampService} from '../deposit-ramp.service'
 import {switchMap} from 'rxjs/operators'
 
@@ -28,15 +27,13 @@ export class DepositFlowComponent {
 
   showRamp() {
     return this.depositRampService.showWidget(this.depositForm.value.amount).pipe(
-      switchMap(event => {
-        if (event.type === RampInstantEventTypes.WIDGET_CLOSE && event.payload) {
+      switchMap(state => {
+        if (state.successFinish) {
           // payload is non-empty only when user clicks on the success button
-          return this.dialogService.info('Funds will be visible in your wallet shortly.', false).pipe(
-            switchMap(() => this.routerService.navigate(['/wallet'])),
-          )
+          return this.routerService.navigate(['/wallet'])
         }
 
-        return of(event)
+        return of(state)
       }),
     )
   }

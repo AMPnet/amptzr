@@ -24,7 +24,7 @@
               </div>
 
               <div class="flex items-center gap-2">
-                <span>Token supply:</span><b>{{ asset.totalSupply | formatUnit:'bignumToWei':18 | number }}</b>
+                <span>Token supply:</span><b>{{ asset.totalSupply | formatUnit:'token' | number }}</b>
               </div>
             </div>
             <div class="flex flex-col justify-end">

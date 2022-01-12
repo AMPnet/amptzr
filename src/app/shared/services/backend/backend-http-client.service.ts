@@ -91,9 +91,11 @@ export class BackendHttpClient {
       case AuthProvider.MAGIC:
         return of(payload)
       default:
-        return this.dialogService.info(
-          'You will be asked to authorize yourself by signing a message.',
-        ).pipe(switchMap(confirm => confirm ? of(payload) : throwError(() => 'SIGNING_DISMISSED')))
+        return this.dialogService.info({
+          title: 'Authorization required',
+          message: 'You will be asked to authorize yourself by signing a message.',
+          cancelable: false,
+        }).pipe(switchMap(confirm => confirm ? of(payload) : throwError(() => 'SIGNING_DISMISSED')))
     }
   }
 

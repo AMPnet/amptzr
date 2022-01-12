@@ -1,52 +1,52 @@
 <div *ngIf="(progressData$ | async) as dataRes" class="flex items-center justify-center min-h-[5rem]">
   <ng-container *ngIf="dataRes.value as data">
     <ng-container *ngIf="campaign">
-      <div *ngIf="data.raised < data.total && data.total >= data.softCap" class="w-full">
+      <div *ngIf="data.raised.lt(data.total) && data.total.gte(data.softCap)" class="w-full">
         <span class="mt-6 font-bold text-gray-800 text-sm">
-          {{ data.raised | currencyDefault:'stablecoin':'implicit' }}
+          {{ data.raised | formatUnit:'stablecoin' | currencyDefault:'stablecoin':'implicit' }}
         </span>
         <span class="mx-1 text-sm">of</span>
         <span class="mt-6 font-bold text-gray-800 text-sm">
-          {{ data.softCap | currencyDefault:'stablecoin':'implicit' }}
+          {{ data.softCap | formatUnit:'stablecoin' | currencyDefault:'stablecoin':'implicit' }}
         </span>
         <div class="relative h-2 mb-2 pt-1 mt-2">
           <!-- Progress tray -->
           <div class="absolute w-full h-full rounded bg-gray-200"></div>
 
           <!-- Progress amount -->
-          <div class="absolute h-full rounded bg-indigo-800"
+          <div class="absolute h-full rounded bg-cyan-600"
                [style.width.%]="data.raisedPercentage * 100"></div>
 
           <!-- Soft cap value -->
           <div class="absolute h-full"
                *ngIf="data.total > data.softCap"
-               matTooltip="Soft cap {{ data.softCap | currencyDefault:'stablecoin':'implicit' }}"
+               matTooltip="Soft cap {{ data.softCap | formatUnit:'stablecoin' | currencyDefault:'stablecoin':'implicit' }}"
                [style.left.%]="data.softCapPercentage * 100">
             <div class="absolute rounded-full w-4 h-4 -ml-2 -mt-1"
-                 [class]="data.raised >= data.softCap ? 'bg-indigo-800' : 'bg-gray-200'"></div>
+                 [class]="data.raised.gte(data.softCap) ? 'bg-cyan-600' : 'bg-gray-200'"></div>
             <div class="absolute rounded-full w-2 h-2 -ml-1 bg-white"></div>
           </div>
 
           <!-- Total value -->
           <div class="absolute h-full w-1 right-0"
-               matTooltip="Total {{ data.total | currencyDefault:'stablecoin':'implicit' }}"></div>
+               matTooltip="Total {{ data.total | formatUnit:'stablecoin' | currencyDefault:'stablecoin':'implicit' }}"></div>
         </div>
         <div class="flex justify-between">
-          <div class="font-bold text-indigo-800 text-sm uppercase">
+          <div class="font-bold text-cyan-600 text-sm uppercase">
             {{ (data.raisedPercentage / data.softCapPercentage) | percent:'1.0-2' }} funded
           </div>
           <div class="font-light text-gray-500 text-sm">{{ dateRange(campaign) }}</div>
         </div>
       </div>
-      <div *ngIf="data.raised >= data.total || data.softCap > data.total" class="w-full">
+      <div *ngIf="data.raised.gte(data.total) || data.softCap.gt(data.total)" class="w-full">
         <div>
-          <span class="mt-6 font-bold text-indigo-900 text-lg uppercase">
-            {{ data.raised | currencyDefault:'stablecoin':'implicit' }}
+          <span class="mt-6 font-bold text-cyan-600 text-lg uppercase">
+            {{ data.raised | formatUnit:'stablecoin' | currencyDefault:'stablecoin':'implicit' }}
           </span> raised
         </div>
 
         <div class="flex justify-between mt-2">
-          <div *ngIf="campaign.finalized" class="font-bold text-indigo-800 text-sm uppercase">
+          <div *ngIf="campaign.finalized" class="font-bold text-cyan-600 text-sm uppercase">
             finished
           </div>
 

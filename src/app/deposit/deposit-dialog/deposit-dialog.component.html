@@ -1,0 +1,51 @@
+<ng-container *ngIf="(data$ | async) as data">
+  <div class="max-w-sm mx-auto px-4 py-2">
+    <div class="flex justify-center items-center gap-0.5 mt-6">
+      <h2 class="text-3xl">
+        Get {{ stablecoin.config.symbol }}
+      </h2>
+
+      <app-explorer-link [value]="stablecoin.config.address" type="token">
+      </app-explorer-link>
+
+      <app-add-to-metamask [value]="stablecoin.config.address">
+      </app-add-to-metamask>
+    </div>
+
+    <p class="mt-8 mb-10 text-sm text-center">
+      You don't have enough {{ stablecoin.config.symbol }} in your wallet. Top up
+      with cash or swap with other crypto currencies.
+    </p>
+
+    <ng-container *ngIf="isRampAvailable$ | async">
+      <button app-action-button
+              class="w-full rounded-md border border-gray-200 p-3 mt-6"
+              [onClick]="showRamp(data.amount, data.campaignAddress).bind(this)">
+        <ng-template #content>
+          <div class="flex justify-center items-center gap-2">
+            <img class="w-10 h-10 object-contain"
+                 src="/assets/credit-card.png"
+                 alt="Credit card icon">
+            <span class="font-semibold">
+              Card or bank transfer
+            </span>
+          </div>
+        </ng-template>
+      </button>
+    </ng-container>
+
+    <ng-container *ngIf="isUniswapAvailable$ | async">
+      <ng-container *ngIf="getUniswapLink$(data.amount) | async as uniswapLink">
+        <a href="{{ uniswapLink }}"
+           class="block w-full rounded-md border border-gray-200 p-3 mt-6"
+           target="_blank" rel="noopener noreferrer">
+          <div class="flex justify-center items-center gap-2">
+            <img class="h-10 object-contain"
+                 src="/assets/uniswap.png"
+                 alt="Uniswap logo">
+          </div>
+        </a>
+      </ng-container>
+    </ng-container>
+  </div>
+</ng-container>

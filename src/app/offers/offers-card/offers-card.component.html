@@ -1,7 +1,6 @@
 <ng-container *ngIf="(campaign$ | async) as campaignRes">
   <ng-container *ngIf="campaignRes.value as offer">
-    <div *ngIf="size === 'large'" class="w-full h-full flex flex-col lg:flex-row justify-start shadow-xl hover:shadow-2xl
-            transition-all duration-300 rounded-4xl">
+    <div *ngIf="size === 'large'" class="w-full h-full flex flex-col lg:flex-row justify-start rounded-4xl">
       <div class="relative w-full lg:w-7/12">
         <a routerLink="{{ offer.mappedName | issuerPath }}">
           <img src="{{ offer.infoData.photo | toUrlIPFS }}" alt="Offer image"
@@ -32,7 +31,7 @@
         <div>
           <app-funding-progress [campaign]="offer"></app-funding-progress>
 
-          <button class="bg-indigo-800 hover:bg-indigo-900 transition-all w-full py-3 mt-6 text-white rounded-full flex
+          <button class="w-full app-button mt-6 flex
                          items-center justify-center"
                   aria-label="Learn more"
                   routerLink="{{ offer.mappedName | issuerPath }}">
@@ -74,8 +73,7 @@
           <app-funding-progress class="w-full" [campaign]="offer">
           </app-funding-progress>
 
-          <button class="bg-indigo-800 hover:bg-indigo-900 transition-all
-      w-full lg:h-12 lg:w-16 py-3 mt-6 text-white rounded-full flex items-center justify-center"
+          <button class="app-button mt-6 !px-6 flex items-center justify-center"
                   aria-label="Learn more"
                   routerLink="{{ offer.mappedName }}">
             <span class="lg:hidden">Learn more</span>

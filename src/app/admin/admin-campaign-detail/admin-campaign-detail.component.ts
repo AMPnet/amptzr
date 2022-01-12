@@ -21,6 +21,7 @@ import {
   CampaignBasicService,
   CampaignBasicState,
 } from '../../shared/services/blockchain/campaign/campaign-basic.service'
+import {ConversionService} from '../../shared/services/conversion.service'
 
 @Component({
   selector: 'app-admin-campaign-detail',
@@ -48,6 +49,7 @@ export class AdminCampaignDetailComponent {
               private nameService: NameService,
               private linkPreviewService: LinkPreviewService,
               private stablecoinService: StablecoinService,
+              private conversion: ConversionService,
               private dialogService: DialogService,
               private route: ActivatedRoute) {
     const campaignId = this.route.snapshot.params.campaignId
@@ -88,43 +90,27 @@ export class AdminCampaignDetailComponent {
   }
 
   hardCapTokensPercentage(stats: CampaignStats, asset: CommonAssetWithInfo) {
-    const pricePerToken = stats.tokenPrice
-    if (pricePerToken === 0) {
-      return 0
-    }
+    const tokens = this.conversion.calcTokens(stats.valueTotal, stats.tokenPrice)
 
-    const numOfTokensToSell = stats.valueTotal / pricePerToken
-    if (numOfTokensToSell === 0) {
-      return 0
-    }
-
-    const totalTokens = this.stablecoinService.format(asset.totalSupply, 18)
-    return numOfTokensToSell / totalTokens
+    return this.conversion.parseTokenToNumber(tokens) /
+      this.conversion.parseTokenToNumber(asset.totalSupply)
   }
 
   softCapTokensPercentage(stats: CampaignStats, asset: CommonAssetWithInfo) {
-    const pricePerToken = stats.tokenPrice
-    if (pricePerToken === 0) {
-      return 0
-    }
+    const tokens = this.conversion.calcTokens(stats.softCap, stats.tokenPrice)
 
-    const numOfTokensToSell = stats.softCap / pricePerToken
-    if (numOfTokensToSell === 0) {
-      return 0
-    }
-
-    const totalTokens = this.stablecoinService.format(asset.totalSupply, 18)
-    return numOfTokensToSell / totalTokens
+    return this.conversion.parseTokenToNumber(tokens) /
+      this.conversion.parseTokenToNumber(asset.totalSupply)
   }
 
   shouldShowMin(stats: CampaignStats) {
     // TODO: should be set to userMin > 0
     //  this is a workaround for campaigns that are incorrectly set.
-    return stats.userMin >= 1
+    return stats.userMin.gte(this.conversion.toStablecoin(1))
   }
 
   shouldShowMax(stats: CampaignStats) {
-    return stats.userMax < stats.valueTotal
+    return stats.userMax.lt(stats.valueTotal)
   }
 
   returnFrequency(campaign: CampaignWithInfo) {
@@ -161,7 +147,9 @@ export class AdminCampaignDetailComponent {
       return this.campaignService.finalize(
         campaign.contractAddress, campaign.flavor as CampaignFlavor,
       ).pipe(
-        switchMap(() => this.dialogService.success('The project has been finalized successfully.')),
+        switchMap(() => this.dialogService.success({
+          title: 'The project has been finalized',
+        })),
         tap(() => campaign.finalized = true), // TODO: this could result in bad behavior in some cases
       )
     }

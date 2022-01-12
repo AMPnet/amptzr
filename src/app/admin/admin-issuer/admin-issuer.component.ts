@@ -22,7 +22,7 @@ export class AdminIssuerComponent {
   stableCoinSymbol: string
 
   constructor(private issuerService: IssuerService,
-              private stableCoinService: StablecoinService,
+              private stablecoin: StablecoinService,
               private assetService: AssetService,
               private issuerBasicService: IssuerBasicService,
               private queryService: QueryService,
@@ -35,7 +35,7 @@ export class AdminIssuerComponent {
       ),
     )
 
-    this.stableCoinSymbol = this.stableCoinService.symbol
+    this.stableCoinSymbol = this.stablecoin.config.symbol
 
     const issuerContractAddress$ = this.issuer$.pipe(
       filter(issuerRes => !!issuerRes.value),

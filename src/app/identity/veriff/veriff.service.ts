@@ -5,6 +5,7 @@ import {Observable, of, throwError} from 'rxjs'
 import {switchMap} from 'rxjs/operators'
 import {MatDialog} from '@angular/material/dialog'
 import {VeriffComponent} from './veriff.component'
+import {DialogService} from '../../shared/services/dialog.service'
 
 @Injectable({
   providedIn: 'root',
@@ -13,11 +14,14 @@ export class VeriffService {
   path = `${environment.backendURL}/api/identity`
 
   constructor(private http: BackendHttpClient,
+              private dialog: DialogService,
               private matDialog: MatDialog) {
   }
 
   openVeriffDialog(): Observable<void> {
-    return this.matDialog.open(VeriffComponent).afterClosed().pipe(
+    return this.matDialog.open(VeriffComponent, {
+      ...this.dialog.configDefaults,
+    }).afterClosed().pipe(
       switchMap(isSuccess => !!isSuccess ? of(undefined) :
         throwError(() => 'VERIFF_DISMISSED')),
     )

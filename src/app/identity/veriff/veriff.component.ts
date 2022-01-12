@@ -1,6 +1,6 @@
 import {Component, Optional, Renderer2} from '@angular/core'
-import {BehaviorSubject, EMPTY, from, Observable, Subject, timer} from 'rxjs'
-import {catchError, delay, filter, repeatWhen, switchMap, take, tap} from 'rxjs/operators'
+import {BehaviorSubject, from, Observable, timer} from 'rxjs'
+import {map, shareReplay, switchMap, tap} from 'rxjs/operators'
 import {MESSAGES} from '@veriff/incontext-sdk'
 import {DecisionStatus, State, VeriffService, VeriffSession} from './veriff.service'
 import {BackendUserService} from '../../shared/services/backend/backend-user.service'
@@ -20,8 +20,9 @@ export class VeriffComponent {
   session$: Observable<VeriffSession>
   private sessionSubject = new BehaviorSubject<void>(undefined)
 
-  approved$: Observable<void>
-  private approvedSubject = new Subject<void>()
+  decisionPending$: Observable<boolean>
+  decisionAvailable$: Observable<boolean>
+  isVerificationStartable$: Observable<boolean>
 
   constructor(private renderer2: Renderer2,
               private router: RouterService,
@@ -39,27 +40,24 @@ export class VeriffComponent {
       }),
       tap(session => {
         if (session.decision?.status === DecisionStatus.APPROVED) {
-          this.approvedSubject.next()
+          this.dialogRef.close(true)
         }
       }),
+      shareReplay({bufferSize: 1, refCount: true}),
     )
 
-    this.approved$ = this.approvedSubject.asObservable().pipe(
-      switchMap(() => this.waitUntilIdentityCheckPassed),
-      switchMap(() => this.dialogService.success('User data has been successfully verified.')),
-      catchError(() => {
-        this.dialogRef.close(false)
-        return EMPTY
-      }),
-      tap(() => this.dialogRef.close(true)),
+    this.decisionPending$ = this.session$.pipe(
+      map(session => this.decisionPending(session)),
     )
-  }
 
-  private get waitUntilIdentityCheckPassed() {
-    return this.userService.getUser().pipe(
-      repeatWhen(obs => obs.pipe(delay(1000))),
-      filter(user => user.kyc_completed),
-      take(1),
+    this.decisionAvailable$ = this.session$.pipe(
+      map(session => !!session.decision?.status),
+    )
+
+    this.isVerificationStartable$ = this.session$.pipe(
+      map(session => [State.STARTED, State.CREATED].includes(session.state)
+        || [DecisionStatus.RESUBMISSION_REQUESTED, DecisionStatus.DECLINED].includes(session.decision?.status!),
+      ),
     )
   }
 
@@ -98,20 +96,7 @@ export class VeriffComponent {
     )
   }
 
-  decisionPending(session: VeriffSession): boolean {
+  private decisionPending(session: VeriffSession): boolean {
     return session.state === State.SUBMITTED && session.decision === null
-  }
-
-  showDecision(session: VeriffSession): boolean {
-    return !!session.decision?.status
-  }
-
-  isVerificationStartable(session: VeriffSession) {
-    return [State.STARTED, State.CREATED].includes(session.state)
-      || [DecisionStatus.RESUBMISSION_REQUESTED, DecisionStatus.DECLINED].includes(session.decision?.status!)
-  }
-
-  waitApproved(session: VeriffSession) {
-    return session.decision?.status === DecisionStatus.APPROVED
   }
 }

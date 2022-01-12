@@ -17,8 +17,8 @@
               </div>
 
               <b class="text-sm mt-2 lg:mt-0">
-                (min {{ minAmountToReachSoftCap(campaignData.stats) | currencyDefault }},
-                max {{ maxFundingAmount(campaignData) | currencyDefault }})
+                (min {{ minAmountToReachSoftCap(campaignData.stats) | formatUnit:'stablecoin' | currencyDefault }},
+                max {{ maxFundingAmount(campaignData) | formatUnit:'stablecoin' | currencyDefault }})
               </b>
 
               <div class="flex flex-row gap-2 items-center mt-2 lg:mt-0 lg:justify-around">
@@ -29,9 +29,28 @@
 
               <div class="flex flex-row gap-2 items-center mt-2 lg:mt-0 lg:justify-around">
                 <span class="text-sm">with price per token:</span>
-                <b class="lg:text-center">{{ campaignData.stats.tokenPrice | currencyDefault:'tokenPrice' }}</b>
+                <b
+                  class="lg:text-center">{{ campaignData.stats.tokenPrice | formatUnit:'tokenPrice' | currencyDefault:'tokenPrice' }}</b>
               </div>
             </div>
+          </div>
+
+          <div class="flex flex-col gap-2 min-h-[1rem] mt-2">
+            <ng-container *ngIf="fundingForm.dirty && fundingForm.invalid">
+              <span class="text-red-600 text-xs font-semibold">
+                <ng-container *ngIf="fundingForm.errors?.amountBelowZero">
+                  The amount must be a positive value.
+                </ng-container>
+
+                <ng-container *ngIf="fundingForm.errors?.amountBelowMin">
+                  The amount must be greater or equal to minimum value.
+                </ng-container>
+
+                <ng-container *ngIf="fundingForm.errors?.amountAboveMax">
+                  The amount must be less or equal to maximum value.
+                </ng-container>
+              </span>
+            </ng-container>
           </div>
 
           <div class="flex flex-col lg:flex-row justify-center lg:justify-end mt-8">
