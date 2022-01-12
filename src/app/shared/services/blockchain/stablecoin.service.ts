@@ -12,7 +12,6 @@ import {GasService} from './gas.service'
 import {IssuerService} from './issuer/issuer.service'
 import {NameService} from './name.service'
 import {IssuerFlavor} from './flavors'
-import {parseUnits} from 'ethers/lib/utils'
 import {switchMapTap} from '../../utils/observables'
 
 @Injectable({
@@ -30,18 +29,22 @@ export class StablecoinService {
       map(issuer => ERC20__factory.connect(issuer.stablecoin, provider)),
     )),
     switchMapTap(contract => of(contract).pipe(
-      switchMap(contract => combineLatest([contract.decimals(), contract.symbol()])),
-      tap(([decimals, symbol]) => {
-        this.precisionSub.next(decimals)
-        this.symbolSub.next(symbol)
+      switchMap(contract => combineLatest([
+        of(contract.address),
+        contract.decimals(),
+        contract.symbol(),
+      ])),
+      tap(([address, decimals, symbol]) => {
+        this.configSub.next({address, decimals, symbol})
       }),
     )),
   )
 
-  // TODO: set default to 18 digits when screens for managing
-  //  will be finished.
-  private precisionSub = new BehaviorSubject<number>(6)
-  private symbolSub = new BehaviorSubject<string>('$')
+  private configSub = new BehaviorSubject<StablecoinConfig>({
+    address: constants.AddressZero,
+    decimals: 6,
+    symbol: 'USDC',
+  })
 
   balance$: Observable<BigNumber | undefined> = combineLatest([
     this.contract$,
@@ -66,22 +69,8 @@ export class StablecoinService {
               private issuerService: IssuerService) {
   }
 
-  get address() {
-    return this.preferenceQuery.network.tokenizerConfig.defaultStableCoin
-  }
-
-  get precision() {
-    return this.precisionSub.value
-  }
-
-  get symbol() {
-    return this.symbolSub.value
-  }
-
-  parse(amount: string | number, precision?: number) {
-    const decimals = precision ?? this.precision
-    const roundedAmount = Math.round(Number(amount) * 10 ** decimals) / 10 ** decimals
-    return parseUnits(String(roundedAmount), precision ?? this.precision)
+  get config() {
+    return this.configSub.value
   }
 
   getAllowance$(campaignAddress: string): Observable<StablecoinBigNumber> {
@@ -123,3 +112,9 @@ export class StablecoinService {
  * StablecoinBigNumber is a regular BigNumber, but scaled to stablecoin format.
  */
 export type StablecoinBigNumber = BigNumber
+
+interface StablecoinConfig {
+  address: string
+  decimals: number
+  symbol: string
+}

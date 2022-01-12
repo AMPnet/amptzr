@@ -77,7 +77,7 @@ export class InvestComponent {
 
     this.state$ = campaign$.pipe(
       switchMap(campaign => combineLatest([
-        of(this.stablecoin.symbol),
+        of(this.stablecoin.config.symbol),
         this.stablecoin.balance$,
         this.stablecoin.getAllowance$(campaign.contractAddress),
         of(campaign),

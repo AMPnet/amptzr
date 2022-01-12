@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core'
-import {combineLatest, from, merge, Observable, of, takeWhile, throwError} from 'rxjs'
+import {combineLatest, from, merge, Observable, of, throwError} from 'rxjs'
 import {filter, map, shareReplay, switchMap, take} from 'rxjs/operators'
-import {withInterval, WithStatus, withStatus} from '../../../utils/observables'
+import {WithStatus, withStatus} from '../../../utils/observables'
 import {PreferenceQuery} from '../../../../preference/state/preference.query'
 import {IpfsService} from '../../ipfs/ipfs.service'
 import {DialogService} from '../../dialog.service'
@@ -17,6 +17,7 @@ import {QueryService} from '../query.service'
 import {IssuerBasicService, IssuerBasicState} from './issuer-basic.service'
 import {IssuerCommonState} from './issuer.common'
 import {IssuerFlavor} from '../flavors'
+import {contractEvent} from '../../../utils/ethersjs'
 
 @Injectable({
   providedIn: 'root',
@@ -153,35 +154,16 @@ export class IssuerService {
     )
   }
 
-  // TODO: use this when the address from event is indexed
-  // isWalletApproved$(address: string): Observable<boolean> {
-  //   return this.isWalletApproved(address).pipe(
-  //     switchMap(isApproved => isApproved ? of(true) :
-  //       this.signerService.provider$.pipe(
-  //         map(provider => this.issuerBasicService.contract(address, provider)),
-  //         switchMap(contract => contractEvent(contract, contract.filters.WalletWhitelist(null, address)).pipe(
-  //           take(1),
-  //           map(() => true)
-  //         )),
-  //       )
-  //     )
-  //   )
-  // }
-
   isWalletApproved$(address: string): Observable<boolean> {
     return this.isWalletApproved(address).pipe(
       switchMap(isApproved => isApproved ? of(true) :
         this.signerService.provider$.pipe(
           map(provider => this.issuerBasicService.contract(address, provider)),
-          switchMap(() => merge(
-              of(false),
-              withInterval(this.isWalletApproved(address), 1000).pipe(
-                filter(hasPassed => hasPassed),
-                take(1),
-              ),
-            ),
-          ),
-          takeWhile(hasPassed => !hasPassed, true),
+          switchMap(contract => merge(
+            of(false),
+            contractEvent(contract, contract.filters.WalletWhitelist(null, address)).pipe(map(() => true)),
+            contractEvent(contract, contract.filters.WalletBlacklist(null, address)).pipe(map(() => false)),
+          )),
         ),
       ),
     )

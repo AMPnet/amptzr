@@ -19,10 +19,10 @@
             </ng-container>
           </ng-container>
 
-          <app-explorer-link [value]="stablecoin.address" type="token"
+          <app-explorer-link [value]="stablecoin.config.address" type="token"
                              class="ml-0.5">
           </app-explorer-link>
-          <app-add-to-metamask [value]="stablecoin.address"
+          <app-add-to-metamask [value]="stablecoin.config.address"
                                class="ml-0.5">
           </app-add-to-metamask>
         </span>

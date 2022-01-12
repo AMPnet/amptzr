@@ -17,7 +17,7 @@ export class ConversionService {
   ///
 
   toStablecoin(amount: number | string): StablecoinBigNumber {
-    return parseUnits(String(amount), this.stablecoin.precision)
+    return parseUnits(String(amount), this.stablecoin.config.decimals)
   }
 
   toToken(amount: number | string): StablecoinBigNumber {
@@ -33,7 +33,7 @@ export class ConversionService {
   ///
 
   parseStablecoin(value: StablecoinBigNumber): string {
-    return formatUnits(value, this.stablecoin.precision)
+    return formatUnits(value, this.stablecoin.config.decimals)
   }
 
   parseToken(value: TokenBigNumber): string {
@@ -64,7 +64,7 @@ export class ConversionService {
   calcStablecoin(token: TokenBigNumber, tokenPrice: TokenPriceBigNumber): StablecoinBigNumber {
     return token
       .mul(tokenPrice)
-      .mul(this.pow10(this.stablecoin.precision))
+      .mul(this.pow10(this.stablecoin.config.decimals))
       .div(this.pow10(TokenPrice.precision))
       .div(this.pow10(Token.precision))
   }
@@ -75,7 +75,7 @@ export class ConversionService {
       .mul(this.pow10(TokenPrice.precision))
       .mul(this.pow10(Token.precision))
       .div(tokenPrice)
-      .div(this.pow10(this.stablecoin.precision))
+      .div(this.pow10(this.stablecoin.config.decimals))
   }
 
   // `tokenPrice = stablecoin / token`
@@ -84,7 +84,7 @@ export class ConversionService {
       .mul(this.pow10(Token.precision))
       .mul(this.pow10(TokenPrice.precision))
       .div(token)
-      .div(this.pow10(this.stablecoin.precision))
+      .div(this.pow10(this.stablecoin.config.decimals))
   }
 
   scale(value: BigNumber, scaleValue: number, precision = 18): BigNumber {

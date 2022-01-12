@@ -2,18 +2,18 @@
   <div class="max-w-sm mx-auto px-4 py-2">
     <div class="flex justify-center items-center gap-0.5 mt-6">
       <h2 class="text-3xl">
-        Get {{ stablecoin.symbol }}
+        Get {{ stablecoin.config.symbol }}
       </h2>
 
-      <app-explorer-link [value]="stablecoin.address" type="token">
+      <app-explorer-link [value]="stablecoin.config.address" type="token">
       </app-explorer-link>
 
-      <app-add-to-metamask [value]="stablecoin.address">
+      <app-add-to-metamask [value]="stablecoin.config.address">
       </app-add-to-metamask>
     </div>
 
     <p class="mt-8 mb-10 text-sm text-center">
-      You don't have enough {{ stablecoin.symbol }} in your wallet. Top up
+      You don't have enough {{ stablecoin.config.symbol }} in your wallet. Top up
       with cash or swap with other crypto currencies.
     </p>
 

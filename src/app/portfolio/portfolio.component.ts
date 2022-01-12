@@ -26,6 +26,7 @@ export class PortfolioComponent {
   portfolio$: Observable<PortfolioItemView[]> = combineLatest([
     this.portfolioSub.asObservable(),
     this.sessionQuery.address$,
+    this.stablecoin.balance$,
   ]).pipe(
     switchMap(() => this.queryService.portfolio$),
     switchMap(portfolio => portfolio.length > 0 ? combineLatest(
@@ -44,8 +45,11 @@ export class PortfolioComponent {
     map(v => ({value: v})),
   )
 
-  pending$: Observable<PendingItem | undefined> = this.sessionQuery.address$.pipe(
-    switchMap(address => withInterval(this.autoInvestService.status(address || ''), 8000)),
+  pending$: Observable<PendingItem | undefined> = combineLatest([
+    this.sessionQuery.address$,
+    this.stablecoin.balance$,
+  ]).pipe(
+    switchMap(([address, _balance]) => withInterval(this.autoInvestService.status(address || ''), 8000)),
     map(res => res.auto_invests),
     distinctUntilChanged((prev, curr) => JSON.stringify(prev) === JSON.stringify(curr)),
     switchMap(items => items.length > 0 ? of(items[0]).pipe(

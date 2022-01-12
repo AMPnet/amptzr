@@ -18,7 +18,7 @@ import {WithStatus, withStatus} from '../../shared/utils/observables'
 })
 export class AdminIssuerEditComponent {
   issuer$: Observable<WithStatus<IssuerView>>
-  stableCoinSymbol = this.stableCoinService.symbol
+  stableCoinSymbol = this.stablecoin.config.symbol
 
   updateForm: FormGroup
   updateWalletApproverAddressForm: FormGroup
@@ -27,7 +27,7 @@ export class AdminIssuerEditComponent {
   constructor(private routerService: RouterService,
               private issuerService: IssuerService,
               private issuerBasicService: IssuerBasicService,
-              private stableCoinService: StablecoinService,
+              private stablecoin: StablecoinService,
               private preferenceStore: PreferenceStore,
               private dialogService: DialogService,
               private fb: FormBuilder) {
