@@ -5,9 +5,7 @@
     <div>
       <button app-action-button
               *ngIf="(isBackendAuthorized$ | async) === true"
-              class="flex items-center justify-center text-white lg:w-auto text-sm rounded-full
-                   bg-indigo-800 hover:bg-indigo-900 py-2 lg:mt-0 lg:px-8 px-4 disabled:bg-gray-400
-                   font-semibold tracking-wider"
+              class="app-button !py-2 text-sm flex items-center justify-center lg:mt-0 tracking-wider"
               text="Download"
               [onClick]="downloadTransactionHistory.bind(this)">
         <ng-template #content>
@@ -32,7 +30,7 @@
       </p>
 
       <button app-action-button
-              class="bg-indigo-800 text-white px-8 py-2 rounded-full disabled:bg-gray-400"
+              class="app-button !px-8"
               text="Authorize" loadingText="Authorizing"
               [onClick]="backendAuthorize.bind(this)">
       </button>
