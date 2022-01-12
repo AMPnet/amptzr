@@ -134,14 +134,15 @@ export class DialogService {
     )
   }
 
-  withPermission<T>(action$: Observable<T>, data: DialogPermissionData) {
+  withPermission<A>(data: DialogPermissionData<A>) {
     return this.infoWithOnConfirm({
       icon: DialogIcon.INFO,
-      title: data.message ?? 'Are you sure?',
+      title: data.title ?? 'Are you sure?',
+      message: data.message ?? 'Are you sure?',
       confirm_text: data.confirmText ?? 'OK',
       cancel_text: data.cancelText ?? 'Cancel',
-      cancelable: false,
-      onConfirm: action$,
+      cancelable: true,
+      onConfirm: data.onConfirmAction$ ?? of(undefined),
     }).pipe(
       switchMap(res => res.confirmed ? of(res.onConfirmResult) :
         throwError(() => 'PERMISSION_POPUP_DISMISSED')),
@@ -155,9 +156,10 @@ interface DialogData {
   cancelable?: boolean
 }
 
-interface DialogPermissionData {
+interface DialogPermissionData<A> {
   title?: string
   message?: string
   confirmText?: string
   cancelText?: string
+  onConfirmAction$?: Observable<A>
 }

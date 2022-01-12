@@ -25,15 +25,15 @@
     </div>
 
     <div class="flex flex-col space-y-2 sm:flex-row sm:space-x-4 sm:space-y-0 px-4 justify-center">
-      <button app-action-button
-              [text]="data.confirm_text"
-              [onClick]="confirm(data.onConfirm).bind(this)"
-              class="bg-indigo-800 disabled:bg-gray-400 rounded-full p-2 text-sm font-semibold text-white flex-1">
-      </button>
-
       <button *ngIf="data.cancelable" (click)="cancel()"
               class="bg-gray-200 rounded-full p-2 text-sm font-semibold flex-1">
         {{ data.cancel_text }}
+      </button>
+
+      <button app-action-button
+              [text]="data.confirm_text"
+              [onClick]="confirm(data.onConfirm).bind(this)"
+              class="app-button !p-2 !text-sm flex-1">
       </button>
     </div>
   </div>

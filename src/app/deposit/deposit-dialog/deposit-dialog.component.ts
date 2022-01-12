@@ -57,6 +57,8 @@ export class DepositDialogComponent implements OnInit {
   showRamp(amount: StablecoinBigNumber, campaignAddress?: string) {
     return () => {
       return this.http.ensureAuth.pipe(
+        // ensuring http auth is required to be able
+        // to use faucet service transparently.
         switchMap(() => this.depositRampService.showWidget(amount)),
         tap(state => {
           if (state.purchaseCreated) this.faucetService.topUp.subscribe()
