@@ -31,7 +31,7 @@ export class MagicSubsignerService implements Subsigner {
   }
 
   login(opts: SubsignerLoginOpts): Observable<providers.JsonRpcSigner> {
-    return this.registerMagic.pipe( // TODO: check if logged in (passive login)
+    return this.registerMagic.pipe(
       map(p => new providers.Web3Provider(p as any).getSigner()),
       concatMap(signer => this.checkAuthenticated(signer, opts)),
       concatMap(signer => this.setAddress(signer)),

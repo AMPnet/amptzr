@@ -69,8 +69,9 @@ export class DepositDialogComponent implements OnInit {
             this.autoInvestService.submit(amount, campaignAddress).pipe(
               switchMap(() => this.dialogService.success({
                 title: 'Your investment has been noted',
-                message: 'We will execute the investment as soon as you receive the funds on your Wallet. ' +
-                  'In the meantime, check RAMP emails and view the investment status on Portfolio page.',
+                message: 'We will automatically execute the buy order as soon as you receive the funds on your Wallet.' +
+                  'You will receive emails from RAMP about the wallet funding process. ' +
+                  'Visit the Portfolio page to check the investment status.',
               })),
               switchMap(() => this.stablecoin.approveAmount(campaignAddress, amount)),
             ) : of(undefined)
