@@ -56,7 +56,7 @@ export class IssuerBasicService {
       switchMap(contract => combineLatest([of(contract), this.gasService.overrides])),
       switchMap(([contract, overrides]) => {
         const createData: CreateBasicContractIssuerData = {
-          owner: this.sessionQuery.getValue().address!,
+          owner: this.preferenceQuery.getValue().address!,
           mappedName: data.mappedName,
           stablecoin: data.stablecoinAddress,
           walletApprover: this.preferenceQuery.network.tokenizerConfig.defaultWalletApprover,

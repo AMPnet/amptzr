@@ -51,7 +51,7 @@ export class AssetSimpleService {
       map(([signer, contract]) => contract.connect(signer)),
       switchMap(contract => combineLatest([of(contract), this.gasService.overrides])),
       switchMap(([contract, overrides]) => {
-        const creator = this.sessionQuery.getValue().address!
+        const creator = this.preferenceQuery.getValue().address!
 
         return from(contract.populateTransaction.create({
           creator: creator,

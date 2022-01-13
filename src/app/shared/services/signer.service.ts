@@ -60,8 +60,6 @@ export class SignerService {
 
   private setSigner(signer: providers.JsonRpcSigner): void {
     this.sessionStore.update({
-      address: this.preferenceStore.getValue().address,
-      authProvider: this.preferenceStore.getValue().authProvider,
       signer,
     })
     this.registerListeners()
@@ -69,8 +67,11 @@ export class SignerService {
 
   get ensureAuth(): Observable<providers.JsonRpcSigner> {
     return of(this.sessionQuery.signer).pipe(
-      concatMap(signer => signer ?
-        from(signer.getAddress()).pipe(map(() => signer!)) :
+      concatMap(signer => !!signer ?
+        // Temporarily removed hard get address check due to
+        // long waiting time to get address on some signers.
+        // from(signer.getAddress()).pipe(map(() => signer!)) :
+        of(signer) :
         this.loginDialog.pipe(
           map(() => this.sessionQuery.signer!),
         ),
@@ -119,10 +120,6 @@ export class SignerService {
           JWTAccessToken: '',
           JWTRefreshToken: '',
         })
-        this.sessionStore.update({
-          address: '',
-          signer: undefined,
-        })
       }),
     )
   }
@@ -136,7 +133,7 @@ export class SignerService {
   signMessage(message: string | utils.Bytes): Observable<string> {
     return this.ensureAuth.pipe(
       switchMap(signer => from(signer.signMessage(message))),
-      this.errorService.handleError(true, true),
+      this.errorService.handleError(false, true),
     )
   }
 
@@ -144,7 +141,7 @@ export class SignerService {
     Observable<providers.TransactionResponse> {
     return this.ensureAuth.pipe(
       switchMap(signer => from(signer.sendTransaction(transaction))),
-      this.errorService.handleError(true, true),
+      this.errorService.handleError(false, true),
     )
   }
 
@@ -161,7 +158,6 @@ export class SignerService {
       concatMap(() => this.sessionQuery.signer?.getAddress() || of('')),
       tap(account => {
         if (account) {
-          this.sessionStore.update({address: account})
           this.preferenceStore.update({address: account})
         }
       }),

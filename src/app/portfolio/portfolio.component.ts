@@ -1,6 +1,5 @@
 import {ChangeDetectionStrategy, Component} from '@angular/core'
 import {withInterval, withStatus} from '../shared/utils/observables'
-import {SessionQuery} from '../session/state/session.query'
 import {PortfolioItem, QueryService} from '../shared/services/blockchain/query.service'
 import {distinctUntilChanged, map, shareReplay, switchMap, tap} from 'rxjs/operators'
 import {BehaviorSubject, combineLatest, Observable, of, takeWhile} from 'rxjs'
@@ -13,6 +12,7 @@ import {AutoInvestService} from '../shared/services/backend/auto-invest.service'
 import {AssetService, CommonAssetWithInfo} from '../shared/services/blockchain/asset/asset.service'
 import {ConversionService} from '../shared/services/conversion.service'
 import {TokenBigNumber} from '../shared/utils/token'
+import {PreferenceQuery} from '../preference/state/preference.query'
 
 @Component({
   selector: 'app-portfolio',
@@ -25,7 +25,7 @@ export class PortfolioComponent {
 
   portfolio$: Observable<PortfolioItemView[]> = combineLatest([
     this.portfolioSub.asObservable(),
-    this.sessionQuery.address$,
+    this.preferenceQuery.address$,
     this.stablecoin.balance$,
   ]).pipe(
     switchMap(() => this.queryService.portfolio$),
@@ -46,7 +46,7 @@ export class PortfolioComponent {
   )
 
   pending$: Observable<PendingItem | undefined> = combineLatest([
-    this.sessionQuery.address$,
+    this.preferenceQuery.address$,
     this.stablecoin.balance$,
   ]).pipe(
     switchMap(([address, _balance]) => withInterval(this.autoInvestService.status(address || ''), 8000)),
@@ -78,7 +78,7 @@ export class PortfolioComponent {
     ) : of(undefined)),
   )
 
-  constructor(private sessionQuery: SessionQuery,
+  constructor(private preferenceQuery: PreferenceQuery,
               private queryService: QueryService,
               private dialogService: DialogService,
               public stablecoin: StablecoinService,

@@ -7,10 +7,8 @@ import {Observable} from 'rxjs'
 
 @Injectable({providedIn: 'root'})
 export class PreferenceQuery extends Query<PreferenceState> {
-  constructor(protected store: PreferenceStore) {
-    super(store)
-  }
-
+  address$ = this.select('address')
+  authProvider$ = this.select('authProvider')
   network$ = this.select('chainID').pipe(
     map(chainID => Networks[chainID]),
   )
@@ -18,6 +16,10 @@ export class PreferenceQuery extends Query<PreferenceState> {
   isBackendAuthorized$: Observable<boolean> = this.select().pipe(
     map(state => !!state.JWTAccessToken && !!state.JWTRefreshToken),
   )
+
+  constructor(protected store: PreferenceStore) {
+    super(store)
+  }
 
   get network() {
     return Networks[this.getValue().chainID]

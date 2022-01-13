@@ -1,11 +1,12 @@
 import {ChangeDetectionStrategy, Component} from '@angular/core'
 import {AbstractControl, FormBuilder, FormGroup, ValidationErrors} from "@angular/forms"
-import {of} from "rxjs"
+import {last, of} from "rxjs"
 import {RouterService} from "../../shared/services/router.service"
-import {DialogService} from "../../shared/services/dialog.service"
 import {DepositRampService} from '../deposit-ramp.service'
-import {switchMap} from 'rxjs/operators'
+import {switchMap, tap} from 'rxjs/operators'
 import {ConversionService} from '../../shared/services/conversion.service'
+import {FaucetService} from '../../shared/services/backend/faucet.service'
+import {BackendHttpClient} from '../../shared/services/backend/backend-http-client.service'
 
 @Component({
   selector: 'app-deposit-flow',
@@ -21,7 +22,8 @@ export class DepositFlowComponent {
               private routerService: RouterService,
               private depositRampService: DepositRampService,
               private conversion: ConversionService,
-              private dialogService: DialogService) {
+              private http: BackendHttpClient,
+              private faucetService: FaucetService) {
     this.depositForm = this.fb.group({
       amount: [0, DepositFlowComponent.validAmount],
     })
@@ -30,7 +32,12 @@ export class DepositFlowComponent {
   showRamp() {
     const amount = this.conversion.toStablecoin(this.depositForm.value.amount)
 
-    return this.depositRampService.showWidget(amount).pipe(
+    return this.http.ensureAuth.pipe(
+      switchMap(() => this.depositRampService.showWidget(amount)),
+      tap(state => {
+        if (state.purchaseCreated) this.faucetService.topUp.subscribe()
+      }),
+      last(),
       switchMap(state => {
         if (state.successFinish) {
           // payload is non-empty only when user clicks on the success button

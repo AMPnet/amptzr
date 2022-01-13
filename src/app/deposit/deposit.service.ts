@@ -1,6 +1,5 @@
 import {Injectable} from '@angular/core'
 import {combineLatest, Observable, of} from 'rxjs'
-import {SessionQuery} from '../session/state/session.query'
 import {ToUrlIPFSPipe} from '../shared/pipes/to-url-ipfs.pipe'
 import {switchMap, take} from 'rxjs/operators'
 import {IssuerService} from '../shared/services/blockchain/issuer/issuer.service'
@@ -8,15 +7,16 @@ import {StablecoinBigNumber, StablecoinService} from '../shared/services/blockch
 import {SignerService} from '../shared/services/signer.service'
 import {DepositDialogComponent, DepositDialogData} from './deposit-dialog/deposit-dialog.component'
 import {DialogService} from '../shared/services/dialog.service'
+import {PreferenceQuery} from '../preference/state/preference.query'
 
 @Injectable({
   providedIn: 'root',
 })
 export class DepositService {
-  address$ = this.sessionQuery.address$
+  address$ = this.preferenceQuery.address$
   issuer$ = this.issuerService.issuer$
 
-  constructor(private sessionQuery: SessionQuery,
+  constructor(private preferenceQuery: PreferenceQuery,
               private issuerService: IssuerService,
               private signerService: SignerService,
               private toUrlIpfsPipe: ToUrlIPFSPipe,

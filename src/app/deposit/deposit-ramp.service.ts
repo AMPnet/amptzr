@@ -1,7 +1,6 @@
 import {Injectable} from '@angular/core'
 import {combineLatest, defer, Observable, of, scan} from 'rxjs'
 import {RampInstantEvents, RampInstantEventTypes, RampInstantSDK} from '@ramp-network/ramp-instant-sdk'
-import {SessionQuery} from '../session/state/session.query'
 import {ToUrlIPFSPipe} from '../shared/pipes/to-url-ipfs.pipe'
 import {PreferenceQuery} from '../preference/state/preference.query'
 import {switchMap, take} from 'rxjs/operators'
@@ -13,13 +12,12 @@ import {ConversionService} from '../shared/services/conversion.service'
   providedIn: 'root',
 })
 export class DepositRampService {
-  address$ = this.sessionQuery.address$
+  address$ = this.preferenceQuery.address$
   issuer$ = this.issuerService.issuer$
 
   isAvailable$: Observable<boolean> = defer(() => of(!!this.preferenceQuery.network.ramp))
 
-  constructor(private sessionQuery: SessionQuery,
-              private issuerService: IssuerService,
+  constructor(private issuerService: IssuerService,
               private toUrlIpfsPipe: ToUrlIPFSPipe,
               private stablecoinService: StablecoinService,
               private conversion: ConversionService,

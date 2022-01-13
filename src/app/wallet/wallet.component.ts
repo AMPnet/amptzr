@@ -1,5 +1,4 @@
 import {ChangeDetectionStrategy, Component} from '@angular/core'
-import {SessionQuery} from '../session/state/session.query'
 import {SignerService} from '../shared/services/signer.service'
 import {finalize, switchMap} from 'rxjs/operators'
 import {Observable, of} from 'rxjs'
@@ -24,17 +23,16 @@ export class WalletComponent {
   authProviderType = AuthProvider
   transactionType = TransactionType
 
-  authProvider$ = this.sessionQuery.authProvider$
+  authProvider$ = this.preferenceQuery.authProvider$
 
   user$: Observable<Partial<BackendUser>> = this.preferenceQuery.isBackendAuthorized$.pipe(
     switchMap(isAuth => isAuth ? this.backendUserService.getUser() : of({})),
   )
 
-  address$ = this.sessionQuery.address$
+  address$ = this.preferenceQuery.address$
   balance$ = withStatus(this.stablecoin.balance$)
 
-  constructor(private sessionQuery: SessionQuery,
-              private preferenceQuery: PreferenceQuery,
+  constructor(private preferenceQuery: PreferenceQuery,
               private signerService: SignerService,
               public stablecoin: StablecoinService,
               private userService: UserService,

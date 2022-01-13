@@ -1,9 +1,9 @@
 import {ChangeDetectionStrategy, Component} from '@angular/core'
-import {SessionQuery} from "../../../session/state/session.query"
 import {AuthProvider} from 'src/app/preference/state/preference.store'
 import {TailwindService} from "../../../shared/services/tailwind.service"
 import {map, startWith} from "rxjs/operators"
 import {Observable} from "rxjs"
+import {PreferenceQuery} from '../../../preference/state/preference.query'
 
 @Component({
   selector: 'app-wallet-button',
@@ -12,12 +12,12 @@ import {Observable} from "rxjs"
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class WalletButtonComponent {
-  address$ = this.sessionQuery.address$
-  authProvider$ = this.sessionQuery.authProvider$
+  address$ = this.preferenceQuery.address$
+  authProvider$ = this.preferenceQuery.authProvider$
   authProviderIconSize$: Observable<number>
   AuthProvider = AuthProvider
 
-  constructor(private sessionQuery: SessionQuery,
+  constructor(private preferenceQuery: PreferenceQuery,
               private tailwindService: TailwindService) {
     this.authProviderIconSize$ = this.tailwindService.screenResize$.pipe(
       startWith(this.tailwindService.getScreen()),

@@ -70,7 +70,7 @@ export class CampaignVestingService {
       map(([signer, contract]) => contract.connect(signer)),
       switchMap(contract => combineLatest([of(contract), this.gasService.overrides])),
       switchMap(([contract, overrides]) => {
-        const owner = this.sessionQuery.getValue().address!
+        const owner = this.preferenceQuery.getValue().address!
 
         return from(contract.populateTransaction.create(
           owner, data.slug, data.assetAddress,

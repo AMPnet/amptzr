@@ -1,6 +1,5 @@
 import {Injectable} from '@angular/core'
 import {combineLatest, Observable} from 'rxjs'
-import {SessionQuery} from '../session/state/session.query'
 import {ToUrlIPFSPipe} from '../shared/pipes/to-url-ipfs.pipe'
 import {PreferenceQuery} from '../preference/state/preference.query'
 import {filter, map} from 'rxjs/operators'
@@ -18,8 +17,7 @@ import {SignerService} from '../shared/services/signer.service'
 export class SwapUniswapService {
   isAvailable$: Observable<boolean>
 
-  constructor(private sessionQuery: SessionQuery,
-              private signer: SignerService,
+  constructor(private signer: SignerService,
               private issuerService: IssuerService,
               private toUrlIpfsPipe: ToUrlIPFSPipe,
               private stablecoinService: StablecoinService,
@@ -28,7 +26,7 @@ export class SwapUniswapService {
               private preferenceQuery: PreferenceQuery) {
     const isConnectedWithMetamask$: Observable<boolean> = combineLatest([
       this.signer.injectedWeb3$,
-      this.sessionQuery.authProvider$,
+      this.preferenceQuery.authProvider$,
     ]).pipe(
       map(([ethereum, authProvider]) =>
         !!ethereum.isMetaMask && authProvider === AuthProvider.METAMASK,

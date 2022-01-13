@@ -161,34 +161,34 @@
               <div class="mt-4" *ngIf="!investmentForm.errors?.campaignMaxReached">
                 <button app-action-button
                         class="w-full app-button"
-                        *ngIf="(isUserLoggedIn$ | async) === false"
+                        [hidden]="(isUserLoggedIn$ | async) === true"
                         [onClick]="login.bind(this)"
                         text="Log in"></button>
 
                 <button app-action-button
                         class="w-full app-button"
-                        *ngIf="shouldOnlyPassKyc$ | async"
+                        [hidden]="(shouldOnlyPassKyc$ | async) !== true"
                         [disabled]="investmentForm.invalid"
                         [onClick]="passKyc(state.campaign).bind(this)"
                         text="Next 📝"></button>
 
                 <button app-action-button
                         class="w-full app-button"
-                        *ngIf="shouldOnlyGetFunds$ | async"
+                        [hidden]="(shouldOnlyGetFunds$ | async) !== true"
                         [disabled]="!investmentForm.errors?.stablecoinAmountAboveBalance"
                         [onClick]="getFunds(state.campaign).bind(this)"
                         text="Next 💰"></button>
 
                 <button app-action-button
                         class="w-full app-button"
-                        *ngIf="shouldPassKycAndGetFunds$ | async"
+                        [hidden]="(shouldPassKycAndGetFunds$ | async) !== true"
                         [disabled]="!investmentForm.errors?.stablecoinAmountAboveBalance"
                         [onClick]="passKycAndGetFunds(state.campaign).bind(this)"
                         text="Next 📝💰"></button>
 
                 <button app-action-button
                         class="w-full app-button"
-                        *ngIf="shouldApprove$ | async"
+                        [hidden]="(shouldApprove$ | async) !== true"
                         [onClick]="approveAmount(state.campaign).bind(this)"
                         [disabled]="investmentForm.invalid"
                         text="Approve">
@@ -196,7 +196,7 @@
 
                 <button app-action-button
                         class="w-full app-button"
-                        *ngIf="shouldBuy$ | async"
+                        [hidden]="(shouldBuy$ | async) !== true"
                         [disabled]="investmentForm.invalid"
                         [onClick]="invest(state.campaign).bind(this)"
                         text="Buy">
