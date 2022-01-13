@@ -1,11 +1,10 @@
-import {create as ipfsCreate} from 'ipfs-http-client'
+import {create as ipfsCreate, IPFSHTTPClient} from 'ipfs-http-client'
 import {from, Observable} from 'rxjs'
-import {IPFS} from 'ipfs-core-types'
 import {environment} from '../../../../environments/environment'
 import {IPFSAddResult, IPFSApi} from './ipfs.service.types'
 
 export class IpfsHttpApiService implements IPFSApi {
-  client: IPFS
+  client: IPFSHTTPClient
 
   constructor() {
     this.client = ipfsCreate({

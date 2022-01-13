@@ -24,10 +24,9 @@ export class IpfsService {
 
   toCID(value: any): CID | undefined {
     try {
-      const cid = new CID(value)
-      if (CID.isCID(cid)) {
-        return cid
-      }
+      const cid = CID.parse(value)
+
+      if (CID.asCID(cid)) return cid
     } catch (_e) {
       return undefined
     }

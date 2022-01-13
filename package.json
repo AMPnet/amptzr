@@ -47,7 +47,7 @@
     "ethers": "^5.1.4",
     "fx-percentage": "^3.0.1",
     "ipfs-core-types": "^0.5.2",
-    "ipfs-http-client": "^50.1.2",
+    "ipfs-http-client": "^55.0.0",
     "magic-sdk": "^7.0.0",
     "ngx-currency": "^2.5.2",
     "ngx-quill": "^16.0.1",
