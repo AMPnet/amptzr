@@ -88,7 +88,6 @@ export class MagicSubsignerService implements Subsigner {
         this.forceLogin(opts) :
         from(this.subprovider!.user.isLoggedIn()),
       ),
-      tap(v => console.log('islogged in', v)),
       concatMap(authRes => authRes ? of(authRes) : throwError(() => 'NO_ADDRESS')),
       concatMap(() => of(signer)),
     )
