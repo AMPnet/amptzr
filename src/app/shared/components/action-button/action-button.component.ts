@@ -53,6 +53,10 @@ export class ActionButtonComponent implements OnInit, OnDestroy {
 
     this.loading = true
     this.sub = this.onClick().subscribe({
+      error: () => {
+        this.loading = false
+        ɵmarkDirty(this)
+      },
       complete: () => {
         this.loading = false
         ɵmarkDirty(this)
