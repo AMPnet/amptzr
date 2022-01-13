@@ -93,7 +93,7 @@
             <div class="w-full h-px bg-gray-200 my-2"></div>
 
             <div>
-              <div class="flex flex-col gap-6 sm:flex-row">
+              <div class="flex flex-col gap-6 sm:flex-row items-start">
                 <div class="flex justify-center">
                   <a routerLink="{{ '/offers/' + item.campaign.contractAddress | issuerPath }}">
                     <img class="w-40 h-40 object-contain bg-white"
@@ -103,7 +103,7 @@
 
                 <div class="flex-grow">
                   <!-- TODO: add link to asset when asset page is implemented -->
-                  <h2 class="text-lg font-semibold mt-2">
+                  <h2 class="text-lg font-semibold">
                     {{ item.asset.name }}
                   </h2>
 
@@ -163,7 +163,7 @@
         <section>
           <div *ngFor="let item of portfolio" class="flex flex-col p-6 bg-white rounded-3xl mt-6">
             <div>
-              <div class="flex flex-col gap-6 sm:flex-row">
+              <div class="flex flex-col gap-6 sm:flex-row items-start">
                 <div class="flex justify-center">
                   <a routerLink="{{ '/offers/' + item.campaign.contractAddress | issuerPath }}">
                     <img class="w-40 h-40 object-contain bg-white"
@@ -173,7 +173,7 @@
 
                 <div class="flex-grow">
                   <!-- TODO: add link to asset when asset page is implemented -->
-                  <h2 class="text-lg font-semibold mt-2">
+                  <h2 class="text-lg font-semibold">
                     {{ item.asset.name }}
                   </h2>
 
