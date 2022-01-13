@@ -3,8 +3,6 @@ import {Store, StoreConfig} from '@datorama/akita'
 import {providers} from 'ethers'
 
 export interface SessionState {
-  // address?: string;
-  // authProvider?: AuthProvider | '';
   signer?: providers.JsonRpcSigner;
   provider?: providers.Provider;
 }
