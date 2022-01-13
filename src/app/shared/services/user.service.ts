@@ -6,6 +6,7 @@ import {combineLatest, from, Observable} from 'rxjs'
 import {SessionQuery} from '../../session/state/session.query'
 import {IssuerService} from './blockchain/issuer/issuer.service'
 import {BigNumber} from 'ethers'
+import {PreferenceQuery} from '../../preference/state/preference.query'
 
 @Injectable({
   providedIn: 'root',
@@ -16,11 +17,12 @@ export class UserService {
 
   constructor(private signerService: SignerService,
               private sessionQuery: SessionQuery,
+              private preferenceQuery: PreferenceQuery,
               private issuerService: IssuerService,
               private http: BackendHttpClient) {
     this.isAdmin$ = combineLatest([
       this.sessionQuery.isLoggedIn$,
-      this.sessionQuery.address$,
+      this.preferenceQuery.address$,
       this.issuerService.issuer$,
     ]).pipe(
       map(([isLoggedIn, address, issuer]) => {
@@ -34,7 +36,7 @@ export class UserService {
       shareReplay(1),
     )
 
-    this.nativeTokenBalance$ = combineLatest([this.sessionQuery.provider$, this.sessionQuery.address$]).pipe(
+    this.nativeTokenBalance$ = combineLatest([this.sessionQuery.provider$, this.preferenceQuery.address$]).pipe(
       switchMap(([provider, address]) => from(provider.getBalance(address!))),
       shareReplay({bufferSize: 1, refCount: true}),
     )

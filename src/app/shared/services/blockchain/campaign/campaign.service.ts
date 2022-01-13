@@ -21,12 +21,14 @@ import {iso8601} from '../../../../../../types/common'
 import {TokenBigNumber} from '../../../utils/token'
 import {TokenPriceBigNumber} from '../../../utils/token-price'
 import {contractEvent} from '../../../utils/ethersjs'
+import {PreferenceQuery} from '../../../../preference/state/preference.query'
 
 @Injectable({
   providedIn: 'root',
 })
 export class CampaignService {
   constructor(private sessionQuery: SessionQuery,
+              private preferenceQuery: PreferenceQuery,
               private ipfsService: IpfsService,
               private signerService: SignerService,
               private errorService: ErrorService,
@@ -206,7 +208,7 @@ export class CampaignService {
       this.signerService.ensureAuth,
     ]).pipe(
       switchMap(([contract, _signer]) =>
-        contract.investmentAmount(this.sessionQuery.getValue().address!)),
+        contract.investmentAmount(this.preferenceQuery.getValue().address!)),
     )
   }
 

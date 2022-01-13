@@ -47,7 +47,7 @@ export class AssetBasicService {
       switchMap(contract => combineLatest([of(contract), this.gasService.overrides])),
       switchMap(([contract, overrides]) => {
         return from(contract.populateTransaction.create({
-          creator: this.sessionQuery.getValue().address!,
+          creator: this.preferenceQuery.getValue().address!,
           issuer: data.issuer,
           apxRegistry: this.preferenceQuery.network.tokenizerConfig.apxRegistry,
           nameRegistry: this.preferenceQuery.network.tokenizerConfig.nameRegistry,

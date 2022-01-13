@@ -4,7 +4,6 @@ import {filter, map, switchMap, take} from 'rxjs/operators'
 import {VeriffService} from './veriff/veriff.service'
 import {BackendUserService} from '../shared/services/backend/backend-user.service'
 import {SignerService} from '../shared/services/signer.service'
-import {SessionQuery} from '../session/state/session.query'
 import {PreferenceQuery} from '../preference/state/preference.query'
 import {CampaignService, CampaignWithInfo} from '../shared/services/blockchain/campaign/campaign.service'
 import {IssuerService} from '../shared/services/blockchain/issuer/issuer.service'
@@ -16,7 +15,6 @@ import {DialogService} from '../shared/services/dialog.service'
 export class IdentityService {
   constructor(private backendUser: BackendUserService,
               private signerService: SignerService,
-              private sessionQuery: SessionQuery,
               private preferenceQuery: PreferenceQuery,
               private issuerService: IssuerService,
               private dialogService: DialogService,
@@ -34,7 +32,7 @@ export class IdentityService {
     return this.signerService.ensureAuth.pipe(take(1),
       switchMap(() => this.campaignService.isWhitelistRequired(campaign).pipe(
         switchMap(isWhitelistRequired => !isWhitelistRequired ? of(true) :
-          this.issuerService.isWalletApproved(this.sessionQuery.getValue().address!),
+          this.issuerService.isWalletApproved(this.preferenceQuery.getValue().address!),
         ))),
     )
   }
@@ -43,7 +41,7 @@ export class IdentityService {
     return this.signerService.ensureAuth.pipe(
       switchMap(() => this.campaignService.isWhitelistRequired(campaign).pipe(
         switchMap(isWhitelistRequired => !isWhitelistRequired ? of(true) :
-          this.issuerService.isWalletApproved$(this.sessionQuery.getValue().address!),
+          this.issuerService.isWalletApproved$(this.preferenceQuery.getValue().address!),
         ))),
     )
   }
@@ -71,7 +69,7 @@ export class IdentityService {
   }
 
   private get waitUntilIssuerCheckPassed(): Observable<void> {
-    return this.issuerService.isWalletApproved$(this.sessionQuery.getValue().address!).pipe(
+    return this.issuerService.isWalletApproved$(this.preferenceQuery.getValue().address!).pipe(
       filter(hasPassed => hasPassed),
       take(1),
       map(() => undefined),

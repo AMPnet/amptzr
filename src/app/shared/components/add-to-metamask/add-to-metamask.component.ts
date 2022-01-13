@@ -18,7 +18,7 @@ export class AddToMetamaskComponent {
 
   isAvailable$: Observable<boolean> = combineLatest([
     this.signer.injectedWeb3$,
-    this.sessionQuery.authProvider$,
+    this.preferenceQuery.authProvider$,
   ]).pipe(
     map(([ethereum, authProvider]) =>
       !!ethereum.isMetaMask && authProvider === AuthProvider.METAMASK,

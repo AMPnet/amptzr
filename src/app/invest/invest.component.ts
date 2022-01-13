@@ -18,6 +18,7 @@ import {AssetService, CommonAssetWithInfo} from '../shared/services/blockchain/a
 import {SignerService} from '../shared/services/signer.service'
 import {IdentityService} from '../identity/identity.service'
 import {DepositService} from '../deposit/deposit.service'
+import {PreferenceQuery} from '../preference/state/preference.query'
 
 @Component({
   selector: 'app-invest',
@@ -45,6 +46,7 @@ export class InvestComponent {
               private assetService: AssetService,
               private nameService: NameService,
               private sessionQuery: SessionQuery,
+              private preferenceQuery: PreferenceQuery,
               private signerService: SignerService,
               private stablecoin: StablecoinService,
               private conversion: ConversionService,
@@ -68,7 +70,7 @@ export class InvestComponent {
     )
 
     const preInvestData$: Observable<PreInvestData> = combineLatest([
-      this.sessionQuery.address$,
+      this.preferenceQuery.address$,
       campaign$,
     ]).pipe(
       switchMap(([_address, campaign]) => this.investService.preInvestData(campaign)),
@@ -111,7 +113,7 @@ export class InvestComponent {
     const shouldPassKYC$ = combineLatest([
       this.isUserLoggedIn$,
       this.state$,
-      this.sessionQuery.address$,
+      this.preferenceQuery.address$,
     ]).pipe(
       switchMap(([isUserLoggedIn, state]) => {
         if (!isUserLoggedIn) return of(false)

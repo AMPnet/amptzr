@@ -48,7 +48,7 @@ export class StablecoinService {
 
   balance$: Observable<BigNumber | undefined> = combineLatest([
     this.contract$,
-    this.sessionQuery.address$,
+    this.preferenceQuery.address$,
   ]).pipe(
     switchMap(([contract, address]) => !address ? of(undefined) : merge(
       of(undefined),
@@ -76,7 +76,7 @@ export class StablecoinService {
   getAllowance$(campaignAddress: string): Observable<StablecoinBigNumber> {
     return combineLatest([
       this.contract$,
-      this.sessionQuery.address$,
+      this.preferenceQuery.address$,
     ]).pipe(
       switchMap(([contract, address]) => !address ? of(constants.Zero) : merge(
         of(undefined),
