@@ -15,6 +15,7 @@ import {DialogService} from '../../shared/services/dialog.service'
 import {BackendHttpClient} from '../../shared/services/backend/backend-http-client.service'
 import {PreferenceQuery} from '../../preference/state/preference.query'
 import {AuthProvider} from '../../preference/state/preference.store'
+import {RampInstantEventTypes} from '@ramp-network/ramp-instant-sdk'
 
 
 @Component({
@@ -64,7 +65,9 @@ export class DepositDialogComponent implements OnInit {
           setEmail: this.preferenceQuery.getValue().authProvider === AuthProvider.MAGIC,
         })),
         tap(state => {
-          if (state.purchaseCreated) this.faucetService.topUp.subscribe()
+          if (state.event.type === RampInstantEventTypes.PURCHASE_CREATED) {
+            this.faucetService.topUp.subscribe()
+          }
         }),
         last(),
         switchMapTap(state => {

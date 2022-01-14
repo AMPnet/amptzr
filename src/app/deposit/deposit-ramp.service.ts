@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core'
-import {combineLatest, defer, Observable, of, scan} from 'rxjs'
+import {combineLatest, defer, fromEventPattern, Observable, of, scan, takeWhile, throwError} from 'rxjs'
 import {RampInstantEvents, RampInstantEventTypes, RampInstantSDK} from '@ramp-network/ramp-instant-sdk'
 import {ToUrlIPFSPipe} from '../shared/pipes/to-url-ipfs.pipe'
 import {PreferenceQuery} from '../preference/state/preference.query'
@@ -35,35 +35,29 @@ export class DepositRampService {
       this.issuer$, this.address$, email$,
     ]).pipe(take(1),
       switchMap(([issuer, address, email]) => {
-        return new Observable<RampInstantEvents>(observer => {
-          const rampConfig = this.preferenceQuery.network.ramp
+        const rampConfig = this.preferenceQuery.network.ramp
+        if (!rampConfig) {
+          return throwError(() => 'Ramp network is not configured for this network.')
+        }
 
-          if (!rampConfig) {
-            observer.error('Ramp network is not configured for this network.')
-            return
-          }
-
-          const rampWindow = new RampInstantSDK({
-            hostAppName: issuer.infoData.name,
-            hostLogoUrl: this.toUrlIpfsPipe.transform(issuer.infoData.logo),
-            hostApiKey: issuer.infoData.rampApiKey,
-            swapAsset: rampConfig.swapAsset,
-            swapAmount: depositAmount.toString(),
-            userAddress: address,
-            userEmailAddress: email,
-            url: rampConfig.url,
-            variant: 'auto',
-          })
-
-          rampWindow.on('*', event => {
-            observer.next(event as any)
-            if (event.type === RampInstantEventTypes.WIDGET_CLOSE) {
-              observer.complete()
-            }
-          })
-
-          rampWindow.show()
+        const rampWindow = new RampInstantSDK({
+          hostAppName: issuer.infoData.name,
+          hostLogoUrl: this.toUrlIpfsPipe.transform(issuer.infoData.logo),
+          hostApiKey: issuer.infoData.rampApiKey,
+          swapAsset: rampConfig.swapAsset,
+          swapAmount: depositAmount.toString(),
+          userAddress: address,
+          userEmailAddress: email,
+          url: rampConfig.url,
+          variant: 'auto',
         })
+
+        rampWindow.show()
+
+        return fromEventPattern<RampInstantEvents>(
+          handler => rampWindow.on('*', handler),
+          handler => rampWindow.unsubscribe('*', handler),
+        )
       }),
       scan((acc, event) => {
         return ({
@@ -73,11 +67,8 @@ export class DepositRampService {
             event.type === RampInstantEventTypes.WIDGET_CLOSE && !!event.payload,
           event: event,
         }) as EventWithState
-      }, {
-        purchaseCreated: false,
-        successFinish: false,
-        event: undefined as unknown,
-      } as EventWithState),
+      }, {} as EventWithState),
+      takeWhile(state => state.event.type !== RampInstantEventTypes.WIDGET_CLOSE, true),
     )
   }
 }

@@ -9,6 +9,7 @@ import {FaucetService} from '../../shared/services/backend/faucet.service'
 import {BackendHttpClient} from '../../shared/services/backend/backend-http-client.service'
 import {AuthProvider} from '../../preference/state/preference.store'
 import {PreferenceQuery} from '../../preference/state/preference.query'
+import {RampInstantEventTypes} from '@ramp-network/ramp-instant-sdk'
 
 @Component({
   selector: 'app-deposit-flow',
@@ -40,7 +41,9 @@ export class DepositFlowComponent {
         setEmail: this.preferenceQuery.getValue().authProvider === AuthProvider.MAGIC,
       })),
       tap(state => {
-        if (state.purchaseCreated) this.faucetService.topUp.subscribe()
+        if (state.event.type === RampInstantEventTypes.PURCHASE_CREATED) {
+          this.faucetService.topUp.subscribe()
+        }
       }),
       last(),
       switchMap(state => {

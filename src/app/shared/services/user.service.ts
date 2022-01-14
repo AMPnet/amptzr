@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core'
 import {SignerService} from './signer.service'
-import {concatMap, distinctUntilChanged, filter, map, pairwise, shareReplay, switchMap, tap} from 'rxjs/operators'
+import {concatMap, distinctUntilChanged, filter, map, pairwise, shareReplay, switchMap} from 'rxjs/operators'
 import {BackendHttpClient} from './backend/backend-http-client.service'
 import {combineLatest, from, Observable} from 'rxjs'
 import {SessionQuery} from '../../session/state/session.query'
@@ -48,7 +48,6 @@ export class UserService {
 
     this.preferenceQuery.isBackendAuthorized$.pipe(
       pairwise(),
-      tap(t => console.log(t)),
       filter(([prev, curr]) => !prev && curr
         && this.preferenceQuery.getValue().authProvider === AuthProvider.MAGIC),
       concatMap(() => this.backendUserService.getUser()),
