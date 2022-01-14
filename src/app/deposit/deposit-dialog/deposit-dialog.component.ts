@@ -13,6 +13,8 @@ import {RouterService} from '../../shared/services/router.service'
 import {switchMapTap} from '../../shared/utils/observables'
 import {DialogService} from '../../shared/services/dialog.service'
 import {BackendHttpClient} from '../../shared/services/backend/backend-http-client.service'
+import {PreferenceQuery} from '../../preference/state/preference.query'
+import {AuthProvider} from '../../preference/state/preference.store'
 
 
 @Component({
@@ -32,6 +34,7 @@ export class DepositDialogComponent implements OnInit {
 
   constructor(@Inject(MAT_DIALOG_DATA) @Optional() public data: DepositDialogData,
               @Optional() private dialogRef: MatDialogRef<DepositDialogComponent>,
+              private preferenceQuery: PreferenceQuery,
               private dialogService: DialogService,
               private router: RouterService,
               public stablecoin: StablecoinService,
@@ -57,9 +60,9 @@ export class DepositDialogComponent implements OnInit {
   showRamp(amount: StablecoinBigNumber, campaignAddress?: string) {
     return () => {
       return this.http.ensureAuth.pipe(
-        // ensuring http auth is required to be able
-        // to use faucet service transparently.
-        switchMap(() => this.depositRampService.showWidget(amount)),
+        switchMap(() => this.depositRampService.showWidget(amount, {
+          setEmail: this.preferenceQuery.getValue().authProvider === AuthProvider.MAGIC,
+        })),
         tap(state => {
           if (state.purchaseCreated) this.faucetService.topUp.subscribe()
         }),

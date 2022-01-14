@@ -114,4 +114,8 @@ export class MagicSubsignerService implements Subsigner {
   showSettings() {
     return from(this.subprovider!.user.showSettings())
   }
+
+  getMetadata() {
+    return from(this.subprovider!.user.getMetadata())
+  }
 }

@@ -3,10 +3,11 @@ import {combineLatest, defer, Observable, of, scan} from 'rxjs'
 import {RampInstantEvents, RampInstantEventTypes, RampInstantSDK} from '@ramp-network/ramp-instant-sdk'
 import {ToUrlIPFSPipe} from '../shared/pipes/to-url-ipfs.pipe'
 import {PreferenceQuery} from '../preference/state/preference.query'
-import {switchMap, take} from 'rxjs/operators'
+import {map, switchMap, take} from 'rxjs/operators'
 import {IssuerService} from '../shared/services/blockchain/issuer/issuer.service'
 import {StablecoinBigNumber, StablecoinService} from '../shared/services/blockchain/stablecoin.service'
 import {ConversionService} from '../shared/services/conversion.service'
+import {BackendUserService} from '../shared/services/backend/backend-user.service'
 
 @Injectable({
   providedIn: 'root',
@@ -21,14 +22,19 @@ export class DepositRampService {
               private toUrlIpfsPipe: ToUrlIPFSPipe,
               private stablecoinService: StablecoinService,
               private conversion: ConversionService,
+              private backendUserService: BackendUserService,
               private preferenceQuery: PreferenceQuery) {
   }
 
-  showWidget(depositAmount: StablecoinBigNumber): Observable<EventWithState> {
+  showWidget(depositAmount: StablecoinBigNumber, opts?: { setEmail: boolean }): Observable<EventWithState> {
+    const email$ = opts?.setEmail ? this.backendUserService.getUser().pipe(
+      map(user => !!user.email ? user.email : ''),
+    ) : of('')
+
     return combineLatest([
-      this.issuer$, this.address$,
+      this.issuer$, this.address$, email$,
     ]).pipe(take(1),
-      switchMap(([issuer, address]) => {
+      switchMap(([issuer, address, email]) => {
         return new Observable<RampInstantEvents>(observer => {
           const rampConfig = this.preferenceQuery.network.ramp
 
@@ -44,6 +50,7 @@ export class DepositRampService {
             swapAsset: rampConfig.swapAsset,
             swapAmount: depositAmount.toString(),
             userAddress: address,
+            userEmailAddress: email,
             url: rampConfig.url,
             variant: 'auto',
           })

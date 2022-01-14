@@ -5,43 +5,43 @@ import {environment} from '../../../environments/environment'
 import {IssuerFlavor} from '../../shared/services/blockchain/flavors'
 
 export interface PreferenceState {
-    address: string;
-    authProvider: AuthProvider | '';
-    JWTAccessToken: string;
-    JWTRefreshToken: string;
-    chainID: ChainID;
-    issuer: {
-        address: string,
-        flavor: IssuerFlavor,
-        slug?: string
-    }
+  address: string;
+  authProvider: AuthProvider | '';
+  JWTAccessToken: string;
+  JWTRefreshToken: string;
+  chainID: ChainID;
+  issuer: {
+    address: string,
+    flavor: IssuerFlavor,
+    slug?: string
+  }
 }
 
 export function createInitialState(): PreferenceState {
-    return {
-        address: '',
-        authProvider: '',
-        JWTAccessToken: '',
-        JWTRefreshToken: '',
-        chainID: environment.fixed.chainID || MaticNetwork.chainID,
-        issuer: {
-            address: environment.fixed.issuer || '',
-            flavor: IssuerFlavor.BASIC,
-        },
-    }
+  return {
+    address: '',
+    authProvider: '',
+    JWTAccessToken: '',
+    JWTRefreshToken: '',
+    chainID: environment.fixed.chainID || MaticNetwork.chainID,
+    issuer: {
+      address: environment.fixed.issuer || '',
+      flavor: IssuerFlavor.BASIC,
+    },
+  }
 }
 
 @Injectable({providedIn: 'root'})
 @StoreConfig({name: 'preference'})
 export class PreferenceStore extends Store<PreferenceState> {
-    constructor() {
-        super(createInitialState())
-    }
+  constructor() {
+    super(createInitialState())
+  }
 }
 
 export enum AuthProvider {
-    METAMASK = 'METAMASK',
-    MAGIC = 'MAGIC',
-    WALLET_CONNECT = 'WALLET_CONNECT',
-    GNOSIS_SAFE = 'GNOSIS_SAFE',
+  METAMASK = 'METAMASK',
+  MAGIC = 'MAGIC',
+  WALLET_CONNECT = 'WALLET_CONNECT',
+  GNOSIS_SAFE = 'GNOSIS_SAFE',
 }
