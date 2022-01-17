@@ -18,8 +18,20 @@
               class="w-full app-button mt-4"
               text="Log in / Sign up"
               loadingText="Logging in"
-              [onClick]="connectMagic.bind(this)"
+              [onClick]="connectMagic().bind(this)"
               [disabled]="!emailForm.valid">
+      </button>
+
+      <button app-action-button
+              class="w-full app-button mt-4"
+              text="Google"
+              [onClick]="connectMagic('google').bind(this)">
+      </button>
+
+      <button app-action-button
+              class="w-full app-button mt-4"
+              text="Facebook"
+              [onClick]="connectMagic('facebook').bind(this)">
       </button>
     </form>
   </ng-container>

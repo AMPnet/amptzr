@@ -104,7 +104,9 @@ export class SignerService {
     )
   }
 
-  login<T extends Subsigner>(subsigner: T, opts: LoginOpts = {force: true}): Observable<providers.JsonRpcSigner> {
+  login<T extends Subsigner>(
+    subsigner: T, opts: LoginOpts | {} = {force: true},
+  ): Observable<providers.JsonRpcSigner> {
     this.subsigner = subsigner
     return this.subsigner.login(opts).pipe(
       tap(signer => this.setSigner(signer)),
@@ -191,7 +193,7 @@ export class SignerService {
 }
 
 interface LoginOpts {
-  email?: string;
-  wallet?: string;
+  // email?: string;
+  // wallet?: string;
   force?: boolean;
 }

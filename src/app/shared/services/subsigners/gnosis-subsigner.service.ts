@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core'
-import {Subsigner, SubsignerLoginOpts} from './metamask-subsigner.service'
+import {Subsigner} from './metamask-subsigner.service'
 import {combineLatest, defer, EMPTY, from, Observable} from 'rxjs'
 import {providers} from 'ethers'
 import {concatMap, map, switchMap, tap, timeout} from 'rxjs/operators'
@@ -63,4 +63,9 @@ export class GnosisSubsignerService implements Subsigner {
       }),
     )
   }
+}
+
+interface SubsignerLoginOpts {
+  wallet?: string;
+  force?: boolean;
 }

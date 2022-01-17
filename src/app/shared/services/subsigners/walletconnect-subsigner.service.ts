@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core'
-import {Subsigner, SubsignerLoginOpts} from './metamask-subsigner.service'
+import {Subsigner} from './metamask-subsigner.service'
 import {EMPTY, from, Observable, of, race, Subject} from 'rxjs'
 import {providers} from 'ethers'
 import {ChainID, MaticNetwork, MumbaiNetwork} from '../../networks'
@@ -69,6 +69,11 @@ export class WalletConnectSubsignerService implements Subsigner {
       }),
     )
   }
+}
+
+interface SubsignerLoginOpts {
+  wallet?: string;
+  force?: boolean;
 }
 
 interface WalletConnectProvider extends IWalletConnectProviderOptions {

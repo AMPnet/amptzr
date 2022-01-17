@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core'
-import {Subsigner, SubsignerLoginOpts} from './metamask-subsigner.service'
+import {Subsigner} from './metamask-subsigner.service'
 import {combineLatest, defer, from, Observable, of, throwError} from 'rxjs'
 import {providers} from 'ethers'
 import {catchError, concatMap, map, switchMap, take, tap} from 'rxjs/operators'
@@ -9,12 +9,15 @@ import {SDKBase} from '@magic-sdk/provider/dist/types/core/sdk'
 import {AuthMagicComponent, MagicLoginInput} from '../../../auth/auth-magic/auth-magic.component'
 import {MatDialog} from '@angular/material/dialog'
 import {IssuerService} from '../blockchain/issuer/issuer.service'
+import {OAuthExtension} from '@magic-ext/oauth'
+import {getWindow} from '../../utils/browser'
+import {RouterService} from '../router.service'
 
 @Injectable({
   providedIn: 'root',
 })
 export class MagicSubsignerService implements Subsigner {
-  subprovider: SDKBase | undefined
+  subprovider: (SDKBase & OAuthSDK) | undefined
 
   apiKey$: Observable<string> = defer(() => combineLatest([this.issuerService.issuer$]).pipe(
     take(1),
@@ -27,6 +30,7 @@ export class MagicSubsignerService implements Subsigner {
     private preferenceQuery: PreferenceQuery,
     private issuerService: IssuerService,
     private matDialog: MatDialog,
+    private router: RouterService,
   ) {
   }
 
@@ -54,7 +58,7 @@ export class MagicSubsignerService implements Subsigner {
     )
   }
 
-  private get registerMagic() {
+  get registerMagic() {
     return combineLatest([this.apiKey$]).pipe(
       take(1),
       switchMap(([apiKey]) => {
@@ -72,6 +76,7 @@ export class MagicSubsignerService implements Subsigner {
                 chainId: this.preferenceQuery.network.chainID,
                 rpcUrl: this.preferenceQuery.network.rpcURLs[0],
               },
+              extensions: [new OAuthExtension()],
             })
           }),
           tap(subprovider => this.subprovider = subprovider),
@@ -94,8 +99,22 @@ export class MagicSubsignerService implements Subsigner {
   }
 
   private forceLogin(opts: SubsignerLoginOpts): Observable<boolean> {
-    return this.getEmail(opts).pipe(
-      switchMap(email => this.subprovider!.auth.loginWithMagicLink({email})),
+    return of(opts).pipe(
+      switchMap(opts => {
+        if (!!opts.socialProvider) {
+          localStorage.setItem('callbackUrl', this.router.constructURL('/callback'))
+          localStorage.setItem('redirectBack', `${getWindow().location.pathname}${getWindow().location.search}`)
+
+          return this.subprovider!.oauth.loginWithRedirect({
+            provider: opts.socialProvider,
+            redirectURI: `${getWindow().location.origin}/callback`,
+          })
+        } else {
+          return this.getEmail(opts).pipe(
+            concatMap(email => this.subprovider!.auth.loginWithMagicLink({email})),
+          )
+        }
+      }),
       map(res => !!res),
       catchError(() => of(false)),
     )
@@ -118,4 +137,14 @@ export class MagicSubsignerService implements Subsigner {
   getMetadata() {
     return from(this.subprovider!.user.getMetadata())
   }
+}
+
+interface OAuthSDK {
+  oauth: Omit<OAuthExtension, 'name' | 'init' | 'config' | 'compat'>
+}
+
+interface SubsignerLoginOpts {
+  email?: string
+  socialProvider?: 'google' | 'facebook' | 'apple'
+  force?: boolean
 }
