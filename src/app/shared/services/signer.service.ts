@@ -193,7 +193,5 @@ export class SignerService {
 }
 
 interface LoginOpts {
-  // email?: string;
-  // wallet?: string;
   force?: boolean;
 }
