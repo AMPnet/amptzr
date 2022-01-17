@@ -30,7 +30,12 @@ export class AuthMagicOauthComponent {
 
   handleCallback2$ = defer(() => of(this.route.snapshot.queryParams)).pipe(
     filter(params => !!params.redirectBack),
-    switchMap(() => this.signerService.login(this.magicSubsignerService, {force: false})),
+    switchMap(() => this.magicSubsignerService.registerMagic),
+    switchMap(() => this.magicSubsignerService.subprovider!.oauth.getRedirectResult()),
+    switchMap(res => this.signerService.login(this.magicSubsignerService, {
+      idToken: res.magic.idToken,
+      force: true,
+    })),
     concatMap(() => this.router.router.navigateByUrl(this.route.snapshot.queryParams.redirectBack)),
   )
 

@@ -109,6 +109,11 @@ export class MagicSubsignerService implements Subsigner {
             provider: opts.socialProvider,
             redirectURI: `${getWindow().location.origin}/callback`,
           })
+        } else if (!!opts.idToken) {
+          return from(this.subprovider!.user.isLoggedIn()).pipe(
+            concatMap(isLoggedIn => isLoggedIn ? of(true) :
+              from(this.subprovider!.auth.loginWithCredential(opts.idToken))),
+          )
         } else {
           return this.getEmail(opts).pipe(
             concatMap(email => this.subprovider!.auth.loginWithMagicLink({email})),
@@ -146,5 +151,6 @@ interface OAuthSDK {
 interface SubsignerLoginOpts {
   email?: string
   socialProvider?: 'google' | 'facebook' | 'apple'
+  idToken: string
   force?: boolean
 }
