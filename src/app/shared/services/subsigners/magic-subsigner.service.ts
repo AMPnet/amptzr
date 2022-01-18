@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core'
 import {combineLatest, defer, from, Observable, of, throwError, timer} from 'rxjs'
 import {providers} from 'ethers'
-import {catchError, concatMap, map, switchMap, take, tap} from 'rxjs/operators'
+import {catchError, concatMap, map, switchMap, take, tap, timeout} from 'rxjs/operators'
 import {AuthProvider, PreferenceStore} from '../../../preference/state/preference.store'
 import {PreferenceQuery} from '../../../preference/state/preference.query'
 import {SDKBase} from '@magic-sdk/provider/dist/types/core/sdk'
@@ -118,7 +118,7 @@ export class MagicSubsignerService implements Subsigner<MagicLoginOpts> {
             // due to Magic issue, oauth.loginWithRedirect resolves immediately,
             // without waiting for OAuth redirect, therefore breaking loading UI
             timer(10_000),
-          ])
+          ]).pipe(timeout(20_000))
         } else if (!!opts.idToken) {
           return from(this.subprovider!.user.isLoggedIn()).pipe(
             concatMap(isLoggedIn => isLoggedIn ? of(true) :
