@@ -6,15 +6,16 @@ import {MetamaskNetworks} from '../../networks'
 import {AuthProvider, PreferenceStore} from '../../../preference/state/preference.store'
 import {getWindow} from '../../utils/browser'
 import {ERC20__factory} from '../../../../../types/ethers-contracts'
+import {SignerLoginOpts, Subsigner} from '../signer-login-options'
 
 @Injectable({
   providedIn: 'root',
 })
-export class MetamaskSubsignerService implements Subsigner {
+export class MetamaskSubsignerService implements Subsigner<MetamaskLoginOpts> {
   constructor(private preferenceStore: PreferenceStore) {
   }
 
-  login(opts: SubsignerLoginOpts): Observable<providers.JsonRpcSigner> {
+  login(opts: MetamaskLoginOpts): Observable<providers.JsonRpcSigner> {
     return this.getSigner().pipe(
       concatMap(signer => zip(this.loginGetAddress(signer, opts), this.checkChainID(signer, opts))),
       tap(([address, _signer]) => this.preferenceStore.update({address, authProvider: AuthProvider.METAMASK})),
@@ -30,7 +31,7 @@ export class MetamaskSubsignerService implements Subsigner {
     )
   }
 
-  private checkChainID(signer: providers.JsonRpcSigner, opts: SubsignerLoginOpts) {
+  private checkChainID(signer: providers.JsonRpcSigner, opts: MetamaskLoginOpts) {
     return from(signer.getChainId()).pipe(
       concatMap(chainID => chainID === this.preferenceStore.getValue().chainID ?
         of(chainID) : opts.force ? this.switchEthereumChain(signer, opts) :
@@ -41,7 +42,7 @@ export class MetamaskSubsignerService implements Subsigner {
   }
 
   private switchEthereumChain(
-    signer: providers.JsonRpcSigner, opts: SubsignerLoginOpts,
+    signer: providers.JsonRpcSigner, opts: MetamaskLoginOpts,
   ): Observable<unknown> {
     return from(signer.provider.send('wallet_switchEthereumChain',
       [{chainId: MetamaskNetworks[this.preferenceStore.getValue().chainID].chainId}])).pipe(
@@ -80,7 +81,7 @@ export class MetamaskSubsignerService implements Subsigner {
     )
   }
 
-  private loginGetAddress(signer: providers.JsonRpcSigner, opts: SubsignerLoginOpts): Observable<string> {
+  private loginGetAddress(signer: providers.JsonRpcSigner, opts: MetamaskLoginOpts): Observable<string> {
     return from(signer.getAddress()).pipe(
       catchError(() => opts.force ? from(signer.provider.send('eth_requestAccounts', [])).pipe(
         map(addresses => addresses?.[0]),
@@ -97,15 +98,8 @@ export class MetamaskSubsignerService implements Subsigner {
   }
 }
 
-export interface Subsigner {
-  login(opts: SubsignerLoginOpts): Observable<providers.JsonRpcSigner>;
-
-  logout(): Observable<unknown>;
-}
-
-interface SubsignerLoginOpts {
+interface MetamaskLoginOpts extends SignerLoginOpts {
   wallet?: string;
-  force?: boolean;
 }
 
 interface WatchAssetParams {

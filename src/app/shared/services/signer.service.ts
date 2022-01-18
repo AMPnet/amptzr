@@ -5,19 +5,20 @@ import {catchError, concatMap, finalize, map, switchMap, take, tap} from 'rxjs/o
 import {SessionStore} from '../../session/state/session.store'
 import {SessionQuery} from '../../session/state/session.query'
 import {PreferenceStore} from '../../preference/state/preference.store'
-import {MetamaskSubsignerService, Subsigner} from './subsigners/metamask-subsigner.service'
+import {MetamaskSubsignerService} from './subsigners/metamask-subsigner.service'
 import {AuthComponent} from '../../auth/auth.component'
 import {RouterService} from './router.service'
 import {ErrorService} from './error.service'
 import {PreferenceQuery} from '../../preference/state/preference.query'
 import {getWindow} from '../utils/browser'
 import {DialogService} from './dialog.service'
+import {GetSignerOptions, SignerLoginOpts, Subsigner} from './signer-login-options'
 
 @Injectable({
   providedIn: 'root',
 })
 export class SignerService {
-  private subsigner: Subsigner = this.metamaskSubsignerService
+  private subsigner?: Subsigner<any>
   private accountsChangedSub = new Subject<string[]>()
   private chainChangedSub = new Subject<string>()
   private disconnectedSub = new Subject<void>()
@@ -104,8 +105,8 @@ export class SignerService {
     )
   }
 
-  login<T extends Subsigner>(
-    subsigner: T, opts: LoginOpts | {} = {force: true},
+  login<S extends Subsigner<any>, O extends GetSignerOptions<S>>(
+    subsigner: S, opts: O | SignerLoginOpts = {force: true},
   ): Observable<providers.JsonRpcSigner> {
     this.subsigner = subsigner
     return this.subsigner.login(opts).pipe(
@@ -114,7 +115,9 @@ export class SignerService {
   }
 
   logout(): Observable<unknown> {
-    return this.subsigner.logout().pipe(
+    const logout$ = !!this.subsigner ? this.subsigner.logout() : of(undefined)
+
+    return logout$.pipe(
       finalize(() => {
         this.preferenceStore.update({
           address: '',
@@ -190,8 +193,4 @@ export class SignerService {
       concatMap(() => this.ngZone.run(() => this.router.navigate(['/offers']))),
     )
   }
-}
-
-interface LoginOpts {
-  force?: boolean;
 }

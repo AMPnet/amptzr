@@ -32,7 +32,7 @@ export class AuthMagicOauthComponent {
     filter(params => !!params.redirectBack),
     switchMap(() => this.magicSubsignerService.registerMagic),
     switchMap(() => this.magicSubsignerService.subprovider!.oauth.getRedirectResult()),
-    switchMap(res => this.signerService.login(this.magicSubsignerService, {
+    switchMap(res => this.signer.login(this.magicSubsignerService, {
       idToken: res.magic.idToken,
       force: true,
     })),
@@ -41,7 +41,7 @@ export class AuthMagicOauthComponent {
 
   constructor(private route: ActivatedRoute,
               private router: RouterService,
-              private signerService: SignerService,
+              private signer: SignerService,
               private magicSubsignerService: MagicSubsignerService) {
   }
 }

@@ -1,5 +1,4 @@
 import {Injectable} from '@angular/core'
-import {Subsigner} from './metamask-subsigner.service'
 import {combineLatest, defer, from, Observable, of, throwError} from 'rxjs'
 import {providers} from 'ethers'
 import {catchError, concatMap, map, switchMap, take, tap} from 'rxjs/operators'
@@ -12,11 +11,12 @@ import {IssuerService} from '../blockchain/issuer/issuer.service'
 import {OAuthExtension} from '@magic-ext/oauth'
 import {getWindow} from '../../utils/browser'
 import {RouterService} from '../router.service'
+import {SignerLoginOpts, Subsigner} from '../signer-login-options'
 
 @Injectable({
   providedIn: 'root',
 })
-export class MagicSubsignerService implements Subsigner {
+export class MagicSubsignerService implements Subsigner<MagicLoginOpts> {
   subprovider: (SDKBase & OAuthSDK) | undefined
 
   apiKey$: Observable<string> = defer(() => combineLatest([this.issuerService.issuer$]).pipe(
@@ -34,7 +34,7 @@ export class MagicSubsignerService implements Subsigner {
   ) {
   }
 
-  login(opts: SubsignerLoginOpts): Observable<providers.JsonRpcSigner> {
+  login(opts: MagicLoginOpts): Observable<providers.JsonRpcSigner> {
     return this.registerMagic.pipe(
       map(p => new providers.Web3Provider(p as any).getSigner()),
       concatMap(signer => this.checkAuthenticated(signer, opts)),
@@ -92,7 +92,7 @@ export class MagicSubsignerService implements Subsigner {
   }
 
   private checkAuthenticated(signer: providers.JsonRpcSigner,
-                             opts: SubsignerLoginOpts): Observable<providers.JsonRpcSigner> {
+                             opts: MagicLoginOpts): Observable<providers.JsonRpcSigner> {
     return of(opts.force).pipe(
       concatMap(force => force ?
         this.forceLogin(opts) :
@@ -103,7 +103,7 @@ export class MagicSubsignerService implements Subsigner {
     )
   }
 
-  private forceLogin(opts: SubsignerLoginOpts): Observable<boolean> {
+  private forceLogin(opts: MagicLoginOpts): Observable<boolean> {
     return of(opts).pipe(
       switchMap(opts => {
         if (!!opts.socialProvider) {
@@ -130,7 +130,7 @@ export class MagicSubsignerService implements Subsigner {
     )
   }
 
-  private getEmail(opts: SubsignerLoginOpts): Observable<string> {
+  private getEmail(opts: MagicLoginOpts): Observable<string> {
     return opts.email ? of(opts.email) : this.getEmailWithDialog()
   }
 
@@ -153,9 +153,8 @@ interface OAuthSDK {
   oauth: Omit<OAuthExtension, 'name' | 'init' | 'config' | 'compat'>
 }
 
-interface SubsignerLoginOpts {
+interface MagicLoginOpts extends SignerLoginOpts {
   email?: string
   socialProvider?: 'google' | 'facebook' | 'apple'
   idToken: string
-  force?: boolean
 }

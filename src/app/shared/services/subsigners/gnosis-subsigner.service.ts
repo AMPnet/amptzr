@@ -1,21 +1,21 @@
 import {Injectable} from '@angular/core'
-import {Subsigner} from './metamask-subsigner.service'
 import {combineLatest, defer, EMPTY, from, Observable} from 'rxjs'
 import {providers} from 'ethers'
 import {concatMap, map, switchMap, tap, timeout} from 'rxjs/operators'
 import {AuthProvider, PreferenceStore} from '../../../preference/state/preference.store'
 import {SafeAppProvider} from '@gnosis.pm/safe-apps-provider'
+import {SignerLoginOpts, Subsigner} from '../signer-login-options'
 
 @Injectable({
   providedIn: 'root',
 })
-export class GnosisSubsignerService implements Subsigner {
+export class GnosisSubsignerService implements Subsigner<GnosisLoginOpts> {
   subprovider!: SafeAppProvider
 
   constructor(private preferenceStore: PreferenceStore) {
   }
 
-  login(opts: SubsignerLoginOpts): Observable<providers.JsonRpcSigner> {
+  login(opts: GnosisLoginOpts): Observable<providers.JsonRpcSigner> {
     return this.registerGnosis.pipe(
       map(p => new providers.Web3Provider(p as any).getSigner()),
       concatMap(signer => this.setAddress(signer)),
@@ -65,7 +65,6 @@ export class GnosisSubsignerService implements Subsigner {
   }
 }
 
-interface SubsignerLoginOpts {
+interface GnosisLoginOpts extends SignerLoginOpts {
   wallet?: string;
-  force?: boolean;
 }
