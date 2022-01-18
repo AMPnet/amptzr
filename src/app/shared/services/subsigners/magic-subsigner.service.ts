@@ -45,6 +45,7 @@ export class MagicSubsignerService implements Subsigner {
   logout(): Observable<unknown> {
     return of(this.subprovider?.user).pipe(
       switchMap(user => user ? user.logout() : of(null)),
+      tap(() => this.subprovider = undefined),
     )
   }
 
@@ -59,6 +60,10 @@ export class MagicSubsignerService implements Subsigner {
   }
 
   get registerMagic() {
+    if (this.subprovider) {
+      return of(this.subprovider.rpcProvider)
+    }
+
     return combineLatest([this.apiKey$]).pipe(
       take(1),
       switchMap(([apiKey]) => {

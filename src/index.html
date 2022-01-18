@@ -14,7 +14,15 @@
   <script src="env.js" type="text/javascript"></script>
 </head>
 <body>
-<app-root></app-root>
+<app-root>
+  <!-- default loading screen until APP_INITIALIZER completes -->
+  <div class="flex justify-center items-center w-full h-full">
+    <span class="flex h-8 w-8 relative">
+      <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyan-500 opacity-75"></span>
+      <span class="relative inline-flex rounded-full h-8 w-8 bg-cyan-600"></span>
+    </span>
+  </div>
+</app-root>
 <noscript>Please enable JavaScript to continue using this application.</noscript>
 </body>
 </html>
