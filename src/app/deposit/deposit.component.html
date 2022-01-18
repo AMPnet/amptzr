@@ -1,9 +1,23 @@
-<div class="max-w-6xl mx-auto px-2 lg:px-4">
+<div class="max-w-6xl mx-auto px-2 lg:px-4" *ngIf="state$ | async as state">
   <div class="my-8">
     <app-deposit-flow></app-deposit-flow>
   </div>
-  <div class="flex flex-row justify-center gap-2 text-sm">
+  <div class="flex flex-row justify-center items-center gap-2 text-sm">
     <b>Note:</b>
-    <p>If you wish to deposit manually, you can do this by loading up the connected wallet with USDC on Polygon.</p>
+    <p>
+      <span>
+        You can always find alternative ways to fund the connected wallet with
+      </span>
+      <span>
+        {{ state.stablecoin.symbol }}
+      </span>
+      <app-explorer-link [value]="state.stablecoin.address" type="token">
+      </app-explorer-link>
+      <app-add-to-metamask [value]="state.stablecoin.address">
+      </app-add-to-metamask>
+      <span>
+        on {{ state.network.name }}
+      </span>
+    </p>
   </div>
 </div>

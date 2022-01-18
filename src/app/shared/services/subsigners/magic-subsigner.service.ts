@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core'
-import {combineLatest, defer, from, Observable, of, throwError} from 'rxjs'
+import {combineLatest, defer, from, Observable, of, throwError, timer} from 'rxjs'
 import {providers} from 'ethers'
 import {catchError, concatMap, map, switchMap, take, tap} from 'rxjs/operators'
 import {AuthProvider, PreferenceStore} from '../../../preference/state/preference.store'
@@ -110,10 +110,15 @@ export class MagicSubsignerService implements Subsigner<MagicLoginOpts> {
           localStorage.setItem('callbackUrl', this.router.constructURL('/callback'))
           localStorage.setItem('redirectBack', `${getWindow().location.pathname}${getWindow().location.search}`)
 
-          return this.subprovider!.oauth.loginWithRedirect({
-            provider: opts.socialProvider,
-            redirectURI: `${getWindow().location.origin}/callback`,
-          })
+          return combineLatest([
+            this.subprovider!.oauth.loginWithRedirect({
+              provider: opts.socialProvider,
+              redirectURI: `${getWindow().location.origin}/callback`,
+            }),
+            // due to Magic issue, oauth.loginWithRedirect resolves immediately,
+            // without waiting for OAuth redirect, therefore breaking loading UI
+            timer(10_000),
+          ])
         } else if (!!opts.idToken) {
           return from(this.subprovider!.user.isLoggedIn()).pipe(
             concatMap(isLoggedIn => isLoggedIn ? of(true) :

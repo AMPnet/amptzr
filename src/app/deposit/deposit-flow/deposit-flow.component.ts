@@ -60,8 +60,6 @@ export class DepositFlowComponent {
   private static validAmount(control: AbstractControl): ValidationErrors | null {
     if (control.value <= 0) {
       return {amountTooLow: true}
-    } else if (control.value > 20_000) {
-      return {amountTooHigh: true}
     }
 
     return null
