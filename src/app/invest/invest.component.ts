@@ -3,11 +3,11 @@ import {InvestService, PreInvestData} from '../shared/services/invest.service'
 import {CampaignService, CampaignWithInfo} from '../shared/services/blockchain/campaign/campaign.service'
 import {constants} from 'ethers'
 import {StablecoinBigNumber, StablecoinService} from '../shared/services/blockchain/stablecoin.service'
-import {combineLatest, concat, Observable, of, timer} from 'rxjs'
+import {combineLatest, concat, concatMap, Observable, of, timer} from 'rxjs'
 import {AbstractControl, FormBuilder, FormGroup, ValidationErrors} from '@angular/forms'
 import {CampaignFlavor} from '../shared/services/blockchain/flavors'
 import {ActivatedRoute} from '@angular/router'
-import {map, shareReplay, startWith, switchMap, take, tap} from 'rxjs/operators'
+import {filter, map, shareReplay, startWith, switchMap, take, tap} from 'rxjs/operators'
 import {WithStatus, withStatus} from '../shared/utils/observables'
 import {DialogService} from '../shared/services/dialog.service'
 import {SessionQuery} from '../session/state/session.query'
@@ -19,6 +19,7 @@ import {SignerService} from '../shared/services/signer.service'
 import {IdentityService} from '../identity/identity.service'
 import {DepositService} from '../deposit/deposit.service'
 import {PreferenceQuery} from '../preference/state/preference.query'
+import {UserService} from '../shared/services/user.service'
 
 @Component({
   selector: 'app-invest',
@@ -54,6 +55,7 @@ export class InvestComponent {
               private depositService: DepositService,
               private investService: InvestService,
               private identityService: IdentityService,
+              private userService: UserService,
               private router: RouterService,
               private route: ActivatedRoute) {
     const campaignId = this.route.snapshot.params.id
@@ -229,7 +231,10 @@ export class InvestComponent {
     return () => {
       const amount = this.conversion.toStablecoin(this.investmentForm.value.stablecoinAmount)
 
-      return this.stablecoin.approveAmount(campaign.contractAddress, amount)
+      return this.userService.nativeTokenBalance$.pipe(
+        filter(balance => balance.gt(constants.Zero)), take(1),
+        concatMap(() => this.stablecoin.approveAmount(campaign.contractAddress, amount)),
+      )
     }
   }
 

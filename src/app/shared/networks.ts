@@ -58,8 +58,10 @@ export const MaticNetwork: Network = {
     name: 'MATIC',
     symbol: 'MATIC',
   },
-  maxGasPrice: 100,
-  rpcURLs: ['https://polygon-rpc.com'],
+  maxGasPrice: 1500,
+  rpcURLs: [
+    'https://polygon-rpc.com',
+  ],
   wssRpcURLs: [
     'wss://polygon-mainnet.g.alchemy.com/v2/A8PZz3PJWwX_yQAW5q0JjqaNPPshI9Qg',
     'wss://ws-matic-mainnet.chainstacklabs.com',

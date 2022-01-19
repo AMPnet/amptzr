@@ -2,14 +2,15 @@ import {Injectable} from '@angular/core'
 import {SignerService} from './signer.service'
 import {concatMap, distinctUntilChanged, filter, map, pairwise, shareReplay, switchMap} from 'rxjs/operators'
 import {BackendHttpClient} from './backend/backend-http-client.service'
-import {combineLatest, from, Observable} from 'rxjs'
+import {combineLatest, from, Observable, of} from 'rxjs'
 import {SessionQuery} from '../../session/state/session.query'
 import {IssuerService} from './blockchain/issuer/issuer.service'
-import {BigNumber} from 'ethers'
+import {BigNumber, constants} from 'ethers'
 import {PreferenceQuery} from '../../preference/state/preference.query'
 import {AuthProvider} from '../../preference/state/preference.store'
 import {MagicSubsignerService} from './subsigners/magic-subsigner.service'
 import {BackendUserService} from './backend/backend-user.service'
+import {withInterval} from '../utils/observables'
 
 @Injectable({
   providedIn: 'root',
@@ -41,8 +42,14 @@ export class UserService {
       shareReplay(1),
     )
 
-    this.nativeTokenBalance$ = combineLatest([this.sessionQuery.provider$, this.preferenceQuery.address$]).pipe(
-      switchMap(([provider, address]) => from(provider.getBalance(address!))),
+    this.nativeTokenBalance$ = combineLatest([
+      this.sessionQuery.provider$, this.preferenceQuery.address$,
+    ]).pipe(
+      switchMap(([provider, address]) => {
+        if (!address) return of(constants.Zero)
+
+        return withInterval(from(provider.getBalance(address)), 3_000)
+      }),
       shareReplay({bufferSize: 1, refCount: true}),
     )
 
