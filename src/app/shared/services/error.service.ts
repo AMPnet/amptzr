@@ -26,7 +26,7 @@ export class ErrorService {
       let errorRes = err as HttpErrorResponse
       let action$: Observable<any> = throwError(err)
 
-      if (['UNPREDICTABLE_GAS_LIMIT', 'INSUFFICIENT_FUNDS'].includes((errorRes as any)?.code)) {
+      if (!!(errorRes as any)?.code && (errorRes as any)?.code !== -32603) {
         errorRes = errorRes.error
       }
 
@@ -66,7 +66,10 @@ export class ErrorService {
         }
       } else if ((errorRes as any).code === -32603) { // Internal JSON-RPC error
         const error = (errorRes as unknown as EthereumRpcError<EthereumRpcError<string>>)
-        const message = (error as any).data?.originalError?.message || error.data?.message || error.message
+        const message = (error as any).rawMessage
+          || (error as any).data?.originalError?.message
+          || error.data?.message
+          || error.message
 
         if (message?.includes('gas required exceeds allowance') ||
           message?.includes('insufficient funds')

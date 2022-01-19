@@ -7,6 +7,7 @@ import {HttpClient} from '@angular/common/http'
 import {SessionQuery} from '../../../session/state/session.query'
 import {parseUnits} from 'ethers/lib/utils'
 import {ChainID} from '../../networks'
+import {AuthProvider} from '../../../preference/state/preference.store'
 
 @Injectable({
   providedIn: 'root',
@@ -18,6 +19,10 @@ export class GasService {
   }
 
   get overrides(): Observable<Partial<Overrides>> {
+    if (this.shouldUseGasStation) {
+      return this.gasPriceOracleOverrides
+    }
+
     return this.isEip1559Supported.pipe(
       switchMap(isEip1559Supported => isEip1559Supported ?
         of({}) : this.gasPriceOracleOverrides,
@@ -26,9 +31,15 @@ export class GasService {
   }
 
   private get isEip1559Supported(): Observable<boolean> {
-    return from(this.sessionQuery.provider.getFeeData()).pipe(
+    if (!this.sessionQuery.signer) return of(false)
+
+    return from(this.sessionQuery.signer.provider.getFeeData()).pipe(
       map(data => (data.maxFeePerGas != null || data.maxPriorityFeePerGas != null)),
     )
+  }
+
+  private get shouldUseGasStation() {
+    return this.preferenceQuery.getValue().authProvider === AuthProvider.MAGIC
   }
 
   private get gasPriceOracleOverrides(): Observable<Partial<Overrides>> {
