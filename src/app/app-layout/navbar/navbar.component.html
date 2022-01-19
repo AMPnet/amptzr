@@ -19,19 +19,19 @@
       <div class="flex justify-end items-center lg:pr-4">
         <ng-container *ngFor="let navbarItem of navbarScreenLinks">
           <button *ngIf="(navbarItem.showItem | async) === true"
-                  class="mx-2 px-4 py-2 text-gray-700 text-sm border-b-4 font-semibold
+                  class="mx-2 px-4 py-2 text-gray-700 text-sm uppercase border-b-4 font-semibold
                          border-transparent tracking-wider whitespace-nowrap hidden lg:inline"
                   [routerLink]="navbarItem.routerLink | issuerPath"
-                  routerLinkActive="!text-indigo-800 !border-indigo-800">
+                  routerLinkActive="!text-violet-600 !border-violet-600">
             {{ navbarItem.title }}
           </button>
         </ng-container>
 
         <app-wallet-button *ngIf="(isLoggedIn$ | async) === true" class="hidden lg:flex"></app-wallet-button>
-        <button app-action-button class="transition-all lg:mx-4 px-4 py-1 border-2 border-indigo-800
-                                         rounded-full text-sm font-semibold
-                                         text-indigo-800 whitespace-nowrap inline
-                                         hover:bg-indigo-800 hover:text-white"
+        <button app-action-button class="transition-all lg:mx-4 px-4 py-1 border-2 border-violet-600
+                                         rounded-full text-sm font-semibold uppercase
+                                         text-violet-600 whitespace-nowrap inline
+                                         hover:bg-violet-600 hover:text-white"
                 *ngIf="(isLoggedIn$ | async) === false"
                 [onClick]="login.bind(this)"
                 text="Log in"></button>
@@ -68,7 +68,7 @@
                 class="pt-8 pb-4 text-gray-700 text-3xl text-left whitespace-nowrap
                        border-b-8 border-transparent font-semibold"
                 [routerLink]="navbarItem.routerLink | issuerPath"
-                routerLinkActive="!text-indigo-800 !border-indigo-800">
+                routerLinkActive="!text-violet-600 !border-violet-600">
           {{ navbarItem.title }}
         </button>
       </ng-container>

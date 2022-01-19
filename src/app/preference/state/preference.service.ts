@@ -27,7 +27,7 @@ export class PreferenceService {
   initSigner(): Observable<unknown> {
     return this.tryImplicitLogin.pipe(
       switchMap(() => this.tryPreviousLogin),
-      timeout(4000),
+      timeout(30_000),
       catchError(() => {
         return this.signer.logout().pipe(concatMap(() => EMPTY))
       }),

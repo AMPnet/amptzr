@@ -18,13 +18,13 @@
 }
 
 .sk-folding-cube .sk-cube:before {
+  @apply bg-cyan-700;
   content: '';
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(55, 48, 163);
   -webkit-animation: sk-foldCubeAngle 2.4s infinite linear both;
   animation: sk-foldCubeAngle 2.4s infinite linear both;
   -webkit-transform-origin: 100% 100%;

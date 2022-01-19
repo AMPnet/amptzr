@@ -9,8 +9,6 @@ import {Observable} from 'rxjs'
 
 @Injectable({providedIn: 'root'})
 export class SessionQuery extends Query<SessionState> {
-  address$ = this.select('address')
-  authProvider$ = this.select('authProvider')
   provider$ = this.select('provider').pipe(
     map(provider => {
       if (!provider) {
@@ -47,11 +45,20 @@ export class SessionQuery extends Query<SessionState> {
       map(chainID => getDefaultProvider(EthersNetworks[chainID])),
       tap(provider => store.update({provider})),
     ).subscribe()
+
+    this.preferenceQuery.select(['address', 'authProvider']).pipe(
+      tap(pref => {
+        if (!pref.address || !pref.authProvider) {
+          store.update({
+            signer: undefined,
+          })
+        }
+      }),
+    ).subscribe()
   }
 
   stateIsLoggedIn(state: SessionState): boolean {
-    return !!state.address &&
-      !!state.signer
+    return !!state.signer
   }
 
   get signer(): providers.JsonRpcSigner | undefined {

@@ -51,11 +51,15 @@ export class AuthComponent {
     )
   }
 
-  connectMagic(): Observable<unknown> {
-    return this.signer.login(this.magicSubsignerService, {
-      email: this.emailForm.value.email, force: true,
-    }).pipe(
-      tap(() => this.afterLoginActions()),
-    )
+  connectMagic(socialProvider?: 'google' | 'facebook' | 'apple') {
+    return () => {
+      return this.signer.login(this.magicSubsignerService, {
+        email: this.emailForm.value.email,
+        socialProvider: socialProvider,
+        force: true,
+      }).pipe(
+        tap(() => this.afterLoginActions()),
+      )
+    }
   }
 }

@@ -28,16 +28,18 @@ import {AdminIssuerNewComponent} from './admin/admin-issuer-new/admin-issuer-new
 import {
   AdminIssuerEditCampaignVisibilityComponent,
 } from './admin/admin-issuer-edit-campaign-visibility/admin-issuer-edit-campaign-visibility.component'
+import {AuthMagicOauthComponent} from './auth/auth-magic-oauth/auth-magic-oauth.component'
 
 const appRoutes: Routes = [
+  {path: 'callback', component: AuthMagicOauthComponent},
   {
     path: '', component: AppLayoutComponent, children: [
       {path: '', pathMatch: 'full', redirectTo: 'offers'},
       {path: 'offers', component: OffersComponent},
       {path: 'offers/:id', component: OfferComponent},
+      {path: 'offers/:id/invest', component: InvestComponent},
       {
         path: '', canActivate: [AuthGuard], children: [
-          {path: 'offers/:id/invest', component: InvestComponent},
           {path: 'wallet', component: WalletComponent},
           {path: 'deposit', component: DepositComponent},
           {path: 'portfolio', component: PortfolioComponent},
@@ -79,6 +81,7 @@ const networkRoutes: Routes = [{
 }]
 
 const routes: Routes = [
+  {path: 'callback', component: AuthMagicOauthComponent},
   {path: '', pathMatch: 'full', redirectTo: !environment.fixed.issuer ? '/home' : '/offers'},
   {path: 'home', component: HomeComponent},
   {

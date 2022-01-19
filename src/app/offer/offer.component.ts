@@ -9,13 +9,13 @@ import {IdentityService} from '../identity/identity.service'
 import {ProfileService} from '../profile/profile.service'
 import {RouterService} from '../shared/services/router.service'
 import {DialogService} from '../shared/services/dialog.service'
-import {SessionQuery} from '../session/state/session.query'
 import {LinkPreviewResponse, LinkPreviewService} from '../shared/services/backend/link-preview.service'
 import {quillMods} from '../shared/utils/quill'
 import {TailwindService} from '../shared/services/tailwind.service'
 import {NameService} from '../shared/services/blockchain/name.service'
 import {CampaignService, CampaignStats, CampaignWithInfo} from '../shared/services/blockchain/campaign/campaign.service'
 import {CampaignFlavor} from '../shared/services/blockchain/flavors'
+import {PreferenceQuery} from '../preference/state/preference.query'
 
 @Component({
   selector: 'app-offer',
@@ -30,7 +30,7 @@ export class OfferComponent {
     stats: CampaignStats,
   }>>
   links$: Observable<WithStatus<{ value: LinkPreviewResponse[] }>>
-  address$ = this.sessionQuery.address$.pipe(
+  address$ = this.preferenceQuery.address$.pipe(
     map(value => ({value: value})),
   )
 
@@ -44,7 +44,7 @@ export class OfferComponent {
               private toUrlIPFSPipe: ToUrlIPFSPipe,
               private identityService: IdentityService,
               private profileService: ProfileService,
-              private sessionQuery: SessionQuery,
+              private preferenceQuery: PreferenceQuery,
               private dialogService: DialogService,
               private router: RouterService,
               private route: ActivatedRoute,
@@ -107,7 +107,9 @@ export class OfferComponent {
       return this.campaignService.finalize(
         campaign.contractAddress, campaign.flavor as CampaignFlavor,
       ).pipe(
-        switchMap(() => this.dialogService.success('The project has been finalized successfully.')),
+        switchMap(() => this.dialogService.success({
+          title: 'The project has been finalized',
+        })),
         tap(() => this.campaignSub.next()),
       )
     }

@@ -69,10 +69,10 @@ export interface InfoDialogData<T> {
 }
 
 export enum DialogIcon {
-  INFO, ERROR
+  INFO, SUCCESS, ERROR
 }
 
 export interface InfoDialogResponse<T> {
   confirmed: boolean;
-  onConfirmResult: T
+  onConfirmResult?: T
 }

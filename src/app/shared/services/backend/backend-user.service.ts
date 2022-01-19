@@ -2,6 +2,7 @@ import {Injectable} from '@angular/core'
 import {Observable} from 'rxjs'
 import {environment} from '../../../../environments/environment'
 import {BackendHttpClient} from './backend-http-client.service'
+import {shareReplay} from 'rxjs/operators'
 
 @Injectable({
   providedIn: 'root',
@@ -13,7 +14,9 @@ export class BackendUserService {
   }
 
   getUser(): Observable<BackendUser> {
-    return this.http.get<BackendUser>(`${this.path}/user`)
+    return this.http.get<BackendUser>(`${this.path}/user`).pipe(
+      shareReplay({bufferSize: 1, refCount: true}),
+    )
   }
 
   updateUser(userUpdate: UserUpdate): Observable<BackendUser> {

@@ -6,7 +6,6 @@ import {JwtTokenService} from './jwt-token.service'
 import {ErrorService} from '../error.service'
 import {PreferenceQuery} from '../../../preference/state/preference.query'
 import {DialogService} from '../dialog.service'
-import {SessionQuery} from '../../../session/state/session.query'
 import {SignerService} from '../signer.service'
 import {RouterService} from '../router.service'
 import {AuthProvider} from '../../../preference/state/preference.store'
@@ -18,7 +17,6 @@ export class BackendHttpClient {
   constructor(public http: HttpClient,
               private errorService: ErrorService,
               private preferenceQuery: PreferenceQuery,
-              private sessionQuery: SessionQuery,
               private signerService: SignerService,
               private dialogService: DialogService,
               private router: RouterService,
@@ -74,7 +72,7 @@ export class BackendHttpClient {
 
   private get loginProcedure(): Observable<any> {
     return this.signerService.ensureAuth.pipe(
-      map(() => this.sessionQuery.getValue().address!),
+      map(() => this.preferenceQuery.getValue().address!),
       switchMap(address => this.jwtTokenService.getSignPayload(address).pipe(
         switchMap(resToSign => this.authDialog(resToSign)),
         switchMap(resToSign => this.signerService.signMessage(resToSign.payload).pipe(
@@ -87,13 +85,15 @@ export class BackendHttpClient {
   }
 
   private authDialog<T>(payload: T) {
-    switch (this.sessionQuery.getValue().authProvider) {
+    switch (this.preferenceQuery.getValue().authProvider) {
       case AuthProvider.MAGIC:
         return of(payload)
       default:
-        return this.dialogService.info(
-          'You will be asked to authorize yourself by signing a message.',
-        ).pipe(switchMap(confirm => confirm ? of(payload) : throwError(() => 'SIGNING_DISMISSED')))
+        return this.dialogService.info({
+          title: 'Authorization required',
+          message: 'You will be asked to authorize yourself by signing a message.',
+          cancelable: false,
+        }).pipe(switchMap(confirm => confirm ? of(payload) : throwError(() => 'SIGNING_DISMISSED')))
     }
   }
 

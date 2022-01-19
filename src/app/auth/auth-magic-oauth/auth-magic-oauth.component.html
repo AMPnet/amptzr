@@ -1,0 +1,7 @@
+<ng-container *ngIf="handleCallback1$ | async"></ng-container>
+
+<ng-container *ngIf="(handleCallback2$ | async) as callbackRes">
+  <app-spinner type="overlay">
+    Authentication in progress...
+  </app-spinner>
+</ng-container>

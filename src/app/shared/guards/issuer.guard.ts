@@ -49,7 +49,7 @@ export class IssuerGuard implements CanActivate {
       switchMap(() => of(true)),
     )
 
-    return this.dialogService.overlayLoading(activation$, '')
+    return this.dialogService.overlayLoading(activation$)
   }
 
   private setupManifest(issuer: IssuerCommonStateWithName) {

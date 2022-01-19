@@ -45,7 +45,7 @@ export class QueryService {
   portfolio$: Observable<PortfolioItem[]> = combineLatest([
     this.contract$,
     this.preferenceQuery.issuer$,
-    this.sessionQuery.address$,
+    this.preferenceQuery.address$,
   ]).pipe(
     filter(([_contract, _issuer, address]) => !!address),
     switchMap(([contract, issuer, address]) =>

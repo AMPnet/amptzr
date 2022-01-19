@@ -10,7 +10,7 @@
               <span class="text-sm text-black font-semibold">Total investment</span>
               <span class="text-3xl lg:text-4xl mt-3">
                 <ng-container *ngIf="(totalInvested$ | async) as totalInvested">
-                  {{ totalInvested.value | currencyDefault }}
+                  {{ totalInvested.value | formatUnit:'stablecoin' | currencyDefault }}
                 </ng-container>
               </span>
             </div>
@@ -30,53 +30,205 @@
           </div>
         </section>
 
-        <!-- Portfolio investments -->
-        <section class="w-full mt-8">
-          <div *ngFor="let item of portfolio" class="w-full rounded-3xl shadow-lg flex flex-col lg:flex-row mt-4">
-            <div class="w-full lg:w-4/12">
-              <a routerLink="{{ '/offers/' + item.campaign.contractAddress | issuerPath }}">
-                <img class="w-full h-32 object-cover rounded-t-3xl lg:h-full lg:rounded-tr-none lg:rounded-l-3xl
-                bg-white"
-                     src="{{ item.campaign.infoData.photo | toUrlIPFS }}" alt="Project image">
-              </a>
+        <!-- Pending auto invest -->
+        <ng-container *ngIf="pending$ | async as item">
+          <div class="flex flex-col p-6 bg-white rounded-3xl mt-6 border-amber-600">
+            <div class="text-xs text-gray-400 font-medium">
+              <div class="flex gap-2 items-center">
+                <svg class="w-5 h-5" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path
+                    d="M10 7.5v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3l-6.928-12c-.77-1.333-2.694-1.333-3.464 0l-6.928 12c-.77 1.333.192 3 1.732 3Z"
+                    stroke="#6B7280" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+
+                <span class="font-medium">
+                  Transaction pending
+                </span>
+              </div>
             </div>
-            <div class="flex flex-col justify-between w-full bg-white rounded-b-3xl lg:rounded-none lg:rounded-r-3xl
-                        p-6">
-              <div>
-                <div class="flex">
-                  <div class="bg-gray-200 px-8 rounded-full py-2 flex items-center">
-                    <span class="font-bold">{{ item.tokenValue | formatUnit:'bignumToWei' | currencyDefault }}</span>
-                    <span class="ml-2">Invested</span>
-                  </div>
-                </div>
-                <div class="text-3xl mt-4 lg:text-4xl tracking-wider font-light uppercase">
+
+            <div *ngIf="!item.enoughBalance" class="text-xs text-gray-400 font-medium mt-2">
+              <div class="flex gap-2 items-center">
+                <svg class="w-5 h-5 text-amber-600"
+                     viewBox="0 0 25 25" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M9.75 12.5 5.25 8m0 0 4.5-4.5M5.25 8h13.5m-4.5 5.25 4.5 4.5m0 0-4.5 4.5m4.5-4.5H5.25"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+
+                <span class="text-amber-600 font-semibold">
+                  Awaiting your payment
+                </span>
+
+                <span class="text-gray-400 font-medium">
+                  Allow up to 2 days if you used regular bank transfer.
+                </span>
+              </div>
+            </div>
+
+            <div *ngIf="!item.enoughAllowance" class="text-xs text-gray-400 font-medium mt-2">
+              <div class="flex gap-2 items-center">
+                <svg class="w-5 h-5 text-amber-600"
+                     viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path
+                    d="M11 5H6a2 2 0 0 0-2 2v11a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2v-5m-1.414-9.414a2 2 0 1 1 2.828 2.828L11.828 15H9v-2.828l8.586-8.586Z"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+
+                <span class="text-amber-600 font-semibold">
+                  Missing approval
+                </span>
+
+                <span class="text-gray-400 font-medium">
+                  Allow spending your {{ stablecoin.config.symbol }}
+                </span>
+
+                <button app-action-button
+                        class="bg-cyan-600 text-white px-4 py-2 font-semibold rounded-full disabled:bg-gray-400"
+                        [onClick]="approveFunds(item.campaign.contractAddress, item.tokenAmount)"
+                        text="Approve">
+                </button>
+              </div>
+            </div>
+
+            <div class="w-full h-px bg-gray-200 my-2"></div>
+
+            <div>
+              <div class="flex flex-col gap-6 sm:flex-row items-start">
+                <div class="flex justify-center">
                   <a routerLink="{{ '/offers/' + item.campaign.contractAddress | issuerPath }}">
-                    {{ item.campaign.infoData.name }}
+                    <img class="w-40 h-40 object-contain bg-white"
+                         src="{{ item.asset.infoData.logo | toUrlIPFS }}" alt="Asset logo">
                   </a>
                 </div>
-              </div>
-              <div class="mt-2 flex flex-col lg:flex-row justify-start lg:justify-between">
-                <div class="w-full lg:mr-16">
-                  <app-funding-progress [campaign]="item.campaign"></app-funding-progress>
+
+                <div class="flex-grow">
+                  <!-- TODO: add link to asset when asset page is implemented -->
+                  <h2 class="text-lg font-semibold">
+                    {{ item.asset.name }}
+                  </h2>
+
+                  <small class="text-sm mt-2 text-cyan-500">
+                    <a routerLink="{{ '/offers/' + item.campaign.contractAddress | issuerPath }}">
+                      {{ item.campaign.infoData.name }}
+                    </a>
+                  </small>
+
+                  <div class="flex items-end gap-1 mt-2">
+                    <span class="text-4xl"
+                          [ngClass]="item.campaign.finalized ? 'text-black' : 'text-gray-400'">
+                      {{ item.tokenAmount | formatUnit:'token' | currencyDefault:'token':'real':'' }}
+                    </span>
+                    <span class="font-semibold"
+                          [ngClass]="item.campaign.finalized ? 'text-black' : 'text-gray-400'">
+                      {{ item.asset.symbol }}
+                    </span>
+                    <div class="flex gap-1">
+                      <app-explorer-link [value]="item.asset.contractAddress" type="token">
+                      </app-explorer-link>
+                      <app-add-to-metamask [value]="item.asset.contractAddress">
+                      </app-add-to-metamask>
+                    </div>
+                  </div>
+
+                  <div class="text-sm text-gray-400 mt-1">
+                    <span class="font-bold">
+                      {{ item.tokenValue | formatUnit:'stablecoin' | currencyDefault:'stablecoin':'implicit' }}
+                    </span>
+                    valuation with token price of
+                    <span class="font-bold">
+                      {{ item.campaign.pricePerToken | formatUnit:'tokenPrice' | currencyDefault:'tokenPrice':'implicit' }}
+                    </span>
+                  </div>
+
+                  <div class="mt-2 max-w-xs">
+                    <app-funding-progress [campaign]="item.campaign"></app-funding-progress>
+                  </div>
+
+                  <div class="flex justify-end mt-2">
+                    <!-- Space for action button{s} >-->
+                    <!--                    <button app-action-button-->
+                    <!--                            class="bg-cyan-500 text-white px-10 py-2 font-semibold rounded-full-->
+                    <!--                                   disabled:bg-gray-400"-->
+                    <!--                            [disabled]="true"-->
+                    <!--                            text="Cancel">-->
+                    <!--                    </button>-->
+                  </div>
                 </div>
-                <div class="flex items-end">
-                  <button *ngIf="!item.campaign.finalized" app-action-button
-                          class="w-full lg:w-52 lg:px-20 lg:ml-8 mt-8 lg:mt-0 py-2 bg-transparent
-                                 text-black font-semibold rounded-full whitespace-nowrap"
-                          [onClick]="cancel(item.campaign.contractAddress, item.campaign.flavor).bind(this)"
-                          text="Cancel Investment">
-                  </button>
+              </div>
+            </div>
+          </div>
+        </ng-container>
 
-                  <button *ngIf="item.campaign.finalized" app-action-button [disabled]="true"
-                          class="w-full lg:w-52 lg:px-20 lg:ml-8 mt-8 lg:mt-0 py-2 bg-gray-400 text-white
-                          rounded-full whitespace-nowrap"
-                          text="Investment Finalized">
-                  </button>
+        <!-- Portfolio investments -->
+        <section>
+          <div *ngFor="let item of portfolio" class="flex flex-col p-6 bg-white rounded-3xl mt-6">
+            <div>
+              <div class="flex flex-col gap-6 sm:flex-row items-start">
+                <div class="flex justify-center">
+                  <a routerLink="{{ '/offers/' + item.campaign.contractAddress | issuerPath }}">
+                    <img class="w-40 h-40 object-contain bg-white"
+                         src="{{ item.asset.infoData.logo | toUrlIPFS }}" alt="Asset logo">
+                  </a>
+                </div>
 
-                  <!-- TODO: claim funds from successful investment -->
-                  <!--                  <button *ngIf="item.projectState === projectState.Successful" app-action-button-->
-                  <!--                          class="w-full lg:w-52 lg:px-20 lg:ml-8 mt-8 lg:mt-0 py-2 bg-indigo-800 text-white rounded-full whitespace-nowrap"-->
-                  <!--                          text="Finalize Investment"></button>-->
+                <div class="flex-grow">
+                  <!-- TODO: add link to asset when asset page is implemented -->
+                  <h2 class="text-lg font-semibold">
+                    {{ item.asset.name }}
+                  </h2>
+
+                  <small class="text-sm mt-2 text-cyan-500">
+                    <a routerLink="{{ '/offers/' + item.campaign.contractAddress | issuerPath }}">
+                      {{ item.campaign.infoData.name }}
+                    </a>
+                  </small>
+
+                  <div class="flex items-end gap-1 mt-2">
+                    <span class="text-4xl"
+                          [ngClass]="item.campaign.finalized ? 'text-black' : 'text-gray-400'">
+                      {{ item.tokenAmount | formatUnit:'token' | currencyDefault:'token':'real':'' }}
+                    </span>
+                    <span class="font-semibold"
+                          [ngClass]="item.campaign.finalized ? 'text-black' : 'text-gray-400'">
+                      {{ item.asset.symbol }}
+                    </span>
+                    <div class="flex gap-1">
+                      <app-explorer-link [value]="item.asset.contractAddress" type="token">
+                      </app-explorer-link>
+                      <app-add-to-metamask [value]="item.asset.contractAddress">
+                      </app-add-to-metamask>
+                    </div>
+                  </div>
+
+                  <div class="text-sm mt-1"
+                       [ngClass]="item.campaign.finalized ? 'text-black' : 'text-gray-400'">
+                    <span class="font-bold">
+                      {{ item.tokenValue | formatUnit:'stablecoin' | currencyDefault:'stablecoin':'implicit' }}
+                    </span>
+                    valuation with token price of
+                    <span class="font-bold">
+                      {{ item.campaign.pricePerToken | formatUnit:'tokenPrice' | currencyDefault:'tokenPrice':'implicit' }}
+                    </span>
+                  </div>
+
+                  <div class="mt-2 max-w-xs">
+                    <app-funding-progress [campaign]="item.campaign"></app-funding-progress>
+                  </div>
+
+                  <div class="flex justify-end mt-2">
+                    <button *ngIf="!item.campaign.finalized" app-action-button
+                            class="bg-white text-black px-10 py-2 font-semibold rounded-full
+                                   disabled:bg-gray-200"
+                            [onClick]="cancel(item.campaign.contractAddress, item.campaign.flavor).bind(this)"
+                            text="Cancel Investment">
+                    </button>
+
+                    <button *ngIf="item.campaign.finalized" app-action-button
+                            class="bg-gray-200 text-black px-10 py-2 font-semibold rounded-full
+                                   disabled:bg-gray-200"
+                            text="Investment Finalized">
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>

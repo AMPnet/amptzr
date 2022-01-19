@@ -1,4 +1,5 @@
 import {providers, utils} from 'ethers'
+import {ReconnectingWebsocketProvider} from './ethersjs/reconnecting-websocket-provider'
 
 export enum ChainID {
   MATIC_MAINNET = 137, // Polygon
@@ -17,6 +18,7 @@ export interface Network {
   },
   maxGasPrice: number,
   rpcURLs: string[],
+  wssRpcURLs?: string[],
   explorerURLs: string[],
   tokenizerConfig: TokenizerConfig,
   ramp?: RampConfig,
@@ -36,8 +38,6 @@ interface TokenizerConfig {
     basic: string,
     vesting: string,
   },
-  snapshotDistributorFactory: string,
-  deployerService: string,
   queryService: string,
   nameRegistry: string,
   feeManager: string,
@@ -60,27 +60,29 @@ export const MaticNetwork: Network = {
   },
   maxGasPrice: 100,
   rpcURLs: ['https://polygon-rpc.com'],
+  wssRpcURLs: [
+    'wss://polygon-mainnet.g.alchemy.com/v2/A8PZz3PJWwX_yQAW5q0JjqaNPPshI9Qg',
+    'wss://ws-matic-mainnet.chainstacklabs.com',
+  ],
   explorerURLs: ['https://polygonscan.com/'],
   tokenizerConfig: {
-    apxRegistry: '0x992EF576A79b7D3d05C31DfBCc389362F158c812',
+    apxRegistry: '0xd355adCdf57B39e7751A688158515CE862F14e23',
     issuerFactory: {
-      basic: '0x9E239Ce66eD4a8FDa607Ceeed0fC53d995dA8D35',
+      basic: '0x9DFC2e793a3e88ae61766aaC24F7167501953dC9',
     },
     assetFactory: {
-      basic: '0xfE628bCc1157ecf6E4E1A340A37d7320b8eB13f0',
-      transferable: '0xf04BAE2Bc89205455DA1BBE75Ac0a4773D3Dd830',
-      simple: '',
+      basic: '0x7530569e6669a06110f62E2ab39E3B0653Bd885E',
+      transferable: '0x0d7E2e171C63f913901467D980C357c9D8ACbeb6',
+      simple: '0x06f5A8a5086453efeE31B0299AD4044E63669340',
     },
     cfManagerFactory: {
-      basic: '0xf10AA198C50f6f1E7665AD8d2735b8be4999B627',
-      vesting: '',
+      basic: '0x823991e528e1caa7C13369A2860a162479906C90',
+      vesting: '0xB853E8B0DC7542391F095070A75af57e3F0427Be',
     },
-    snapshotDistributorFactory: '0xB674FFEFB72462F2ED21097946fA7a442E34991A',
-    deployerService: '0x649cDE037774586763F4e6E13408C791e7e03276',
-    queryService: '0x1966841C08a421D79fbaC626f0BFe26D0341A90F',
-    nameRegistry: '0xA6c1924af6DbF73f2307FBCfaFB15d1DA0aebd95',
-    feeManager: '0xc0163CD4587C1848a7418AfB1Adb16467fA858dC',
-    defaultWalletApprover: '0xaE88C599DA07c186Ae575A336c92b1F20E64A9f9',
+    queryService: '0x00d3759D4B7C4163e987E10eb46d0Ae2771B40B5',
+    nameRegistry: '0xeB186b3C94e66e0f1CFe525D9187fb6933e8c91A',
+    feeManager: '0x7c6912280D9c28e42c208bE79ccb2c8fC71Bd7EA',
+    defaultWalletApprover: '0xeD249D3b3cfe53f0FA655f8814Baff404AA0B27c',
     defaultStableCoin: '0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174',
   },
   ramp: {
@@ -98,27 +100,29 @@ export const MumbaiNetwork: Network = {
   },
   maxGasPrice: 20,
   rpcURLs: ['https://rpc-mumbai.maticvigil.com'],
+  wssRpcURLs: [
+    'wss://polygon-mumbai.g.alchemy.com/v2/w8tKRA88CQYBQEwGO2HlKKHtSD_qHOoU',
+    'wss://ws-matic-mumbai.chainstacklabs.com',
+  ],
   explorerURLs: ['https://mumbai.polygonscan.com/'],
   tokenizerConfig: {
-    apxRegistry: '0x2D3B123C7D53E537D449186386618301b4a93B22',
+    apxRegistry: '0x93148Bd574232Acae13B12d6A3a1843109f5243b',
     issuerFactory: {
-      basic: '0x95c406b7294c300308BAc5C722ffe3f1e4e0Cb75',
+      basic: '0x463d65eba0efa397ad5d7Fa49f335DC44F124d03',
     },
     assetFactory: {
-      basic: '0x19d22BBEc9F1aa1bB9AB0F172f5D9e6DDF9E6C47',
-      transferable: '0xEe03dF75801fF4786d1895941b542cBe2832024a',
-      simple: '0x0361B0A1333A0BF88ce2c3a4d7192C5E8A5Efea9',
+      basic: '0x45f036A8FD250F00E7732A1516Ba7342B1A66915',
+      transferable: '0x2a977180D3694F952fA240734B171f7c241Db37f',
+      simple: '0x9d94eBdCd676B25EdABbaadf343140bf1Bf60e36',
     },
     cfManagerFactory: {
-      basic: '0xd8E048E867FC23dB49C151B42892730E2672EeA7',
-      vesting: '0xD5Df489b8a9f9564a8A0d5F82a812dd2Eb17A3bb',
+      basic: '0x5b14f62551FA82B8AeD78A72c8C483DAD5727C86',
+      vesting: '0xe1284684E0f30089b114DFC141Ada9843c155f3f',
     },
-    snapshotDistributorFactory: '0x13B7A1eaEba77B2c8C44b56bdE2863c4efDa8dd8',
-    deployerService: '0xd9c16C98Be8c76e277eaE428516e1fF3fD9524da',
-    queryService: '0x74D23A2FCe2A70313b444aE51816a70061C7786A',
-    nameRegistry: '0x2D14cc9AcC1a638Fc8BF7d3eD0C9d79270194461',
-    feeManager: '0x9448A98B90e3292379b58BF6CD7fB2EF872ba4e1',
-    defaultWalletApprover: '0x622b12839a32FD4C9bc8B1Ff5D4D96DA41C86356',
+    queryService: '0xBF98A3d8D66CdC80Aa964296AAe7aD13905BC506',
+    nameRegistry: '0x5771E32E4aC5Db8b06DfAD4774E2a5358cc90FF5',
+    feeManager: '0xC74f47030aedEBa155a65921E62e8B3C0Bf77140',
+    defaultWalletApprover: '0x9D320608c28ecB79daE1c9E778A75040eC7F7d79',
     defaultStableCoin: '0x9733aa0fb74a01f058fbeb0ad9da3f483058908e',
   },
   ramp: {
@@ -152,8 +156,6 @@ export const GoerliNetwork: Network = {
       basic: '0xa468ad0f01819D995191802A89148d268B04C750',
       vesting: '0x64F09Cc15d9359a68A75cfEB4711701160EA5178',
     },
-    snapshotDistributorFactory: '0x856Ad79217C52827f56748931FFcabc5c2F274aA',
-    deployerService: '0x596E2F22cE6A75EF75Ed19e694aCfBa96140959f',
     queryService: '0x5A22bc3a5078801CB0e8B5C61bb8361D16C8Ed73',
     nameRegistry: '0x41b90C4C84f6388c29835CBA03Cd50D92fB24e8E',
     feeManager: '',
@@ -171,16 +173,24 @@ export const Networks: { [key in ChainID]: Network } = {
 const getEthersNetwork = (network: Network): providers.Network => ({
   name: network.shortName,
   chainId: network.chainID,
-  _defaultProvider: (_providers: any) =>
-    new providers.StaticJsonRpcProvider({
-      url: network.rpcURLs[0],
-    }),
+  _defaultProvider: (_providers: any) => {
+    if (network.wssRpcURLs?.[0]) {
+      return new ReconnectingWebsocketProvider(network.wssRpcURLs![0], network.chainID)
+    }
+
+    return new providers.StaticJsonRpcProvider(network.rpcURLs[0], network.chainID)
+  },
 })
 
 export const EthersNetworks = Object.fromEntries(Object.entries(Networks)
   .map((entry) => [entry[0], getEthersNetwork(entry[1])]),
 )
 
+/**
+ * Interface from wallet_addEthereumChain response.
+ * Source: https://docs.metamask.io/guide/rpc-api.html#other-rpc-methods
+ * Last date accessed: 20211227
+ */
 interface AddEthereumChainParameter {
   chainId: string; // A 0x-prefixed hexadecimal string
   chainName: string;

@@ -17,10 +17,12 @@ export class CurrencyDefaultPipe implements PipeTransform {
     value: number | string,
     type: Type = 'stablecoin',
     display: Display = 'real',
+    currencySymbol?: string,
   ) {
-    const symbol = this.stablecoin.symbol
+    const symbol = currencySymbol ?? this.stablecoin.config.symbol
     switch (type) {
       case 'stablecoin':
+      case 'token':
         return this.transformCurrency(value, '1.0-2', symbol, type, display)
       case 'tokenPrice':
         return this.transformCurrency(value, '1.0-4', symbol, type, display)
@@ -34,18 +36,23 @@ export class CurrencyDefaultPipe implements PipeTransform {
     type: Type,
     display: Display,
   ): string | null {
-    if (type === 'stablecoin' && display === 'implicit') {
-      switch (symbol) {
-        case 'USDC':
-        case 'USDT':
-        case 'DAI':
-          return this.currencyPipe.transform(value, 'USD', 'symbol', format)
-      }
+    switch (type) {
+      case 'stablecoin':
+      case 'tokenPrice':
+        switch (display) {
+          case 'implicit':
+            switch (symbol) {
+              case 'USDC':
+              case 'USDT':
+              case 'DAI':
+                return this.currencyPipe.transform(value, 'USD', 'symbol', format)
+            }
+        }
     }
 
     return this.currencyPipe.transform(value, `${symbol} `, 'code', format, 'hr')
   }
 }
 
-type Type = 'stablecoin' | 'tokenPrice'
+type Type = 'stablecoin' | 'token' | 'tokenPrice'
 type Display = 'real' | 'implicit'

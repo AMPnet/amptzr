@@ -2,11 +2,11 @@ import {ChangeDetectionStrategy, Component, ɵmarkDirty} from '@angular/core'
 import {AbstractControl, FormBuilder, FormGroup, ValidationErrors, Validators} from '@angular/forms'
 import {PreferenceQuery} from '../../preference/state/preference.query'
 import {IssuerPathPipe} from '../../shared/pipes/issuer-path.pipe'
-import {StablecoinService} from '../../shared/services/blockchain/stablecoin.service'
+import {StablecoinBigNumber, StablecoinService} from '../../shared/services/blockchain/stablecoin.service'
 import {ActivatedRoute} from '@angular/router'
 import {RouterService} from '../../shared/services/router.service'
 import {DialogService} from '../../shared/services/dialog.service'
-import {BigNumber} from 'ethers'
+import {BigNumber, constants} from 'ethers'
 import {map, shareReplay, switchMap, take, tap} from 'rxjs/operators'
 import {combineLatest, Observable} from 'rxjs'
 import {withStatus, WithStatus} from '../../shared/utils/observables'
@@ -18,6 +18,8 @@ import {
 } from '../../shared/services/blockchain/campaign/campaign.service'
 import {NameService} from '../../shared/services/blockchain/name.service'
 import {CampaignFlavor} from '../../shared/services/blockchain/flavors'
+import {BigNumberMax} from '../../shared/utils/ethersjs'
+import {ConversionService} from '../../shared/services/conversion.service'
 
 @Component({
   selector: 'app-admin-campaign-add-tokens',
@@ -40,6 +42,7 @@ export class AdminCampaignAddTokensComponent {
               private routerService: RouterService,
               private assetService: AssetService,
               private dialogService: DialogService,
+              private conversion: ConversionService,
               private fb: FormBuilder) {
     const campaignId = this.route.snapshot.params.campaignId
     const campaign$ = this.nameService.getCampaign(campaignId).pipe(
@@ -66,43 +69,42 @@ export class AdminCampaignAddTokensComponent {
     this.campaignDataWithStatus$ = withStatus(this.campaignData$)
 
     this.fundingForm = this.fb.group({
-      amount: [0, [Validators.required], [this.validAmount.bind(this)]],
+      amount: [0, [Validators.required]],
+    }, {
+      asyncValidators: [
+        this.validAmount.bind(this),
+      ],
     })
   }
 
   addTokensStats(stats: CampaignStats, assetBalance: BigNumber): AddTokensStats {
     return {
-      min: Math.max(0, stats.softCap - stats.tokenBalance * stats.tokenPrice),
-      max: this.stablecoinService.format(assetBalance, 18) * stats.tokenPrice,
+      min: BigNumberMax(constants.Zero, stats.softCap.sub(stats.valueTotal)),
+      max: this.conversion.calcStablecoin(assetBalance, stats.tokenPrice),
     }
   }
 
-  minAmountToReachSoftCap(stats: CampaignStats) {
-    const currentCampaignTokenValue = stats.tokenBalance * stats.tokenPrice
-    if (currentCampaignTokenValue < stats.softCap) {
-      return stats.softCap - currentCampaignTokenValue
+  minAmountToReachSoftCap(stats: CampaignStats): StablecoinBigNumber {
+    if (stats.valueTotal.lt(stats.softCap)) {
+      return stats.softCap.sub(stats.valueTotal)
     }
 
-    return 0
+    return constants.Zero
   }
 
   maxFundingAmount(data: CampaignData) {
-    return this.stablecoinService.format(data.assetBalance, 18) * data.stats.tokenPrice
+    return this.conversion.calcStablecoin(data.assetBalance, data.stats.tokenPrice)
   }
 
-  tokensPercentage(data: CampaignData) {
-    const pricePerToken = data.stats.tokenPrice
-    if (pricePerToken === 0) {
-      return 0
-    }
+  tokensPercentage(data: CampaignData): number {
+    const amount = this.conversion.toStablecoin(this.fundingForm.value.amount)
 
-    const numOfTokensToSell = this.fundingForm.value.amount / pricePerToken
-    if (numOfTokensToSell === 0) {
-      return 0
-    }
+    const tokenPrice = data.stats.tokenPrice
+    if (tokenPrice.eq(constants.Zero)) return 0
 
-    const totalTokens = this.stablecoinService.format(data.asset.totalSupply, 18)
-    return numOfTokensToSell / totalTokens
+    const tokens = this.conversion.calcTokens(amount, tokenPrice)
+
+    return this.conversion.parseTokenToNumber(tokens) / this.conversion.parseTokenToNumber(data.asset.totalSupply)
   }
 
   addTokens(data: CampaignData) {
@@ -110,10 +112,13 @@ export class AdminCampaignAddTokensComponent {
       return this.assetService.transferTokensToCampaign(
         data.asset.contractAddress,
         data.campaign.contractAddress,
-        this.fundingForm.value.amount,
+        this.conversion.toStablecoin(this.fundingForm.value.amount),
         data.stats.tokenPrice,
       ).pipe(
-        switchMap(() => this.dialogService.info('Tokens added to campaign.', false)),
+        switchMap(() => this.dialogService.info({
+          title: 'Tokens added to the campaign',
+          cancelable: false,
+        })),
         switchMap(() => this.routerService.navigate(['..'], {relativeTo: this.route})),
       )
     }
@@ -122,14 +127,14 @@ export class AdminCampaignAddTokensComponent {
   private validAmount(control: AbstractControl): Observable<ValidationErrors | null> {
     return combineLatest([this.campaignData$]).pipe(take(1),
       map(([data]) => {
-        const amount = control.value
+        const amount = this.conversion.toStablecoin(control.value.amount)
 
-        if (amount <= 0) {
-          return {nonPositive: true}
-        } else if (amount < data.addTokenStats.min) {
-          return {tooLow: true}
-        } else if (amount > data.addTokenStats.max) {
-          return {tooHigh: true}
+        if (amount.lte(constants.Zero)) {
+          return {amountBelowZero: true}
+        } else if (amount.lt(data.addTokenStats.min)) {
+          return {amountBelowMin: true}
+        } else if (amount.gt(data.addTokenStats.max)) {
+          return {amountAboveMax: true}
         }
 
         return null
@@ -148,6 +153,6 @@ interface CampaignData {
 }
 
 interface AddTokensStats {
-  min: number,
-  max: number,
+  min: StablecoinBigNumber,
+  max: StablecoinBigNumber,
 }

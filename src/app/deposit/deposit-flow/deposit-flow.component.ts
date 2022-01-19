@@ -1,11 +1,15 @@
 import {ChangeDetectionStrategy, Component} from '@angular/core'
 import {AbstractControl, FormBuilder, FormGroup, ValidationErrors} from "@angular/forms"
-import {of} from "rxjs"
+import {last, of} from "rxjs"
 import {RouterService} from "../../shared/services/router.service"
-import {DialogService} from "../../shared/services/dialog.service"
-import {RampInstantEventTypes} from '@ramp-network/ramp-instant-sdk'
 import {DepositRampService} from '../deposit-ramp.service'
-import {switchMap} from 'rxjs/operators'
+import {switchMap, tap} from 'rxjs/operators'
+import {ConversionService} from '../../shared/services/conversion.service'
+import {FaucetService} from '../../shared/services/backend/faucet.service'
+import {BackendHttpClient} from '../../shared/services/backend/backend-http-client.service'
+import {AuthProvider} from '../../preference/state/preference.store'
+import {PreferenceQuery} from '../../preference/state/preference.query'
+import {RampInstantEventTypes} from '@ramp-network/ramp-instant-sdk'
 
 @Component({
   selector: 'app-deposit-flow',
@@ -20,23 +24,35 @@ export class DepositFlowComponent {
   constructor(private fb: FormBuilder,
               private routerService: RouterService,
               private depositRampService: DepositRampService,
-              private dialogService: DialogService) {
+              private conversion: ConversionService,
+              private http: BackendHttpClient,
+              private preferenceQuery: PreferenceQuery,
+              private faucetService: FaucetService) {
     this.depositForm = this.fb.group({
       amount: [0, DepositFlowComponent.validAmount],
     })
   }
 
   showRamp() {
-    return this.depositRampService.showWidget(this.depositForm.value.amount).pipe(
-      switchMap(event => {
-        if (event.type === RampInstantEventTypes.WIDGET_CLOSE && event.payload) {
+    const amount = this.conversion.toStablecoin(this.depositForm.value.amount)
+
+    return this.http.ensureAuth.pipe(
+      switchMap(() => this.depositRampService.showWidget(amount, {
+        setEmail: this.preferenceQuery.getValue().authProvider === AuthProvider.MAGIC,
+      })),
+      tap(state => {
+        if (state.event.type === RampInstantEventTypes.PURCHASE_CREATED) {
+          this.faucetService.topUp.subscribe()
+        }
+      }),
+      last(),
+      switchMap(state => {
+        if (state.successFinish) {
           // payload is non-empty only when user clicks on the success button
-          return this.dialogService.info('Funds will be visible in your wallet shortly.', false).pipe(
-            switchMap(() => this.routerService.navigate(['/wallet'])),
-          )
+          return this.routerService.navigate(['/wallet'])
         }
 
-        return of(event)
+        return of(state)
       }),
     )
   }
@@ -44,8 +60,6 @@ export class DepositFlowComponent {
   private static validAmount(control: AbstractControl): ValidationErrors | null {
     if (control.value <= 0) {
       return {amountTooLow: true}
-    } else if (control.value > 20_000) {
-      return {amountTooHigh: true}
     }
 
     return null

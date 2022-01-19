@@ -2,6 +2,10 @@ import {MaticNetwork, MumbaiNetwork, Network} from './networks'
 import {getWindow} from './utils/browser'
 
 export const Hostnames: { [host in string]: Host } = {
+  'tokenapp.biznisport.com': {
+    network: MaticNetwork,
+    issuerAddress: '0x950c8472c5bb8a10e111646a3de7fd226306b5cf',
+  },
   'token.wespa-spaces.hr': {
     network: MaticNetwork,
     issuerAddress: '0x9950c5290eddea0cf5ff6195fd8b38a22452703b',

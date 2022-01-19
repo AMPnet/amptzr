@@ -60,7 +60,10 @@ export class AdminIssuerEditCampaignVisibilityComponent {
         issuer.infoData,
       ).pipe(
         switchMap(result => this.issuerService.updateInfo(issuer.contractAddress, result.path)),
-        switchMap(() => this.dialogService.info('Campaign visibility successfully updated!', false)),
+        switchMap(() => this.dialogService.info({
+          title: 'Campaign\'s visibility has been updated',
+          cancelable: false,
+        })),
         tap(() => this.refreshIssuer()),
         tap(() => this.routerService.navigate(['/admin'])),
       )

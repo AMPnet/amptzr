@@ -19,13 +19,13 @@
           </a>
 
           <div class="flex flex-col lg:flex-row gap-2 mt-4">
-            <span *ngIf="campaignData.total > 0">
-              Raising: <b>{{ campaignData.total | currencyDefault }}</b>
+            <span *ngIf="campaignData.total.gt(bigNumberConstants.Zero)">
+              Raising: <b>{{ campaignData.total | formatUnit:'stablecoin' | currencyDefault }}</b>
             </span>
 
             <span *ngIf="campaignData.tokensPercentage > 0">
-              Selling <b>{{ campaignData.campaignTokens | number }}</b> of
-              <b>{{ campaignData.assetTokens | number }}</b>
+              Selling <b>{{ campaignData.campaignTokens | formatUnit:'token' | number }}</b> of
+              <b>{{ campaignData.assetTokens | formatUnit:'token' | number }}</b>
               (<b>{{ campaignData.tokensPercentage | percent:'1.0-2' }}</b>) token shares
             </span>
 
@@ -34,7 +34,8 @@
             </span>
           </div>
           <div class="mt-2 mb-4">
-            Price per token: <b>{{ campaignData.tokenPrice | currencyDefault:'tokenPrice' }}</b>
+            Price per token:
+            <b>{{ campaignData.tokenPrice | formatUnit:'tokenPrice' | currencyDefault:'tokenPrice' }}</b>
           </div>
 
           <app-funding-progress class="lg:w-3/4" [campaign]="campaign"></app-funding-progress>
@@ -42,7 +43,7 @@
 
         <div class="flex flex-col justify-end">
           <div class="flex justify-center lg:justify-end">
-            <button class="flex flex-shrink-0 items-center gap-4 px-24 py-2 lg:px-8 rounded-full bg-indigo-800
+            <button class="flex shrink-0 items-center gap-4 px-24 py-2 lg:px-8 rounded-full bg-indigo-800
                          text-white text-lg"
                     [routerLink]="('/admin/campaigns/' + campaign.contractAddress) | issuerPath">
               <span>View campaign</span>

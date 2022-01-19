@@ -1,6 +1,6 @@
 <div class="px-4 py-2 max-w-screen-lg mx-auto">
   <div class="py-2" *ngIf="(isLoggedIn$ | async) === true">
-    <button class="flex inline-flex items-center justify-center flex-grow-0 bg-gray-300 hover:bg-gray-400
+    <button class="flex inline-flex items-center justify-center grow-0 bg-gray-300 hover:bg-gray-400
                          rounded-full ml-4 py-1 px-2" (click)="logout()">
       <svg class="h-4 w-4 mr-2" width="18" height="16" viewBox="0 0 18 16" fill="none"
            xmlns="http://www.w3.org/2000/svg">
@@ -35,6 +35,11 @@
            alt="Issuer Logo">
       <input id="logo" type="file" formControlName="logo" multiple>
     </div>
+
+    <label class="block mt-2">
+      <span>Stablecoin address</span>
+      <input type="text" formControlName="stablecoinAddress">
+    </label>
 
     <button app-action-button
             class="bg-indigo-800 disabled:bg-gray-400 mt-2 px-24 py-2 rounded-full text-white"

@@ -1,21 +1,17 @@
 module.exports = {
   prefix: '',
-  mode: 'jit',
-  purge: {
-    content: [
-      './src/**/*.{html,ts,css,scss,sass,less,styl}',
-    ]
-  },
-  darkMode: false, // or 'media' or 'class'
+  content: [
+    './src/**/*.{html,ts,css,scss,sass,less,styl}',
+  ],
   theme: {
     extend: {
       borderRadius: {
         '4xl': '32px'
+      },
+      fontSize: {
+        'xxs': '.625rem'
       }
     },
-  },
-  variants: {
-    extend: {},
   },
   plugins: [
     require('@tailwindcss/forms'),

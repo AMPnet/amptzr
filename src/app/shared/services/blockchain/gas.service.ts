@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core'
-import {Observable, of} from 'rxjs'
+import {from, Observable, of, switchMap} from 'rxjs'
 import {catchError, map} from 'rxjs/operators'
 import {PreferenceQuery} from '../../../preference/state/preference.query'
 import {Overrides} from 'ethers'
@@ -18,6 +18,20 @@ export class GasService {
   }
 
   get overrides(): Observable<Partial<Overrides>> {
+    return this.isEip1559Supported.pipe(
+      switchMap(isEip1559Supported => isEip1559Supported ?
+        of({}) : this.gasPriceOracleOverrides,
+      ),
+    )
+  }
+
+  private get isEip1559Supported(): Observable<boolean> {
+    return from(this.sessionQuery.provider.getFeeData()).pipe(
+      map(data => (data.maxFeePerGas != null || data.maxPriorityFeePerGas != null)),
+    )
+  }
+
+  private get gasPriceOracleOverrides(): Observable<Partial<Overrides>> {
     switch (this.preferenceQuery.network.chainID) {
       case ChainID.MATIC_MAINNET:
         return this.maticGasStation('https://gasstation-mainnet.matic.network')

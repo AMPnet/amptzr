@@ -56,9 +56,9 @@ export class IssuerBasicService {
       switchMap(contract => combineLatest([of(contract), this.gasService.overrides])),
       switchMap(([contract, overrides]) => {
         const createData: CreateBasicContractIssuerData = {
-          owner: this.sessionQuery.getValue().address!,
+          owner: this.preferenceQuery.getValue().address!,
           mappedName: data.mappedName,
-          stablecoin: this.preferenceQuery.network.tokenizerConfig.defaultStableCoin,
+          stablecoin: data.stablecoinAddress,
           walletApprover: this.preferenceQuery.network.tokenizerConfig.defaultWalletApprover,
           info: data.info,
           nameRegistry: this.preferenceQuery.network.tokenizerConfig.nameRegistry,
@@ -86,10 +86,9 @@ export class IssuerBasicService {
       this.signerService.ensureAuth,
       this.sessionQuery.provider$,
       this.preferenceQuery.issuer$,
-    ]).pipe(
+    ]).pipe(take(1),
       map(([_signer, provider, issuer]) => this.contract(issuer.address, provider)),
       switchMap(contract => contract.isWalletApproved(address)),
-      take(1),
     )
   }
 
@@ -130,8 +129,9 @@ export interface IssuerBasicState {
 }
 
 interface CreateBasicIssuerData {
-  mappedName: string,
-  info: string,
+  mappedName: string
+  stablecoinAddress: string
+  info: string
 }
 
 interface CreateBasicContractIssuerData {

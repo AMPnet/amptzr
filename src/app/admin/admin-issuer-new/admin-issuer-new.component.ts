@@ -8,6 +8,7 @@ import {SessionQuery} from '../../session/state/session.query'
 import {UserService} from '../../shared/services/user.service'
 import {IssuerService} from '../../shared/services/blockchain/issuer/issuer.service'
 import {IssuerFlavor} from '../../shared/services/blockchain/flavors'
+import {PreferenceQuery} from '../../preference/state/preference.query'
 
 @Component({
   selector: 'app-admin-issuer-new',
@@ -23,6 +24,7 @@ export class AdminIssuerNewComponent {
   constructor(private issuerService: IssuerService,
               private signerService: SignerService,
               private sessionQuery: SessionQuery,
+              private preferenceQuery: PreferenceQuery,
               private router: RouterService,
               private dialogService: DialogService,
               private userService: UserService,
@@ -31,20 +33,29 @@ export class AdminIssuerNewComponent {
       name: ['', Validators.required],
       slug: ['', Validators.required],
       logo: [undefined, Validators.required],
+      stablecoinAddress: [
+        this.preferenceQuery.network.tokenizerConfig.defaultStableCoin,
+        Validators.required,
+      ],
     })
   }
 
   create() {
-    return this.issuerService.uploadInfo(
-      this.createForm.value.name,
-      this.createForm.value.logo?.[0],
-      '', '',
-    ).pipe(
+    return this.issuerService.uploadInfo({
+      name: this.createForm.value.name,
+      logo: this.createForm.value.logo?.[0],
+      magicLinkApiKey: '',
+      rampApiKey: '',
+    }).pipe(
       switchMap(uploadRes => this.issuerService.create({
-        info: uploadRes.path,
         mappedName: this.createForm.value.slug,
+        stablecoinAddress: this.createForm.value.stablecoinAddress,
+        info: uploadRes.path,
       }, IssuerFlavor.BASIC)),
-      switchMap(_issuerAddress => this.dialogService.info('Issuer successfully created!', false).pipe(
+      switchMap(() => this.dialogService.info({
+        title: 'Issuer has been created',
+        cancelable: false,
+      }).pipe(
         switchMap(() => this.router.router.navigate(['/'])),
       )),
     )

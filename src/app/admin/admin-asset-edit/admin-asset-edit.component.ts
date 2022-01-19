@@ -71,7 +71,10 @@ export class AdminAssetEditComponent {
         this.updateForm.value.logo?.[0], '', asset.infoData,
       ).pipe(
         switchMap(uploadRes => this.assetService.updateInfo(asset.contractAddress, uploadRes.path)),
-        switchMap(() => this.dialogService.info('Asset successfully updated!', false)),
+        switchMap(() => this.dialogService.info({
+          title: 'Asset has been updated',
+          cancelable: false,
+        })),
         tap(() => this.routerService.navigate([`/admin/assets/${asset.contractAddress}`])),
       )
     }
@@ -82,7 +85,10 @@ export class AdminAssetEditComponent {
       return this.assetService.changeOwner(
         asset.contractAddress, this.updateOwnerAddressForm.value.ownerAddress, flavor as AssetFlavor,
       ).pipe(
-        switchMap(() => this.dialogService.info('Owner changed successfully!', false)),
+        switchMap(() => this.dialogService.info({
+          title: 'The owner has been changed',
+          cancelable: false,
+        })),
         tap(() => this.routerService.navigate(['/admin/issuer'])),
       )
     }
