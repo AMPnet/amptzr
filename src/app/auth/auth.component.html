@@ -23,7 +23,8 @@
       </button>
 
 
-      <div class="flex justify-center mt-4">
+      <!-- TODO: Uncomment this when social login is ready -->
+      <div class="flex justify-center mt-4" *ngIf="false">
         <button app-action-button
                 class="w-12 h-12 mx-2 p-2 border border-gray-200 rounded-full hover:bg-gray-50"
                 [onClick]="connectMagic('google').bind(this)">
