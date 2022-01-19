@@ -3,7 +3,7 @@ import {PreferenceQuery} from '../../../preference/state/preference.query'
 import {MetamaskSubsignerService} from '../../services/subsigners/metamask-subsigner.service'
 import {SignerService} from '../../services/signer.service'
 import {map} from 'rxjs/operators'
-import {combineLatest, EMPTY, Observable} from 'rxjs'
+import {combineLatest, Observable} from 'rxjs'
 import {SessionQuery} from '../../../session/state/session.query'
 import {AuthProvider} from '../../../preference/state/preference.store'
 
@@ -34,10 +34,6 @@ export class AddToMetamaskComponent {
   }
 
   watchAsset(): Observable<unknown> {
-    const signer = this.sessionQuery.signer
-
-    if (!signer) return EMPTY
-
-    return this.metamaskSubsignerService.watchAsset(signer, this.value)
+    return this.metamaskSubsignerService.watchAsset(this.value)
   }
 }
