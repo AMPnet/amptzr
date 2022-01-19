@@ -1,22 +1,22 @@
 import {Injectable} from '@angular/core'
-import {Subsigner, SubsignerLoginOpts} from './metamask-subsigner.service'
 import {EMPTY, from, Observable, of, race, Subject} from 'rxjs'
 import {providers} from 'ethers'
 import {ChainID, MaticNetwork, MumbaiNetwork} from '../../networks'
 import {catchError, concatMap, map, take, tap} from 'rxjs/operators'
 import {AuthProvider, PreferenceStore} from '../../../preference/state/preference.store'
+import {SignerLoginOpts, Subsigner} from '../signer-login-options'
 
 @Injectable({
   providedIn: 'root',
 })
-export class WalletConnectSubsignerService implements Subsigner {
+export class WalletConnectSubsignerService implements Subsigner<WalletConnectLoginOpts> {
   walletConnectProvider: WalletConnectProvider | undefined
   disconnect$ = new Subject<void>()
 
   constructor(private preferenceStore: PreferenceStore) {
   }
 
-  login(opts: SubsignerLoginOpts): Observable<providers.JsonRpcSigner> {
+  login(opts: WalletConnectLoginOpts): Observable<providers.JsonRpcSigner> {
     return from(this.freshWalletConnectProvider).pipe(
       concatMap(p => p.connected && p.accounts.length > 0 ?
         of(p) : this.connect(p)),
@@ -69,6 +69,10 @@ export class WalletConnectSubsignerService implements Subsigner {
       }),
     )
   }
+}
+
+interface WalletConnectLoginOpts extends SignerLoginOpts {
+  wallet?: string;
 }
 
 interface WalletConnectProvider extends IWalletConnectProviderOptions {

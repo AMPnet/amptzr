@@ -37,6 +37,7 @@
     "@datorama/akita-ng-router-store": "^7.0.0",
     "@gnosis.pm/safe-apps-provider": "^0.9.1",
     "@gnosis.pm/safe-apps-sdk": "^6.1.0",
+    "@magic-ext/oauth": "^1.0.0",
     "@ngneat/tailwind": "^7.0.3",
     "@ramp-network/ramp-instant-sdk": "^3.0.0",
     "@tailwindcss/forms": "^0.4.0",

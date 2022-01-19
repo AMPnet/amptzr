@@ -17,6 +17,10 @@ export class RouterService {
     return this.router.navigate([this.issuerPathPipe.transform(commands)], extras)
   }
 
+  constructURL(relativePath: string): string {
+    return this.issuerPathPipe.transform([relativePath])
+  }
+
   navigateIssuer(issuerName: string): Promise<boolean> {
     let path = ''
 

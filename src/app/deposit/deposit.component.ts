@@ -1,4 +1,9 @@
 import {ChangeDetectionStrategy, Component} from '@angular/core'
+import {PreferenceQuery} from '../preference/state/preference.query'
+import {combineLatest, Observable, of} from 'rxjs'
+import {map} from 'rxjs/operators'
+import {StablecoinConfig, StablecoinService} from '../shared/services/blockchain/stablecoin.service'
+import {Network} from '../shared/networks'
 
 @Component({
   selector: 'app-deposit',
@@ -7,6 +12,20 @@ import {ChangeDetectionStrategy, Component} from '@angular/core'
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DepositComponent {
-  constructor() {
+  state$: Observable<State> = combineLatest([
+    this.preferenceQuery.network$,
+    of(this.stablecoin.config),
+    this.preferenceQuery.issuer$,
+  ]).pipe(
+    map(([network, stablecoin]) => ({network, stablecoin})),
+  )
+
+  constructor(public preferenceQuery: PreferenceQuery,
+              public stablecoin: StablecoinService) {
   }
+}
+
+interface State {
+  network: Network
+  stablecoin: StablecoinConfig
 }

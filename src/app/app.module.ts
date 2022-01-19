@@ -100,6 +100,7 @@ import {
 } from './shared/components/loading-dialog/loading-dialog-transaction/loading-dialog-transaction.component'
 import {LoadingOverlayComponent} from './shared/components/loading-dialog/loading-overlay/loading-overlay.component'
 import {DepositDialogComponent} from './deposit/deposit-dialog/deposit-dialog.component'
+import {AuthMagicOauthComponent} from './auth/auth-magic-oauth/auth-magic-oauth.component'
 
 @NgModule({
   declarations: [
@@ -175,6 +176,7 @@ import {DepositDialogComponent} from './deposit/deposit-dialog/deposit-dialog.co
     LoadingDialogTransactionComponent,
     LoadingOverlayComponent,
     DepositDialogComponent,
+    AuthMagicOauthComponent,
   ],
   imports: [
     BrowserModule,

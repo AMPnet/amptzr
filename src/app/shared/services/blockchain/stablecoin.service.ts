@@ -113,7 +113,7 @@ export class StablecoinService {
  */
 export type StablecoinBigNumber = BigNumber
 
-interface StablecoinConfig {
+export interface StablecoinConfig {
   address: string
   decimals: number
   symbol: string

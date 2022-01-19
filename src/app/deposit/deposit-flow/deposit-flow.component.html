@@ -3,14 +3,14 @@
     <div class="w-full max-w-md mr-16">
       <form [formGroup]="depositForm">
         <label for="depositAmount" class="text-lg">
-          <b>I want to deposit</b>
+          <b>I want to get</b>
         </label>
         <input class="w-full mt-2 p-3 border outline-none rounded-xl disabled:bg-gray-100"
                type="text" appCurrencyMask
                id="depositAmount"
                formControlName="amount"/>
         <p class="py-4" *ngIf="(depositAvailable$ | async) === false">
-          Deposit is currently unavailable for this network. Consider another options.
+          There are no available exchange for this network. Consider another options.
         </p>
       </form>
       <div class="flex items-center gap-2 mt-4">
@@ -81,30 +81,9 @@
       </div>
     </div>
 
-    <div class="flex flex-col gap-8 lg:flex-row items-center lg:items-end lg:justify-between">
-      <div class="flex flex-row gap-2 lg:gap-4 mt-16 items-start lg:items-center">
-        <svg class="block" width="32" height="32" viewBox="0 0 26 26" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path
-            d="M14.3333 18.3333H13V13H11.6667M13 7.66667H13.0133M25 13C25 14.5759 24.6896 16.1363 24.0866
-               17.5922C23.4835 19.0481 22.5996 20.371 21.4853 21.4853C20.371 22.5996 19.0481 23.4835 17.5922
-               24.0866C16.1363 24.6896 14.5759 25 13 25C11.4241 25 9.86371 24.6896 8.4078 24.0866C6.95189 23.4835
-               5.62902 22.5996 4.51472 21.4853C3.40042 20.371 2.5165 19.0481 1.91345 17.5922C1.31039 16.1363 1 14.5759
-               1 13C1 9.8174 2.26428 6.76516 4.51472 4.51472C6.76516 2.26428 9.8174 1 13 1C16.1826 1 19.2348 2.26428
-               21.4853 4.51472C23.7357 6.76516 25 9.8174 25 13Z"
-            stroke="#6B7280" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
-        <div class="flex flex-col text-sm">
-          <span class="font-bold">Deposits bigger than {{ 20000 | currencyDefault }}:</span>
-          <p>
-            For assistance and transfer options contact our team from 10am to 6pm GMT Monday to Friday.
-          </p>
-        </div>
-      </div>
-
+    <div class="flex md:justify-end mt-4">
       <button app-action-button
-              class="bg-indigo-800 hover:bg-indigo-900 transition-all w-full max-w-xs
-                     py-2 text-white rounded-full flex items-center justify-center
-                     disabled:bg-gray-400"
+              class="app-button !px-12 w-full md:w-fit flex items-center justify-center"
               text="Next"
               [disabled]="depositForm.get('amount')?.errors?.amountTooLow ||
                           depositForm.get('amount')?.errors?.amountTooHigh ||
