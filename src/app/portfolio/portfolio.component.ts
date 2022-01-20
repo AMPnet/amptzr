@@ -1,5 +1,5 @@
 import {ChangeDetectionStrategy, Component} from '@angular/core'
-import {withInterval, withStatus} from '../shared/utils/observables'
+import {withInterval, WithStatus, withStatus} from '../shared/utils/observables'
 import {PortfolioItem, QueryService} from '../shared/services/blockchain/query.service'
 import {distinctUntilChanged, map, shareReplay, switchMap, tap} from 'rxjs/operators'
 import {BehaviorSubject, combineLatest, Observable, of, takeWhile} from 'rxjs'
@@ -45,7 +45,7 @@ export class PortfolioComponent {
     map(v => ({value: v})),
   )
 
-  pending$: Observable<PendingItem | undefined> = combineLatest([
+  pending$: Observable<WithStatus<PendingItem> | undefined> = combineLatest([
     this.preferenceQuery.address$,
     this.stablecoin.balance$,
   ]).pipe(
@@ -54,26 +54,28 @@ export class PortfolioComponent {
     distinctUntilChanged((prev, curr) => JSON.stringify(prev) === JSON.stringify(curr)),
     switchMap(items => items.length > 0 ? of(items[0]).pipe(
       map(item => ({...item, amount: BigNumber.from(item.amount)})),
-      switchMap(item => this.campaignService.getCampaignWithInfo(item.campaign_address).pipe(
-        switchMap(campaign => combineLatest([
-          this.getCampaignWithAsset(campaign),
-          this.stablecoin.getAllowance$(campaign.contractAddress).pipe(
-            map(allowance => allowance.gte(item.amount)),
-            takeWhile(enoughAllowance => !enoughAllowance, true),
-          ),
-          this.stablecoin.balance$.pipe(
-            map(balance => !!balance?.gte(item.amount)),
-            takeWhile(enoughBalance => !enoughBalance, true),
-          ),
-        ])),
-        map(([campaignWithAsset, enoughAllowance, enoughBalance]) => ({
-          campaign: campaignWithAsset.campaign,
-          asset: campaignWithAsset.asset,
-          enoughAllowance,
-          enoughBalance,
-          tokenValue: item.amount,
-          tokenAmount: this.conversion.calcTokens(item.amount, campaignWithAsset.campaign.pricePerToken),
-        })),
+      switchMap(item => withStatus(
+        this.campaignService.getCampaignWithInfo(item.campaign_address).pipe(
+          switchMap(campaign => combineLatest([
+            this.getCampaignWithAsset(campaign),
+            this.stablecoin.getAllowance$(campaign.contractAddress).pipe(
+              map(allowance => allowance.gte(item.amount)),
+              takeWhile(enoughAllowance => !enoughAllowance, true),
+            ),
+            this.stablecoin.balance$.pipe(
+              map(balance => !!balance?.gte(item.amount)),
+              takeWhile(enoughBalance => !enoughBalance, true),
+            ),
+          ])),
+          map(([campaignWithAsset, enoughAllowance, enoughBalance]) => ({
+            campaign: campaignWithAsset.campaign,
+            asset: campaignWithAsset.asset,
+            enoughAllowance,
+            enoughBalance,
+            tokenValue: item.amount,
+            tokenAmount: this.conversion.calcTokens(item.amount, campaignWithAsset.campaign.pricePerToken),
+          })),
+        ),
       )),
     ) : of(undefined)),
   )

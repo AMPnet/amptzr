@@ -1,4 +1,4 @@
-import {providers, utils} from 'ethers'
+import {providers} from 'ethers'
 import {ReconnectingWebsocketProvider} from './ethersjs/reconnecting-websocket-provider'
 
 export enum ChainID {
@@ -186,38 +186,4 @@ const getEthersNetwork = (network: Network): providers.Network => ({
 
 export const EthersNetworks = Object.fromEntries(Object.entries(Networks)
   .map((entry) => [entry[0], getEthersNetwork(entry[1])]),
-)
-
-/**
- * Interface from wallet_addEthereumChain response.
- * Source: https://docs.metamask.io/guide/rpc-api.html#other-rpc-methods
- * Last date accessed: 20211227
- */
-interface AddEthereumChainParameter {
-  chainId: string; // A 0x-prefixed hexadecimal string
-  chainName: string;
-  nativeCurrency: {
-    name: string;
-    symbol: string; // 2-6 characters long
-    decimals: 18;
-  };
-  rpcUrls: string[];
-  blockExplorerUrls?: string[];
-  iconUrls?: string[]; // Currently ignored.
-}
-
-const getMetamaskNetwork = (network: Network): AddEthereumChainParameter => ({
-  chainId: utils.hexValue(network.chainID),
-  chainName: network.name,
-  nativeCurrency: {
-    name: network.nativeCurrency.name,
-    symbol: network.nativeCurrency.symbol,
-    decimals: 18,
-  },
-  rpcUrls: network.rpcURLs,
-  blockExplorerUrls: network.explorerURLs,
-})
-
-export const MetamaskNetworks = Object.fromEntries(Object.entries(Networks)
-  .map((entry) => [entry[0], getMetamaskNetwork(entry[1])]),
 )
