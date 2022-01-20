@@ -24,7 +24,9 @@ export class DepositService {
               private dialogService: DialogService) {
   }
 
-  ensureBalance(amount: StablecoinBigNumber, campaignAddress?: string): Observable<EnsureBalanceRes> {
+  ensureBalance(
+    amount: StablecoinBigNumber, campaignAddress?: string, min?: StablecoinBigNumber,
+  ): Observable<EnsureBalanceRes> {
     return combineLatest([
       this.signerService.ensureAuth,
       this.stablecoinService.balance$,
@@ -32,17 +34,20 @@ export class DepositService {
       switchMap(([_signer, balance]) => {
         return balance!.gte(amount) ? of({
           purchaseCreated: false,
-        }) : this.openDepositDialog(amount, campaignAddress)
+        }) : this.openDepositDialog(amount, campaignAddress, min)
       }),
     )
   }
 
-  private openDepositDialog(amount: StablecoinBigNumber, campaignAddress?: string) {
+  private openDepositDialog(
+    amount: StablecoinBigNumber, campaignAddress?: string, min?: StablecoinBigNumber,
+  ) {
     return this.dialogService.dialog.open<DepositDialogComponent, DepositDialogData>(DepositDialogComponent, {
       ...this.dialogService.configDefaults,
       data: {
         amount: amount,
         campaignAddress: campaignAddress,
+        min: min,
       },
     }).afterClosed()
   }

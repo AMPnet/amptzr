@@ -16,6 +16,7 @@ import {BackendHttpClient} from '../../shared/services/backend/backend-http-clie
 import {PreferenceQuery} from '../../preference/state/preference.query'
 import {AuthProvider} from '../../preference/state/preference.store'
 import {RampInstantEventTypes} from '@ramp-network/ramp-instant-sdk'
+import {ConversionService} from '../../shared/services/conversion.service'
 
 
 @Component({
@@ -40,6 +41,7 @@ export class DepositDialogComponent implements OnInit {
               private router: RouterService,
               public stablecoin: StablecoinService,
               private http: BackendHttpClient,
+              private conversion: ConversionService,
               private userService: UserService,
               private faucetService: FaucetService,
               private autoInvestService: AutoInvestService,
@@ -55,13 +57,16 @@ export class DepositDialogComponent implements OnInit {
     this.dataSub.next({
       amount: this.data.amount,
       campaignAddress: this.data.campaignAddress,
+      min: this.data.min,
     })
   }
 
-  showRamp(amount: StablecoinBigNumber, campaignAddress?: string) {
+  showRamp(amount: StablecoinBigNumber, campaignAddress?: string, min?: StablecoinBigNumber) {
+    const adjustedAmount = this.adjustDepositAmount(amount, min)
+
     return () => {
       return this.http.ensureAuth.pipe(
-        switchMap(() => this.depositRampService.showWidget(amount, {
+        switchMap(() => this.depositRampService.showWidget(adjustedAmount, {
           setEmail: this.preferenceQuery.getValue().authProvider === AuthProvider.MAGIC,
         })),
         tap(state => {
@@ -72,14 +77,14 @@ export class DepositDialogComponent implements OnInit {
         last(),
         switchMapTap(state => {
           return state.purchaseCreated && campaignAddress ?
-            this.autoInvestService.submit(amount, campaignAddress).pipe(
+            this.autoInvestService.submit(adjustedAmount, campaignAddress).pipe(
               switchMap(() => this.dialogService.success({
                 title: 'Your investment has been noted',
                 message: 'We will automatically execute the buy order as soon as you receive the funds on your Wallet.' +
                   'You will receive emails from RAMP about the wallet funding process. ' +
                   'Visit the Portfolio page to check the investment status.',
               })),
-              switchMap(() => this.stablecoin.approveAmount(campaignAddress, amount)),
+              switchMap(() => this.stablecoin.approveAmount(campaignAddress, adjustedAmount)),
             ) : of(undefined)
         }),
         switchMapTap(state => {
@@ -95,9 +100,25 @@ export class DepositDialogComponent implements OnInit {
   getUniswapLink$(amount: StablecoinBigNumber) {
     return this.swapUniswapService.getLink(amount)
   }
+
+  /**
+   * Some fiat to crypto exchanges like Ramp don't ensure we'll receive
+   * the exact amount of proposed cryptocurrency, so we need to raise the amount
+   * to have a safety margin that will surpass the minimum allowed investment value.
+   * @private
+   */
+  private adjustDepositAmount(amount: StablecoinBigNumber, min?: StablecoinBigNumber): StablecoinBigNumber {
+    if (!min) return amount
+
+    const safetyMargin = this.conversion.toStablecoin('1')
+    const shouldAdjust = amount.lt(min.add(safetyMargin))
+
+    return shouldAdjust ? amount.add(safetyMargin) : amount
+  }
 }
 
 export interface DepositDialogData {
   amount: StablecoinBigNumber
   campaignAddress?: string
+  min?: StablecoinBigNumber
 }
