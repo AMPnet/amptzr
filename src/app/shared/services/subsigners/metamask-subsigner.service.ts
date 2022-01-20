@@ -54,7 +54,6 @@ export class MetamaskSubsignerService implements Subsigner<MetamaskLoginOpts> {
   private switchEthereumChain(opts: MetamaskLoginOpts): Observable<unknown> {
     return from(this.subprovider.getSigner().provider.send('wallet_switchEthereumChain',
       [{chainId: MetamaskNetworks[this.preferenceStore.getValue().chainID].chainId}])).pipe(
-      // TODO: wait for issue fix: https://github.com/MetaMask/metamask-mobile/issues/3312
       catchError(err => {
         switch (err.code) {
           case 4001:
