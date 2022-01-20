@@ -20,7 +20,7 @@
     <ng-container *ngIf="isRampAvailable$ | async">
       <button app-action-button
               class="w-full rounded-md border border-gray-200 p-3 mt-6"
-              [onClick]="showRamp(data.amount, data.campaignAddress).bind(this)">
+              [onClick]="showRamp(data.amount, data.campaignAddress, data.min).bind(this)">
         <ng-template #content>
           <div class="flex justify-center items-center gap-2">
             <img class="w-10 h-10 object-contain"
