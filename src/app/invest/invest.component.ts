@@ -286,25 +286,29 @@ export class InvestComponent {
     return this.signerService.ensureAuth
   }
 
-  passKyc(campaign: CampaignWithInfo) {
+  passKyc(state: InvestmentState) {
     return () => {
-      return this.identityService.ensureIdentityChecked(campaign)
+      return this.identityService.ensureIdentityChecked(state.campaign)
     }
   }
 
-  getFunds(campaign: CampaignWithInfo) {
+  getFunds(state: InvestmentState) {
     return () => {
       const stablecoinAmount = this.conversion.toStablecoin(this.investmentForm.value.stablecoinAmount || 0)
 
-      return this.depositService.ensureBalance(stablecoinAmount, campaign.contractAddress)
+      return this.depositService.ensureBalance(
+        stablecoinAmount,
+        state.campaign.contractAddress,
+        state.preInvestData.min,
+      )
     }
   }
 
-  passKycAndGetFunds(campaign: CampaignWithInfo) {
+  passKycAndGetFunds(state: InvestmentState) {
     return () => {
       return concat(
-        this.passKyc(campaign)(),
-        this.getFunds(campaign)(),
+        this.passKyc(state)(),
+        this.getFunds(state)(),
       )
     }
   }

@@ -169,21 +169,21 @@
                         class="w-full app-button"
                         [hidden]="(shouldOnlyPassKyc$ | async) !== true"
                         [disabled]="investmentForm.invalid"
-                        [onClick]="passKyc(state.campaign).bind(this)"
+                        [onClick]="passKyc(state).bind(this)"
                         text="Next 📝"></button>
 
                 <button app-action-button
                         class="w-full app-button"
                         [hidden]="(shouldOnlyGetFunds$ | async) !== true"
                         [disabled]="!investmentForm.errors?.stablecoinAmountAboveBalance"
-                        [onClick]="getFunds(state.campaign).bind(this)"
+                        [onClick]="getFunds(state).bind(this)"
                         text="Next 💰"></button>
 
                 <button app-action-button
                         class="w-full app-button"
                         [hidden]="(shouldPassKycAndGetFunds$ | async) !== true"
                         [disabled]="!investmentForm.errors?.stablecoinAmountAboveBalance"
-                        [onClick]="passKycAndGetFunds(state.campaign).bind(this)"
+                        [onClick]="passKycAndGetFunds(state).bind(this)"
                         text="Next 📝💰"></button>
 
                 <button app-action-button
