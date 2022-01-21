@@ -107,13 +107,22 @@ export class DepositDialogComponent implements OnInit {
    * to have a safety margin that will surpass the minimum allowed investment value.
    * @private
    */
-  private adjustDepositAmount(amount: StablecoinBigNumber, min?: StablecoinBigNumber): StablecoinBigNumber {
-    if (!min) return amount
+  private adjustDepositAmount(
+    amount: StablecoinBigNumber, min?: StablecoinBigNumber,
+  ): StablecoinBigNumber {
+    if (!min || min.lt(constants.Zero)) return amount
 
-    const safetyMargin = this.conversion.toStablecoin('1')
-    const shouldAdjust = amount.lt(min.add(safetyMargin))
+    const scaleValue = 1.0005 // proposed by Ramp team
+    const minSafe = this.conversion.scale(min, scaleValue)
+    const shouldAdjust = amount.lt(minSafe)
 
-    return shouldAdjust ? amount.add(safetyMargin) : amount
+    return shouldAdjust ? this.ceilValue(minSafe) : amount
+  }
+
+  private ceilValue(value: StablecoinBigNumber): StablecoinBigNumber {
+    const trimmed = this.conversion.trim(value, 'stablecoin')
+
+    return trimmed.add(this.conversion.toStablecoin('1'))
   }
 }
 
