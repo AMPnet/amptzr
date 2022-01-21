@@ -51,25 +51,35 @@
                          (input)="onStablecoinAmountChange(state.campaign)">
                 </div>
 
-                <div class="flex items-center min-h-[1rem] mt-2">
-                  <ng-container *ngIf="investmentForm.dirty && investmentForm.invalid">
-                    <span class="text-red-600 text-xs font-semibold">
-                      <ng-container *ngIf="investmentForm.errors?.stablecoinAmountBelowMin">
-                        The amount is below minimum investment of {{ state.preInvestData.min
-                        | formatUnit:'stablecoin' | currencyDefault:'stablecoin':'implicit' }}.
-                      </ng-container>
+                <div class="flex">
+                  <div class="flex items-center min-h-[1rem] mt-2 flex-1">
+                    <ng-container *ngIf="investmentForm.dirty && investmentForm.invalid">
+                      <span class="text-red-600 text-xs font-semibold">
+                        <ng-container *ngIf="investmentForm.errors?.stablecoinAmountBelowMin">
+                          The amount is below minimum investment of {{ state.preInvestData.min
+                          | formatUnit:'stablecoin' | currencyDefault:'stablecoin':'implicit' }}.
+                        </ng-container>
 
-                      <ng-container *ngIf="investmentForm.errors?.stablecoinAmountAboveMax">
-                        The amount is above maximum investment of {{ state.preInvestData.max
-                        | formatUnit:'stablecoin' | currencyDefault:'stablecoin':'implicit' }}.
-                      </ng-container>
+                        <ng-container *ngIf="investmentForm.errors?.stablecoinAmountAboveMax">
+                          The amount is above maximum investment of {{ state.preInvestData.max
+                          | formatUnit:'stablecoin' | currencyDefault:'stablecoin':'implicit' }}.
+                        </ng-container>
+                      </span>
+                    </ng-container>
+
+                    <span *ngIf="investmentForm.errors?.campaignMaxReached"
+                          class="text-amber-600 text-xs font-semibold">
+                      The campaign has reached its maximum target value.
                     </span>
-                  </ng-container>
-
-                  <span *ngIf="investmentForm.errors?.campaignMaxReached"
-                        class="text-amber-600 text-xs font-semibold">
-                    The campaign has reached its maximum target value.
-                  </span>
+                  </div>
+                  <div class="flex gap-1" *ngIf="state.stablecoinBalance">
+                    <button class="app-button text-xxs !px-1 !py-0.5"
+                            *ngIf="state.preInvestData.max.gt(bigNumberConstants.Zero)
+                            && state.stablecoinBalance.gt(state.preInvestData.min)"
+                            (click)="setStablecoin(state, 'maxAvailable')">
+                      Max
+                    </button>
+                  </div>
                 </div>
 
                 <div class="flex justify-between mt-5 text-xxs font-medium">
@@ -137,23 +147,29 @@
 
               <div class="flex justify-between text-xxs text-gray-400 mt-1">
                 <div>
-                  <div class="flex gap-1" *ngIf="state.preInvestData.min.gt(bigNumberConstants.Zero)">
-                    <span class="font-bold">
-                      {{ state.preInvestData.min | formatUnit:'stablecoin' | currencyDefault:'stablecoin':'implicit' }}
-                    </span>
-                    <span class="font-medium">
-                      Min
-                    </span>
+                  <div *ngIf="state.preInvestData.min.gt(bigNumberConstants.Zero)">
+                    <a routerLink="." (click)="setStablecoin(state, 'min')"
+                       class="flex gap-1">
+                      <span class="font-bold">
+                        {{ state.preInvestData.min | formatUnit:'stablecoin' | currencyDefault:'stablecoin':'implicit' }}
+                      </span>
+                      <span class="font-medium underline">
+                        Min
+                      </span>
+                    </a>
                   </div>
                 </div>
                 <div>
-                  <div class="flex gap-1" *ngIf="state.preInvestData.max.gt(bigNumberConstants.Zero)">
-                    <span class="font-bold">
-                      {{ state.preInvestData.max | formatUnit:'stablecoin' | currencyDefault:'stablecoin':'implicit' }}
-                    </span>
-                    <span class="font-medium">
-                      Max
-                    </span>
+                  <div *ngIf="state.preInvestData.max.gt(bigNumberConstants.Zero)">
+                    <a routerLink="." (click)="setStablecoin(state, 'max')"
+                       class="flex gap-1">
+                      <span class="font-bold">
+                        {{ state.preInvestData.max | formatUnit:'stablecoin' | currencyDefault:'stablecoin':'implicit' }}
+                      </span>
+                      <span class="font-medium underline">
+                        Max
+                      </span>
+                    </a>
                   </div>
                 </div>
               </div>
