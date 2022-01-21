@@ -111,6 +111,7 @@ export class IssuerService {
         logo: logo?.path || data.issuer?.logo || '',
         rampApiKey: data.rampApiKey || data.issuer?.rampApiKey || '',
         magicLinkApiKey: data.magicLinkApiKey || data.issuer?.magicLinkApiKey || '',
+        crispWebsiteId: data.crispWebsiteId || data.issuer?.crispWebsiteId || '',
         offersDisplaySettings: data.issuer?.offersDisplaySettings || '',
       })),
     )
@@ -210,5 +211,6 @@ interface IssuerUploadInfoData {
   logo: File
   rampApiKey: string
   magicLinkApiKey: string
+  crispWebsiteId: string
   issuer?: IPFSIssuer
 }

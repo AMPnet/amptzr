@@ -20,6 +20,7 @@ import {IdentityService} from '../identity/identity.service'
 import {DepositService} from '../deposit/deposit.service'
 import {PreferenceQuery} from '../preference/state/preference.query'
 import {UserService} from '../shared/services/user.service'
+import {CrispService} from '../shared/services/crisp.service'
 
 @Component({
   selector: 'app-invest',
@@ -41,6 +42,7 @@ export class InvestComponent {
   shouldBuy$: Observable<boolean>
 
   bigNumberConstants = constants
+  crispKeepShown$ = this.crispService.keepShown$
 
   constructor(private fb: FormBuilder,
               private campaignService: CampaignService,
@@ -51,6 +53,7 @@ export class InvestComponent {
               private signerService: SignerService,
               private stablecoin: StablecoinService,
               private conversion: ConversionService,
+              private crispService: CrispService,
               private dialogService: DialogService,
               private depositService: DepositService,
               private investService: InvestService,

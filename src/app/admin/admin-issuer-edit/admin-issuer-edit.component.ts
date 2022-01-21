@@ -36,6 +36,7 @@ export class AdminIssuerEditComponent {
       logo: [undefined],
       rampApiKey: [''],
       magicLinkApiKey: [''],
+      crispWebsiteId: [''],
     })
     this.updateWalletApproverAddressForm = this.fb.group({
       walletApproverAddress: ['', [Validators.required, AdminIssuerEditComponent.validAddress]],
@@ -57,6 +58,7 @@ export class AdminIssuerEditComponent {
             name: issuer.infoData.name || '',
             rampApiKey: issuer.infoData.rampApiKey || '',
             magicLinkApiKey: issuer.infoData.magicLinkApiKey || '',
+            crispWebsiteId: issuer.infoData.crispWebsiteId || '',
           })
 
           this.updateWalletApproverAddressForm.reset()
@@ -80,6 +82,7 @@ export class AdminIssuerEditComponent {
         logo: this.updateForm.value.logo?.[0],
         rampApiKey: this.updateForm.value.rampApiKey,
         magicLinkApiKey: this.updateForm.value.magicLinkApiKey,
+        crispWebsiteId: this.updateForm.value.crispWebsiteId,
         issuer: issuer.infoData,
       }).pipe(
         switchMap(uploadRes => this.issuerService.updateInfo(issuer.contractAddress, uploadRes.path)),
