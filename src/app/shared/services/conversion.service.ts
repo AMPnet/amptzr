@@ -94,7 +94,7 @@ export class ConversionService {
 
   trim(value: BigNumber, decimals: number | 'stablecoin' = 18, trimDecimals = 0): BigNumber {
     if (decimals === 'stablecoin') decimals = this.stablecoin.config.decimals
-    const totalDecimals = decimals - trimDecimals
+    const totalDecimals = Math.max(decimals - trimDecimals, 0)
 
     return value
       .div(this.pow10(totalDecimals))
