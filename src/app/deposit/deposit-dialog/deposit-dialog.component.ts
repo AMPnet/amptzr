@@ -108,12 +108,25 @@ export class DepositDialogComponent implements OnInit {
    * @private
    */
   private adjustDepositAmount(amount: StablecoinBigNumber, min?: StablecoinBigNumber): StablecoinBigNumber {
-    if (!min) return amount
+    if (!min || min.lt(constants.Zero)) return amount
 
-    const safetyMargin = this.conversion.toStablecoin('1')
-    const shouldAdjust = amount.lt(min.add(safetyMargin))
+    const minSafe = this.addSafetyMargin(min)
+    const shouldAdjust = amount.lt(minSafe)
 
-    return shouldAdjust ? amount.add(safetyMargin) : amount
+    return shouldAdjust ? this.addSafetyMargin(amount) : amount
+  }
+
+  /**
+   * There are a few options to add a safety margin, but the most effective one is raising the
+   * amount with some percentage (e.g. 0.05% of the original value; proposed by Ramp team),
+   * trimming the value to a whole number and adding 1.
+   * @private
+   */
+  private addSafetyMargin(value: StablecoinBigNumber) {
+    const scaled = this.conversion.scale(value, 1.0005)
+    const trimmed = this.conversion.trim(scaled, 'stablecoin')
+
+    return trimmed.add(this.conversion.toStablecoin('1'))
   }
 }
 
