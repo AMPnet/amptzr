@@ -116,12 +116,11 @@ export class DepositDialogComponent implements OnInit {
     const minSafe = this.conversion.scale(min, scaleValue)
     const shouldAdjust = amount.lt(minSafe)
 
-    return shouldAdjust ? this.addSafetyMargin(min, scaleValue) : amount
+    return shouldAdjust ? this.ceilValue(minSafe) : amount
   }
 
-  private addSafetyMargin(value: StablecoinBigNumber, scaleValue: number) {
-    const scaled = this.conversion.scale(value, scaleValue)
-    const trimmed = this.conversion.trim(scaled, 'stablecoin')
+  private ceilValue(value: StablecoinBigNumber): StablecoinBigNumber {
+    const trimmed = this.conversion.trim(value, 'stablecoin')
 
     return trimmed.add(this.conversion.toStablecoin('1'))
   }
