@@ -7,7 +7,7 @@ import {combineLatest, concat, concatMap, Observable, of, timer} from 'rxjs'
 import {AbstractControl, FormBuilder, FormGroup, ValidationErrors} from '@angular/forms'
 import {CampaignFlavor} from '../shared/services/blockchain/flavors'
 import {ActivatedRoute} from '@angular/router'
-import {filter, map, shareReplay, startWith, switchMap, take, tap} from 'rxjs/operators'
+import {distinctUntilChanged, filter, map, shareReplay, startWith, switchMap, take, tap} from 'rxjs/operators'
 import {WithStatus, withStatus} from '../shared/utils/observables'
 import {DialogService} from '../shared/services/dialog.service'
 import {SessionQuery} from '../session/state/session.query'
@@ -61,7 +61,7 @@ export class InvestComponent {
               private route: ActivatedRoute) {
     const campaignId = this.route.snapshot.params.id
     const campaignWithName$ = this.nameService.getCampaign(campaignId).pipe(
-      shareReplay({bufferSize: 1, refCount: true}),
+      shareReplay(1),
     )
 
     const campaign$: Observable<CampaignWithInfo> = campaignWithName$.pipe(
@@ -69,7 +69,7 @@ export class InvestComponent {
         campaignWithName.campaign.contractAddress, campaignWithName.campaign,
       )),
       switchMap(campaignCommon => this.campaignService.getCampaignInfo(campaignCommon)),
-      shareReplay({bufferSize: 1, refCount: true}),
+      shareReplay(1),
     )
 
     const preInvestData$: Observable<PreInvestData> = combineLatest([
@@ -77,7 +77,7 @@ export class InvestComponent {
       campaign$,
     ]).pipe(
       switchMap(([_address, campaign]) => this.investService.preInvestData(campaign)),
-      shareReplay({bufferSize: 1, refCount: true}),
+      shareReplay(1),
     )
 
     this.state$ = campaign$.pipe(
@@ -92,12 +92,13 @@ export class InvestComponent {
       map(([stablecoinSymbol, stablecoinBalance, stablecoinAllowance, campaign, asset, preInvestData]) => ({
         stablecoinSymbol, stablecoinBalance, stablecoinAllowance, campaign, asset, preInvestData,
       })),
+      distinctUntilChanged((p, c) => JSON.stringify(p) === JSON.stringify(c)),
       tap(() => {
         timer(0).pipe(tap(() => {
           this.investmentForm.get('stablecoinAmount')!.updateValueAndValidity()
         })).subscribe()
       }),
-      shareReplay({bufferSize: 1, refCount: true}),
+      shareReplay(1),
     )
     this.stateWithStatus$ = withStatus(this.state$)
 
@@ -110,7 +111,8 @@ export class InvestComponent {
 
     const stablecoinAmountChanged$ = this.investmentForm.get('stablecoinAmount')!.valueChanges.pipe(
       startWith(''),
-      shareReplay({bufferSize: 1, refCount: true}),
+      distinctUntilChanged((p, c) => p == c),
+      shareReplay(1),
     )
 
     const shouldPassKYC$ = combineLatest([
@@ -125,7 +127,8 @@ export class InvestComponent {
           map(kycPassed => !kycPassed),
         )
       }),
-      shareReplay({bufferSize: 1, refCount: true}),
+      distinctUntilChanged(),
+      shareReplay(1),
     )
 
     const shouldGetFunds$ = combineLatest([
@@ -140,7 +143,8 @@ export class InvestComponent {
 
         return state.stablecoinBalance.lt(amount)
       }),
-      shareReplay({bufferSize: 1, refCount: true}),
+      distinctUntilChanged(),
+      shareReplay(1),
     )
 
     this.shouldOnlyPassKyc$ = combineLatest([
@@ -150,6 +154,7 @@ export class InvestComponent {
       map(([shouldPassKYC, shouldGetFunds]) =>
         shouldPassKYC && !shouldGetFunds,
       ),
+      distinctUntilChanged(),
     )
 
     this.shouldOnlyGetFunds$ = combineLatest([
@@ -159,6 +164,7 @@ export class InvestComponent {
       map(([shouldPassKYC, shouldGetFunds]) =>
         !shouldPassKYC && shouldGetFunds,
       ),
+      distinctUntilChanged(),
     )
 
     this.shouldPassKycAndGetFunds$ = combineLatest([
@@ -168,6 +174,7 @@ export class InvestComponent {
       map(([shouldPassKYC, shouldGetFunds]) =>
         shouldPassKYC && shouldGetFunds,
       ),
+      distinctUntilChanged(),
     )
 
     const preInvestStepsRequired$ = combineLatest([
@@ -178,6 +185,7 @@ export class InvestComponent {
       map(([shouldOnlyPassKyc, shouldOnlyGetFunds, shouldPassKycAndGetFunds]) =>
         shouldOnlyPassKyc || shouldOnlyGetFunds || shouldPassKycAndGetFunds,
       ),
+      distinctUntilChanged(),
     )
 
     this.shouldApprove$ = combineLatest([
@@ -195,7 +203,7 @@ export class InvestComponent {
 
         return state.stablecoinAllowance.lt(amount)
       }),
-      shareReplay({bufferSize: 1, refCount: true}),
+      distinctUntilChanged(),
     )
 
     this.shouldBuy$ = combineLatest([
@@ -206,7 +214,7 @@ export class InvestComponent {
       map(([isUserLoggedIn, preInvestStepsRequired, shouldApprove]) => {
         return isUserLoggedIn && !preInvestStepsRequired && !shouldApprove
       }),
-      shareReplay({bufferSize: 1, refCount: true}),
+      distinctUntilChanged(),
     )
   }
 

@@ -13,6 +13,7 @@ export interface IPFSIssuer {
 
   rampApiKey: string
   magicLinkApiKey: string
+  crispWebsiteId: string
   offersDisplaySettings?: cid
 }
 

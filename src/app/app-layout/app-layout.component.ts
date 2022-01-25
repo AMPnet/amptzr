@@ -1,4 +1,5 @@
 import {ChangeDetectionStrategy, Component} from '@angular/core'
+import {CrispService} from '../shared/services/crisp.service'
 
 @Component({
   selector: 'app-app-layout',
@@ -7,6 +8,6 @@ import {ChangeDetectionStrategy, Component} from '@angular/core'
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AppLayoutComponent {
-  constructor() {
+  constructor(public crispService: CrispService) {
   }
 }
