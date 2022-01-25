@@ -51,15 +51,23 @@ export class CrispService {
     combineLatest([
       this.crispSub.asObservable(),
       this.preferenceQuery.isBackendAuthorized$,
+      this.preferenceQuery.address$,
     ]).pipe(
-      tap(([isCrispAvailable, isBackendAuthorized]) => {
-        if (!isCrispAvailable || !isBackendAuthorized) return
+      tap(([isCrispAvailable, isBackendAuthorized, address]) => {
+        if (!isCrispAvailable) return
 
-        this.backendUserService.getUser().pipe(
-          tap(user => {
-            if (!!user.email) this.setUserEmail(user.email)
-          }),
-        ).subscribe()
+        this.setSessionData({
+          address: !!address ? `"${address}"` : '',
+          authProvider: this.preferenceQuery.getValue().authProvider || '',
+        })
+
+        if (isBackendAuthorized) {
+          this.backendUserService.getUser().pipe(
+            tap(user => {
+              if (!!user.email) this.setUserEmail(user.email)
+            }),
+          ).subscribe()
+        }
       }),
     ).subscribe()
   }
@@ -86,6 +94,10 @@ export class CrispService {
 
   setUserEmail(email: string) {
     this.$crisp?.push(["set", "user:email", email])
+  }
+
+  setSessionData(data: object) {
+    this.$crisp?.push(["set", "session:data", [[...Object.entries(data)]]])
   }
 
   private loadScript(crispWebsiteId: string): Observable<boolean> {

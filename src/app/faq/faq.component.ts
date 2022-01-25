@@ -1,6 +1,5 @@
 import {ChangeDetectionStrategy, Component} from '@angular/core'
 import {BehaviorSubject} from "rxjs"
-import {CrispService} from '../shared/services/crisp.service'
 
 @Component({
   selector: 'app-faq',
@@ -110,7 +109,7 @@ export class FaqComponent {
   ]
   selectedCategory$ = new BehaviorSubject<QuestionCategory>(this.questionCategories[0])
 
-  constructor(public crispService: CrispService) {
+  constructor() {
   }
 
   selectCategory(category: QuestionCategory) {
