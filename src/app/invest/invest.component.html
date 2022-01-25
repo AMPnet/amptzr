@@ -72,21 +72,21 @@
                       The campaign has reached its maximum target value.
                     </span>
                   </div>
+                </div>
+
+                <div class="flex justify-between items-center mt-5 text-xxs font-medium">
+                  <div>
+                    <span class="text-gray-400" *ngIf="state.stablecoinBalance">
+                      Balance: {{ state.stablecoinBalance | formatUnit:'stablecoin' | currencyDefault }}
+                    </span>
+                  </div>
                   <div class="flex gap-1" *ngIf="state.stablecoinBalance">
-                    <button class="app-button text-xxs !px-1 !py-0.5"
+                    <button class="app-button text-xxs !px-2 !py-0.5 mb-1"
                             *ngIf="state.preInvestData.max.gt(bigNumberConstants.Zero)
                             && state.stablecoinBalance.gt(state.preInvestData.min)"
                             (click)="setStablecoin(state, 'maxAvailable')">
                       Max
                     </button>
-                  </div>
-                </div>
-
-                <div class="flex justify-between mt-5 text-xxs font-medium">
-                  <div>
-                    <span class="text-gray-400" *ngIf="state.stablecoinBalance">
-                      Balance: {{ state.stablecoinBalance | formatUnit:'stablecoin' | currencyDefault }}
-                    </span>
                   </div>
                 </div>
               </div>
@@ -153,7 +153,7 @@
                       <span class="font-bold">
                         {{ state.preInvestData.min | formatUnit:'stablecoin' | currencyDefault:'stablecoin':'implicit' }}
                       </span>
-                      <span class="font-medium underline">
+                      <span class="font-medium">
                         Min
                       </span>
                     </a>
@@ -166,7 +166,7 @@
                       <span class="font-bold">
                         {{ state.preInvestData.max | formatUnit:'stablecoin' | currencyDefault:'stablecoin':'implicit' }}
                       </span>
-                      <span class="font-medium underline">
+                      <span class="font-medium">
                         Max
                       </span>
                     </a>
