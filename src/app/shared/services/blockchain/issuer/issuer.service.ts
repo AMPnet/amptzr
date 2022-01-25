@@ -17,7 +17,7 @@ import {QueryService} from '../query.service'
 import {IssuerBasicService, IssuerBasicState} from './issuer-basic.service'
 import {IssuerCommonState} from './issuer.common'
 import {IssuerFlavor} from '../flavors'
-import {contractEvent} from '../../../utils/ethersjs'
+import {contractEvent, extract} from '../../../utils/ethersjs'
 
 @Injectable({
   providedIn: 'root',
@@ -59,6 +59,7 @@ export class IssuerService {
   getCommonState(address: string, signerOrProvider: Signer | Provider): Observable<IssuerCommonState> {
     return of(this.issuerBasicService.contract(address, signerOrProvider)).pipe(
       switchMap(contract => contract.commonState()),
+      map(state => extract(state)),
     )
   }
 

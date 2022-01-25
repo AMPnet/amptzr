@@ -19,6 +19,7 @@ import {AssetCommonState} from './asset.common'
 import {AssetSimpleService, SimpleAssetState} from './asset-simple.service'
 import {TokenPriceBigNumber} from '../../../utils/token-price'
 import {ConversionService} from '../../conversion.service'
+import {extract} from '../../../utils/ethersjs'
 
 @Injectable({
   providedIn: 'root',
@@ -42,6 +43,7 @@ export class AssetService {
   getCommonState(address: string, signerOrProvider: Signer | Provider): Observable<AssetCommonState> {
     return of(this.assetBasicService.contract(address, signerOrProvider)).pipe(
       switchMap(contract => contract.commonState()),
+      map(state => extract(state)),
     )
   }
 
@@ -72,7 +74,7 @@ export class AssetService {
   }
 
   getAssetInfo(asset: AssetCommonState, fullInfo = false): Observable<CommonAssetWithInfo> {
-    return of(asset).pipe(
+    return of(extract(asset)).pipe(
       switchMap(state => this.ipfsService.get<IPFSAsset>(state.info).pipe(
         map(info => ({...state, infoData: info})),
       )),

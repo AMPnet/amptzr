@@ -1,85 +1,121 @@
 import {Inject, Injectable} from '@angular/core'
 import {DOCUMENT} from '@angular/common'
 import {IssuerService} from './blockchain/issuer/issuer.service'
-import {combineLatest, Observable, of, switchMap, tap} from 'rxjs'
-import {distinctUntilChanged, map, shareReplay} from 'rxjs/operators'
+import {BehaviorSubject, combineLatest, fromEventPattern, Observable, of, switchMap, tap} from 'rxjs'
+import {distinctUntilChanged, map, shareReplay, take} from 'rxjs/operators'
 import {getWindow} from '../utils/browser'
+import {PreferenceQuery} from '../../preference/state/preference.query'
+import {BackendUserService} from './backend/backend-user.service'
+import {switchMapTap} from '../utils/observables'
 
 @Injectable({
   providedIn: 'root',
 })
 export class CrispService {
-  isAvailable$ = combineLatest([this.issuerService.issuer$]).pipe(
-    map(([issuer]) => issuer.infoData.crispWebsiteId),
-    distinctUntilChanged(),
-    switchMap(id => !!id ? this.loadScript(id).pipe(
-      map(() => true),
-      shareReplay(1),
-    ) : of(false)),
-  )
+  private crispSub = new BehaviorSubject<boolean>(false)
 
-  keepShown$ = this.isAvailable$.pipe(
-    tap({
-      next: v => {
-        // this.chatShow()
-        console.log('next')
-      },
-      finalize: () => {
-        console.log('finalize')
-        this.chatHide()
-      },
-    }),
-  )
+  isAvailable$: Observable<boolean>
+  keepShown$: Observable<unknown>
 
   constructor(@Inject(DOCUMENT) private document: any,
+              private preferenceQuery: PreferenceQuery,
+              private backendUserService: BackendUserService,
               private issuerService: IssuerService) {
+    const crispWebsiteId$ = combineLatest([this.issuerService.issuer$]).pipe(
+      map(([issuer]) => issuer.infoData.crispWebsiteId),
+      distinctUntilChanged(),
+      tap(() => this.crispSub.next(false)),
+      shareReplay(1),
+    )
+
+    this.isAvailable$ = this.crispSub.asObservable()
+
+    this.keepShown$ = crispWebsiteId$.pipe(
+      switchMap(websiteId => {
+        return !!websiteId ? this.loadScript(websiteId).pipe(
+          tap(isLoaded => this.crispSub.next(isLoaded)),
+          shareReplay(1),
+        ) : of(false)
+      }),
+      shareReplay({bufferSize: 1, refCount: true}),
+      tap({
+        next: shouldShow => {
+          if (shouldShow) this.chatShow()
+        },
+        finalize: () => {
+          this.chatHide()
+        },
+      }),
+    )
+
+    combineLatest([
+      this.crispSub.asObservable(),
+      this.preferenceQuery.isBackendAuthorized$,
+    ]).pipe(
+      tap(([isCrispAvailable, isBackendAuthorized]) => {
+        if (!isCrispAvailable || !isBackendAuthorized) return
+
+        this.backendUserService.getUser().pipe(
+          tap(user => {
+            if (!!user.email) this.setUserEmail(user.email)
+          }),
+        ).subscribe()
+      }),
+    ).subscribe()
   }
 
-  private get $crisp() {
+  private get $crisp(): any | undefined {
     return getWindow().$crisp
   }
 
   chatOpen() {
-    this.$crisp.push(["do", "chat:open"])
+    this.$crisp?.push(["do", "chat:open"])
   }
 
   chatClose() {
-    this.$crisp.push(["do", "chat:close"])
+    this.$crisp?.push(["do", "chat:close"])
   }
 
   chatShow() { // visible
-    this.$crisp.push(["do", "chat:show"])
+    this.$crisp?.push(["do", "chat:show"])
   }
 
   chatHide() { // invisible
-    this.$crisp.push(["do", "chat:hide"])
+    this.$crisp?.push(["do", "chat:hide"])
   }
 
-  private loadScript(crispWebsiteId: string): Observable<void> {
-    return new Observable(subscriber => {
+  setUserEmail(email: string) {
+    this.$crisp?.push(["set", "user:email", email])
+  }
+
+  private loadScript(crispWebsiteId: string): Observable<boolean> {
+    if (this.crispSub.value) return of(true)
+
+    const loadScript$ = new Observable<boolean>(subscriber => {
       const head = this.document.getElementsByTagName('head')[0]
 
+      getWindow().$crisp = []
+      getWindow().CRISP_WEBSITE_ID = crispWebsiteId
       const script: HTMLScriptElement = this.document.createElement('script')
-      script.type = 'text/javascript'
-      script.innerHTML = `
-      window.$crisp=[];
-      window.CRISP_WEBSITE_ID="${crispWebsiteId}";
-      (function(){
-      d=document;s=d.createElement("script");
-      s.src="https://client.crisp.chat/l.js";
-      s.async=1;d.getElementsByTagName("head")[0].appendChild(s);
-      })();
-      `
+      script.src = 'https://client.crisp.chat/l.js'
+      script.async = true
+
       script.onload = () => {
-        subscriber.next()
+        subscriber.next(true)
         subscriber.complete()
       }
       script.onerror = () => {
-        subscriber.error()
+        subscriber.error(false)
         subscriber.complete()
       }
 
       head.appendChild(script)
     })
+
+    return loadScript$.pipe(
+      switchMapTap(() => fromEventPattern(
+        handler => getWindow().CRISP_READY_TRIGGER = handler(),
+      ).pipe(take(1))),
+    )
   }
 }
