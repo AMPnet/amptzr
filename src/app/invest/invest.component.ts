@@ -20,6 +20,7 @@ import {IdentityService} from '../identity/identity.service'
 import {DepositService} from '../deposit/deposit.service'
 import {PreferenceQuery} from '../preference/state/preference.query'
 import {UserService} from '../shared/services/user.service'
+import {BigNumberMin} from '../shared/utils/ethersjs'
 
 @Component({
   selector: 'app-invest',
@@ -311,6 +312,27 @@ export class InvestComponent {
         this.getFunds(state)(),
       )
     }
+  }
+
+  setStablecoin(state: InvestmentState, target: 'min' | 'max' | 'maxAvailable') {
+    if (!state.stablecoinBalance) return
+
+    const targetValue = (() => {
+      switch (target) {
+        case 'min':
+          return state.preInvestData.min
+        case 'max':
+          return state.preInvestData.max
+        case 'maxAvailable':
+          return BigNumberMin(state.stablecoinBalance!, state.preInvestData.max)
+      }
+    })()
+
+    this.investmentForm.patchValue({
+      stablecoinAmount: this.conversion.parseStablecoin(targetValue).replace(/(\.0$)/, ''),
+    })
+
+    this.onStablecoinAmountChange(state.campaign)
   }
 }
 
