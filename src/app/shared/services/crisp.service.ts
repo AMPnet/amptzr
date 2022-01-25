@@ -72,18 +72,6 @@ export class CrispService {
     ).subscribe()
   }
 
-  private get $crisp(): any | undefined {
-    return getWindow().$crisp
-  }
-
-  chatOpen() {
-    this.$crisp?.push(["do", "chat:open"])
-  }
-
-  chatClose() {
-    this.$crisp?.push(["do", "chat:close"])
-  }
-
   chatShow() { // visible
     this.$crisp?.push(["do", "chat:show"])
   }
@@ -98,6 +86,10 @@ export class CrispService {
 
   setSessionData(data: object) {
     this.$crisp?.push(["set", "session:data", [[...Object.entries(data)]]])
+  }
+
+  private get $crisp(): any | undefined {
+    return getWindow().$crisp
   }
 
   private loadScript(crispWebsiteId: string): Observable<boolean> {
