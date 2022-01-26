@@ -20,7 +20,7 @@ import {cid, IPFSDocument} from '../../../../../../types/ipfs/common'
 import {iso8601} from '../../../../../../types/common'
 import {TokenBigNumber} from '../../../utils/token'
 import {TokenPriceBigNumber} from '../../../utils/token-price'
-import {contractEvent} from '../../../utils/ethersjs'
+import {contractEvent, extract} from '../../../utils/ethersjs'
 import {PreferenceQuery} from '../../../../preference/state/preference.query'
 
 @Injectable({
@@ -42,6 +42,7 @@ export class CampaignService {
   getCommonState(address: string, signerOrProvider: Signer | Provider): Observable<CampaignCommonState> {
     return of(this.campaignBasicService.contract(address, signerOrProvider)).pipe(
       switchMap(contract => contract.commonState()),
+      map(state => extract(state)),
     )
   }
 
@@ -70,7 +71,7 @@ export class CampaignService {
 
   getCampaignInfo(state: CampaignCommonState, fullInfo = false): Observable<CampaignWithInfo> {
     return this.ipfsService.get<IPFSCampaign>(state.info).pipe(
-      map(info => ({...state, infoData: info})),
+      map(info => ({...extract(state), infoData: info})),
       switchMap(campaign => fullInfo ? combineLatest([
         this.ipfsService.get<IPFSText>(campaign.infoData.description),
       ]).pipe(

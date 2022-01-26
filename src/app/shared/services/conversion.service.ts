@@ -92,6 +92,15 @@ export class ConversionService {
       .div(this.pow10(precision))
   }
 
+  trim(value: BigNumber, decimals: number | 'stablecoin' = 18, trimDecimals = 0): BigNumber {
+    if (decimals === 'stablecoin') decimals = this.stablecoin.config.decimals
+    const totalDecimals = Math.max(decimals - trimDecimals, 0)
+
+    return value
+      .div(this.pow10(totalDecimals))
+      .mul(this.pow10(totalDecimals))
+  }
+
   private pow10(to: number): BigNumber {
     return parseUnits('1', to)
   }
