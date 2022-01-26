@@ -125,7 +125,7 @@ export const MumbaiNetwork: Network = {
     nameRegistry: '0x5771E32E4aC5Db8b06DfAD4774E2a5358cc90FF5',
     feeManager: '0xC74f47030aedEBa155a65921E62e8B3C0Bf77140',
     defaultWalletApprover: '0x9D320608c28ecB79daE1c9E778A75040eC7F7d79',
-    defaultStableCoin: '0x9733aa0fb74a01f058fbeb0ad9da3f483058908e',
+    defaultStableCoin: '0x1eDaD4f5Dac6f2B97E7F6e5D3fF5f04D666685c3',
   },
   ramp: {
     swapAsset: 'MATIC_USDC2',
