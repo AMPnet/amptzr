@@ -1,4 +1,4 @@
-import {concat, MonoTypeOperatorFunction, Observable, of, timer} from 'rxjs'
+import {BehaviorSubject, concat, MonoTypeOperatorFunction, Observable, of, timer} from 'rxjs'
 import {catchError, map, switchMap} from 'rxjs/operators'
 
 export function withInterval<T>(observable$: Observable<T>, offset: number): Observable<T> {
@@ -7,7 +7,10 @@ export function withInterval<T>(observable$: Observable<T>, offset: number): Obs
   )
 }
 
-export function withStatus<T>(observable$: Observable<T>, opts?: Options): Observable<WithStatus<T>> {
+export function withStatus<T>(
+  source: Observable<T>, opts?: Partial<Options>,
+): Observable<WithStatus<T>> {
+  const refreshSub = new BehaviorSubject<void>(undefined)
   const stream: Observable<WithStatus<T>>[] = []
 
   if (!opts?.hideLoading) {
@@ -15,15 +18,31 @@ export function withStatus<T>(observable$: Observable<T>, opts?: Options): Obser
   }
 
   stream.push(
-    observable$.pipe(
-      map(val => ({loading: false, value: val} as WithStatus<T>)),
-      catchError(err => of({loading: false, error: err} as WithStatus<T>)),
+    source.pipe(
+      map(value => ({value})),
+      catchError(error => of({error})),
     ),
   )
 
-  return concat(
-    ...stream,
-  )
+  return new Observable(subscriber => {
+    const subscription = refreshSub.asObservable().pipe(
+      switchMap(() => concat(...stream)),
+    ).subscribe({
+      next: valueWithStatus => {
+        subscriber.next({
+          ...valueWithStatus,
+          refresh: () => refreshSub.next(),
+        })
+      },
+      error: err => subscriber.error(err),
+      complete: () => subscriber.complete(),
+    })
+
+    return () => {
+      refreshSub.complete()
+      subscription.unsubscribe()
+    }
+  })
 }
 
 export function switchMapTap<T>(next: (value: T) => Observable<unknown>): MonoTypeOperatorFunction<T> {
@@ -33,9 +52,10 @@ export function switchMapTap<T>(next: (value: T) => Observable<unknown>): MonoTy
 }
 
 export interface WithStatus<T> {
-  loading: boolean;
+  loading?: boolean;
   value?: T;
-  error?: unknown
+  error?: unknown;
+  refresh?: () => void;
 }
 
 interface Options {
