@@ -61,10 +61,11 @@
             </span>
           </div>
           <div [ngSwitch]="true">
-            <span *ngSwitchCase="data.softCap.gt(bigNumberConstants.Zero) && data.total.gt(data.softCap)"
-                  class="text-sm text-gray-500 font-light">
-              Max target {{ data.total | formatUnit:'stablecoin' | currencyDefault:'stablecoin':'implicit' }}
-            </span>
+            <!-- TODO: uncomment after February 2nd -->
+<!--            <span *ngSwitchCase="data.softCap.gt(bigNumberConstants.Zero) && data.total.gt(data.softCap)"-->
+<!--                  class="text-sm text-gray-500 font-light">-->
+<!--              Max target {{ data.total | formatUnit:'stablecoin' | currencyDefault:'stablecoin':'implicit' }}-->
+<!--            </span>-->
           </div>
         </div>
       </div>
