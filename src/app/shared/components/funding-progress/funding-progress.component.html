@@ -70,20 +70,31 @@
       </div>
 
       <div *ngIf="campaign.finalized" class="w-full">
-        <div>
-          <span class="mt-6 font-bold text-cyan-600 text-lg uppercase">
-            {{ data.raised | formatUnit:'stablecoin' | currencyDefault:'stablecoin':'implicit' }}
-          </span> raised
-        </div>
-
-        <div class="flex justify-between mt-2">
-          <div class="font-bold text-cyan-600 text-sm uppercase">
-            finished
+        <div class="flex items-center gap-2">
+          <div class="">
+            <svg class="w-8 h-8" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M0 16C0 7.163 7.163 0 16 0s16 7.163 16 16-7.163 16-16 16S0 24.837 0 16Z" fill="url(#a)"/>
+              <path d="m9 17 4 4 10-10" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              <defs>
+                <linearGradient id="a" x1="0" y1="0" x2="32" y2="0" gradientUnits="userSpaceOnUse">
+                  <stop stop-color="#6D28D9"/>
+                  <stop offset="1" stop-color="#A855F7"/>
+                </linearGradient>
+              </defs>
+            </svg>
           </div>
-
-          <div class="font-light text-gray-500 text-sm">
+          <div class="">
+            <div class="text-violet-600 font-semibold">
+              Successfully funded {{ data.raised | formatUnit:'stablecoin' | currencyDefault:'stablecoin':'implicit' }}
+            </div>
           </div>
         </div>
+      </div>
+
+      <div *ngIf="campaign.canceled" class="w-full">
+        <span class="text-gray-500 font-semibold">
+          Campaign canceled
+        </span>
       </div>
     </ng-container>
   </ng-container>
