@@ -1,5 +1,4 @@
 import {ChangeDetectionStrategy, Component, Input, OnInit} from "@angular/core"
-import {DatePipe} from '@angular/common'
 import {CampaignService, CampaignWithInfo} from '../../services/blockchain/campaign/campaign.service'
 import {CampaignFlavor} from '../../services/blockchain/flavors'
 import {map} from 'rxjs/operators'
@@ -22,11 +21,22 @@ export class FundingProgressComponent implements OnInit {
   bigNumberConstants = constants
 
   constructor(private campaignService: CampaignService,
-              private conversion: ConversionService,
-              private datePipe: DatePipe) {
+              private conversion: ConversionService) {
   }
 
   ngOnInit() {
+    // 1/ campaign opened
+    // this.campaign.canceled = false
+    // this.campaign.finalized = false
+
+    // 2/ campaign canceled
+    // this.campaign.canceled = true
+    // this.campaign.finalized = false
+
+    // 3/ campaign finalized
+    // this.campaign.canceled = false
+    // this.campaign.finalized = true
+
     this.progressData$ = withStatus(
       this.campaignService.stats(
         this.campaign.contractAddress, this.campaign.flavor as CampaignFlavor,
@@ -38,115 +48,143 @@ export class FundingProgressComponent implements OnInit {
     )
   }
 
-  dateRange(campaign: CampaignWithInfo) {
-    if (!!campaign.infoData.startDate && !!campaign.infoData.endDate) {
-      return `${this.formatDate(campaign.infoData.startDate)} - ${this.formatDate(campaign.infoData.endDate)}`
-    }
-
-    if (!!campaign.infoData.startDate) {
-      return `From ${this.formatDate(campaign.infoData.startDate)}`
-    }
-
-    if (!!campaign.infoData.endDate) {
-      return `Until ${this.formatDate(campaign.infoData.endDate)}`
-    }
-
-    return ''
-  }
-
-  private formatDate(value?: string): string | null {
-    return this.datePipe.transform(value, 'mediumDate')
-  }
-
   private calculateProgressData(
     valueInvested: StablecoinBigNumber,
     softCap: StablecoinBigNumber,
     valueTotal: StablecoinBigNumber,
   ) {
-    // 1/ before tokens are transferred to the campaign
+    // Cases with softCap == 0
+    // 1.1/ before tokens are transferred to the campaign
+    // valueInvested = this.conversion.toStablecoin(0)
+    // softCap = this.conversion.toStablecoin(0)
+    // valueTotal = this.conversion.toStablecoin(0)
+
+    // 1.2/ tokens are transferred to the campaign
+    // valueInvested = this.conversion.toStablecoin(0)
+    // softCap = this.conversion.toStablecoin(0)
+    // valueTotal = this.conversion.toStablecoin(500_000)
+
+    // 1.3/ users invested something
+    // valueInvested = this.conversion.toStablecoin(400_000)
+    // softCap = this.conversion.toStablecoin(0)
+    // valueTotal = this.conversion.toStablecoin(500_000)
+
+    // 1.4/ users invested all
+    // valueInvested = this.conversion.toStablecoin(500_000)
+    // softCap = this.conversion.toStablecoin(0)
+    // valueTotal = this.conversion.toStablecoin(500_000)
+
+    // Cases with softCap == valueTotal
+    // 2.1/ before tokens are transferred to the campaign
     // valueInvested = this.conversion.toStablecoin(0)
     // softCap = this.conversion.toStablecoin(500_000)
     // valueTotal = this.conversion.toStablecoin(0)
 
-    // 2/ not enough transferred to the campaign
-    // valueInvested = this.conversion.toStablecoin(0)
-    // softCap = this.conversion.toStablecoin(500_000)
-    // valueTotal = this.conversion.toStablecoin(200_000)
-
-    // 3/ transferred just to ensure softCap
+    // 2.2/ tokens are transferred to the campaign
     // valueInvested = this.conversion.toStablecoin(0)
     // softCap = this.conversion.toStablecoin(500_000)
     // valueTotal = this.conversion.toStablecoin(500_000)
 
-    // 4/ transferred more than softCap
+    // 3.3/ users invested something
+    // valueInvested = this.conversion.toStablecoin(400_000)
+    // softCap = this.conversion.toStablecoin(500_000)
+    // valueTotal = this.conversion.toStablecoin(500_000)
+
+    // 3.4/ users invested all
+    // valueInvested = this.conversion.toStablecoin(500_000)
+    // softCap = this.conversion.toStablecoin(500_000)
+    // valueTotal = this.conversion.toStablecoin(500_000)
+
+    // Cases with softCap < valueTotal
+    // 4.1/ before tokens are transferred to the campaign
+    // valueInvested = this.conversion.toStablecoin(0)
+    // softCap = this.conversion.toStablecoin(500_000)
+    // valueTotal = this.conversion.toStablecoin(0)
+
+    // 4.2/ not enough transferred to the campaign
+    // valueInvested = this.conversion.toStablecoin(0)
+    // softCap = this.conversion.toStablecoin(500_000)
+    // valueTotal = this.conversion.toStablecoin(200_000)
+
+    // 4.3/ transferred just to ensure softCap
+    // valueInvested = this.conversion.toStablecoin(0)
+    // softCap = this.conversion.toStablecoin(500_000)
+    // valueTotal = this.conversion.toStablecoin(500_000)
+
+    // 4.4/ transferred more than softCap
     // valueInvested = this.conversion.toStablecoin(0)
     // softCap = this.conversion.toStablecoin(500_000)
     // valueTotal = this.conversion.toStablecoin(700_000)
 
-    // 5/ transferred far more than softCap
+    // 4.5/ transferred far more than softCap
     // valueInvested = this.conversion.toStablecoin(0)
     // softCap = this.conversion.toStablecoin(500_000)
     // valueTotal = this.conversion.toStablecoin(2_000_000)
 
-    // 6/ invested below softCap
+    // 4.6/ invested below softCap
     // valueInvested = this.conversion.toStablecoin(105_000)
     // softCap = this.conversion.toStablecoin(500_000)
     // valueTotal = this.conversion.toStablecoin(2_000_000)
 
-    // 7/ invested just below softCap
+    // 4.7/ invested just below softCap
     // valueInvested = this.conversion.toStablecoin(480_000)
     // softCap = this.conversion.toStablecoin(500_000)
     // valueTotal = this.conversion.toStablecoin(2_000_000)
 
-    // 8/ invested exactly softCap
+    // 4.8/ invested exactly softCap
     // valueInvested = this.conversion.toStablecoin(500_000)
     // softCap = this.conversion.toStablecoin(500_000)
     // valueTotal = this.conversion.toStablecoin(2_000_000)
 
-    // 9/ invested just above softCap
+    // 4.9/ invested just above softCap
     // valueInvested = this.conversion.toStablecoin(505_000)
     // softCap = this.conversion.toStablecoin(500_000)
     // valueTotal = this.conversion.toStablecoin(2_000_000)
 
-    // 10/ invested mid total
+    // 4.10/ invested mid total
     // valueInvested = this.conversion.toStablecoin(1_200_000)
     // softCap = this.conversion.toStablecoin(500_000)
     // valueTotal = this.conversion.toStablecoin(2_000_000)
 
-    // 11/ invested just below total
+    // 4.11/ invested just below total
     // valueInvested = this.conversion.toStablecoin(1_950_000)
     // softCap = this.conversion.toStablecoin(500_000)
     // valueTotal = this.conversion.toStablecoin(2_000_000)
 
-    // 12/ invested total
+    // 4.12/ invested total
     // valueInvested = this.conversion.toStablecoin(2_000_000)
     // softCap = this.conversion.toStablecoin(500_000)
     // valueTotal = this.conversion.toStablecoin(2_000_000)
 
-    let softCapPercentage = 0
-    let raisedPercentageOfSoftCap = 0
-    let raisedPercentageOfTotal = 0
+    let target = softCap.eq(constants.Zero) ? valueTotal : softCap
+    let raisedPercentage = 0
+    let progressPercentage = 0
+    let isStarted = false
     let isRaisedOverSoftCap = false
+    let isFull = false
+
+    if (valueTotal.gt(constants.Zero) && valueTotal.gte(softCap)) isStarted = true
 
     if (!valueTotal.eq(constants.Zero)) {
-      softCapPercentage = this.conversion.parseStablecoinToNumber(softCap) /
-        this.conversion.parseStablecoinToNumber(valueTotal)
-      raisedPercentageOfSoftCap = this.conversion.parseStablecoinToNumber(valueInvested) /
-        this.conversion.parseStablecoinToNumber(softCap)
-      raisedPercentageOfTotal = this.conversion.parseStablecoinToNumber(valueInvested) /
-        this.conversion.parseStablecoinToNumber(valueTotal)
+      raisedPercentage = this.conversion.parseStablecoinToNumber(valueInvested) /
+        this.conversion.parseStablecoinToNumber(target)
 
-      if (valueInvested.gt(softCap)) isRaisedOverSoftCap = true
+      progressPercentage = Math.min(raisedPercentage, 1)
+
+      if (softCap.gt(constants.Zero) && valueInvested.gt(softCap)) isRaisedOverSoftCap = true
+      if (valueInvested.eq(valueTotal)) isFull = true
     }
 
     return {
       raised: valueInvested,
       softCap: softCap,
       total: valueTotal,
-      softCapPercentage,
-      raisedPercentageOfSoftCap,
-      raisedPercentageOfTotal,
+      target,
+      raisedPercentage,
+      progressPercentage,
       isRaisedOverSoftCap,
+      isStarted,
+      isFull,
     }
   }
 }
@@ -155,8 +193,10 @@ interface ProgressData {
   raised: StablecoinBigNumber,
   softCap: StablecoinBigNumber,
   total: StablecoinBigNumber,
-  softCapPercentage: number,
-  raisedPercentageOfSoftCap: number,
-  raisedPercentageOfTotal: number,
+  target: StablecoinBigNumber,
+  raisedPercentage: number,
+  progressPercentage: number,
   isRaisedOverSoftCap: boolean,
+  isStarted: boolean,
+  isFull: boolean,
 }
