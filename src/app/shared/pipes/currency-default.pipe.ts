@@ -22,6 +22,7 @@ export class CurrencyDefaultPipe implements PipeTransform {
     const symbol = currencySymbol ?? this.stablecoin.config.symbol
     switch (type) {
       case 'stablecoin':
+        return this.transformCurrency(value, '1.0-0', symbol, type, display)
       case 'token':
         return this.transformCurrency(value, '1.0-2', symbol, type, display)
       case 'tokenPrice':

@@ -1,59 +1,100 @@
 <div *ngIf="(progressData$ | async) as dataRes" class="flex items-center justify-center min-h-[5rem]">
   <ng-container *ngIf="dataRes.value as data">
     <ng-container *ngIf="campaign">
-      <div *ngIf="data.raised.lt(data.total) && data.total.gte(data.softCap)" class="w-full">
-        <span class="mt-6 font-bold text-gray-800 text-sm">
-          {{ data.raised | formatUnit:'stablecoin' | currencyDefault:'stablecoin':'implicit' }}
-        </span>
-        <span class="mx-1 text-sm">of</span>
-        <span class="mt-6 font-bold text-gray-800 text-sm">
-          {{ data.softCap | formatUnit:'stablecoin' | currencyDefault:'stablecoin':'implicit' }}
-        </span>
-        <div class="relative h-2 mb-2 pt-1 mt-2">
-          <!-- Progress tray -->
-          <div class="absolute w-full h-full rounded bg-gray-200"></div>
-
-          <!-- Progress amount -->
-          <div class="absolute h-full rounded bg-cyan-600"
-               [style.width.%]="data.raisedPercentage * 100"></div>
-
-          <!-- Soft cap value -->
-          <div class="absolute h-full"
-               *ngIf="data.total > data.softCap"
-               matTooltip="Soft cap {{ data.softCap | formatUnit:'stablecoin' | currencyDefault:'stablecoin':'implicit' }}"
-               [style.left.%]="data.softCapPercentage * 100">
-            <div class="absolute rounded-full w-4 h-4 -ml-2 -mt-1"
-                 [class]="data.raised.gte(data.softCap) ? 'bg-cyan-600' : 'bg-gray-200'"></div>
-            <div class="absolute rounded-full w-2 h-2 -ml-1 bg-white"></div>
-          </div>
-
-          <!-- Total value -->
-          <div class="absolute h-full w-1 right-0"
-               matTooltip="Total {{ data.total | formatUnit:'stablecoin' | currencyDefault:'stablecoin':'implicit' }}"></div>
+      <div *ngIf="!campaign.canceled && !campaign.finalized" class="w-full">
+        <div>
+          <span class="mt-6 font-semibold text-cyan-600 text-lg">
+            {{ data.raised | formatUnit:'stablecoin' | currencyDefault:'stablecoin':'implicit' }}
+          </span>
+          <span class="mx-1 text-sm text-gray-500">
+            of {{ data.target | formatUnit:'stablecoin' | currencyDefault:'stablecoin':'implicit' }}
+            target
+          </span>
         </div>
-        <div class="flex justify-between">
-          <div class="font-bold text-cyan-600 text-sm uppercase">
-            {{ (data.raisedPercentage / data.softCapPercentage) | percent:'1.0-2' }} funded
+
+        <div class="relative h-8 rounded-lg overflow-hidden grid pt-1">
+          <!-- Progress tray -->
+          <div class="absolute w-full h-full"
+               [ngClass]="data.isStarted ? 'bg-cyan-500/50' : 'bg-gray-400'">
           </div>
-          <div class="font-light text-gray-500 text-sm">{{ dateRange(campaign) }}</div>
+
+          <!-- Progress amount tray -->
+          <div class="absolute h-full bg-gradient-to-r"
+               [ngClass]="data.isRaisedOverSoftCap ? 'from-sky-600 to-violet-500' : 'from-sky-600 to-cyan-500'"
+               [style.width.%]="data.progressPercentage * 100"></div>
+
+          <!-- Text over tray -->
+          <div class="absolute h-full font-bold text-white uppercase
+                      flex items-center pl-2">
+            <span [ngSwitch]="true">
+              <ng-container *ngSwitchCase="!data.isStarted">
+                Not started
+              </ng-container>
+              <ng-container *ngSwitchDefault>
+                {{ data.raisedPercentage | percent:'1.0-2' }} funded
+              </ng-container>
+            </span>
+          </div>
+        </div>
+
+        <div class="flex justify-between mt-1">
+          <div [ngSwitch]="true">
+            <span *ngSwitchCase="data.isRaisedOverSoftCap && !data.isFull" class="text-sm text-cyan-600 font-bold">
+              Open for funding
+            </span>
+            <span *ngSwitchCase="data.isFull" class="text-sm text-green-500 font-semibold">
+              Max target reached
+            </span>
+            <span *ngSwitchDefault class="text-sm font-light text-gray-500">
+              <ng-container [ngSwitch]="true">
+                <ng-container *ngSwitchCase="!!campaign.infoData.startDate && !!campaign.infoData.endDate">
+                  {{ campaign.infoData.startDate | date:'mediumDate' }}
+                  - {{ campaign.infoData.endDate | date:'mediumDate' }}
+                </ng-container>
+                <ng-container *ngSwitchCase="!!campaign.infoData.startDate && !campaign.infoData.endDate">
+                  From {{ campaign.infoData.startDate | date:'mediumDate' }}
+                </ng-container>
+                <ng-container *ngSwitchCase="!campaign.infoData.startDate && !!campaign.infoData.endDate">
+                  Until {{ campaign.infoData.endDate | date:'mediumDate' }}
+                </ng-container>
+              </ng-container>
+            </span>
+          </div>
+          <div [ngSwitch]="true">
+            <span *ngSwitchCase="data.softCap.gt(bigNumberConstants.Zero) && data.total.gt(data.softCap)"
+                  class="text-sm text-gray-500 font-light">
+              Max target {{ data.total | formatUnit:'stablecoin' | currencyDefault:'stablecoin':'implicit' }}
+            </span>
+          </div>
         </div>
       </div>
-      <div *ngIf="data.raised.gte(data.total) || data.softCap.gt(data.total)" class="w-full">
-        <div>
-          <span class="mt-6 font-bold text-cyan-600 text-lg uppercase">
-            {{ data.raised | formatUnit:'stablecoin' | currencyDefault:'stablecoin':'implicit' }}
-          </span> raised
-        </div>
 
-        <div class="flex justify-between mt-2">
-          <div *ngIf="campaign.finalized" class="font-bold text-cyan-600 text-sm uppercase">
-            finished
+      <div *ngIf="campaign.finalized" class="w-full">
+        <div class="flex items-center gap-2">
+          <div class="">
+            <svg class="w-8 h-8" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M0 16C0 7.163 7.163 0 16 0s16 7.163 16 16-7.163 16-16 16S0 24.837 0 16Z" fill="url(#a)"/>
+              <path d="m9 17 4 4 10-10" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              <defs>
+                <linearGradient id="a" x1="0" y1="0" x2="32" y2="0" gradientUnits="userSpaceOnUse">
+                  <stop stop-color="#6D28D9"/>
+                  <stop offset="1" stop-color="#A855F7"/>
+                </linearGradient>
+              </defs>
+            </svg>
           </div>
-
-          <div class="font-light text-gray-500 text-sm">
-            {{ dateRange(campaign) }}
+          <div class="">
+            <div class="text-violet-600 font-semibold">
+              Successfully funded {{ data.raised | formatUnit:'stablecoin' | currencyDefault:'stablecoin':'implicit' }}
+            </div>
           </div>
         </div>
+      </div>
+
+      <div *ngIf="campaign.canceled" class="w-full">
+        <span class="text-gray-500 font-semibold">
+          Campaign canceled
+        </span>
       </div>
     </ng-container>
   </ng-container>
