@@ -13,7 +13,7 @@ export class FormatUnitPipe implements PipeTransform {
       case Operation.STABLECOIN:
         return this.conversion.parseStablecoinToNumber(this.toBigNumberish(value))
       case Operation.TOKEN:
-        return this.conversion.parseTokenToNumber(this.toBigNumberish(value))
+        return this.conversion.parseTokenToNumber(this.toBigNumberish(value), precision)
       case Operation.TOKEN_PRICE:
         return this.conversion.parseTokenPriceToNumber(value)
       case Operation.TO_NUMBER:

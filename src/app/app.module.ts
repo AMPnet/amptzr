@@ -101,6 +101,7 @@ import {
 import {LoadingOverlayComponent} from './shared/components/loading-dialog/loading-overlay/loading-overlay.component'
 import {DepositDialogComponent} from './deposit/deposit-dialog/deposit-dialog.component'
 import {AuthMagicOauthComponent} from './auth/auth-magic-oauth/auth-magic-oauth.component'
+import {TransferComponent} from './transfer/transfer.component'
 
 @NgModule({
   declarations: [
@@ -177,6 +178,7 @@ import {AuthMagicOauthComponent} from './auth/auth-magic-oauth/auth-magic-oauth.
     LoadingOverlayComponent,
     DepositDialogComponent,
     AuthMagicOauthComponent,
+    TransferComponent,
   ],
   imports: [
     BrowserModule,
