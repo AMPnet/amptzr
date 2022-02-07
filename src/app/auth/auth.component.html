@@ -9,10 +9,13 @@
         Email address
       </label>
 
-      <input type="email" id="email" class="block w-full rounded-md border-gray-200 shadow-sm
+      <input type="email" id="email" name="email" class="block w-full rounded-md border-gray-200 shadow-sm
     focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
-             placeholder="john.smith@email.com" inputmode="email"
+             placeholder="john.smith@email.com" inputmode="email" autocomplete="username email"
              formControlName="email">
+      <input type="password" id="password" name="password"
+             autocomplete="current-password" value="password"
+             class="hidden">
 
       <button app-action-button
               class="w-full app-button mt-4"
@@ -21,7 +24,6 @@
               [onClick]="connectMagic().bind(this)"
               [disabled]="!emailForm.valid">
       </button>
-
 
       <!-- TODO: Uncomment this when social login is ready -->
       <div class="flex justify-center mt-4" *ngIf="false">
