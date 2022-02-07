@@ -3,7 +3,7 @@
     <div class="flex flex-col">
       <b class="text-sm">Your balance:</b>
       <div class="mt-2 lg:flex lg:w-full lg:items-center lg:justify-between">
-        <span class="text-3xl mr-8 font-light">
+        <span class="flex gap-1.5 items-baseline text-3xl mr-8 font-light">
           <ng-container *ngIf="(balance$ | async) as balanceRes">
             <ng-container *ngIf="balanceRes.value as balance">
               {{ balance | formatUnit:'stablecoin' | currencyDefault }}
@@ -19,12 +19,21 @@
             </ng-container>
           </ng-container>
 
-          <app-explorer-link [value]="stablecoin.config.address" type="token"
-                             class="ml-0.5">
+          <app-explorer-link [value]="stablecoin.config.address" type="token">
           </app-explorer-link>
-          <app-add-to-metamask [value]="stablecoin.config.address"
-                               class="ml-0.5">
+          <app-add-to-metamask [value]="stablecoin.config.address">
           </app-add-to-metamask>
+
+          <button (click)="transferService.navigate(stablecoin.config.address)" matTooltip="Transfer">
+            <svg class="w-3 h-3" viewBox="0 0 12 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path
+                d="M3.333 3.667h8-8Zm8 0L8.666 1l2.667 2.667Zm0 0L8.666 6.333l2.667-2.666Zm-2.667 6.666h-8 8Zm-8 0L3.334 13 .667 10.333Zm0 0 2.667-2.666-2.666 2.666Z"
+                fill="#fff"/>
+              <path
+                d="m.667 10.333 2.666-2.666m0-4h8-8Zm8 0L8.666 1l2.667 2.667Zm0 0L8.666 6.333l2.667-2.666Zm-2.667 6.666h-8 8Zm-8 0L3.334 13 .667 10.333Z"
+                stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </button>
         </span>
 
         <!-- Action buttons (deposit, withdraw...) -->

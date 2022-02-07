@@ -17,6 +17,7 @@ import {DialogService} from '../shared/services/dialog.service'
 import {GasService} from '../shared/services/blockchain/gas.service'
 import {ErrorService} from '../shared/services/error.service'
 import {Network} from '../shared/networks'
+import {CrispService} from '../shared/services/crisp.service'
 
 @Component({
   selector: 'app-transfer',
@@ -45,6 +46,7 @@ export class TransferComponent {
               private gasService: GasService,
               private errorService: ErrorService,
               private userService: UserService,
+              public crispService: CrispService,
               private router: RouterService,
               private route: ActivatedRoute) {
     const transferParams = this.route.snapshot.queryParams as TransferParams
@@ -188,7 +190,7 @@ interface TransferState {
   asset?: CommonAssetWithInfo,
 }
 
-interface TransferParams {
+export interface TransferParams {
   tokenAddress: string
   amount: string | 'max'
   recipientAddress: string

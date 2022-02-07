@@ -12,6 +12,7 @@ import {BackendHttpClient} from '../shared/services/backend/backend-http-client.
 import {PreferenceQuery} from '../preference/state/preference.query'
 import {BackendUser, BackendUserService} from '../shared/services/backend/backend-user.service'
 import {MagicSubsignerService} from '../shared/services/subsigners/magic-subsigner.service'
+import {TransferService} from '../transfer/transfer.service'
 
 @Component({
   selector: 'app-wallet',
@@ -35,6 +36,7 @@ export class WalletComponent {
   constructor(private preferenceQuery: PreferenceQuery,
               private signerService: SignerService,
               public stablecoin: StablecoinService,
+              public transferService: TransferService,
               private userService: UserService,
               private backendUserService: BackendUserService,
               private magicSubsignerService: MagicSubsignerService,

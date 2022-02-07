@@ -1,4 +1,4 @@
-<div class="flex flex-col justify-start lg:flex-row w-full my-4 shadow-xl rounded-4xl bg-white">
+<div class="flex flex-col justify-start lg:flex-row w-full my-4 rounded-4xl bg-white">
   <div class="flex justify-center relative w-full lg:w-1/5 mt-4 lg:ml-4">
     <img *ngIf="asset.infoData.logo; else noImage" class="w-40 h-40 object-cover rounded-full"
          src="{{ asset.infoData.logo | toUrlIPFS }}" alt="Asset logo">

@@ -102,6 +102,7 @@ import {LoadingOverlayComponent} from './shared/components/loading-dialog/loadin
 import {DepositDialogComponent} from './deposit/deposit-dialog/deposit-dialog.component'
 import {AuthMagicOauthComponent} from './auth/auth-magic-oauth/auth-magic-oauth.component'
 import {TransferComponent} from './transfer/transfer.component'
+import {ToStablecoinLogoPathPipe} from './shared/pipes/to-stablecoin-logo-path.pipe'
 
 @NgModule({
   declarations: [
@@ -131,6 +132,7 @@ import {TransferComponent} from './transfer/transfer.component'
     FaqComponent,
     AuthProviderNamePipe,
     ToUrlIPFSPipe,
+    ToStablecoinLogoPathPipe,
     SafePipe,
     FormatUnitPipe,
     ToTextIpfsPipe,

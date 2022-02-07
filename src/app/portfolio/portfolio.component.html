@@ -3,7 +3,7 @@
     <ng-container *ngIf="(portfolioWithStatus$ | async) as portfolioRes">
       <ng-container *ngIf="portfolioRes.value as portfolio">
         <!-- Overview of all investments and total unclaimed earnings -->
-        <section class="w-full rounded-3xl flex-col shadow-lg justify-between bg-white p-4
+        <section class="w-full rounded-3xl flex-col justify-between bg-white p-4
         lg:p-8 flex lg:flex-row lg:items-end">
           <div class="flex flex-row justify-between lg:items-center">
             <div class="flex flex-col justify-start">
@@ -114,7 +114,7 @@
                       </a>
                     </small>
 
-                    <div class="flex items-end gap-1 mt-2">
+                    <div class="flex items-baseline gap-1 mt-2">
                       <span class="text-4xl"
                             [ngClass]="item.campaign.finalized ? 'text-black' : 'text-gray-400'">
                         {{ item.tokenAmount | formatUnit:'token' | currencyDefault:'token':'real':'' }}
@@ -194,7 +194,7 @@
                     </a>
                   </small>
 
-                  <div class="flex items-end gap-1 mt-2">
+                  <div class="flex items-baseline gap-1 mt-2">
                     <span class="text-4xl"
                           [ngClass]="item.campaign.finalized ? 'text-black' : 'text-gray-400'">
                       {{ item.tokenAmount | formatUnit:'token' | currencyDefault:'token':'real':'' }}

@@ -4,7 +4,7 @@
       <ng-container *ngIf="stateRes.value as state">
         <form [formGroup]="transferForm">
           <div class="max-w-md mx-auto bg-white rounded-4xl px-6 py-4">
-            <h1 class="mt-4 mx-4 text-center text-3xl">
+            <h1 class="flex gap-1.5 justify-center items-baseline mt-4 mx-4 text-3xl">
               <span>
                 Transfer {{ state.symbol }}
               </span>
@@ -14,7 +14,7 @@
               </app-add-to-metamask>
             </h1>
 
-            <h2 class="mt-2 mx-4 text-center text-sm">
+            <h2 class="mt-2 mx-4 text-center text-sm text-gray-500">
               <span>
                 on {{ state.network.name }}
               </span>
@@ -22,8 +22,8 @@
 
             <form [formGroup]="transferForm">
               <!-- Token box -->
-              <div class="mt-5 bg-[#F5F7F9] border-[#D8D8D8] border-[1px] rounded-lg px-2 pb-1">
-                <span class="flex justify-end mt-1 text-xxs font-medium text-gray-400">
+              <div class="mt-5 bg-gray-200/20 border-gray-300/50 border-[1px] rounded-lg px-2 pb-1">
+                <span class="flex justify-end mt-2 text-xxs font-medium text-gray-400">
                   Amount of {{ state.symbol }} you will transfer
                 </span>
 
@@ -31,9 +31,8 @@
                   <div class="flex items-center">
                     <div class="flex rounded-full items-center bg-white shadow">
                       <div class="w-7 h-7 bg-white rounded-full overflow-hidden m-1">
-                        <!-- TODO: change icon to specific stablecoin -->
                         <img class="h-full w-full object-cover"
-                             src="{{ (state.asset?.infoData?.logo | toUrlIPFS) || '/assets/usdc.png' }}"
+                             src="{{ (state.asset?.infoData?.logo | toUrlIPFS) || state.symbol | toStablecoinLogoPath }}"
                              alt="{{ state.symbol }} logo">
                       </div>
 
@@ -80,8 +79,13 @@
               </div>
 
               <div class="flex flex-col gap-2 mt-5">
-                <label class="text-lg font-semibold">Recipient address</label>
-                <input class="border-gray-400 rounded-lg" type="text"
+                <label class="text-sm text-gray-500 text-center">
+                  Recipient address
+                </label>
+                <input class="bg-gray-200/20 border-gray-300/50 rounded-lg
+                              text-ellipsis	placeholder:text-gray-400
+                              font-semibold text-sm" type="text"
+                       placeholder="0x" spellcheck="false"
                        formControlName="recipientAddress">
               </div>
 
@@ -94,6 +98,48 @@
                       </ng-container>
                     </span>
                   </ng-container>
+                </div>
+              </div>
+
+              <div class="flex items-center gap-2 mt-2 bg-gray-200/20 rounded-lg p-2">
+                <svg class="w-6 h-6 text-orange-400 shrink-0"
+                     viewBox="0 0 26 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path
+                    d="M13 9v2.667M13 17h.013m-9.25 5.334h18.474c2.054 0 3.336-2.223 2.31-4l-9.238-16c-1.026-1.778-3.592-1.778-4.618 0l-9.238 16c-1.026 1.777.256 4 2.31 4Z"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+
+                <div class="flex flex-col gap-1 text-xs flex-1">
+                  <div class="text-orange-400">
+                    Transferring to an exchange?
+                  </div>
+                  <div class="text-gray-400">
+                    Make sure to specify you are transferring {{ state.symbol }} on {{ state.network.name }}
+                  </div>
+                </div>
+              </div>
+
+              <div class="flex items-center gap-2 mt-2 bg-gray-200/20 rounded-lg p-2">
+                <svg class="w-6 h-6 text-orange-400 shrink-0"
+                     viewBox="0 0 26 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path
+                    d="M13 9v2.667M13 17h.013m-9.25 5.334h18.474c2.054 0 3.336-2.223 2.31-4l-9.238-16c-1.026-1.778-3.592-1.778-4.618 0l-9.238 16c-1.026 1.777.256 4 2.31 4Z"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+
+                <div class="flex flex-col gap-1 text-xs flex-1"
+                     *ngIf="crispService.isAvailable$ | async">
+                  <div class="text-orange-400">
+                    Need help?
+                  </div>
+                  <div class="text-gray-400">
+                    Don't hesitate to
+                    <a (click)="crispService.chatOpen()"
+                       class="underline text-cyan-600 cursor-pointer">
+                      contact our support
+                    </a>
+                    in case you need help.
+                  </div>
                 </div>
               </div>
 
