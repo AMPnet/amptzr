@@ -3,7 +3,7 @@ import {QueryService__factory} from '../../../../../types/ethers-contracts'
 import {SessionQuery} from '../../../session/state/session.query'
 import {filter, map, switchMap} from 'rxjs/operators'
 import {PreferenceQuery} from '../../../preference/state/preference.query'
-import {combineLatest, Observable} from 'rxjs'
+import {combineLatest, Observable, of} from 'rxjs'
 import {BigNumber} from 'ethers'
 import {CampaignCommonState} from './campaign/campaign.common'
 import {IssuerCommonState} from './issuer/issuer.common'
@@ -162,6 +162,31 @@ export class QueryService {
       ),
     )
   }
+
+  getAssetsBalancesForOwnerAddress(address: string): Observable<AssetWithBalance[]> {
+    // return this.contract$.pipe(
+    //   switchMap(contract => contract.getAssetsForIssuer(address,
+    //     this.preferenceQuery.assetFactories,
+    //     this.preferenceQuery.network.tokenizerConfig.nameRegistry),
+    //   ),
+    // )
+    return of([
+      {
+        contractAddress: '0xfDBdcDc78b993afA6798fB3169Ee03585CedbE29',
+        name: 'Wednesday',
+        symbol: 'WED',
+        decimals: 6,
+        balance: BigNumber.from('23000000'),
+      },
+      {
+        contractAddress: '0xfDBdcDc78b993afA6798fB3169Ee03585CedbE29',
+        name: 'Lolz',
+        symbol: 'LOL',
+        decimals: 9,
+        balance: BigNumber.from('144500000000'),
+      },
+    ])
+  }
 }
 
 interface OfferItem {
@@ -192,4 +217,13 @@ export interface AssetCommonStateWithName {
 export interface CampaignCommonStateWithName {
   campaign: CampaignCommonState
   mappedName: string
+}
+
+export interface AssetWithBalance {
+  contractAddress: string
+  decimals: number
+  symbol: string
+  name: string
+  balance: BigNumber
+  asset?: AssetCommonState
 }

@@ -1,7 +1,7 @@
 import {ChangeDetectionStrategy, Component} from '@angular/core'
 import {SignerService} from '../shared/services/signer.service'
-import {finalize, switchMap} from 'rxjs/operators'
-import {Observable, of} from 'rxjs'
+import {finalize, map, switchMap} from 'rxjs/operators'
+import {combineLatest, Observable, of} from 'rxjs'
 import {AuthProvider} from '../preference/state/preference.store'
 import {WithStatus, withStatus} from '../shared/utils/observables'
 import {RouterService} from '../shared/services/router.service'
@@ -13,6 +13,8 @@ import {PreferenceQuery} from '../preference/state/preference.query'
 import {BackendUser, BackendUserService} from '../shared/services/backend/backend-user.service'
 import {MagicSubsignerService} from '../shared/services/subsigners/magic-subsigner.service'
 import {TransferService} from '../transfer/transfer.service'
+import {QueryService} from '../shared/services/blockchain/query.service'
+import {AssetService, CommonAssetWithInfo} from '../shared/services/blockchain/asset/asset.service'
 import {BigNumber} from 'ethers'
 
 @Component({
@@ -34,25 +36,16 @@ export class WalletComponent {
   address$ = this.preferenceQuery.address$
   balance$ = withStatus(this.stablecoin.balance$)
 
-  assets$: Observable<WithStatus<AssetWithBalance[]>> = withStatus(
-    of([
-      {
-        address: '0xfDBdcDc78b993afA6798fB3169Ee03585CedbE29',
-        name: 'Wednesday',
-        symbol: 'WED',
-        decimals: 6,
-        logo: 'QmebXr1RqyvYAbUoy2HbavVA2P5oWx8cY9CHQA8mPNBkJT',
-        balance: BigNumber.from('23000000'),
-      },
-      {
-        address: '0xfDBdcDc78b993afA6798fB3169Ee03585CedbE29',
-        name: 'Wednesday',
-        symbol: 'LOL',
-        decimals: 9,
-        logo: 'Qma67S3gVp6e77J3ZNZgWA4fHfuti8JkijPAeyntKo3pkQ',
-        balance: BigNumber.from('144500000000'),
-      },
-    ]),
+  assets$: Observable<WithStatus<AssetWithInfoWithBalance[]>> = this.address$.pipe(
+    switchMap(address => withStatus(
+      this.queryService.getAssetsBalancesForOwnerAddress(address).pipe(
+        switchMap(res => combineLatest(
+          res.map(item => item.asset?.info ? this.assetService.getAssetInfo(item.asset).pipe(
+            map(asset => ({...item, asset})),
+          ) : of({...item, asset: undefined})),
+        )),
+      ),
+    )),
   )
 
   constructor(private preferenceQuery: PreferenceQuery,
@@ -61,6 +54,8 @@ export class WalletComponent {
               public transferService: TransferService,
               private userService: UserService,
               private backendUserService: BackendUserService,
+              private queryService: QueryService,
+              private assetService: AssetService,
               private magicSubsignerService: MagicSubsignerService,
               private http: BackendHttpClient,
               private router: RouterService) {
@@ -77,11 +72,11 @@ export class WalletComponent {
   }
 }
 
-interface AssetWithBalance {
-  address: string
-  name: string
-  symbol: string
+interface AssetWithInfoWithBalance {
+  contractAddress: string
   decimals: number
-  logo: string
+  symbol: string
+  name: string
   balance: BigNumber
+  asset?: CommonAssetWithInfo
 }

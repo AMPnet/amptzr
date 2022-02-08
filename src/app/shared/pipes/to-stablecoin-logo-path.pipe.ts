@@ -13,8 +13,9 @@ export class ToStablecoinLogoPathPipe implements PipeTransform {
   transform(value: any): any {
     switch (value) {
       case 'USDC':
-      default:
         return '/assets/usdc.png'
+      default:
+        return '/assets/coin_128x128.png'
     }
   }
 }
