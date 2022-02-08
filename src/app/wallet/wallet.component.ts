@@ -16,6 +16,7 @@ import {TransferService} from '../transfer/transfer.service'
 import {QueryService} from '../shared/services/blockchain/query.service'
 import {AssetService, CommonAssetWithInfo} from '../shared/services/blockchain/asset/asset.service'
 import {BigNumber} from 'ethers'
+import {WalletConnectSubsignerService} from '../shared/services/subsigners/walletconnect-subsigner.service'
 
 @Component({
   selector: 'app-wallet',
@@ -57,6 +58,7 @@ export class WalletComponent {
               private queryService: QueryService,
               private assetService: AssetService,
               private magicSubsignerService: MagicSubsignerService,
+              public walletConnectSubsignerService: WalletConnectSubsignerService,
               private http: BackendHttpClient,
               private router: RouterService) {
   }

@@ -97,6 +97,23 @@
                 <span class="underline mx-1">(settings)</span>
               </ng-template>
             </button>
+
+            <ng-container *ngIf="authProvider === authProviderType.WALLET_CONNECT">
+              <ng-container *ngIf="walletConnectSubsignerService.wcProvider?.walletMeta as meta">
+                <span>
+                  |
+                </span>
+                <a *ngIf="meta.url" href="{{ meta.url }}"
+                   target="_blank" rel="noopener noreferrer">
+                  <span class="underline" *ngIf="meta.name">
+                    {{ meta.name }}
+                  </span>
+                </a>
+                <span *ngIf="!meta.url && meta.name">
+                  {{ meta.name }}
+                </span>
+              </ng-container>
+            </ng-container>
           </span>
           <span class="flex flex-col items-end">
             <button class="flex items-center gap-1 bg-gray-200 rounded-full ml-4 py-1 px-4"

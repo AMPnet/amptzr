@@ -7,6 +7,7 @@
   <span class="text-3xl lg:text-sm font-semibold uppercase ml-3.5 py-0.5">
     Wallet
   </span>
+
   <span class="text-2xl lg:text-xs mx-2">{{ address$ | async | addrShort:3:0 }}</span>
   <span class="rounded-full bg-gray-700 inline-block p-2 lg:p-1"
         *ngIf="(authProvider$ | async) === AuthProvider.METAMASK">
@@ -59,6 +60,7 @@
         fill="#F5841F"/>
     </svg>
   </span>
+
   <span class="rounded-full bg-gray-100 inline-block p-2 lg:p-1"
         *ngIf="(authProvider$ | async) === AuthProvider.MAGIC">
     <svg [attr.width]="authProviderIconSize$ | async" [attr.height]="authProviderIconSize$ | async" fill="none"
@@ -67,5 +69,14 @@
         d="M200 0c18.262 21.2014 38.404 40.8906 60.185 58.8391C245.672 103.459 237.858 150.865 237.858 200c0 49.135 7.814 96.541 22.327 141.161C238.404 359.109 218.262 378.799 200 400c-18.262-21.201-38.404-40.891-60.185-58.839 14.513-44.62 22.327-92.026 22.327-141.161 0-49.135-7.814-96.541-22.327-141.1608C161.596 40.8907 181.738 21.2015 200 0ZM98.183 310.312C75.1276 294.994 50.6592 281.457 25 269.911c7.1177-22.114 10.9467-45.589 10.9467-69.911 0-24.322-3.829-47.796-10.9467-69.911 25.6591-11.546 50.1275-25.083 73.183-40.4005C106.999 125.102 111.664 162.034 111.664 200c0 37.966-4.665 74.898-13.481 110.312ZM288.336 200c0 37.966 4.665 74.898 13.481 110.312 23.055-15.318 47.524-28.855 73.183-40.401-7.118-22.114-10.947-45.589-10.947-69.911 0-24.322 3.829-47.796 10.947-69.911-25.659-11.546-50.128-25.083-73.183-40.4006C293.001 125.102 288.336 162.034 288.336 200Z"
         fill="#6851FF"/>
     </svg>
+  </span>
+
+  <span class="rounded-full bg-gray-100 inline-block p-2 lg:p-1"
+        *ngIf="(authProvider$ | async) === AuthProvider.WALLET_CONNECT">
+    <ng-container *ngIf="walletConnectSubsignerService.wcProvider?.walletMeta as meta">
+      <img *ngIf="meta.icons.length > 0" src="{{ meta.icons[0] }}"
+           [attr.width]="authProviderIconSize$ | async" [attr.height]="authProviderIconSize$ | async"
+           alt="WalletConnect ({{ meta.name }}) logo">
+    </ng-container>
   </span>
 </button>
