@@ -3,7 +3,7 @@ import {SignerService} from '../shared/services/signer.service'
 import {finalize, switchMap} from 'rxjs/operators'
 import {Observable, of} from 'rxjs'
 import {AuthProvider} from '../preference/state/preference.store'
-import {withStatus} from '../shared/utils/observables'
+import {WithStatus, withStatus} from '../shared/utils/observables'
 import {RouterService} from '../shared/services/router.service'
 import {StablecoinService} from '../shared/services/blockchain/stablecoin.service'
 import {UserService} from '../shared/services/user.service'
@@ -13,6 +13,7 @@ import {PreferenceQuery} from '../preference/state/preference.query'
 import {BackendUser, BackendUserService} from '../shared/services/backend/backend-user.service'
 import {MagicSubsignerService} from '../shared/services/subsigners/magic-subsigner.service'
 import {TransferService} from '../transfer/transfer.service'
+import {BigNumber} from 'ethers'
 
 @Component({
   selector: 'app-wallet',
@@ -32,6 +33,27 @@ export class WalletComponent {
 
   address$ = this.preferenceQuery.address$
   balance$ = withStatus(this.stablecoin.balance$)
+
+  assets$: Observable<WithStatus<AssetWithBalance[]>> = withStatus(
+    of([
+      {
+        address: '0xfDBdcDc78b993afA6798fB3169Ee03585CedbE29',
+        name: 'Wednesday',
+        symbol: 'WED',
+        decimals: 6,
+        logo: 'QmebXr1RqyvYAbUoy2HbavVA2P5oWx8cY9CHQA8mPNBkJT',
+        balance: BigNumber.from('23000000'),
+      },
+      {
+        address: '0xfDBdcDc78b993afA6798fB3169Ee03585CedbE29',
+        name: 'Wednesday',
+        symbol: 'LOL',
+        decimals: 9,
+        logo: 'Qma67S3gVp6e77J3ZNZgWA4fHfuti8JkijPAeyntKo3pkQ',
+        balance: BigNumber.from('144500000000'),
+      },
+    ]),
+  )
 
   constructor(private preferenceQuery: PreferenceQuery,
               private signerService: SignerService,
@@ -53,4 +75,13 @@ export class WalletComponent {
   manageMagicWallet(): Observable<unknown> {
     return this.magicSubsignerService.showSettings()
   }
+}
+
+interface AssetWithBalance {
+  address: string
+  name: string
+  symbol: string
+  decimals: number
+  logo: string
+  balance: BigNumber
 }

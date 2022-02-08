@@ -1,9 +1,9 @@
 <div class="max-w-6xl mx-auto px-4">
-  <div class="mt-6 rounded-3xl shadow-lg bg-white p-4 lg:p-6">
+  <div class="mt-6 rounded-3xl bg-white p-4 lg:p-6">
     <div class="flex flex-col">
       <b class="text-sm">Your balance:</b>
       <div class="mt-2 lg:flex lg:w-full lg:items-center lg:justify-between">
-        <span class="flex gap-1.5 items-baseline text-3xl mr-8 font-light">
+        <span class="flex gap-1.5 items-baseline flex-wrap text-3xl mr-8 font-light">
           <ng-container *ngIf="(balance$ | async) as balanceRes">
             <ng-container *ngIf="balanceRes.value as balance">
               {{ balance | formatUnit:'stablecoin' | currencyDefault }}
@@ -24,7 +24,9 @@
           <app-add-to-metamask [value]="stablecoin.config.address">
           </app-add-to-metamask>
 
-          <button (click)="transferService.navigate(stablecoin.config.address)" matTooltip="Transfer">
+          <button (click)="transferService.navigate(stablecoin.config.address)"
+                  class="flex items-center gap-1 px-4 py-1 bg-gray-100 rounded-full"
+                  matTooltip="Transfer">
             <svg class="w-3 h-3" viewBox="0 0 12 14" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path
                 d="M3.333 3.667h8-8Zm8 0L8.666 1l2.667 2.667Zm0 0L8.666 6.333l2.667-2.666Zm-2.667 6.666h-8 8Zm-8 0L3.334 13 .667 10.333Zm0 0 2.667-2.666-2.666 2.666Z"
@@ -33,6 +35,9 @@
                 d="m.667 10.333 2.666-2.666m0-4h8-8Zm8 0L8.666 1l2.667 2.667Zm0 0L8.666 6.333l2.667-2.666Zm-2.667 6.666h-8 8Zm-8 0L3.334 13 .667 10.333Z"
                 stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"/>
             </svg>
+            <span class="text-xs">
+              Transfer
+            </span>
           </button>
         </span>
 
@@ -72,7 +77,7 @@
             {{ user.email ?? '' }}
           </ng-container>
         </p>
-        <div class="flex items-center">
+        <div class="flex items-baseline">
           <ng-container *ngIf="(address$ | async) as address">
             <span class="grow-0">Wallet address: {{ address | addrShort }}</span>
             <app-explorer-link [value]="address" class="ml-1">
@@ -110,6 +115,63 @@
           </span>
         </ng-container>
       </div>
+    </div>
+  </div>
+
+  <div class="mt-6">
+    <h2 class="font-semibold">
+      Assets
+    </h2>
+
+    <div class="mt-2">
+      <ng-container *ngIf="(assets$ | async) as assetsRes">
+        <ng-container *ngIf="assetsRes.value as assets">
+          <div class="flex flex-col gap-1">
+            <div class="flex items-center gap-4 p-2 bg-white rounded-lg"
+                 *ngFor="let asset of assets">
+              <img src="{{ (asset.logo | toUrlIPFS) || (asset.symbol | toStablecoinLogoPath) }}"
+                   class="w-8 h-8 object-cover rounded-full"
+                   alt="{{ asset.symbol }} logo">
+              <div class="flex items-baseline gap-1.5 items-baseline">
+                <span>
+                  {{ asset.balance | formatUnit:'token':asset.decimals | currencyDefault:'token':'real':asset.symbol }}
+                </span>
+
+                <app-explorer-link [value]="asset.address" type="token">
+                </app-explorer-link>
+
+                <app-add-to-metamask [value]="asset.address">
+                </app-add-to-metamask>
+
+                <button (click)="transferService.navigate(asset.address)"
+                        class="flex items-center gap-1 px-4 py-1 bg-gray-100 rounded-full"
+                        matTooltip="Transfer">
+                  <svg class="w-3 h-3" viewBox="0 0 12 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path
+                      d="M3.333 3.667h8-8Zm8 0L8.666 1l2.667 2.667Zm0 0L8.666 6.333l2.667-2.666Zm-2.667 6.666h-8 8Zm-8 0L3.334 13 .667 10.333Zm0 0 2.667-2.666-2.666 2.666Z"
+                      fill="#fff"/>
+                    <path
+                      d="m.667 10.333 2.666-2.666m0-4h8-8Zm8 0L8.666 1l2.667 2.667Zm0 0L8.666 6.333l2.667-2.666Zm-2.667 6.666h-8 8Zm-8 0L3.334 13 .667 10.333Z"
+                      stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                  <span class="text-xs">
+                    Transfer
+                  </span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </ng-container>
+
+        <ng-container *ngIf="assetsRes.error">
+          Cannot fetch assets.
+          <div hidden>{{ assetsRes.error | json }}</div>
+        </ng-container>
+
+        <ng-container *ngIf="assetsRes.loading">
+          Loading assets...
+        </ng-container>
+      </ng-container>
     </div>
   </div>
 

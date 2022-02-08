@@ -32,7 +32,7 @@
                     <div class="flex rounded-full items-center bg-white shadow">
                       <div class="w-7 h-7 bg-white rounded-full overflow-hidden m-1">
                         <img class="h-full w-full object-cover"
-                             src="{{ (state.asset?.infoData?.logo | toUrlIPFS) || state.symbol | toStablecoinLogoPath }}"
+                             src="{{ (state.asset?.infoData?.logo | toUrlIPFS) || (state.symbol | toStablecoinLogoPath) }}"
                              alt="{{ state.symbol }} logo">
                       </div>
 
@@ -79,12 +79,13 @@
               </div>
 
               <div class="flex flex-col gap-2 mt-5">
-                <label class="text-sm text-gray-500 text-center">
+                <label class="text-sm text-gray-500 text-center" for="recipientAddress">
                   Recipient address
                 </label>
                 <input class="bg-gray-200/20 border-gray-300/50 rounded-lg
                               text-ellipsis	placeholder:text-gray-400
-                              font-semibold text-sm" type="text"
+                              font-semibold overflow-ellipsis" type="text"
+                       id="recipientAddress"
                        placeholder="0x" spellcheck="false"
                        formControlName="recipientAddress">
               </div>
