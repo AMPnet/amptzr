@@ -6,7 +6,6 @@ import {concatMap, map, tap} from 'rxjs/operators'
 import {AuthProvider, PreferenceStore} from '../../../preference/state/preference.store'
 import {SignerLoginOpts, Subsigner} from '../signer-login-options'
 import {switchMapTap} from '../../utils/observables'
-import {getWindow} from '../../utils/browser'
 
 @Injectable({
   providedIn: 'root',
@@ -61,6 +60,7 @@ export class WalletConnectSubsignerService implements Subsigner<WalletConnectLog
         //     console.log(e, 'payload', args)
         //   })
         // })
+        // getWindow().wcc = this.wcProvider
 
         return this.wcProvider
       }),

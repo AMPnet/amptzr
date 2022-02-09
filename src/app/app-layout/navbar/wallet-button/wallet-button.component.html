@@ -71,12 +71,14 @@
     </svg>
   </span>
 
-  <span class="rounded-full bg-gray-100 inline-block p-2 lg:p-1"
-        *ngIf="(authProvider$ | async) === AuthProvider.WALLET_CONNECT">
+  <ng-container *ngIf="(authProvider$ | async) === AuthProvider.WALLET_CONNECT">
     <ng-container *ngIf="walletConnectSubsignerService.wcProvider?.walletMeta as meta">
-      <img *ngIf="meta.icons.length > 0" src="{{ meta.icons[0] }}"
-           [attr.width]="authProviderIconSize$ | async" [attr.height]="authProviderIconSize$ | async"
-           alt="WalletConnect ({{ meta.name }}) logo">
+      <span class="rounded-full bg-gray-100 inline-block p-2 lg:p-1"
+            *ngIf="meta.icons.length > 0">
+        <img src="{{ meta.icons[0] }}"
+             [attr.width]="authProviderIconSize$ | async" [attr.height]="authProviderIconSize$ | async"
+             alt="WalletConnect ({{ meta.name }}) logo">
+      </span>
     </ng-container>
-  </span>
+  </ng-container>
 </button>
