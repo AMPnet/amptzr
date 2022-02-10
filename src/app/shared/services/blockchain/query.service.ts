@@ -225,5 +225,5 @@ export interface AssetWithBalance {
   symbol: string
   name: string
   balance: BigNumber
-  asset?: AssetCommonState
+  assetCommonState?: AssetCommonState
 }

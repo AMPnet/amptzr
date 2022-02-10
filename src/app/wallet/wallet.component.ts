@@ -41,7 +41,7 @@ export class WalletComponent {
     switchMap(address => withStatus(
       this.queryService.getAssetsBalancesForOwnerAddress(address).pipe(
         switchMap(res => combineLatest(
-          res.map(item => item.asset?.info ? this.assetService.getAssetInfo(item.asset).pipe(
+          res.map(item => item.assetCommonState?.info ? this.assetService.getAssetInfo(item.assetCommonState).pipe(
             map(asset => ({...item, asset})),
           ) : of({...item, asset: undefined})),
         )),
