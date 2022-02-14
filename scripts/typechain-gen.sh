@@ -3,6 +3,7 @@
 rm -rf abis
 rm -rf types/ethers-contracts
 
+mkdir -p contracts/tokenizer-prototype
 cp -rf tokenizer-prototype/contracts contracts/tokenizer-prototype
 hardhat compile
 
