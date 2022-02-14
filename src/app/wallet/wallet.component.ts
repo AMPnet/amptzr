@@ -17,6 +17,7 @@ import {QueryService} from '../shared/services/blockchain/query.service'
 import {AssetService, CommonAssetWithInfo} from '../shared/services/blockchain/asset/asset.service'
 import {BigNumber} from 'ethers'
 import {WalletConnectSubsignerService} from '../shared/services/subsigners/walletconnect-subsigner.service'
+import {AssetFlavor} from '../shared/services/blockchain/flavors'
 
 @Component({
   selector: 'app-wallet',
@@ -71,6 +72,17 @@ export class WalletComponent {
 
   manageMagicWallet(): Observable<unknown> {
     return this.magicSubsignerService.showSettings()
+  }
+
+  isAssetTransferable(flavor: unknown): boolean {
+    switch (flavor) {
+      case AssetFlavor.BASIC:
+        return false
+      case AssetFlavor.TRANSFERABLE:
+      case AssetFlavor.SIMPLE:
+      default:
+        return true
+    }
   }
 }
 

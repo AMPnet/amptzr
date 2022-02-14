@@ -163,6 +163,7 @@
                 </app-add-to-metamask>
 
                 <button (click)="transferService.navigate(assetItem.contractAddress)"
+                        *ngIf="isAssetTransferable(assetItem.asset?.flavor)"
                         class="flex items-center gap-1 px-4 py-1 bg-gray-200 rounded-full">
                   <svg class="w-3 h-3" viewBox="0 0 12 14" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path
