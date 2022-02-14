@@ -1,6 +1,6 @@
 import {providers} from 'ethers'
 import {ReconnectingWebsocketProvider} from './ethersjs/reconnecting-websocket-provider'
-import {Matic as TPMatic, Mumbai as TPMumbai} from '../../../deps/tokenizer-prototype/deployments'
+import {Matic as TPMatic, Mumbai as TPMumbai} from '../../../tokenizer-prototype/deployments'
 
 export enum ChainID {
   MATIC_MAINNET = 137, // Polygon

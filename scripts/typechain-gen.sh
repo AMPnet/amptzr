@@ -3,7 +3,7 @@
 rm -rf abis
 rm -rf types/ethers-contracts
 
-cp -r deps/tokenizer-prototype/contracts contracts/tokenizer-prototype
+cp -r tokenizer-prototype/contracts contracts/tokenizer-prototype
 hardhat compile
 
 cp -r artifacts/contracts abis
