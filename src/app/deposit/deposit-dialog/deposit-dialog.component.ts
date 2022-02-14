@@ -82,7 +82,7 @@ export class DepositDialogComponent implements OnInit {
                 title: 'Your investment has been noted',
                 message: 'We will automatically execute the buy order as soon as you receive the funds on your Wallet.' +
                   'You will receive emails from RAMP about the wallet funding process. ' +
-                  'Visit the Portfolio page to check the investment status.',
+                  'Visit the Orders page to check the investment status.',
               })),
               switchMap(() => this.stablecoin.approveAmount(campaignAddress, adjustedAmount)),
             ) : of(undefined)
@@ -90,7 +90,7 @@ export class DepositDialogComponent implements OnInit {
         switchMapTap(state => {
           return state.successFinish ?
             of(this.dialogRef.close()).pipe(
-              switchMap(() => this.router.navigate(['/portfolio'])),
+              switchMap(() => this.router.navigate(['/orders'])),
             ) : of(undefined)
         }),
       )

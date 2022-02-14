@@ -11,7 +11,7 @@ import {environment} from '../environments/environment'
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations'
 import {OffersComponent} from './offers/offers.component'
 import {MatDialogModule} from '@angular/material/dialog'
-import {PortfolioComponent} from './portfolio/portfolio.component'
+import {OrdersComponent} from './orders/orders.component'
 import {WalletComponent} from './wallet/wallet.component'
 import {ActionButtonComponent} from './shared/components/action-button/action-button.component'
 import {AddrShortPipe} from './shared/pipes/addr-short.pipe'
@@ -109,7 +109,7 @@ import {ToStablecoinLogoPathPipe} from './shared/pipes/to-stablecoin-logo-path.p
     AppComponent,
     NavbarComponent,
     OffersComponent,
-    PortfolioComponent,
+    OrdersComponent,
     WalletComponent,
     ActionButtonComponent,
     AddrShortPipe,
