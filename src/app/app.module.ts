@@ -103,6 +103,7 @@ import {DepositDialogComponent} from './deposit/deposit-dialog/deposit-dialog.co
 import {AuthMagicOauthComponent} from './auth/auth-magic-oauth/auth-magic-oauth.component'
 import {TransferComponent} from './transfer/transfer.component'
 import {ToStablecoinLogoPathPipe} from './shared/pipes/to-stablecoin-logo-path.pipe'
+import {SwapComponent} from './swap/swap.component'
 
 @NgModule({
   declarations: [
@@ -181,6 +182,7 @@ import {ToStablecoinLogoPathPipe} from './shared/pipes/to-stablecoin-logo-path.p
     DepositDialogComponent,
     AuthMagicOauthComponent,
     TransferComponent,
+    SwapComponent,
   ],
   imports: [
     BrowserModule,

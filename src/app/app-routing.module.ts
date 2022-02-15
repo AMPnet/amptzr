@@ -30,6 +30,7 @@ import {
 } from './admin/admin-issuer-edit-campaign-visibility/admin-issuer-edit-campaign-visibility.component'
 import {AuthMagicOauthComponent} from './auth/auth-magic-oauth/auth-magic-oauth.component'
 import {TransferComponent} from './transfer/transfer.component'
+import {SwapComponent} from './swap/swap.component'
 
 const appRoutes: Routes = [
   {path: 'callback', component: AuthMagicOauthComponent},
@@ -40,6 +41,7 @@ const appRoutes: Routes = [
       {path: 'offers/:id', component: OfferComponent},
       {path: 'offers/:id/invest', component: InvestComponent},
       {path: 'transfer', component: TransferComponent},
+      {path: 'swap', component: SwapComponent},
       {
         path: '', canActivate: [AuthGuard], children: [
           {path: 'wallet', component: WalletComponent},
