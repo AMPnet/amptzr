@@ -1,5 +1,6 @@
-<iframe #iframe class="mx-auto border-0 block min-w-[380px] h-full py-8">
+<iframe #iframe class="mx-auto border-0 block min-w-[380px] h-[500px] py-8">
 </iframe>
 
 <ng-container *ngIf="jsonRpcMessage$ | async"></ng-container>
-<ng-container *ngIf="signerChanges$ | async"></ng-container>
+<ng-container *ngIf="widgetMessage$ | async"></ng-container>
+<ng-container *ngIf="signerChange$ | async"></ng-container>
