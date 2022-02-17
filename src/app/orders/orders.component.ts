@@ -1,6 +1,6 @@
 import {ChangeDetectionStrategy, Component} from '@angular/core'
 import {withInterval, WithStatus, withStatus} from '../shared/utils/observables'
-import {PortfolioItem, QueryService} from '../shared/services/blockchain/query.service'
+import {OrderItem, QueryService} from '../shared/services/blockchain/query.service'
 import {distinctUntilChanged, map, shareReplay, switchMap, tap} from 'rxjs/operators'
 import {BehaviorSubject, combineLatest, Observable, of, takeWhile} from 'rxjs'
 import {DialogService} from '../shared/services/dialog.service'
@@ -15,33 +15,33 @@ import {TokenBigNumber} from '../shared/utils/token'
 import {PreferenceQuery} from '../preference/state/preference.query'
 
 @Component({
-  selector: 'app-portfolio',
-  templateUrl: './portfolio.component.html',
-  styleUrls: ['./portfolio.component.css'],
+  selector: 'app-orders',
+  templateUrl: './orders.component.html',
+  styleUrls: ['./orders.component.css'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class PortfolioComponent {
-  portfolioSub = new BehaviorSubject<void>(undefined)
+export class OrdersComponent {
+  ordersSub = new BehaviorSubject<void>(undefined)
 
-  portfolio$: Observable<PortfolioItemView[]> = combineLatest([
-    this.portfolioSub.asObservable(),
+  orders$: Observable<OrdersItemView[]> = combineLatest([
+    this.ordersSub.asObservable(),
     this.preferenceQuery.address$,
     this.stablecoin.balance$,
   ]).pipe(
-    switchMap(() => this.queryService.portfolio$),
-    switchMap(portfolio => portfolio.length > 0 ? combineLatest(
-      portfolio.map(item => this.campaignService.getCampaignInfo(item.campaign).pipe(
+    switchMap(() => this.queryService.orders$),
+    switchMap(orders => orders.length > 0 ? combineLatest(
+      orders.map(item => this.campaignService.getCampaignInfo(item.campaign).pipe(
         switchMap(campaign => this.getCampaignWithAsset(campaign)),
         map(campaignWithAsset => ({...item, ...campaignWithAsset})),
       )),
     ) : of([])),
     shareReplay({bufferSize: 1, refCount: true}),
   )
-  portfolioWithStatus$ = withStatus(this.portfolio$)
+  ordersWithStatus$ = withStatus(this.orders$)
 
-  totalInvested$: Observable<{ value: StablecoinBigNumber }> = this.portfolio$.pipe(
-    map(portfolio => portfolio.length > 0 ?
-      portfolio.map(item => item.tokenValue).reduce((prev, curr) => prev.add(curr)) : constants.Zero),
+  totalInvested$: Observable<{ value: StablecoinBigNumber }> = this.orders$.pipe(
+    map(orders => orders.length > 0 ?
+      orders.map(item => item.tokenValue).reduce((prev, curr) => prev.add(curr)) : constants.Zero),
     map(v => ({value: v})),
   )
 
@@ -100,7 +100,7 @@ export class PortfolioComponent {
         switchMap(() => this.dialogService.success({
           title: 'Investment has been cancelled',
         })),
-        tap(() => this.portfolioSub.next()),
+        tap(() => this.ordersSub.next()),
       )
     }
   }
@@ -118,7 +118,7 @@ export class PortfolioComponent {
   }
 }
 
-interface PortfolioItemView extends PortfolioItem {
+interface OrdersItemView extends OrderItem {
   campaign: CampaignWithInfo;
   asset: CommonAssetWithInfo
 }

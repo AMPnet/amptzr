@@ -1,9 +1,9 @@
 <div class="w-full h-full flex justify-center mt-8 px-2 pb-8">
   <div class="bg-red w-full max-w-6xl">
-    <ng-container *ngIf="(portfolioWithStatus$ | async) as portfolioRes">
-      <ng-container *ngIf="portfolioRes.value as portfolio">
+    <ng-container *ngIf="(ordersWithStatus$ | async) as ordersRes">
+      <ng-container *ngIf="ordersRes.value as orders">
         <!-- Overview of all investments and total unclaimed earnings -->
-        <section class="w-full rounded-3xl flex-col shadow-lg justify-between bg-white p-4
+        <section class="w-full rounded-3xl flex-col justify-between bg-white p-4
         lg:p-8 flex lg:flex-row lg:items-end">
           <div class="flex flex-row justify-between lg:items-center">
             <div class="flex flex-col justify-start">
@@ -114,7 +114,7 @@
                       </a>
                     </small>
 
-                    <div class="flex items-end gap-1 mt-2">
+                    <div class="flex items-baseline gap-1 mt-2">
                       <span class="text-4xl"
                             [ngClass]="item.campaign.finalized ? 'text-black' : 'text-gray-400'">
                         {{ item.tokenAmount | formatUnit:'token' | currencyDefault:'token':'real':'' }}
@@ -170,71 +170,71 @@
           </ng-container>
         </ng-container>
 
-        <!-- Portfolio investments -->
+        <!-- Orders investments -->
         <section>
-          <div *ngFor="let item of portfolio" class="flex flex-col p-6 bg-white rounded-3xl mt-6">
+          <div *ngFor="let order of orders" class="flex flex-col p-6 bg-white rounded-3xl mt-6">
             <div>
               <div class="flex flex-col gap-6 sm:flex-row items-start">
                 <div class="flex justify-center">
-                  <a routerLink="{{ '/offers/' + item.campaign.contractAddress | issuerPath }}">
+                  <a routerLink="{{ '/offers/' + order.campaign.contractAddress | issuerPath }}">
                     <img class="w-40 h-40 object-contain bg-white"
-                         src="{{ item.asset.infoData.logo | toUrlIPFS }}" alt="Asset logo">
+                         src="{{ order.asset.infoData.logo | toUrlIPFS }}" alt="Asset logo">
                   </a>
                 </div>
 
                 <div class="flex-grow">
                   <!-- TODO: add link to asset when asset page is implemented -->
                   <h2 class="text-lg font-semibold">
-                    {{ item.asset.name }}
+                    {{ order.asset.name }}
                   </h2>
 
                   <small class="text-sm mt-2 text-cyan-500">
-                    <a routerLink="{{ '/offers/' + item.campaign.contractAddress | issuerPath }}">
-                      {{ item.campaign.infoData.name }}
+                    <a routerLink="{{ '/offers/' + order.campaign.contractAddress | issuerPath }}">
+                      {{ order.campaign.infoData.name }}
                     </a>
                   </small>
 
-                  <div class="flex items-end gap-1 mt-2">
+                  <div class="flex items-baseline gap-1 mt-2">
                     <span class="text-4xl"
-                          [ngClass]="item.campaign.finalized ? 'text-black' : 'text-gray-400'">
-                      {{ item.tokenAmount | formatUnit:'token' | currencyDefault:'token':'real':'' }}
+                          [ngClass]="order.campaign.finalized ? 'text-black' : 'text-gray-400'">
+                      {{ order.tokenAmount | formatUnit:'token' | currencyDefault:'token':'real':' ' }}
                     </span>
                     <span class="font-semibold"
-                          [ngClass]="item.campaign.finalized ? 'text-black' : 'text-gray-400'">
-                      {{ item.asset.symbol }}
+                          [ngClass]="order.campaign.finalized ? 'text-black' : 'text-gray-400'">
+                      {{ order.asset.symbol }}
                     </span>
                     <div class="flex gap-1">
-                      <app-explorer-link [value]="item.asset.contractAddress" type="token">
+                      <app-explorer-link [value]="order.asset.contractAddress" type="token">
                       </app-explorer-link>
-                      <app-add-to-metamask [value]="item.asset.contractAddress">
+                      <app-add-to-metamask [value]="order.asset.contractAddress">
                       </app-add-to-metamask>
                     </div>
                   </div>
 
                   <div class="text-sm mt-1"
-                       [ngClass]="item.campaign.finalized ? 'text-black' : 'text-gray-400'">
+                       [ngClass]="order.campaign.finalized ? 'text-black' : 'text-gray-400'">
                     <span class="font-bold">
-                      {{ item.tokenValue | formatUnit:'stablecoin' | currencyDefault:'stablecoin':'implicit' }}
+                      {{ order.tokenValue | formatUnit:'stablecoin' | currencyDefault:'stablecoin':'implicit' }}
                     </span>
                     valuation with token price of
                     <span class="font-bold">
-                      {{ item.campaign.pricePerToken | formatUnit:'tokenPrice' | currencyDefault:'tokenPrice':'implicit' }}
+                      {{ order.campaign.pricePerToken | formatUnit:'tokenPrice' | currencyDefault:'tokenPrice':'implicit' }}
                     </span>
                   </div>
 
                   <div class="mt-2 max-w-xs">
-                    <app-funding-progress [campaign]="item.campaign"></app-funding-progress>
+                    <app-funding-progress [campaign]="order.campaign"></app-funding-progress>
                   </div>
 
                   <div class="flex justify-end mt-2">
-                    <button *ngIf="!item.campaign.finalized" app-action-button
+                    <button *ngIf="!order.campaign.finalized" app-action-button
                             class="bg-white text-black px-10 py-2 font-semibold rounded-full
                                    disabled:bg-gray-200"
-                            [onClick]="cancel(item.campaign.contractAddress, item.campaign.flavor).bind(this)"
+                            [onClick]="cancel(order.campaign.contractAddress, order.campaign.flavor).bind(this)"
                             text="Cancel Investment">
                     </button>
 
-                    <button *ngIf="item.campaign.finalized" app-action-button
+                    <button *ngIf="order.campaign.finalized" app-action-button
                             class="bg-gray-200 text-black px-10 py-2 font-semibold rounded-full
                                    disabled:bg-gray-200"
                             text="Investment Finalized">
@@ -247,13 +247,13 @@
         </section>
       </ng-container>
 
-      <ng-container *ngIf="portfolioRes.error">
-        Cannot fetch portfolio.
-        <div hidden>{{ portfolioRes.error | json }}</div>
+      <ng-container *ngIf="ordersRes.error">
+        Cannot fetch orders.
+        <div hidden>{{ ordersRes.error | json }}</div>
       </ng-container>
 
-      <ng-container *ngIf="portfolioRes.loading">
-        <app-spinner type="overlay">Loading portfolio...</app-spinner>
+      <ng-container *ngIf="ordersRes.loading">
+        <app-spinner type="overlay">Loading orders...</app-spinner>
       </ng-container>
     </ng-container>
   </div>

@@ -108,7 +108,7 @@
                   Asset & Token
                 </span>
 
-                <div class="flex gap-1">
+                <div class="flex gap-1 items-baseline">
                   <span>
                     Asset: <b>{{ campaignData.asset.name }}</b>
                   </span>
@@ -162,7 +162,7 @@
 
                 <span class="text-2xl text-indigo-900 my-2">Addresses</span>
 
-                <div class="flex gap-1">
+                <div class="flex gap-1 items-baseline">
                   <span>
                     Campaign address: {{ campaignData.campaign.contractAddress | addrShort }}
                   </span>
@@ -173,7 +173,7 @@
                 </div>
 
                 <ng-container *ngIf="campaignData.campaignBasic as campaignBasic">
-                  <div class="flex gap-1">
+                  <div class="flex gap-1 items-baseline">
                     <span>
                       Issuer address: {{ campaignBasic.issuer | addrShort }}
                     </span>
@@ -184,7 +184,7 @@
                   </div>
                 </ng-container>
 
-                <div class="flex gap-1">
+                <div class="flex gap-1 items-baseline">
                   <span>
                     Asset address: {{ campaignData.campaign.asset | addrShort }}
                   </span>
@@ -196,7 +196,7 @@
                   </app-add-to-metamask>
                 </div>
 
-                <div class="flex gap-1">
+                <div class="flex gap-1 items-baseline">
                   <span>
                     Owner address: {{ campaignData.campaign.owner | addrShort }}
                   </span>

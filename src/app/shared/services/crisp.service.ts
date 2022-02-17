@@ -80,6 +80,10 @@ export class CrispService {
     this.$crisp?.push(["do", "chat:hide"])
   }
 
+  chatOpen() {
+    this.$crisp?.push(["do", "chat:open"])
+  }
+
   setUserEmail(email: string) {
     this.$crisp?.push(["set", "user:email", email])
   }

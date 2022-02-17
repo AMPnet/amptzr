@@ -4,6 +4,7 @@ import {TailwindService} from "../../../shared/services/tailwind.service"
 import {map, startWith} from "rxjs/operators"
 import {Observable} from "rxjs"
 import {PreferenceQuery} from '../../../preference/state/preference.query'
+import {WalletConnectSubsignerService} from '../../../shared/services/subsigners/walletconnect-subsigner.service'
 
 @Component({
   selector: 'app-wallet-button',
@@ -18,6 +19,7 @@ export class WalletButtonComponent {
   AuthProvider = AuthProvider
 
   constructor(private preferenceQuery: PreferenceQuery,
+              public walletConnectSubsignerService: WalletConnectSubsignerService,
               private tailwindService: TailwindService) {
     this.authProviderIconSize$ = this.tailwindService.screenResize$.pipe(
       startWith(this.tailwindService.getScreen()),

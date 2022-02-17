@@ -25,7 +25,7 @@ export class NavbarComponent {
 
   navbarScreenLinks: NavbarItem[] = [
     {title: 'Offers', routerLink: '/offers', showItem: of(true)},
-    {title: 'Portfolio', routerLink: '/portfolio', showItem: this.isLoggedIn$},
+    {title: 'Orders', routerLink: '/orders', showItem: this.isLoggedIn$},
     {title: 'FAQ', routerLink: '/faq', showItem: of(true)},
     {title: 'Admin', routerLink: '/admin', showItem: this.isAdmin$},
   ]

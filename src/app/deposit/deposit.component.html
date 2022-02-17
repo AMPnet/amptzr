@@ -2,22 +2,27 @@
   <div class="my-8">
     <app-deposit-flow></app-deposit-flow>
   </div>
-  <div class="flex flex-row justify-center items-center gap-2 text-sm">
-    <b>Note:</b>
-    <p>
-      <span>
-        You can always find alternative ways to fund the connected wallet with
-      </span>
-      <span>
-        {{ state.stablecoin.symbol }}
-      </span>
+  <p class="text-center text-sm">
+    <span class="font-semibold">
+      Note:
+    </span>
+    You can always find alternative ways to fund the connected wallet with
+    <span>
+      {{ state.stablecoin.symbol }}
+    </span>
+
+    <span class="inline-flex items-baseline">
       <app-explorer-link [value]="state.stablecoin.address" type="token">
       </app-explorer-link>
+    </span>
+
+    <span class="inline-flex items-baseline">
       <app-add-to-metamask [value]="state.stablecoin.address">
       </app-add-to-metamask>
-      <span>
-        on {{ state.network.name }}
-      </span>
-    </p>
-  </div>
+    </span>
+
+    <span>
+      on {{ state.network.name }}
+    </span>
+  </p>
 </div>

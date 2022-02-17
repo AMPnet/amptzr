@@ -1,7 +1,7 @@
 import {NgModule} from '@angular/core'
 import {RouterModule, Routes} from '@angular/router'
 import {OffersComponent} from './offers/offers.component'
-import {PortfolioComponent} from './portfolio/portfolio.component'
+import {OrdersComponent} from './orders/orders.component'
 import {WalletComponent} from './wallet/wallet.component'
 import {DevPlaygroundComponent} from './shared/components/dev-playground/dev-playground.component'
 import {AppLayoutComponent} from './app-layout/app-layout.component'
@@ -29,6 +29,8 @@ import {
   AdminIssuerEditCampaignVisibilityComponent,
 } from './admin/admin-issuer-edit-campaign-visibility/admin-issuer-edit-campaign-visibility.component'
 import {AuthMagicOauthComponent} from './auth/auth-magic-oauth/auth-magic-oauth.component'
+import {TransferComponent} from './transfer/transfer.component'
+import {SwapComponent} from './swap/swap.component'
 
 const appRoutes: Routes = [
   {path: 'callback', component: AuthMagicOauthComponent},
@@ -38,11 +40,13 @@ const appRoutes: Routes = [
       {path: 'offers', component: OffersComponent},
       {path: 'offers/:id', component: OfferComponent},
       {path: 'offers/:id/invest', component: InvestComponent},
+      {path: 'transfer', component: TransferComponent},
+      {path: 'swap', component: SwapComponent},
       {
         path: '', canActivate: [AuthGuard], children: [
           {path: 'wallet', component: WalletComponent},
           {path: 'deposit', component: DepositComponent},
-          {path: 'portfolio', component: PortfolioComponent},
+          {path: 'orders', component: OrdersComponent},
         ],
       },
       {path: 'faq', component: FaqComponent},

@@ -11,7 +11,7 @@ import {environment} from '../environments/environment'
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations'
 import {OffersComponent} from './offers/offers.component'
 import {MatDialogModule} from '@angular/material/dialog'
-import {PortfolioComponent} from './portfolio/portfolio.component'
+import {OrdersComponent} from './orders/orders.component'
 import {WalletComponent} from './wallet/wallet.component'
 import {ActionButtonComponent} from './shared/components/action-button/action-button.component'
 import {AddrShortPipe} from './shared/pipes/addr-short.pipe'
@@ -29,7 +29,7 @@ import {UnwrapStatusPipe} from './shared/pipes/unwrap-status.pipe'
 import {OfferComponent} from './offer/offer.component'
 import {DepositComponent} from './deposit/deposit.component'
 import {InvestComponent} from './invest/invest.component'
-import {CurrencyPipe, DatePipe, PercentPipe, ViewportScroller} from '@angular/common'
+import {CurrencyPipe, DatePipe, DecimalPipe, PercentPipe, ViewportScroller} from '@angular/common'
 import {CurrencyDefaultPipe} from './shared/pipes/currency-default.pipe'
 import {AuthComponent} from './auth/auth.component'
 import {HttpClientModule} from '@angular/common/http'
@@ -101,13 +101,16 @@ import {
 import {LoadingOverlayComponent} from './shared/components/loading-dialog/loading-overlay/loading-overlay.component'
 import {DepositDialogComponent} from './deposit/deposit-dialog/deposit-dialog.component'
 import {AuthMagicOauthComponent} from './auth/auth-magic-oauth/auth-magic-oauth.component'
+import {TransferComponent} from './transfer/transfer.component'
+import {ToStablecoinLogoPathPipe} from './shared/pipes/to-stablecoin-logo-path.pipe'
+import {SwapComponent} from './swap/swap.component'
 
 @NgModule({
   declarations: [
     AppComponent,
     NavbarComponent,
     OffersComponent,
-    PortfolioComponent,
+    OrdersComponent,
     WalletComponent,
     ActionButtonComponent,
     AddrShortPipe,
@@ -130,6 +133,7 @@ import {AuthMagicOauthComponent} from './auth/auth-magic-oauth/auth-magic-oauth.
     FaqComponent,
     AuthProviderNamePipe,
     ToUrlIPFSPipe,
+    ToStablecoinLogoPathPipe,
     SafePipe,
     FormatUnitPipe,
     ToTextIpfsPipe,
@@ -177,6 +181,8 @@ import {AuthMagicOauthComponent} from './auth/auth-magic-oauth/auth-magic-oauth.
     LoadingOverlayComponent,
     DepositDialogComponent,
     AuthMagicOauthComponent,
+    TransferComponent,
+    SwapComponent,
   ],
   imports: [
     BrowserModule,
@@ -219,6 +225,7 @@ import {AuthMagicOauthComponent} from './auth/auth-magic-oauth/auth-magic-oauth.
     PercentPipe,
     FormatUnitPipe,
     DatePipe,
+    DecimalPipe,
   ],
   bootstrap: [AppComponent],
 })

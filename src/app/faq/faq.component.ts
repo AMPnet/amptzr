@@ -61,7 +61,7 @@ export class FaqComponent {
         },
         {
           question: "What happens with my funds, if the project is not funded?",
-          answer: "In short - all funds will be returned to your wallet. You just need to go to the portfolio screen" +
+          answer: "In short - all funds will be returned to your wallet. You just need to go to the Orders screen" +
             " and click on cancel investment button and the funds will be refunded to your wallet.",
         },
         {

@@ -1,4 +1,4 @@
-import {ChangeDetectionStrategy, Component, Input, OnInit} from '@angular/core'
+import {ChangeDetectionStrategy, Component, Input} from '@angular/core'
 import {PreferenceQuery} from '../../../preference/state/preference.query'
 
 @Component({
@@ -7,25 +7,16 @@ import {PreferenceQuery} from '../../../preference/state/preference.query'
   styleUrls: ['./explorer-link.component.css'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ExplorerLinkComponent implements OnInit {
+export class ExplorerLinkComponent {
   @Input() value = ''
   @Input() type: ExplorerLinkType = 'address'
-
-  link = ''
 
   constructor(private preferenceQuery: PreferenceQuery) {
   }
 
-  ngOnInit() {
-    this.link = this.createLink()
-  }
-
-  createLink(): string {
+  get link(): string {
     const explorerURL = this.preferenceQuery.network.explorerURLs?.[0]
-    if (!explorerURL || !this.value) {
-      return ''
-    }
-
+    if (!explorerURL || !this.value) return ''
 
     return `${explorerURL}${this.type}/${this.value}`
   }

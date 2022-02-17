@@ -39,7 +39,7 @@
     <ng-container *ngIf="transactionHistory$ | async as txHistoryRes">
       <ng-container *ngIf="txHistoryRes.value as txHistory">
         <div *ngFor="let tx of txHistory.transactions"
-             class=" flex items-center justify-between p-4 my-1.5 rounded-xl whitespace-nowrap shadow-md bg-white">
+             class="flex items-center justify-between p-4 my-1.5 rounded-xl bg-white">
           <app-wallet-tx-history-item [tx]="tx" class="w-full"></app-wallet-tx-history-item>
         </div>
       </ng-container>

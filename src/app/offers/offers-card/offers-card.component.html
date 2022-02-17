@@ -8,7 +8,7 @@
                       lg:max-h-[36rem]">
         </a>
         <app-offer-investment-info [offer]="offer" class="absolute float-left lg:top-6 left-6 lg:rounded-full
-            -bottom-10 lg:bottom-auto rounded-2xl py-3 px-6 shadow-lg bg-white">
+            -bottom-10 lg:bottom-auto rounded-2xl py-3 px-6 bg-white">
         </app-offer-investment-info>
       </div>
       <div class="flex flex-col justify-between w-full p-6 bg-white rounded-b-4xl lg:rounded-none lg:rounded-r-4xl
@@ -45,7 +45,7 @@
       </div>
     </div>
 
-    <div *ngIf="size === 'small'" class="w-full h-full flex flex-col justify-start shadow-xl hover:shadow-xl
+    <div *ngIf="size === 'small'" class="w-full h-full flex flex-col justify-start
                                          transition-all duration-300 rounded-4xl">
       <div class="relative w-full h-52">
         <a routerLink="{{ offer.contractAddress }}">
@@ -53,7 +53,7 @@
                class="w-full h-full object-cover rounded-t-4xl bg-white">
         </a>
         <app-offer-investment-info [offer]="offer" class="absolute float-left lg:top-6 left-6 lg:rounded-full
-            -bottom-10 lg:bottom-auto rounded-2xl py-3 px-6 shadow-lg bg-white">
+            -bottom-10 lg:bottom-auto rounded-2xl py-3 px-6 bg-white">
         </app-offer-investment-info>
       </div>
       <div class="w-full lg:h-full flex flex-col justify-between bg-white rounded-b-4xl p-6">
