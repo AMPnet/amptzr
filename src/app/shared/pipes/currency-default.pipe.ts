@@ -1,4 +1,4 @@
-import {CurrencyPipe} from '@angular/common'
+import {CurrencyPipe, DecimalPipe} from '@angular/common'
 import {Injectable, Pipe, PipeTransform} from '@angular/core'
 import {StablecoinService} from '../services/blockchain/stablecoin.service'
 
@@ -10,6 +10,7 @@ import {StablecoinService} from '../services/blockchain/stablecoin.service'
 })
 export class CurrencyDefaultPipe implements PipeTransform {
   constructor(private currencyPipe: CurrencyPipe,
+              private decimalPipe: DecimalPipe,
               private stablecoin: StablecoinService) {
   }
 
@@ -51,7 +52,7 @@ export class CurrencyDefaultPipe implements PipeTransform {
         }
     }
 
-    return this.currencyPipe.transform(value, `${symbol} `, 'code', format, 'hr')
+    return `${this.decimalPipe.transform(value, format)} ${symbol}`
   }
 }
 

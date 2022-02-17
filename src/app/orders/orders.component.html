@@ -197,7 +197,7 @@
                   <div class="flex items-baseline gap-1 mt-2">
                     <span class="text-4xl"
                           [ngClass]="order.campaign.finalized ? 'text-black' : 'text-gray-400'">
-                      {{ order.tokenAmount | formatUnit:'token' | currencyDefault:'token':'real':'' }}
+                      {{ order.tokenAmount | formatUnit:'token' | currencyDefault:'token':'real':' ' }}
                     </span>
                     <span class="font-semibold"
                           [ngClass]="order.campaign.finalized ? 'text-black' : 'text-gray-400'">

@@ -29,7 +29,7 @@ import {UnwrapStatusPipe} from './shared/pipes/unwrap-status.pipe'
 import {OfferComponent} from './offer/offer.component'
 import {DepositComponent} from './deposit/deposit.component'
 import {InvestComponent} from './invest/invest.component'
-import {CurrencyPipe, DatePipe, PercentPipe, ViewportScroller} from '@angular/common'
+import {CurrencyPipe, DatePipe, DecimalPipe, PercentPipe, ViewportScroller} from '@angular/common'
 import {CurrencyDefaultPipe} from './shared/pipes/currency-default.pipe'
 import {AuthComponent} from './auth/auth.component'
 import {HttpClientModule} from '@angular/common/http'
@@ -225,6 +225,7 @@ import {SwapComponent} from './swap/swap.component'
     PercentPipe,
     FormatUnitPipe,
     DatePipe,
+    DecimalPipe,
   ],
   bootstrap: [AppComponent],
 })

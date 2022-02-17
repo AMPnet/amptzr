@@ -13,6 +13,7 @@ import {hexlify, isHexString} from 'ethers/lib/utils'
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SwapComponent implements AfterViewInit {
+  // TODO: extract it to env variable
   readonly url = 'https://uni-widget-iframe.vercel.app'
 
   @ViewChild('iframe') iframe!: ElementRef<HTMLIFrameElement>
