@@ -7,6 +7,7 @@
   <span class="text-3xl lg:text-sm font-semibold uppercase ml-3.5 py-0.5">
     Wallet
   </span>
+
   <span class="text-2xl lg:text-xs mx-2">{{ address$ | async | addrShort:3:0 }}</span>
   <span class="rounded-full bg-gray-700 inline-block p-2 lg:p-1"
         *ngIf="(authProvider$ | async) === AuthProvider.METAMASK">
@@ -59,6 +60,7 @@
         fill="#F5841F"/>
     </svg>
   </span>
+
   <span class="rounded-full bg-gray-100 inline-block p-2 lg:p-1"
         *ngIf="(authProvider$ | async) === AuthProvider.MAGIC">
     <svg [attr.width]="authProviderIconSize$ | async" [attr.height]="authProviderIconSize$ | async" fill="none"
@@ -68,4 +70,15 @@
         fill="#6851FF"/>
     </svg>
   </span>
+
+  <ng-container *ngIf="(authProvider$ | async) === AuthProvider.WALLET_CONNECT">
+    <ng-container *ngIf="walletConnectSubsignerService.wcProvider?.walletMeta as meta">
+      <span class="rounded-full bg-gray-100 inline-block p-2 lg:p-1"
+            *ngIf="meta.icons.length > 0">
+        <img src="{{ meta.icons[0] }}"
+             [attr.width]="authProviderIconSize$ | async" [attr.height]="authProviderIconSize$ | async"
+             alt="WalletConnect ({{ meta.name }}) logo">
+      </span>
+    </ng-container>
+  </ng-container>
 </button>

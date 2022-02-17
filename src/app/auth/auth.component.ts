@@ -62,4 +62,10 @@ export class AuthComponent {
       )
     }
   }
+
+  connectWalletConnect(): Observable<unknown> {
+    return this.signer.login(this.walletConnectSubsignerService).pipe(
+      tap(() => this.afterLoginActions()),
+    )
+  }
 }

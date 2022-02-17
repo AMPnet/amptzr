@@ -1,0 +1,3 @@
+[submodule "tokenizer-prototype"]
+	path = tokenizer-prototype
+	url = https://github.com/AMPnet/tokenizer-prototype.git

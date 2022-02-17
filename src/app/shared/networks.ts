@@ -1,5 +1,6 @@
 import {providers} from 'ethers'
 import {ReconnectingWebsocketProvider} from './ethersjs/reconnecting-websocket-provider'
+import {Matic as TPMatic, Mumbai as TPMumbai} from '../../../tokenizer-prototype/deployments'
 
 export enum ChainID {
   MATIC_MAINNET = 137, // Polygon
@@ -68,23 +69,8 @@ export const MaticNetwork: Network = {
   ],
   explorerURLs: ['https://polygonscan.com/'],
   tokenizerConfig: {
-    apxRegistry: '0xd355adCdf57B39e7751A688158515CE862F14e23',
-    issuerFactory: {
-      basic: '0x9DFC2e793a3e88ae61766aaC24F7167501953dC9',
-    },
-    assetFactory: {
-      basic: '0x7530569e6669a06110f62E2ab39E3B0653Bd885E',
-      transferable: '0x0d7E2e171C63f913901467D980C357c9D8ACbeb6',
-      simple: '0x06f5A8a5086453efeE31B0299AD4044E63669340',
-    },
-    cfManagerFactory: {
-      basic: '0x823991e528e1caa7C13369A2860a162479906C90',
-      vesting: '0xB853E8B0DC7542391F095070A75af57e3F0427Be',
-    },
-    queryService: '0x00d3759D4B7C4163e987E10eb46d0Ae2771B40B5',
-    nameRegistry: '0xeB186b3C94e66e0f1CFe525D9187fb6933e8c91A',
-    feeManager: '0x7c6912280D9c28e42c208bE79ccb2c8fC71Bd7EA',
-    defaultWalletApprover: '0xeD249D3b3cfe53f0FA655f8814Baff404AA0B27c',
+    ...TPMatic,
+    defaultWalletApprover: TPMatic.walletApproverService,
     defaultStableCoin: '0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174',
   },
   ramp: {
@@ -108,23 +94,8 @@ export const MumbaiNetwork: Network = {
   ],
   explorerURLs: ['https://mumbai.polygonscan.com/'],
   tokenizerConfig: {
-    apxRegistry: '0x93148Bd574232Acae13B12d6A3a1843109f5243b',
-    issuerFactory: {
-      basic: '0x463d65eba0efa397ad5d7Fa49f335DC44F124d03',
-    },
-    assetFactory: {
-      basic: '0x45f036A8FD250F00E7732A1516Ba7342B1A66915',
-      transferable: '0x2a977180D3694F952fA240734B171f7c241Db37f',
-      simple: '0x9d94eBdCd676B25EdABbaadf343140bf1Bf60e36',
-    },
-    cfManagerFactory: {
-      basic: '0x5b14f62551FA82B8AeD78A72c8C483DAD5727C86',
-      vesting: '0xe1284684E0f30089b114DFC141Ada9843c155f3f',
-    },
-    queryService: '0xBF98A3d8D66CdC80Aa964296AAe7aD13905BC506',
-    nameRegistry: '0x5771E32E4aC5Db8b06DfAD4774E2a5358cc90FF5',
-    feeManager: '0xC74f47030aedEBa155a65921E62e8B3C0Bf77140',
-    defaultWalletApprover: '0x9D320608c28ecB79daE1c9E778A75040eC7F7d79',
+    ...TPMumbai,
+    defaultWalletApprover: TPMumbai.walletApproverService,
     defaultStableCoin: '0x1eDaD4f5Dac6f2B97E7F6e5D3fF5f04D666685c3',
   },
   ramp: {

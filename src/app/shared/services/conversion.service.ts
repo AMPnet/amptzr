@@ -20,8 +20,8 @@ export class ConversionService {
     return parseUnits(String(amount), this.stablecoin.config.decimals)
   }
 
-  toToken(amount: number | string): StablecoinBigNumber {
-    return parseUnits(String(amount), Token.precision)
+  toToken(amount: number | string, precision = Token.precision): StablecoinBigNumber {
+    return parseUnits(String(amount), precision)
   }
 
   toTokenPrice(amount: number | string): TokenPriceBigNumber {
@@ -36,8 +36,8 @@ export class ConversionService {
     return formatUnits(value, this.stablecoin.config.decimals)
   }
 
-  parseToken(value: TokenBigNumber): string {
-    return formatUnits(value, Token.precision)
+  parseToken(value: TokenBigNumber, precision = Token.precision): string {
+    return formatUnits(value, precision)
   }
 
   parseTokenPrice(value: TokenPriceBigNumber): string {
@@ -52,8 +52,8 @@ export class ConversionService {
     return Number(this.parseStablecoin(value))
   }
 
-  parseTokenToNumber(value: TokenBigNumber): number {
-    return Number(this.parseToken(value))
+  parseTokenToNumber(value: TokenBigNumber, precision = Token.precision): number {
+    return Number(this.parseToken(value, precision))
   }
 
   parseTokenPriceToNumber(value: TokenPriceBigNumber): number {

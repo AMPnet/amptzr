@@ -25,7 +25,7 @@
 
             <form [formGroup]="investmentForm">
               <!-- Stablecoin box -->
-              <div class="mt-5 bg-[#F5F7F9] border-[#D8D8D8] border-[1px] rounded-lg px-2 pb-1">
+              <div class="mt-5 bg-gray-200/20 border-gray-300/50 border-[1px] rounded-lg px-2 pb-1">
                 <span class="flex justify-end mt-1 text-xxs font-medium text-gray-400">
                   Amount of {{ state.stablecoinSymbol }} you will spend
                 </span>
@@ -34,8 +34,8 @@
                   <div class="flex items-center">
                     <div class="flex rounded-full items-center bg-white shadow">
                       <div class="w-7 h-7 bg-white rounded-full overflow-hidden m-1">
-                        <!-- TODO: change icon to specific stablecoin -->
-                        <img class="h-full w-full object-cover" src="/assets/usdc.png"
+                        <img class="h-full w-full object-cover"
+                             src="{{ state.stablecoinSymbol | toStablecoinLogoPath }}"
                              alt="{{ state.stablecoinSymbol}} logo">
                       </div>
 
@@ -102,7 +102,7 @@
               </div>
 
               <!-- Token box -->
-              <div class="-mt-1 bg-[#F5F7F9] border-[#D8D8D8] border-[1px] rounded-lg px-2 pb-1">
+              <div class="-mt-1 bg-gray-200/20 border-gray-300/50 border-[1px] rounded-lg px-2 pb-1">
                 <span class="flex justify-end mt-1 text-xxs font-medium text-gray-400">
                   Amount of {{ state.asset.symbol }} you will get
                 </span>

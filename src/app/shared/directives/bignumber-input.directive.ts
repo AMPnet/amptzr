@@ -24,6 +24,8 @@ export const BIGNUMBER_INPUT_DIRECTIVE_VALUE_ACCESSOR: ExistingProvider = {
 })
 export class BigNumberInputDirective implements ControlValueAccessor {
   @Input() bigNumberType: 'stablecoin' | 'token' | 'tokenPrice' = 'stablecoin'
+  @Input() tokenPrecision = 18
+
   previousValue: string
 
   constructor(private el: ElementRef,
@@ -87,7 +89,7 @@ export class BigNumberInputDirective implements ControlValueAccessor {
       case 'stablecoin':
         return this.conversion.toStablecoin(value)
       case 'token':
-        return this.conversion.toToken(value)
+        return this.conversion.toToken(value, this.tokenPrecision)
       case 'tokenPrice':
         return this.conversion.toTokenPrice(value)
     }
@@ -98,7 +100,7 @@ export class BigNumberInputDirective implements ControlValueAccessor {
       case 'stablecoin':
         return this.conversion.parseStablecoin(value)
       case 'token':
-        return this.conversion.parseToken(value)
+        return this.conversion.parseToken(value, this.tokenPrecision)
       case 'tokenPrice':
         return this.conversion.parseTokenPrice(value)
     }

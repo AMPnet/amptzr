@@ -42,7 +42,7 @@ export class QueryService {
       )),
   )
 
-  portfolio$: Observable<PortfolioItem[]> = combineLatest([
+  orders$: Observable<OrderItem[]> = combineLatest([
     this.contract$,
     this.preferenceQuery.issuer$,
     this.preferenceQuery.address$,
@@ -53,8 +53,8 @@ export class QueryService {
         issuer.address, address!,
         this.preferenceQuery.campaignFactories,
         this.preferenceQuery.network.tokenizerConfig.nameRegistry,
-      ) as Promise<PortfolioItem[]>),
-    map(portfolio => portfolio.filter(item => item.tokenAmount > BigNumber.from(0))),
+      ) as Promise<OrderItem[]>),
+    map(orders => orders.filter(item => item.tokenAmount > BigNumber.from(0))),
   )
 
   constructor(private sessionQuery: SessionQuery,
@@ -162,6 +162,17 @@ export class QueryService {
       ),
     )
   }
+
+  getAssetsBalancesForOwnerAddress(address: string): Observable<AssetWithBalance[]> {
+    return this.contract$.pipe(
+      switchMap(contract => contract.getAssetBalancesForIssuer(
+        this.preferenceQuery.issuer.address,
+        address,
+        this.preferenceQuery.assetFactories,
+        this.preferenceQuery.campaignFactories),
+      ),
+    )
+  }
 }
 
 interface OfferItem {
@@ -169,13 +180,13 @@ interface OfferItem {
   mappedName: string;
 }
 
-interface PortfolioInvested {
+interface OrderItemInvested {
   mappedName: string;
   tokenAmount: BigNumber;
   tokenValue: BigNumber;
 }
 
-export interface PortfolioItem extends PortfolioInvested {
+export interface OrderItem extends OrderItemInvested {
   campaign: CampaignCommonState;
 }
 
@@ -192,4 +203,13 @@ export interface AssetCommonStateWithName {
 export interface CampaignCommonStateWithName {
   campaign: CampaignCommonState
   mappedName: string
+}
+
+export interface AssetWithBalance {
+  contractAddress: string
+  decimals: number
+  symbol: string
+  name: string
+  balance: BigNumber
+  assetCommonState?: AssetCommonState
 }

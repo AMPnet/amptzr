@@ -1,6 +1,7 @@
 <button app-action-button *ngIf="isAvailable$ | async"
         [onClick]="watchAsset.bind(this)"
-        class="inline-flex items-center h-full" matTooltip="Add to MetaMask">
+        class="inline-flex items-center p-1.5 bg-gray-200 rounded-full"
+        matTooltip="Add to MetaMask">
   <ng-template #content>
     <svg class="block w-3 h-3"
          viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">

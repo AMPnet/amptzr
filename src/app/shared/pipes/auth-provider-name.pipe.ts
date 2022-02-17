@@ -22,7 +22,7 @@ export class AuthProviderNamePipe implements PipeTransform {
       case AuthProvider.MAGIC:
         return 'Magic'
       case AuthProvider.WALLET_CONNECT:
-        return 'Wallet Connect'
+        return 'WalletConnect'
       case AuthProvider.GNOSIS_SAFE:
         return 'Gnosis Safe'
     }

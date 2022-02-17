@@ -124,7 +124,7 @@ export class ReconnectingWebsocketProvider extends providers.JsonRpcProvider {
     // This Provider does not actually poll, but we want to trigger
     // poll events for things that depend on them (like stalling for
     // block and transaction lookups)
-    const fauxPoll = setInterval(() => {
+    const fauxPoll: any = setInterval(() => {
       this.emit("poll")
     }, 1000)
     if (fauxPoll.unref) {
