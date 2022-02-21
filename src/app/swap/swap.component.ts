@@ -9,6 +9,7 @@ import {DialogService} from '../shared/services/dialog.service'
 import {FunctionSignatureService} from '../shared/services/blockchain/function-signature.service'
 import {AuthProvider} from '../preference/state/preference.store'
 import {switchMapTap} from '../shared/utils/observables'
+import {TokenListService} from '../shared/services/blockchain/token-list.service'
 
 @Component({
   selector: 'app-swap',
@@ -91,6 +92,7 @@ export class SwapComponent implements AfterViewInit {
               private sessionQuery: SessionQuery,
               private dialogService: DialogService,
               private functionSignatureService: FunctionSignatureService,
+              private tokenListService: TokenListService,
               private signerService: SignerService) {
   }
 
@@ -98,11 +100,14 @@ export class SwapComponent implements AfterViewInit {
     const iframe = this.iframe.nativeElement
 
     fromEvent<Event>(iframe, 'load').pipe(
-      tap(() => {
+      switchMap(() => this.tokenListService.fetchListsWithAssets([
+        'https://tokens.uniswap.org',
+      ])),
+      tap(tokenList => {
         iframe.contentWindow!.postMessage(
           inputMessage('setConfig', {
             jsonRpcEndpoint: this.preferenceQuery.network.rpcURLs[0],
-            tokenList: 'https://tokens.uniswap.org/',
+            tokenList: tokenList,
           }), this.url,
         )
       }),
