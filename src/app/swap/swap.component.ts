@@ -113,7 +113,7 @@ export class SwapComponent implements AfterViewInit {
 
   private optionalPermission<T>(method: string, params: any) {
     const shouldShowPermission = method === 'eth_sendTransaction'
-      && this.preferenceQuery.getValue().authProvider === AuthProvider.METAMASK
+      && this.preferenceQuery.getValue().authProvider === AuthProvider.MAGIC
 
     return (source: Observable<T>): Observable<T> => {
       return source.pipe(
