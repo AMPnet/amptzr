@@ -6,8 +6,9 @@ import {getWindow} from '../shared/utils/browser'
 import {SignerService} from '../shared/services/signer.service'
 import {hexlify, isHexString} from 'ethers/lib/utils'
 import {DialogService} from '../shared/services/dialog.service'
-import {HttpClient} from '@angular/common/http'
-import {catchError, map, timeout} from 'rxjs/operators'
+import {FunctionSignatureService} from '../shared/services/blockchain/function-signature.service'
+import {AuthProvider} from '../preference/state/preference.store'
+import {switchMapTap} from '../shared/utils/observables'
 
 @Component({
   selector: 'app-swap',
@@ -18,7 +19,6 @@ import {catchError, map, timeout} from 'rxjs/operators'
 export class SwapComponent implements AfterViewInit {
   // TODO: extract it to env variable
   readonly url = 'https://uni-widget-iframe.vercel.app'
-  // readonly url = 'http://localhost:3000'
 
   @ViewChild('iframe') iframe!: ElementRef<HTMLIFrameElement>
 
@@ -29,28 +29,34 @@ export class SwapComponent implements AfterViewInit {
       const request = e.data.method!
 
       of(request.method).pipe(
-        switchMap(method => method === 'eth_sendTransaction' ?
-          this.getTextSignature(request.params[0].data).pipe(
-            switchMap(funcName => this.dialogService.withPermission({
-              title: 'Send transaction',
-              message: `You are about to send transaction with ${funcName ?? 'unknown'} signature. Are you sure?`,
-              confirmText: 'Proceed',
-            })),
-          ) : of(method),
-        ),
+        this.optionalPermission(request.method, request.params),
         switchMap(() => this.sessionQuery.signer?.provider?.send(
           request.method, request.params || [],
         ) || EMPTY),
-        tap(result => {
-          if (request.method === 'eth_chainId' && !isHexString(result)) { // WalletConnect issue
-            result = hexlify(result)
-          }
+        tap({
+          next: result => {
+            // workaround for signer that diverge from the standard
+            if (request.method === 'eth_chainId' && !isHexString(result)) {
+              result = hexlify(result)
+            }
 
-          this.iframe.nativeElement.contentWindow!.postMessage({
-            jsonrpc: e.data.jsonrpc,
-            id: e.data.id,
-            result,
-          }, this.url)
+            this.iframe.nativeElement.contentWindow!.postMessage({
+              jsonrpc: e.data.jsonrpc,
+              id: e.data.id,
+              result,
+            }, this.url)
+          },
+          error: err => {
+            this.iframe.nativeElement.contentWindow!.postMessage({
+              jsonrpc: e.data.jsonrpc,
+              id: e.data.id,
+              error: {
+                code: -32603,
+                message: 'internal error',
+                data: err,
+              },
+            }, this.url)
+          },
         }),
       ).subscribe()
     }),
@@ -84,7 +90,7 @@ export class SwapComponent implements AfterViewInit {
   constructor(private preferenceQuery: PreferenceQuery,
               private sessionQuery: SessionQuery,
               private dialogService: DialogService,
-              private http: HttpClient,
+              private functionSignatureService: FunctionSignatureService,
               private signerService: SignerService) {
   }
 
@@ -105,36 +111,28 @@ export class SwapComponent implements AfterViewInit {
     iframe.setAttribute('src', this.url)
   }
 
-  getTextSignature(data: string): Observable<string | undefined> {
-    const code = data?.substring(0, 10)
-    if (!code) return of(undefined)
+  private optionalPermission<T>(method: string, params: any) {
+    const shouldShowPermission = method === 'eth_sendTransaction'
+      && this.preferenceQuery.getValue().authProvider === AuthProvider.METAMASK
 
-    return this.http.get<SignatureList>(
-      `https://www.4byte.directory/api/v1/signatures/?hex_signature=${code}`,
-    ).pipe(
-      timeout(3000),
-      map(res => res.count > 0 ?
-        res.results.sort((a, b) => a.id - b.id)[0].text_signature :
-        undefined,
-      ),
-      catchError(() => of(undefined)),
+    return (source: Observable<T>): Observable<T> => {
+      return source.pipe(
+        switchMapTap(() => shouldShowPermission ?
+          this.showPermission(params[0]?.data) : of(undefined),
+        ),
+      )
+    }
+  }
+
+  private showPermission(data: any) {
+    return this.functionSignatureService.fromHex(data).pipe(
+      switchMap(funcName => this.dialogService.withPermission({
+        title: 'Send transaction',
+        message: `You are about to send transaction with ${funcName ?? 'unknown'} signature. Are you sure?`,
+        confirmText: 'Proceed',
+      })),
     )
   }
-}
-
-interface SignatureList {
-  count: number;
-  next?: any;
-  previous?: any;
-  results: SignatureResult[];
-}
-
-interface SignatureResult {
-  id: number;
-  created_at: Date;
-  text_signature: string;
-  hex_signature: string;
-  bytes_signature: string;
 }
 
 function inputMessage(method: WidgetInputMethod, payload?: any): WidgetEventMessageInputData {
