@@ -69,8 +69,14 @@ export const MaticNetwork: Network = {
   ],
   explorerURLs: ['https://polygonscan.com/'],
   tokenizerConfig: {
-    ...TPMatic,
-    defaultWalletApprover: TPMatic.walletApproverService,
+    apxRegistry: TPMatic.apxRegistry.address,
+    issuerFactory: TPMatic.issuerFactory,
+    assetFactory: TPMatic.assetFactory,
+    cfManagerFactory: TPMatic.cfManagerFactory,
+    queryService: TPMatic.queryService,
+    nameRegistry: TPMatic.nameRegistry.address,
+    feeManager: TPMatic.feeManager.address,
+    defaultWalletApprover: TPMatic.walletApproverService.address,
     defaultStableCoin: '0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174',
   },
   ramp: {
@@ -94,8 +100,14 @@ export const MumbaiNetwork: Network = {
   ],
   explorerURLs: ['https://mumbai.polygonscan.com/'],
   tokenizerConfig: {
-    ...TPMumbai,
-    defaultWalletApprover: TPMumbai.walletApproverService,
+    apxRegistry: TPMumbai.apxRegistry.address,
+    issuerFactory: TPMumbai.issuerFactory,
+    assetFactory: TPMumbai.assetFactory,
+    cfManagerFactory: TPMumbai.cfManagerFactory,
+    queryService: TPMumbai.queryService,
+    nameRegistry: TPMumbai.nameRegistry.address,
+    feeManager: TPMumbai.feeManager.address,
+    defaultWalletApprover: TPMumbai.walletApproverService.address,
     defaultStableCoin: '0x1eDaD4f5Dac6f2B97E7F6e5D3fF5f04D666685c3',
   },
   ramp: {
