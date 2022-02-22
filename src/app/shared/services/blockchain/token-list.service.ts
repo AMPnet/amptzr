@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core'
 import {HttpClient} from '@angular/common/http'
 import {combineLatest, forkJoin, Observable, of} from 'rxjs'
-import {catchError, map, switchMap, tap} from 'rxjs/operators'
+import {catchError, map, switchMap} from 'rxjs/operators'
 import {ChainID} from '../../networks'
 import {PreferenceQuery} from '../../../preference/state/preference.query'
 import {QueryService} from './query.service'
@@ -24,7 +24,7 @@ export class TokenListService {
           symbol: item.symbol,
           name: item.name,
           decimals: item.decimals,
-          logoURI: this.toUrlIPFSPipe.transform(asset.infoData?.logo),
+          logoURI: asset.infoData?.logo ? this.toUrlIPFSPipe.transform(asset.infoData?.logo) : undefined,
           tags: [],
         } as Token)),
         catchError(() => of(undefined)),
@@ -91,7 +91,7 @@ export interface Token {
   symbol: string;
   name: string;
   decimals: number;
-  logoURI: string;
+  logoURI?: string;
   tags: string[];
 }
 
