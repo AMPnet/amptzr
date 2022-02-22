@@ -1,7 +1,7 @@
 import {AfterViewInit, ChangeDetectionStrategy, Component, ElementRef, ViewChild} from '@angular/core'
 import {PreferenceQuery} from '../preference/state/preference.query'
 import {SessionQuery} from '../session/state/session.query'
-import {EMPTY, fromEvent, merge, Observable, of, switchMap, tap} from 'rxjs'
+import {concatMap, EMPTY, fromEvent, merge, Observable, of, switchMap, tap} from 'rxjs'
 import {getWindow} from '../shared/utils/browser'
 import {SignerService} from '../shared/services/signer.service'
 import {hexlify, isHexString} from 'ethers/lib/utils'
@@ -10,6 +10,7 @@ import {FunctionSignatureService} from '../shared/services/blockchain/function-s
 import {AuthProvider} from '../preference/state/preference.store'
 import {switchMapTap} from '../shared/utils/observables'
 import {TokenListService} from '../shared/services/blockchain/token-list.service'
+import {catchError} from 'rxjs/operators'
 
 @Component({
   selector: 'app-swap',
@@ -24,42 +25,45 @@ export class SwapComponent implements AfterViewInit {
   @ViewChild('iframe') iframe!: ElementRef<HTMLIFrameElement>
 
   jsonRpcMessage$ = fromEvent<MessageEvent>(getWindow(), 'message').pipe(
-    tap(e => {
-      if (e.origin !== this.url || !e.data.jsonrpc || !this.sessionQuery.signer) return
+    concatMap(e => {
+      if (e.origin !== this.url || !e.data.jsonrpc || !this.sessionQuery.signer) return of(undefined)
 
       const request = e.data.method!
 
-      of(request.method).pipe(
+      return of(request.method).pipe(
         this.optionalPermission(request.method, request.params),
         switchMap(() => this.sessionQuery.signer?.provider?.send(
           request.method, request.params || [],
         ) || EMPTY),
         tap({
           next: result => {
-            // workaround for signer that diverge from the standard
+            // workaround for a signer that diverges from the standard
             if (request.method === 'eth_chainId' && !isHexString(result)) {
               result = hexlify(result)
             }
 
-            this.iframe.nativeElement.contentWindow!.postMessage({
+            this.iframe.nativeElement.contentWindow?.postMessage({
               jsonrpc: e.data.jsonrpc,
               id: e.data.id,
               result,
             }, this.url)
           },
           error: err => {
-            this.iframe.nativeElement.contentWindow!.postMessage({
+            const error = !!err.code && !!err.message ? err : {
+              code: -32603,
+              message: 'internal error',
+              data: err,
+            }
+
+            this.iframe.nativeElement.contentWindow?.postMessage({
               jsonrpc: e.data.jsonrpc,
               id: e.data.id,
-              error: {
-                code: -32603,
-                message: 'internal error',
-                data: err,
-              },
+              error,
             }, this.url)
           },
         }),
-      ).subscribe()
+        catchError(() => EMPTY),
+      )
     }),
   )
 
@@ -104,7 +108,7 @@ export class SwapComponent implements AfterViewInit {
         'https://tokens.uniswap.org',
       ])),
       tap(tokenList => {
-        iframe.contentWindow!.postMessage(
+        iframe.contentWindow?.postMessage(
           inputMessage('setConfig', {
             jsonRpcEndpoint: this.preferenceQuery.network.rpcURLs[0],
             tokenList: tokenList,
