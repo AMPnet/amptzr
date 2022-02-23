@@ -32,6 +32,7 @@ export class TokenListService {
     ).pipe(
       map(tokens => tokens.filter(token => token !== undefined) as Token[]),
     ) : of([])),
+    catchError(() => of([]))
   )
 
   constructor(private http: HttpClient,
