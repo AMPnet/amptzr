@@ -2,13 +2,15 @@
   <ng-container *ngIf="campaignRes.value as offer">
     <div *ngIf="size === 'large'" class="w-full h-full flex flex-col lg:flex-row justify-start rounded-4xl">
       <div class="relative w-full lg:w-7/12">
-        <a routerLink="{{ offer.mappedName | issuerPath }}">
+        <a routerLink="{{ (offer.mappedName || offer.contractAddress) | issuerPath }}">
           <img src="{{ offer.infoData.photo | toUrlIPFS }}" alt="Offer image"
                class="w-full h-52 object-cover rounded-t-4xl bg-white lg:rounded-none lg:rounded-l-4xl lg:h-full
                       lg:max-h-[36rem]">
         </a>
-        <app-offer-investment-info [offer]="offer" class="absolute float-left lg:top-6 left-6 lg:rounded-full
-            -bottom-10 lg:bottom-auto rounded-2xl py-3 px-6 bg-white">
+        <app-offer-investment-info
+          [offer]="offer"
+          class="absolute rounded-full float-left shadow-lg lg:top-6 left-6
+            -bottom-10 lg:bottom-auto py-3 px-6 bg-white">
         </app-offer-investment-info>
       </div>
       <div class="flex flex-col justify-between w-full p-6 bg-white rounded-b-4xl lg:rounded-none lg:rounded-r-4xl
@@ -34,7 +36,7 @@
           <button class="w-full app-button mt-6 flex
                          items-center justify-center"
                   aria-label="Learn more"
-                  routerLink="{{ offer.mappedName | issuerPath }}">
+                  routerLink="{{ (offer.mappedName || offer.contractAddress) | issuerPath }}">
             Learn more
             <svg class="ml-3" width="9" height="14" viewBox="0 0 9 14" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path d="M1.5 1.1665L7.33333 6.99984L1.5 12.8332" stroke="white" stroke-width="2" stroke-linecap="round"
@@ -78,7 +80,7 @@
           <button class="app-button !px-12 flex w-full lg:w-auto
                          items-center justify-center"
                   aria-label="Learn more"
-                  routerLink="{{ offer.mappedName | issuerPath }}">
+                  routerLink="{{ (offer.mappedName || offer.contractAddress) | issuerPath }}">
             Learn more
             <svg class="ml-3" width="9" height="14" viewBox="0 0 9 14" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path d="M1.5 1.1665L7.33333 6.99984L1.5 12.8332" stroke="white" stroke-width="2" stroke-linecap="round"

@@ -14,8 +14,14 @@
               </div>
             </div>
 
-            <h1 class="flex justify-center mt-2 text-3xl font-medium">
-              {{ state.asset.name }}
+            <h1 class="flex gap-1.5 justify-center items-center mt-4 mx-4 text-3xl">
+              <span>
+                {{ state.asset.name }}
+              </span>
+              <app-explorer-link [value]="state.asset.contractAddress" type="token">
+              </app-explorer-link>
+              <app-add-to-metamask [value]="state.asset.contractAddress">
+              </app-add-to-metamask>
             </h1>
 
             <h1 class="flex justify-center mt-4 mx-4 sm:mx-16 text-sm text-center text-gray-500">

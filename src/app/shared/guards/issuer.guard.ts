@@ -40,7 +40,7 @@ export class IssuerGuard implements CanActivate {
         issuer: {
           address: issuer.issuer.contractAddress,
           flavor: issuer.issuer.flavor as IssuerFlavor,
-          slug: issuer.mappedName,
+          slug: issuer.mappedName || issuer.issuer.contractAddress,
         },
       })),
       tap(issuer => this.setupManifest(issuer).subscribe()),

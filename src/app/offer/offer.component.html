@@ -9,9 +9,10 @@
                  alt="Offer photo">
             <app-offer-investment-info
               [offer]="campaignData.campaign" display="wide"
-              class="bg-white shadow-xl p-6 lg:h-10 lg:rounded-full
-              absolute lg:bottom-8 -bottom-11 left-4 lg:left-12 flex flex-col lg:flex-row lg:items-center
-              rounded-t-xl rounded-b-xl"></app-offer-investment-info>
+              class="bg-white shadow-lg rounded-full p-6 lg:h-10
+              flex flex-col lg:flex-row lg:items-center
+              absolute lg:bottom-8 -bottom-11 left-4 lg:left-12">
+            </app-offer-investment-info>
           </div>
           <div class="w-full h-full bg-white flex lg:flex-row gap-8 flex-col pt-8 lg:pl-14 px-4">
 
@@ -25,28 +26,6 @@
                 <app-funding-progress [campaign]="campaignData.campaign"
                                       *ngIf="(isMobileScreenSize$ | async) === true">
                 </app-funding-progress>
-
-                <div *ngIf="(isMobileScreenSize$ | async) === true && campaignData.campaign.owner === address.value &&
-                            !campaignData.stats.softCapReached"
-                     class="flex items-center justify-start lg:justify-center gap-2 text-red-500 text-sm mt-4
-                            transition-all ease-in-out duration-300">
-                  <div>
-                    <svg width="26" height="26" viewBox="0 0 26 26" fill="none" xmlns="http://www.w3.org/2000/svg">
-                      <path d="M14.3333 18.3333H13V13H11.6667M13 7.66667H13.0133M25 13C25 14.5759 24.6896 16.1363
-                               24.0866 17.5922C23.4835 19.0481 22.5996 20.371 21.4853 21.4853C20.371 22.5996 19.0481
-                               23.4835 17.5922 24.0866C16.1363 24.6896 14.5759 25 13 25C11.4241 25 9.86371 24.6896
-                               8.4078 24.0866C6.95189 23.4835 5.62902 22.5996 4.51472 21.4853C3.40042 20.371 2.5165
-                               19.0481 1.91345 17.5922C1.31039 16.1363 1 14.5759 1 13C1 9.8174 2.26428 6.76516 4.51472
-                               4.51472C6.76516 2.26428 9.8174 1 13 1C16.1826 1 19.2348 2.26428 21.4853 4.51472C23.7357
-                               6.76516 25 9.8174 25 13Z"
-                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                    </svg>
-                  </div>
-                  <span>
-                    Investing is disabled because the amount of tokens added to the campaign does not cover the
-                    campaign soft cap
-                  </span>
-                </div>
               </div>
 
               <div class="mt-4 text-lg font-light text-gray-500">
@@ -92,28 +71,6 @@
                   </svg>
                   <span class="ml-2">Invest</span>
                 </button>
-              </div>
-
-              <div *ngIf="(isMobileScreenSize$ | async) === false && campaignData.campaign.owner === address.value &&
-                          !campaignData.stats.softCapReached"
-                   class="flex items-center justify-start lg:justify-center gap-2 text-red-500 text-sm
-                          transition-all ease-in-out duration-300">
-                <div>
-                  <svg width="26" height="26" viewBox="0 0 26 26" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M14.3333 18.3333H13V13H11.6667M13 7.66667H13.0133M25 13C25 14.5759 24.6896 16.1363 24.0866
-                             17.5922C23.4835 19.0481 22.5996 20.371 21.4853 21.4853C20.371 22.5996 19.0481 23.4835
-                             17.5922 24.0866C16.1363 24.6896 14.5759 25 13 25C11.4241 25 9.86371 24.6896 8.4078
-                             24.0866C6.95189 23.4835 5.62902 22.5996 4.51472 21.4853C3.40042 20.371 2.5165 19.0481
-                             1.91345 17.5922C1.31039 16.1363 1 14.5759 1 13C1 9.8174 2.26428 6.76516 4.51472
-                             4.51472C6.76516 2.26428 9.8174 1 13 1C16.1826 1 19.2348 2.26428 21.4853 4.51472C23.7357
-                             6.76516 25 9.8174 25 13Z"
-                          stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                  </svg>
-                </div>
-                <span>
-                  Investing is disabled because the amount of tokens added to the campaign does not cover the
-                  campaign soft cap
-                </span>
               </div>
 
               <button app-action-button

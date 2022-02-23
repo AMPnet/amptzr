@@ -1,6 +1,6 @@
 <ng-container *ngIf="(data$ | async) as data">
   <div class="max-w-sm">
-    <div class="flex justify-center mt-8">
+    <div class="flex justify-center mt-2">
       <img *ngIf="data.icon === iconType.INFO"
            class="w-48 h-48 object-cover rounded-full"
            src="/assets/dialog-icons/info.png" alt="Info logo">
@@ -14,7 +14,7 @@
            src="/assets/dialog-icons/error.png" alt="Error logo">
     </div>
 
-    <div *ngIf="data.title" class="mt-8 px-4">
+    <div *ngIf="data.title" class="mt-4 px-4">
       <h1 class="text-3xl text-center">
         {{ data.title }}
       </h1>
@@ -24,7 +24,7 @@
       <p>{{ data.message }}</p>
     </div>
 
-    <div class="flex flex-col space-y-2 sm:flex-row sm:space-x-4 sm:space-y-0 px-4 justify-center">
+    <div class="flex flex-col space-y-2 sm:flex-row sm:space-x-4 sm:space-y-0 justify-center">
       <button *ngIf="data.cancelable" (click)="cancel()"
               class="bg-gray-200 rounded-full p-2 text-sm font-semibold flex-1">
         {{ data.cancel_text }}

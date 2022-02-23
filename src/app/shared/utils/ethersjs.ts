@@ -45,14 +45,3 @@ export function BigNumberMax(...values: BigNumber[]): BigNumber {
 
   return highest
 }
-
-export function extract<T>(target: T): T {
-  const result = {} as T
-  for (const property of Object.keys(target) as Array<keyof T>) {
-    if (!isNaN(property as number)) continue
-
-    result[property] = target[property]
-  }
-
-  return result
-}

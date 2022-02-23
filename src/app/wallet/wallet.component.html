@@ -38,6 +38,17 @@
               Transfer
             </span>
           </button>
+
+          <button [routerLink]="'/swap' | issuerPath"
+                  class="flex items-center gap-1 px-4 py-1 bg-gray-200 rounded-full">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" viewBox="0 0 20 20" fill="currentColor">
+              <path
+                d="M5 12a1 1 0 1 0 2 0V6.414l1.293 1.293a1 1 0 0 0 1.414-1.414l-3-3a1 1 0 0 0-1.414 0l-3 3a1 1 0 0 0 1.414 1.414L5 6.414V12zm10-4a1 1 0 1 0-2 0v5.586l-1.293-1.293a1 1 0 0 0-1.414 1.414l3 3a1 1 0 0 0 1.414 0l3-3a1 1 0 0 0-1.414-1.414L15 13.586V8z"/>
+            </svg>
+            <span class="text-xs">
+              Swap
+            </span>
+          </button>
         </span>
 
         <!-- Action buttons (deposit, withdraw...) -->
@@ -53,18 +64,6 @@
             <span class="font-semibold tracking-wider">
               Get {{ stablecoin.config.symbol }}
             </span>
-          </button>
-          <button class="flex items-center justify-center text-white w-full lg:w-auto text-sm rounded-full
-                        bg-indigo-800 hover:bg-indigo-900 py-2 mt-2 lg:mt-0 lg:px-8
-                        disabled:bg-gray-400 disabled:cursor-not-allowed"
-                  disabled>
-            <svg class="h-3.5 w-3.5 mr-2" width="22" height="18" viewBox="0 0 22 18" fill="none"
-                 xmlns="http://www.w3.org/2000/svg">
-              <path
-                d="M1.47461 13V14C1.47461 14.7956 1.85599 15.5587 2.53485 16.1213C3.21371 16.6839 4.13444 17 5.0945 17H17.1608C18.1209 17 19.0416 16.6839 19.7204 16.1213C20.3993 15.5587 20.7807 14.7956 20.7807 14V13M15.9542 9L11.1276 13M11.1276 13L6.30113 9M11.1276 13V1"
-                stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-            <span class="font-semibold tracking-wider">Withdraw</span>
           </button>
         </div>
       </div>
@@ -142,8 +141,8 @@
     <div class="flex justify-center mt-2">
       <ng-container *ngIf="(assets$ | async) as assetsRes">
         <ng-container *ngIf="assetsRes.value as assets">
-          <span *ngIf="assets.length === 0">
-            No assets on your wallet
+          <span class="py-8" *ngIf="assets.length === 0">
+            No asset in your wallet
           </span>
           <div class="flex flex-col gap-1 w-full" *ngIf="assets.length > 0">
             <div class="flex items-center gap-4 p-2 bg-white rounded-lg"
