@@ -6,7 +6,7 @@ import {filter, map} from 'rxjs/operators'
 import {IssuerService} from '../shared/services/blockchain/issuer/issuer.service'
 import {StablecoinBigNumber, StablecoinService} from '../shared/services/blockchain/stablecoin.service'
 import {ConversionService} from '../shared/services/conversion.service'
-import {MaticNetwork, Network} from '../shared/networks'
+import {ChainID, Network} from '../shared/networks'
 import {MetamaskSubsignerService} from '../shared/services/subsigners/metamask-subsigner.service'
 import {AuthProvider} from '../preference/state/preference.store'
 import {SignerService} from '../shared/services/signer.service'
@@ -16,6 +16,14 @@ import {SignerService} from '../shared/services/signer.service'
 })
 export class SwapUniswapService {
   isAvailable$: Observable<boolean>
+
+  // chainIdToName mapping needs to be in sync with uniswap mappings
+  // source: https://github.com/Uniswap/interface/blob/3153db9f73e1e9b1dcf1b74bb7d5059176162172/src/constants/chains.ts#L21-L33
+  chainIdToName: { [key in ChainID]: string } = {
+    [ChainID.MATIC_MAINNET]: 'polygon',
+    [ChainID.MUMBAI_TESTNET]: 'polygon_mumbai',
+    [ChainID.GOERLI_TESTNET]: 'goerli',
+  }
 
   constructor(private signer: SignerService,
               private issuerService: IssuerService,
@@ -42,11 +50,7 @@ export class SwapUniswapService {
   }
 
   private isNetworkSupported(network: Network): boolean {
-    const supportedNetworks = [MaticNetwork]
-
-    return supportedNetworks
-      .map(net => net.chainID)
-      .includes(network.chainID)
+    return !!this.chainIdToName[network.chainID]
   }
 
   getLink(swapAmount: StablecoinBigNumber): Observable<string> {
@@ -59,7 +63,14 @@ export class SwapUniswapService {
         const stablecoinAddress = issuer.stablecoin
         const amount = this.conversion.parseStablecoin(swapAmount)
 
-        return `https://app.uniswap.org/#/swap?exactField=output&exactAmount=${amount}&outputCurrency=${stablecoinAddress}`
+        const searchParams = new URLSearchParams({
+          chain: this.chainIdToName[this.preferenceQuery.network.chainID] || '',
+          exactField: 'output',
+          exactAmount: amount,
+          outputCurrency: stablecoinAddress,
+        })
+
+        return `https://app.uniswap.org/#/swap?${searchParams.toString()}`
       }),
     )
   }
