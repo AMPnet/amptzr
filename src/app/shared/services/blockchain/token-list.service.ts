@@ -13,22 +13,23 @@ import {ToUrlIPFSPipe} from '../../pipes/to-url-ipfs.pipe'
 })
 export class TokenListService {
   // TODO: change query service method when available for all assets
-  assetList$: Observable<Token[]> = this.queryService.getAssetsBalancesForOwnerAddress(
+  assetList$: Observable<Token[]> = this.queryService.getERC20AssetsForIssuer(
     this.preferenceQuery.getValue().address,
   ).pipe(
     switchMap(res => res.length > 0 ? forkJoin(
-      res.map(item => item.assetCommonState?.info ? this.assetService.getAssetInfo(item.assetCommonState).pipe(
+      res.map(item => of(item.commonState).pipe(
+        switchMap(commonState => commonState?.info ? this.assetService.getAssetInfo(commonState) : of(undefined)),
         map(asset => ({
           chainId: this.preferenceQuery.getValue().chainID,
           address: item.contractAddress,
           symbol: item.symbol,
           name: item.name,
           decimals: item.decimals,
-          logoURI: asset.infoData?.logo ? this.toUrlIPFSPipe.transform(asset.infoData?.logo) : undefined,
+          logoURI: asset?.infoData?.logo ? this.toUrlIPFSPipe.transform(asset.infoData.logo) : undefined,
           tags: [],
         } as Token)),
         catchError(() => of(undefined)),
-      ) : of(undefined)),
+      )),
     ).pipe(
       map(tokens => tokens.filter(token => token !== undefined) as Token[]),
     ) : of([])),

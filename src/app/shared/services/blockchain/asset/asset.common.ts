@@ -12,6 +12,6 @@ export interface AssetCommonState {
   name: string;
   symbol: string;
   totalSupply: BigNumber;
-  decimals: BigNumber;
+  decimals: number;
   issuer: address;
 }
