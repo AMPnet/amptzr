@@ -17,7 +17,7 @@ import {SignerService} from '../../signer.service'
 import {SessionQuery} from '../../../../session/state/session.query'
 import {BigNumberMax, findLog} from '../../../utils/ethersjs'
 import {ErrorService} from '../../error.service'
-import {TokenPriceBigNumber} from '../../../utils/token-price'
+import {TokenPrice, TokenPriceBigNumber} from '../../../utils/token-price'
 import {Provider} from '@ethersproject/providers'
 import {CampaignCommonState} from './campaign.common'
 import {CampaignFlavor} from '../flavors'
@@ -70,15 +70,22 @@ export class CampaignBasicService {
       map(([signer, contract]) => contract.connect(signer)),
       switchMap(contract => combineLatest([of(contract), this.gasService.overrides])),
       switchMap(([contract, overrides]) => {
-        const owner = this.preferenceQuery.getValue().address!
-
-        return from(contract.populateTransaction.create(
-          owner, data.slug, data.assetAddress,
-          data.initialPricePerToken, data.softCap,
-          data.minInvestment, data.maxInvestment,
-          data.whitelistRequired, data.info,
-          this.preferenceQuery.network.tokenizerConfig.nameRegistry,
-          this.preferenceQuery.network.tokenizerConfig.feeManager,
+        return from(contract.populateTransaction.create({
+            owner: this.preferenceQuery.getValue().address!,
+            mappedName: data.slug,
+            assetAddress: data.assetAddress,
+            issuerAddress: this.preferenceQuery.getValue().issuer.address,
+            paymentMethod: this.stablecoin.config.address,
+            initialPricePerToken: data.initialPricePerToken,
+            tokenPriceDecimals: TokenPrice.precision,
+            softCap: data.softCap,
+            minInvestment: data.minInvestment,
+            maxInvestment: data.maxInvestment,
+            whitelistRequired: data.whitelistRequired,
+            info: data.info,
+            nameRegistry: this.preferenceQuery.network.tokenizerConfig.nameRegistry,
+            feeManager: this.preferenceQuery.network.tokenizerConfig.feeManager,
+          },
           overrides,
         )).pipe(
           switchMap(tx => this.signerService.sendTransaction(tx)),
