@@ -10,7 +10,7 @@ import {
   CfManagerSoftcapVestingFactory__factory,
 } from '../../../../../../types/ethers-contracts'
 import {GasService} from '../gas.service'
-import {BigNumber, BigNumberish, constants, Signer} from 'ethers'
+import {BigNumberish, constants, Signer} from 'ethers'
 import {first, map, switchMap, take} from 'rxjs/operators'
 import {DialogService} from '../../dialog.service'
 import {SignerService} from '../../signer.service'
@@ -23,6 +23,7 @@ import {CampaignCommonState} from './campaign.common'
 import {CampaignFlavor} from '../flavors'
 import {TokenBigNumber} from '../../../utils/token'
 import {ConversionService} from '../../conversion.service'
+import {Structs} from '../../../../../../types/ethers-contracts/CfManagerSoftcapVesting'
 
 @Injectable({
   providedIn: 'root',
@@ -75,7 +76,7 @@ export class CampaignVestingService {
             mappedName: data.slug,
             assetAddress: data.assetAddress,
             issuerAddress: this.preferenceQuery.getValue().issuer.address,
-            paymentMethod: this.stablecoin.config.address,
+            paymentToken: this.stablecoin.config.address,
             initialPricePerToken: data.initialPricePerToken,
             tokenPriceDecimals: TokenPrice.precision,
             softCap: data.softCap,
@@ -204,34 +205,7 @@ export class CampaignVestingService {
   }
 }
 
-export interface CampaignVestingState {
-  flavor: string;
-  version: string;
-  contractAddress: string;
-  owner: string;
-  asset: string;
-  issuer: string;
-  stablecoin: string;
-  tokenPrice: BigNumber;
-  softCap: BigNumber;
-  minInvestment: BigNumber;
-  maxInvestment: BigNumber;
-  whitelistRequired: boolean;
-  finalized: boolean;
-  canceled: boolean;
-  totalClaimableTokens: BigNumber;
-  totalInvestorsCount: BigNumber;
-  totalFundsRaised: BigNumber;
-  totalTokensSold: BigNumber;
-  totalTokensBalance: BigNumber;
-  info: string;
-  vestingStarted: boolean;
-  start: BigNumber;
-  cliff: BigNumber;
-  duration: BigNumber;
-  revocable: boolean;
-  revoked: boolean;
-}
+export type CampaignVestingState = Structs.CfManagerSoftcapVestingStateStructOutput
 
 interface CreateVestingCampaignData {
   slug: string,

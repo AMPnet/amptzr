@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core'
 import {combineLatest, from, Observable, of} from 'rxjs'
 import {first, map, switchMap} from 'rxjs/operators'
-import {BigNumber, BigNumberish, Signer} from 'ethers'
+import {BigNumberish, Signer} from 'ethers'
 import {Provider} from '@ethersproject/providers'
 import {Asset, Asset__factory, AssetFactory, AssetFactory__factory} from '../../../../../../types/ethers-contracts'
 import {SessionQuery} from '../../../../session/state/session.query'
@@ -11,6 +11,7 @@ import {SignerService} from '../../signer.service'
 import {GasService} from '../gas.service'
 import {DialogService} from '../../dialog.service'
 import {ErrorService} from '../../error.service'
+import {Structs} from '../../../../../../types/ethers-contracts/IAsset'
 
 @Injectable({
   providedIn: 'root',
@@ -104,29 +105,4 @@ interface CreateBasicAssetData {
   info: string,
 }
 
-
-export interface AssetState {
-  flavor: string;
-  version: string;
-  contractAddress: string;
-  owner: string;
-  initialTokenSupply: BigNumber;
-  transferable: boolean;
-  whitelistRequiredForRevenueClaim: boolean;
-  whitelistRequiredForLiquidationClaim: boolean;
-  assetApprovedByIssuer: boolean;
-  issuer: string;
-  apxRegistry: string;
-  info: string;
-  name: string;
-  symbol: string;
-  totalAmountRaised: BigNumber;
-  totalTokensSold: BigNumber;
-  highestTokenSellPrice: BigNumber;
-  totalTokensLocked: BigNumber;
-  totalTokensLockedAndLiquidated: BigNumber;
-  liquidated: boolean;
-  liquidationFundsTotal: BigNumber;
-  liquidationTimestamp: BigNumber;
-  liquidationFundsClaimed: BigNumber;
-}
+export type AssetState = Structs.AssetStateStructOutput
