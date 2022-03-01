@@ -104,6 +104,7 @@ import {AuthMagicOauthComponent} from './auth/auth-magic-oauth/auth-magic-oauth.
 import {TransferComponent} from './transfer/transfer.component'
 import {ToStablecoinLogoPathPipe} from './shared/pipes/to-stablecoin-logo-path.pipe'
 import {SwapComponent} from './swap/swap.component'
+import {LazyImgDirective} from './shared/directives/lazy-img.directive'
 
 @NgModule({
   declarations: [
@@ -144,6 +145,7 @@ import {SwapComponent} from './swap/swap.component'
     AddToMetamaskComponent,
     ExplorerLinkComponent,
     FileInputAccessorDirective,
+    LazyImgDirective,
     WalletButtonComponent,
     FaqQuestionComponent,
     DepositFlowComponent,
