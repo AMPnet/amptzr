@@ -17,8 +17,6 @@ import {PreferenceQuery} from '../../preference/state/preference.query'
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AdminIssuerNewComponent {
-  isLoggedIn$ = this.sessionQuery.isLoggedIn$
-
   createForm: FormGroup
 
   constructor(private issuerService: IssuerService,
@@ -60,9 +58,5 @@ export class AdminIssuerNewComponent {
         switchMap(() => this.router.router.navigate(['/'])),
       )),
     )
-  }
-
-  logout() {
-    this.userService.logout().subscribe()
   }
 }
