@@ -51,9 +51,9 @@ export class HomeComponent implements OnInit {
   myIssuers$: Observable<WithStatus<IssuerItem[]>> = this.networkAndAddress$.pipe(
     switchMap(() => withStatus(
       this.queryService.issuers$.pipe(
-        // map(items => items.filter(item =>
-        //   item.issuer.owner.toLowerCase() === this.preferenceQuery.getValue().address.toLowerCase()),
-        // ),
+        map(items => items.filter(item =>
+          item.issuer.owner.toLowerCase() === this.preferenceQuery.getValue().address.toLowerCase()),
+        ),
         switchMap(issuers => issuers.length === 0 ? of([]) : combineLatest(
           issuers.map(issuer => this.issuerService.getIssuerInfo(issuer.issuer).pipe(
             map(i => ({mappedName: issuer.mappedName, issuer: i})),

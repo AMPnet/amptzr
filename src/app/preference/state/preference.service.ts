@@ -91,7 +91,7 @@ export class PreferenceService {
 
   resetIssuer() {
     this.preferenceStore.update({
-      issuer: createInitialState().issuer
+      issuer: createInitialState().issuer,
     })
   }
 }

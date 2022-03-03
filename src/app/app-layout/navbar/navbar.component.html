@@ -1,11 +1,11 @@
 <div class="bg-white flex max-w-screen-lg w-screen flex-col transition-all lg:flex-row lg:justify-center"
      [class.min-h-screen]="(isDropdownOpen$ | async)">
-  <ng-container *ngIf="issuer$ | async as issuerRes">
-    <!-- Navbar -->
-    <div class="w-full h-16 px-4 flex justify-between sticky max-w-6xl lg:h-20"
-         [class]="(isDropdownOpen$ | async) ? 'fixed' : ''">
+  <!-- Navbar -->
+  <div class="w-full h-16 px-4 flex justify-between sticky max-w-6xl lg:h-20"
+       [class]="(isDropdownOpen$ | async) ? 'fixed' : ''">
 
-      <ng-container *ngIf="(isIssuerAvailable$ | async) === true">
+    <ng-container *ngIf="(isIssuerAvailable$ | async) === true">
+      <ng-container *ngIf="issuer$ | async as issuerRes">
         <ng-container *ngIf="issuerRes.value as issuer">
           <!-- Logo -->
           <div class="py-2">
@@ -58,10 +58,12 @@
           </div>
         </ng-container>
       </ng-container>
+    </ng-container>
 
-      <ng-container *ngIf="(isIssuerAvailable$ | async) === false">
-        <!-- Logo -->
-        <div class="py-2">
+    <ng-container *ngIf="(isIssuerAvailable$ | async) === false">
+      <!-- Logo -->
+      <div class="py-2">
+        <a [routerLink]="'/home'">
           <svg class="h-full py-2 lg:py-4 object-contain object-left"
                width="164" height="53" viewBox="0 0 164 53" fill="none"
                xmlns="http://www.w3.org/2000/svg">
@@ -178,53 +180,53 @@
               </linearGradient>
             </defs>
           </svg>
-        </div>
+        </a>
+      </div>
 
-        <!-- Navbar items -->
-        <div class="flex justify-end gap-2 items-center">
-          <button app-action-button class="transition-all px-4 py-1 border-2 border-current
+      <!-- Navbar items -->
+      <div class="flex justify-end gap-2 items-center">
+        <button app-action-button class="transition-all px-4 py-1 border-2 border-current
                                          rounded-full text-sm font-semibold uppercase
                                          text-violet-600 whitespace-nowrap inline
                                          hover:bg-violet-600 hover:text-white"
-                  *ngIf="(isLoggedIn$ | async) === false"
-                  [onClick]="login.bind(this)"
-                  text="Log in">
-          </button>
-          <button app-action-button class="transition-all px-4 py-1 border-2 border-current
+                *ngIf="(isLoggedIn$ | async) === false"
+                [onClick]="login.bind(this)"
+                text="Log in">
+        </button>
+        <button app-action-button class="transition-all px-4 py-1 border-2 border-current
                                          rounded-full text-sm font-semibold uppercase
                                          text-gray-500 whitespace-nowrap inline
                                          hover:bg-gray-500 hover:text-white"
-                  *ngIf="(isLoggedIn$ | async) === true"
-                  [onClick]="logout.bind(this)"
-                  text="Log out">
-          </button>
-        </div>
-      </ng-container>
-    </div>
-
-    <!-- Dropdown -->
-    <div *ngIf="(isDropdownOpen$ | async) === true"
-         class="flex flex-col justify-start items-center h-full transition-all lg:hidden">
-
-      <!-- Navigation links -->
-      <ng-container *ngFor="let navbarItem of navbarScreenLinks">
-        <button *ngIf="(navbarItem.showItem | async) === true" (click)="toggleDropdown()"
-                class="pt-8 pb-4 text-gray-700 text-3xl text-left whitespace-nowrap
-                       border-b-8 border-transparent font-semibold"
-                [routerLink]="navbarItem.routerLink | issuerPath"
-                routerLinkActive="!text-violet-600 !border-violet-600">
-          {{ navbarItem.title }}
+                *ngIf="(isLoggedIn$ | async) === true"
+                [onClick]="logout.bind(this)"
+                text="Log out">
         </button>
-      </ng-container>
+      </div>
+    </ng-container>
+  </div>
 
-      <app-wallet-button *ngIf="(isLoggedIn$ | async) === true"
-                         (click)="toggleDropdown()"
-                         class="mt-6">
-      </app-wallet-button>
+  <!-- Dropdown -->
+  <div *ngIf="(isDropdownOpen$ | async) === true"
+       class="flex flex-col justify-start items-center h-full transition-all lg:hidden">
 
-      <app-google-translate class="py-8"></app-google-translate>
-    </div>
-  </ng-container>
+    <!-- Navigation links -->
+    <ng-container *ngFor="let navbarItem of navbarScreenLinks">
+      <button *ngIf="(navbarItem.showItem | async) === true" (click)="toggleDropdown()"
+              class="pt-8 pb-4 text-gray-700 text-3xl text-left whitespace-nowrap
+                       border-b-8 border-transparent font-semibold"
+              [routerLink]="navbarItem.routerLink | issuerPath"
+              routerLinkActive="!text-violet-600 !border-violet-600">
+        {{ navbarItem.title }}
+      </button>
+    </ng-container>
+
+    <app-wallet-button *ngIf="(isLoggedIn$ | async) === true"
+                       (click)="toggleDropdown()"
+                       class="mt-6">
+    </app-wallet-button>
+
+    <app-google-translate class="py-8"></app-google-translate>
+  </div>
 </div>
 
 <ng-container *ngIf="dropdownCloser$ | async"></ng-container>
