@@ -68,7 +68,7 @@
                    autocomplete="off">
           </div>
 
-          <div class="flex items-baseline gap-1.5 mt-4"
+          <div class="flex items-baseline gap-1.5 flex-wrap mt-4"
                *ngIf="(stablecoin$ | async) as stablecoin">
             <span class="font-semibold">Stablecoin</span>
             <span>{{ stablecoin.symbol }}</span>
