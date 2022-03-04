@@ -39,14 +39,14 @@
               </div>
             </div>
           </div>
-          <div *ngIf="featuredIssuers.length === 0" class="flex justify-center mt-4 text-cyan-700 text-lg">
+          <div *ngIf="featuredIssuers.length === 0" class="flex justify-center mt-4 text-lg">
             No featured issuers
           </div>
         </ng-container>
 
         <ng-container *ngIf="featuredIssuersRes.error">
-          <div class="flex justify-center mt-4 text-cyan-700 text-lg">
-            Cannot fetch feature issuers.
+          <div class="flex justify-center mt-4 text-lg">
+            Cannot fetch featured issuers.
           </div>
           <div hidden>{{ featuredIssuersRes.error | json }}</div>
         </ng-container>
@@ -93,13 +93,13 @@
               </div>
             </div>
           </div>
-          <div *ngIf="myIssuers.length === 0" class="flex justify-center mt-4 text-cyan-700 text-lg">
+          <div *ngIf="myIssuers.length === 0" class="flex justify-center mt-4 text-lg">
             No my issuers
           </div>
         </ng-container>
 
         <ng-container *ngIf="myIssuersRes.error">
-          <div class="flex justify-center mt-4 text-cyan-700 text-lg">
+          <div class="flex justify-center mt-4 text-lg">
             Cannot fetch my issuers.
           </div>
           <div hidden>{{ myIssuersRes.error | json }}</div>
