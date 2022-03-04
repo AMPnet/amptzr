@@ -34,40 +34,37 @@ import {SwapComponent} from './swap/swap.component'
 
 const appRoutes: Routes = [
   {path: 'callback', component: AuthMagicOauthComponent},
+
+  {path: '', pathMatch: 'full', redirectTo: 'offers'},
+  {path: 'offers', component: OffersComponent},
+  {path: 'offers/:id', component: OfferComponent},
+  {path: 'offers/:id/invest', component: InvestComponent},
+  {path: 'transfer', component: TransferComponent},
+  {path: 'swap', component: SwapComponent},
   {
-    path: '', component: AppLayoutComponent, children: [
-      {path: '', pathMatch: 'full', redirectTo: 'offers'},
-      {path: 'offers', component: OffersComponent},
-      {path: 'offers/:id', component: OfferComponent},
-      {path: 'offers/:id/invest', component: InvestComponent},
-      {path: 'transfer', component: TransferComponent},
-      {path: 'swap', component: SwapComponent},
-      {
-        path: '', canActivate: [AuthGuard], children: [
-          {path: 'wallet', component: WalletComponent},
-          {path: 'deposit', component: DepositComponent},
-          {path: 'orders', component: OrdersComponent},
-        ],
-      },
-      {path: 'faq', component: FaqComponent},
-      {
-        path: 'admin', canActivate: [AuthGuard, AdminGuard], children: [
-          {path: '', pathMatch: 'full', redirectTo: 'issuer'},
-          {path: 'issuer', component: AdminIssuerComponent},
-          {path: 'issuer/edit', component: AdminIssuerEditComponent},
-          {path: 'issuer/edit-offer-visibility', component: AdminIssuerEditCampaignVisibilityComponent},
-          {path: 'assets/new', component: AdminAssetNewComponent},
-          {path: 'assets/:id', component: AdminAssetDetailComponent},
-          {path: 'assets/:id/edit', component: AdminAssetEditComponent},
-          {path: 'assets/:id/campaigns/new', component: AdminAssetCampaignNewComponent},
-          {path: 'campaigns/:campaignId', component: AdminCampaignDetailComponent},
-          {path: 'campaigns/:campaignId/edit', component: AdminCampaignEditComponent},
-          {path: 'campaigns/:campaignId/add-tokens', component: AdminCampaignAddTokensComponent},
-        ],
-      },
-      {path: 'dev_playground', component: DevPlaygroundComponent},
+    path: '', canActivate: [AuthGuard], children: [
+      {path: 'wallet', component: WalletComponent},
+      {path: 'deposit', component: DepositComponent},
+      {path: 'orders', component: OrdersComponent},
     ],
   },
+  {path: 'faq', component: FaqComponent},
+  {
+    path: 'admin', canActivate: [AuthGuard, AdminGuard], children: [
+      {path: '', pathMatch: 'full', redirectTo: 'issuer'},
+      {path: 'issuer', component: AdminIssuerComponent},
+      {path: 'issuer/edit', component: AdminIssuerEditComponent},
+      {path: 'issuer/edit-offer-visibility', component: AdminIssuerEditCampaignVisibilityComponent},
+      {path: 'assets/new', component: AdminAssetNewComponent},
+      {path: 'assets/:id', component: AdminAssetDetailComponent},
+      {path: 'assets/:id/edit', component: AdminAssetEditComponent},
+      {path: 'assets/:id/campaigns/new', component: AdminAssetCampaignNewComponent},
+      {path: 'campaigns/:campaignId', component: AdminCampaignDetailComponent},
+      {path: 'campaigns/:campaignId/edit', component: AdminCampaignEditComponent},
+      {path: 'campaigns/:campaignId/add-tokens', component: AdminCampaignAddTokensComponent},
+    ],
+  },
+  {path: 'dev_playground', component: DevPlaygroundComponent},
   {path: '**', redirectTo: '/offers'},
 ]
 
@@ -87,9 +84,11 @@ const networkRoutes: Routes = [{
 const routes: Routes = [
   {path: 'callback', component: AuthMagicOauthComponent},
   {path: '', pathMatch: 'full', redirectTo: !environment.fixed.issuer ? '/home' : '/offers'},
-  {path: 'home', component: HomeComponent},
   {
-    path: '', children: networkRoutes,
+    path: '', component: AppLayoutComponent, children: [
+      {path: 'home', component: HomeComponent},
+      ...networkRoutes,
+    ],
   },
   {path: '**', redirectTo: '/home'},
 ]

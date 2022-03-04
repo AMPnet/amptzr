@@ -6,11 +6,11 @@
           <div class="max-w-md mx-auto bg-white rounded-4xl px-6 py-4">
             <h1 class="flex gap-1.5 justify-center items-center mt-4 mx-4 text-3xl">
               <span>
-                Transfer {{ state.symbol }}
+                Transfer {{ state.tokenData.symbol }}
               </span>
-              <app-explorer-link [value]="state.tokenAddress" type="token">
+              <app-explorer-link [value]="state.tokenData.address" type="token">
               </app-explorer-link>
-              <app-add-to-metamask [value]="state.tokenAddress">
+              <app-add-to-metamask [value]="state.tokenData.address">
               </app-add-to-metamask>
             </h1>
 
@@ -24,7 +24,7 @@
               <!-- Token box -->
               <div class="mt-5 bg-gray-200/20 border-gray-300/50 border-[1px] rounded-lg px-2 pb-1">
                 <span class="flex justify-end mt-2 text-xxs font-medium text-gray-400">
-                  Amount of {{ state.symbol }} you will transfer
+                  Amount of {{ state.tokenData.symbol }} you will transfer
                 </span>
 
                 <div class="flex justify-between">
@@ -32,12 +32,12 @@
                     <div class="flex rounded-full items-center bg-white shadow">
                       <div class="w-7 h-7 bg-white rounded-full overflow-hidden m-1">
                         <img class="h-full w-full object-cover"
-                             src="{{ (state.asset?.infoData?.logo | toUrlIPFS) || (state.symbol | toStablecoinLogoPath) }}"
-                             alt="{{ state.symbol }} logo">
+                             src="{{ (state.asset?.infoData?.logo | toUrlIPFS) || (state.tokenData.symbol | toStablecoinLogoPath) }}"
+                             alt="{{ state.tokenData.symbol }} logo">
                       </div>
 
                       <span class="ml-1 mr-3 font-medium whitespace-nowrap">
-                        {{ state.symbol }}
+                        {{ state.tokenData.symbol }}
                       </span>
                     </div>
                   </div>
@@ -45,7 +45,7 @@
                   <input class="w-full py-0 pr-0 text-right bg-transparent border-none focus:ring-0 text-3xl
                                 text-ellipsis	placeholder:text-gray-400"
                          formControlName="tokenAmount"
-                         appBigNumberInput bigNumberType="token" [tokenPrecision]="state.decimals">
+                         appBigNumberInput bigNumberType="token" [tokenPrecision]="state.tokenData.decimals">
                 </div>
 
                 <div class="flex">
@@ -64,8 +64,8 @@
                   <div>
                     <span class="text-gray-400" *ngIf="state.balance">
                       Balance: {{ state.balance
-                      | formatUnit:'token':state.decimals
-                      | currencyDefault:'token':'real':state.symbol }}
+                      | formatUnit:'token':state.tokenData.decimals
+                      | currencyDefault:'token':'real':state.tokenData.symbol }}
                     </span>
                   </div>
                   <div class="flex gap-1" *ngIf="state.balance">
@@ -115,7 +115,7 @@
                     Transferring to an exchange?
                   </div>
                   <div class="text-gray-400">
-                    Make sure to specify you are transferring {{ state.symbol }} on {{ state.network.name }}
+                    Make sure to specify you are transferring {{ state.tokenData.symbol }} on {{ state.network.name }}
                   </div>
                 </div>
               </div>
@@ -173,7 +173,9 @@
 
       <ng-container *ngIf="stateRes.loading">
         <div class="flex justify-center py-8">
-          <app-spinner type="overlay">Loading...</app-spinner>
+          <app-spinner type="overlay">
+            Loading...
+          </app-spinner>
         </div>
       </ng-container>
     </ng-container>

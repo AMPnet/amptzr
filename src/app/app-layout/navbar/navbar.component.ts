@@ -8,6 +8,7 @@ import {TailwindService} from '../../shared/services/tailwind.service'
 import {UserService} from '../../shared/services/user.service'
 import {SignerService} from '../../shared/services/signer.service'
 import {IssuerService} from '../../shared/services/blockchain/issuer/issuer.service'
+import {PreferenceQuery} from '../../preference/state/preference.query'
 
 @Component({
   selector: 'app-navbar',
@@ -17,6 +18,7 @@ import {IssuerService} from '../../shared/services/blockchain/issuer/issuer.serv
 })
 export class NavbarComponent {
   isLoggedIn$ = this.sessionQuery.isLoggedIn$
+  isIssuerAvailable$ = this.preferenceQuery.issuer$.pipe(map(issuer => !!issuer.address))
   isDropdownOpen$ = this.appLayoutQuery.isDropdownMenuOpen$
   issuer$ = this.issuerService.issuerWithStatus$
   isMobileScreen$: Observable<boolean>
@@ -31,6 +33,7 @@ export class NavbarComponent {
   ]
 
   constructor(private sessionQuery: SessionQuery,
+              private preferenceQuery: PreferenceQuery,
               private issuerService: IssuerService,
               private appLayoutStore: AppLayoutStore,
               private appLayoutQuery: AppLayoutQuery,
@@ -50,6 +53,10 @@ export class NavbarComponent {
     return this.signerService.ensureAuth.pipe(
       tap(() => this.appLayoutStore.closeDropdownMenu()),
     )
+  }
+
+  logout(): Observable<void> {
+    return this.userService.logout()
   }
 
   toggleDropdown(): Observable<unknown> {

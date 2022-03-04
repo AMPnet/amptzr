@@ -27,6 +27,7 @@ export class JwtTokenService {
     return this.http.post<AuthJWTResponse>(`${this.path}/authorize/jwt`, {
       address: address,
       signed_payload: signedPayload,
+      chain_id: this.preferenceQuery.network.chainID,
     }).pipe(
       this.saveTokens(),
     )

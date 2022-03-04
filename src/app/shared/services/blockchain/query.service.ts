@@ -16,9 +16,10 @@ import {Structs} from '../../../../../types/ethers-contracts/QueryService'
 export class QueryService {
   contract$ = combineLatest([
     this.preferenceQuery.network$,
+    this.preferenceQuery.address$,
     this.sessionQuery.provider$,
   ]).pipe(
-    map(([network, provider]) =>
+    map(([network, _address, provider]) =>
       QueryService__factory.connect(network.tokenizerConfig.queryService, provider)),
   )
 

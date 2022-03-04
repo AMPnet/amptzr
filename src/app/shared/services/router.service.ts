@@ -17,6 +17,10 @@ export class RouterService {
     return this.router.navigate([this.issuerPathPipe.transform(commands)], extras)
   }
 
+  navigateNetwork(commands: any[], extras?: NavigationExtras): Promise<boolean> {
+    return this.router.navigate([this.issuerPathPipe.transform(commands, {ignoreIssuer: true})], extras)
+  }
+
   constructURL(relativePath: string): string {
     return this.issuerPathPipe.transform([relativePath])
   }

@@ -9,7 +9,7 @@ export class IssuerPathPipe implements PipeTransform {
   constructor(private preferenceQuery: PreferenceQuery) {
   }
 
-  public transform(value: any): any {
+  public transform(value: any, opts?: Partial<Opts>): any {
     let path: string
     if (value === null || value === undefined) {
       return ''
@@ -19,7 +19,7 @@ export class IssuerPathPipe implements PipeTransform {
 
     if (path.startsWith('/')) {
       const identifier = this.preferenceQuery.issuer.slug
-      if (identifier && !environment.fixed.issuer) {
+      if (identifier && !environment.fixed.issuer && !opts?.ignoreIssuer) {
         path = `/${identifier}`.concat(path)
       }
 
@@ -30,4 +30,8 @@ export class IssuerPathPipe implements PipeTransform {
 
     return path
   }
+}
+
+interface Opts {
+  ignoreIssuer: boolean
 }

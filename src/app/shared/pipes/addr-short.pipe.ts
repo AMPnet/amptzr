@@ -17,6 +17,10 @@ export class AddrShortPipe implements PipeTransform {
 
     const address = String(value).toLowerCase()
 
-    return `${address.substr(0, startChars)}...${address.substr(address.length - endChars, endChars)}`
+    if ((startChars + endChars) >= address.length) {
+      return address
+    }
+
+    return `${address.substring(0, startChars)}...${address.substring(address.length - endChars, address.length)}`
   }
 }

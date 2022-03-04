@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core'
 import {catchError, concatMap, switchMap, take, timeout} from 'rxjs/operators'
-import {AuthProvider, PreferenceStore} from './preference.store'
+import {AuthProvider, createInitialState, PreferenceStore} from './preference.store'
 import {EMPTY, Observable, of} from 'rxjs'
 import {PreferenceQuery} from './preference.query'
 import {SignerService} from '../../shared/services/signer.service'
@@ -87,5 +87,11 @@ export class PreferenceService {
         return of(undefined)
       }),
     )
+  }
+
+  resetIssuer() {
+    this.preferenceStore.update({
+      issuer: createInitialState().issuer,
+    })
   }
 }

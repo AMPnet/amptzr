@@ -72,7 +72,8 @@ export class AdminAssetEditComponent {
       ).pipe(
         switchMap(uploadRes => this.assetService.updateInfo(asset.contractAddress, uploadRes.path)),
         switchMap(() => this.dialogService.info({
-          title: 'Asset has been updated',
+          title: 'Success',
+          message: 'Asset has been updated.',
           cancelable: false,
         })),
         tap(() => this.routerService.navigate([`/admin/assets/${asset.contractAddress}`])),

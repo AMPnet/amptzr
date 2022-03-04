@@ -18,6 +18,7 @@ import {GasService} from '../shared/services/blockchain/gas.service'
 import {ErrorService} from '../shared/services/error.service'
 import {Network} from '../shared/networks'
 import {CrispService} from '../shared/services/crisp.service'
+import {Erc20Service, ERC20TokenData} from '../shared/services/blockchain/erc20.service'
 
 @Component({
   selector: 'app-transfer',
@@ -41,6 +42,7 @@ export class TransferComponent {
               private sessionQuery: SessionQuery,
               private preferenceQuery: PreferenceQuery,
               private signerService: SignerService,
+              private erc20Service: Erc20Service,
               private conversion: ConversionService,
               private dialogService: DialogService,
               private gasService: GasService,
@@ -58,21 +60,16 @@ export class TransferComponent {
       ),
     )
 
-    this.state$ = this.sessionQuery.provider$.pipe(
-      map(provider => ERC20__factory.connect(transferParams.tokenAddress, provider)),
-      switchMap(contract => combineLatest([
-        of(contract.address),
-        from(contract.symbol()),
-        from(contract.decimals()),
-        from(contract.name()),
-        tokenBalance$,
-        this.preferenceQuery.network$,
-        this.assetService.getAssetWithInfo(transferParams.tokenAddress, true).pipe(
-          catchError(() => of(undefined)),
-        ),
-      ])),
-      map(([tokenAddress, symbol, decimals, name, balance, network, asset]) => ({
-        tokenAddress, symbol, decimals, name, balance, network, asset,
+    this.state$ = combineLatest([
+      this.erc20Service.getData(transferParams.tokenAddress),
+      tokenBalance$,
+      this.preferenceQuery.network$,
+      this.assetService.getAssetWithInfo(transferParams.tokenAddress, true).pipe(
+        catchError(() => of(undefined)),
+      ),
+    ]).pipe(
+      map(([tokenData, balance, network, asset]) => ({
+        tokenData, balance, network, asset,
       })),
       distinctUntilChanged((p, c) => JSON.stringify(p) === JSON.stringify(c)),
       tap(state => {
@@ -113,11 +110,13 @@ export class TransferComponent {
   transfer(state: TransferState) {
     return () => {
       return this.signerService.ensureAuth.pipe(
-        map(signer => ERC20__factory.connect(state.tokenAddress, signer)),
+        map(signer => ERC20__factory.connect(state.tokenData.address, signer)),
         switchMap(contract => this.dialogService.waitingApproval(
           combineLatest([of(contract), this.gasService.overrides]).pipe(
             concatMap(([contract, overrides]) => {
-              const tokenAmount = this.conversion.toToken(this.transferForm.value.tokenAmount, state.decimals)
+              const tokenAmount = this.conversion.toToken(
+                this.transferForm.value.tokenAmount, state.tokenData.decimals,
+              )
 
               return contract.populateTransaction.transfer(
                 this.transferForm.value.recipientAddress, tokenAmount.toString(), overrides,
@@ -141,7 +140,7 @@ export class TransferComponent {
   private amountValidator(control: AbstractControl): Observable<ValidationErrors | null> {
     return combineLatest([this.state$]).pipe(take(1),
       map(([data]) => {
-        const tokenAmount = this.conversion.toToken(control.value.tokenAmount || 0, data.decimals)
+        const tokenAmount = this.conversion.toToken(control.value.tokenAmount || 0, data.tokenData.decimals)
 
         if (data.balance === undefined) {
           return {userNotLoggedIn: true}
@@ -175,16 +174,15 @@ export class TransferComponent {
     }
 
     this.transferForm.patchValue({
-      tokenAmount: this.conversion.parseToken(BigNumber.from(value), state.decimals).replace(/(\.0$)/, ''),
+      tokenAmount: this.conversion.parseToken(
+        BigNumber.from(value), state.tokenData.decimals,
+      ).replace(/(\.0$)/, ''),
     })
   }
 }
 
 interface TransferState {
-  tokenAddress: string,
-  symbol: string,
-  decimals: number,
-  name: string,
+  tokenData: ERC20TokenData
   balance: BigNumber | undefined,
   network: Network,
   asset?: CommonAssetWithInfo,
