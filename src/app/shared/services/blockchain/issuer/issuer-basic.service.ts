@@ -68,7 +68,9 @@ export class IssuerBasicService {
           createData.owner, createData.mappedName, createData.stablecoin,
           createData.walletApprover, createData.info, createData.nameRegistry, overrides,
         )).pipe(
-          switchMap(tx => this.signerService.sendTransaction(tx)),
+          switchMap(tx => this.dialogService.waitingApproval(
+            this.signerService.sendTransaction(tx),
+          )),
           switchMap(tx => this.dialogService.loading(
             from(this.sessionQuery.provider.waitForTransaction(tx.hash)),
             'Processing transaction...',

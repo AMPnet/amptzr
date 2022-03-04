@@ -1,6 +1,6 @@
 import {ChangeDetectionStrategy, Component} from '@angular/core'
 import {FormBuilder, FormGroup, Validators} from '@angular/forms'
-import {catchError, distinctUntilChanged, shareReplay, startWith, switchMap} from 'rxjs/operators'
+import {catchError, distinctUntilChanged, shareReplay, startWith, switchMap, tap} from 'rxjs/operators'
 import {SignerService} from '../../shared/services/signer.service'
 import {DialogService} from '../../shared/services/dialog.service'
 import {RouterService} from '../../shared/services/router.service'
@@ -26,6 +26,7 @@ export class AdminIssuerNewComponent {
 
   stablecoin$: Observable<ERC20TokenData | undefined>
   altKeyActive$ = this.physicalInputService.altKeyActive$
+  updateSlugFromName$: Observable<unknown>
 
   constructor(private issuerService: IssuerService,
               private signerService: SignerService,
@@ -40,11 +41,11 @@ export class AdminIssuerNewComponent {
               private fb: FormBuilder) {
     this.createForm = this.fb.group({
       name: ['', Validators.required],
-      slug: ['', Validators.required],
+      slug: ['', [Validators.required, Validators.pattern(/^[a-z0-9\-_]+$/)]],
       logo: [undefined, Validators.required],
       stablecoinAddress: [
         this.preferenceQuery.network.tokenizerConfig.defaultStableCoin,
-        Validators.required,
+        [Validators.required, Validators.pattern(/^0x[a-fA-F0-9]{40}$/)],
       ],
     })
 
@@ -60,6 +61,16 @@ export class AdminIssuerNewComponent {
           catchError(() => of(undefined)),
         ) : of(undefined),
       ),
+    )
+
+    const nameChanged$: Observable<string> = this.createForm.get('name')!.valueChanges.pipe(
+      startWith(this.createForm.value.name),
+      distinctUntilChanged(),
+      shareReplay(1),
+    )
+
+    this.updateSlugFromName$ = nameChanged$.pipe(
+      tap(name => this.createForm.get('slug')?.setValue(name.toLowerCase().replaceAll(' ', '-'))),
     )
   }
 
