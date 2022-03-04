@@ -47,7 +47,7 @@
             </label>
             <div class="flex items-baseline gap-2">
               <div class="text-sm shrink-0">
-                {{ issuerUrlPrefix }}
+                {{ issuerUrlPrefix | addrShort:12:20 }}
               </div>
               <input class="border-gray-400 rounded-lg w-full"
                      type="text" formControlName="slug" id="slug"
