@@ -83,16 +83,16 @@
             <app-add-to-metamask [value]="stablecoin.address">
             </app-add-to-metamask>
           </div>
-
-          <div class="flex justify-end mt-4">
-            <button app-action-button
-                    class="app-button !px-8"
-                    text="Create"
-                    [disabled]="!createForm.valid"
-                    [onClick]="create.bind(this)">
-            </button>
-          </div>
         </div>
+      </div>
+
+      <div class="flex mt-4 md:justify-end">
+        <button app-action-button
+                class="app-button !px-12"
+                text="Create"
+                [disabled]="!createForm.valid"
+                [onClick]="create.bind(this)">
+        </button>
       </div>
     </form>
   </div>
