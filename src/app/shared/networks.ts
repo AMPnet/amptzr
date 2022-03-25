@@ -1,12 +1,13 @@
 import {providers} from 'ethers'
 import {ReconnectingWebsocketProvider} from './ethersjs/reconnecting-websocket-provider'
-import {Matic as TPMatic, Mumbai as TPMumbai} from '../../../tokenizer-prototype/deployments'
+import {Matic as TPMatic, Mumbai as TPMumbai, Private as TPPrivate} from '../../../tokenizer-prototype/deployments'
 
 export enum ChainID {
   MATIC_MAINNET = 137, // Polygon
   MUMBAI_TESTNET = 80001, // Polygon
   // ETHEREUM_MAINNET = 1,
   GOERLI_TESTNET = 5,
+  PRIVATE_NETWORK = 1337
 }
 
 export interface Network {
@@ -116,6 +117,33 @@ export const MumbaiNetwork: Network = {
   },
 }
 
+export const PrivateNetwork: Network = {
+  chainID: ChainID.PRIVATE_NETWORK,
+  name: 'AMPnet PoA',
+  shortName: 'ampnet-poa',
+  nativeCurrency: {
+    name: 'AMP',
+    symbol: 'AMP',
+  },
+  maxGasPrice: 0,
+  rpcURLs: ['http://206.189.241.69/rpc'],
+  wssRpcURLs: [
+    // 'http://206.189.241.69/ws'
+  ],
+  explorerURLs: ['http://206.189.241.69/'],
+  tokenizerConfig: {
+    apxRegistry: TPPrivate.apxRegistry.address,
+    issuerFactory: TPPrivate.issuerFactory,
+    assetFactory: TPPrivate.assetFactory,
+    cfManagerFactory: TPPrivate.cfManagerFactory,
+    queryService: TPPrivate.queryService,
+    nameRegistry: TPPrivate.nameRegistry.address,
+    feeManager: TPPrivate.feeManager.address,
+    defaultWalletApprover: TPPrivate.walletApproverService.address,
+    defaultStableCoin: '0xd02FE6ceD6Fa51185211F17ade09D173871F7767',
+  },
+}
+
 export const GoerliNetwork: Network = {
   chainID: ChainID.GOERLI_TESTNET,
   name: 'Goerli (Ethereum Testnet)',
@@ -153,6 +181,7 @@ export const Networks: { [key in ChainID]: Network } = {
   [ChainID.MATIC_MAINNET]: MaticNetwork,
   [ChainID.MUMBAI_TESTNET]: MumbaiNetwork,
   [ChainID.GOERLI_TESTNET]: GoerliNetwork,
+  [ChainID.PRIVATE_NETWORK]: PrivateNetwork,
 }
 
 const getEthersNetwork = (network: Network): providers.Network => ({
