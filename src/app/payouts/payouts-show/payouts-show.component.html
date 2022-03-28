@@ -1,0 +1,28 @@
+<ng-container *ngIf="(payouts$ | async) as payoutsRes">
+  <ng-container *ngIf="payoutsRes.value as payouts">
+    <div *ngIf="payouts.length === 0">
+      No payouts
+    </div>
+
+    <div *ngIf="payouts.length > 0">
+      <div *ngFor="let payout of payouts">
+        {{ payout.payout_id }}
+      </div>
+    </div>
+  </ng-container>
+
+  <ng-container *ngIf="payoutsRes.error">
+    Cannot fetch payouts.
+    <div hidden>{{ payoutsRes.error | json }}</div>
+  </ng-container>
+
+  <ng-container *ngIf="payoutsRes.loading">
+    Loading payouts...
+  </ng-container>
+
+  <div>
+    <button class="app-button" routerLink="new">
+      New payout
+    </button>
+  </div>
+</ng-container>

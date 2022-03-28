@@ -105,6 +105,9 @@ import {TransferComponent} from './transfer/transfer.component'
 import {ToStablecoinLogoPathPipe} from './shared/pipes/to-stablecoin-logo-path.pipe'
 import {SwapComponent} from './swap/swap.component'
 import {LazyImgDirective} from './shared/directives/lazy-img.directive'
+import {PayoutsShowComponent} from './payouts/payouts-show/payouts-show.component'
+import {PayoutsPayoutNewComponent} from './payouts/payouts-payout-new/payouts-payout-new.component'
+import {PayoutsPayoutShowComponent} from './payouts/payouts-payout-show/payouts-payout-show.component'
 
 @NgModule({
   declarations: [
@@ -185,6 +188,9 @@ import {LazyImgDirective} from './shared/directives/lazy-img.directive'
     AuthMagicOauthComponent,
     TransferComponent,
     SwapComponent,
+    PayoutsShowComponent,
+    PayoutsPayoutNewComponent,
+    PayoutsPayoutShowComponent,
   ],
   imports: [
     BrowserModule,
