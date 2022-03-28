@@ -1,6 +1,6 @@
 import {ChangeDetectionStrategy, Component, Input, OnInit} from '@angular/core'
-import {BehaviorSubject, Observable, of} from 'rxjs'
-import {delay, switchMap, tap} from 'rxjs/operators'
+import {BehaviorSubject, EMPTY, from, Observable, of} from 'rxjs'
+import {catchError, delay, tap} from 'rxjs/operators'
 
 @Component({
   selector: 'app-value-copy',
@@ -31,19 +31,16 @@ export class ValueCopyComponent implements OnInit {
   }
 
   click(): Observable<unknown> {
-    return of(null).pipe(
-      tap(() => {
-        this.copyToClipboard()
-        this.stateSub.next(State.COPIED)
-      }),
-      switchMap(() => of(null).pipe(
-        delay(this.delay),
-        tap(() => this.stateSub.next(State.READY)),
-      )),
+    return from(navigator.clipboard.writeText(this.value)).pipe(
+      catchError(() => of(this.fallbackCopy())),
+      tap(() => this.stateSub.next(State.COPIED)),
+      delay(this.delay),
+      tap(() => this.stateSub.next(State.READY)),
+      catchError(() => EMPTY),
     )
   }
 
-  private copyToClipboard() {
+  private fallbackCopy() {
     const selBox = document.createElement('textarea')
     selBox.style.position = 'fixed'
     selBox.style.left = '0'

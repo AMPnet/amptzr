@@ -21,8 +21,11 @@ export class CrispService {
               private preferenceQuery: PreferenceQuery,
               private backendUserService: BackendUserService,
               private issuerService: IssuerService) {
-    const crispWebsiteId$ = combineLatest([this.issuerService.issuer$]).pipe(
-      map(([issuer]) => issuer.infoData.crispWebsiteId),
+    const crispWebsiteId$ = combineLatest([
+      this.preferenceQuery.issuer$,
+      this.issuerService.issuer$,
+    ]).pipe(
+      map(([prefIssuer, issuer]) => !prefIssuer.address ? undefined : issuer.infoData.crispWebsiteId),
       distinctUntilChanged(),
       tap(() => this.crispSub.next(false)),
       shareReplay(1),
@@ -33,14 +36,14 @@ export class CrispService {
     this.keepShown$ = crispWebsiteId$.pipe(
       switchMap(websiteId => {
         return !!websiteId ? this.loadScript(websiteId).pipe(
-          tap(isLoaded => this.crispSub.next(isLoaded)),
           shareReplay(1),
         ) : of(false)
       }),
+      tap(shouldShow => this.crispSub.next(shouldShow)),
       shareReplay({bufferSize: 1, refCount: true}),
       tap({
         next: shouldShow => {
-          if (shouldShow) this.chatShow()
+          shouldShow ? this.chatShow() : this.chatHide()
         },
         finalize: () => {
           this.chatHide()

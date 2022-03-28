@@ -8,6 +8,7 @@ import {BigNumber} from 'ethers'
 import {CampaignCommonState} from './campaign/campaign.common'
 import {IssuerCommonState} from './issuer/issuer.common'
 import {AssetCommonState} from './asset/asset.common'
+import {Structs} from '../../../../../types/ethers-contracts/QueryService'
 
 @Injectable({
   providedIn: 'root',
@@ -15,9 +16,10 @@ import {AssetCommonState} from './asset/asset.common'
 export class QueryService {
   contract$ = combineLatest([
     this.preferenceQuery.network$,
+    this.preferenceQuery.address$,
     this.sessionQuery.provider$,
   ]).pipe(
-    map(([network, provider]) =>
+    map(([network, _address, provider]) =>
       QueryService__factory.connect(network.tokenizerConfig.queryService, provider)),
   )
 
@@ -168,6 +170,16 @@ export class QueryService {
       switchMap(contract => contract.getAssetBalancesForIssuer(
         this.preferenceQuery.issuer.address,
         address,
+        this.preferenceQuery.assetFactories,
+        this.preferenceQuery.campaignFactories),
+      ),
+    )
+  }
+
+  getERC20AssetsForIssuer(address: string): Observable<Structs.ERC20AssetCommonStateStructOutput[]> {
+    return this.contract$.pipe(
+      switchMap(contract => contract.getERC20AssetsForIssuer(
+        this.preferenceQuery.issuer.address,
         this.preferenceQuery.assetFactories,
         this.preferenceQuery.campaignFactories),
       ),

@@ -114,7 +114,7 @@ export interface SimpleAssetState {
   name: string;
   symbol: string;
   totalSupply: BigNumber;
-  decimals: BigNumber;
+  decimals: number;
   issuer: string;
   assetApprovedByIssuer: boolean;
   totalAmountRaised: BigNumber;

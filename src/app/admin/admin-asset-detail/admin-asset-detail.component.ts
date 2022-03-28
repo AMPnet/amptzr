@@ -2,7 +2,7 @@ import {ChangeDetectionStrategy, Component} from '@angular/core'
 import {BehaviorSubject, combineLatest, Observable, of} from 'rxjs'
 import {withStatus, WithStatus} from '../../shared/utils/observables'
 import {ActivatedRoute} from '@angular/router'
-import {filter, map, mergeMap, switchMap} from 'rxjs/operators'
+import {filter, map, mergeMap, shareReplay, switchMap} from 'rxjs/operators'
 import {MetaService} from '../../shared/services/meta.service'
 import {AssetService, CommonAssetWithInfo} from '../../shared/services/blockchain/asset/asset.service'
 import {CampaignService, CampaignWithInfo} from '../../shared/services/blockchain/campaign/campaign.service'
@@ -31,6 +31,7 @@ export class AdminAssetDetailComponent {
     this.asset$ = withStatus(
       this.nameService.getAsset(assetId).pipe(
         switchMap(asset => this.assetService.getAssetWithInfo(asset.asset.contractAddress, true)),
+        shareReplay(1),
       ),
     )
 

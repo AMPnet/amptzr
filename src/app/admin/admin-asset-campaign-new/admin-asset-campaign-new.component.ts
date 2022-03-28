@@ -226,8 +226,8 @@ export class AdminAssetCampaignNewComponent {
         }, this.preview.flavor)),
         switchMap(campaignAddress =>
           this.dialogService.info({
-            title: 'Campaign has been created',
-            message: `You will be asked to sign a transaction to
+            title: 'Success',
+            message: `Campaign has been created. You will be asked to sign a transaction to
             transfer your ${state.asset.symbol} tokens to the campaign.`,
             cancelable: false,
           }).pipe(

@@ -1,6 +1,6 @@
 import {ChangeDetectionStrategy, Component} from '@angular/core'
 import {FormBuilder, FormGroup, Validators} from '@angular/forms'
-import {switchMap} from 'rxjs/operators'
+import {catchError, distinctUntilChanged, shareReplay, startWith, switchMap, tap} from 'rxjs/operators'
 import {SignerService} from '../../shared/services/signer.service'
 import {DialogService} from '../../shared/services/dialog.service'
 import {RouterService} from '../../shared/services/router.service'
@@ -9,6 +9,11 @@ import {UserService} from '../../shared/services/user.service'
 import {IssuerService} from '../../shared/services/blockchain/issuer/issuer.service'
 import {IssuerFlavor} from '../../shared/services/blockchain/flavors'
 import {PreferenceQuery} from '../../preference/state/preference.query'
+import {getWindow} from '../../shared/utils/browser'
+import {IssuerPathPipe} from '../../shared/pipes/issuer-path.pipe'
+import {Observable, of} from 'rxjs'
+import {Erc20Service, ERC20TokenData} from '../../shared/services/blockchain/erc20.service'
+import {PhysicalInputService} from '../../shared/services/physical-input.service'
 
 @Component({
   selector: 'app-admin-issuer-new',
@@ -17,9 +22,11 @@ import {PreferenceQuery} from '../../preference/state/preference.query'
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AdminIssuerNewComponent {
-  isLoggedIn$ = this.sessionQuery.isLoggedIn$
-
   createForm: FormGroup
+
+  stablecoin$: Observable<ERC20TokenData | undefined>
+  altKeyActive$ = this.physicalInputService.altKeyActive$
+  updateSlugFromName$: Observable<unknown>
 
   constructor(private issuerService: IssuerService,
               private signerService: SignerService,
@@ -28,16 +35,43 @@ export class AdminIssuerNewComponent {
               private router: RouterService,
               private dialogService: DialogService,
               private userService: UserService,
+              private erc20Service: Erc20Service,
+              private issuerPathPipe: IssuerPathPipe,
+              private physicalInputService: PhysicalInputService,
               private fb: FormBuilder) {
     this.createForm = this.fb.group({
       name: ['', Validators.required],
-      slug: ['', Validators.required],
+      slug: ['', [Validators.required, Validators.pattern(/^[a-z0-9\-_]+$/)]],
       logo: [undefined, Validators.required],
       stablecoinAddress: [
         this.preferenceQuery.network.tokenizerConfig.defaultStableCoin,
-        Validators.required,
+        [Validators.required, Validators.pattern(/^0x[a-fA-F0-9]{40}$/)],
       ],
     })
+
+    const stablecoinAddressChanged$ = this.createForm.get('stablecoinAddress')!.valueChanges.pipe(
+      startWith(this.createForm.value.stablecoinAddress),
+      distinctUntilChanged(),
+      shareReplay(1),
+    )
+
+    this.stablecoin$ = stablecoinAddressChanged$.pipe(
+      switchMap(address => /^0x[a-fA-F0-9]{40}$/.test(address) ?
+        this.erc20Service.getData(address).pipe(
+          catchError(() => of(undefined)),
+        ) : of(undefined),
+      ),
+    )
+
+    const nameChanged$: Observable<string> = this.createForm.get('name')!.valueChanges.pipe(
+      startWith(this.createForm.value.name),
+      distinctUntilChanged(),
+      shareReplay(1),
+    )
+
+    this.updateSlugFromName$ = nameChanged$.pipe(
+      tap(name => this.createForm.get('slug')?.setValue(name.toLowerCase().replaceAll(' ', '-'))),
+    )
   }
 
   create() {
@@ -54,7 +88,8 @@ export class AdminIssuerNewComponent {
         info: uploadRes.path,
       }, IssuerFlavor.BASIC)),
       switchMap(() => this.dialogService.info({
-        title: 'Issuer has been created',
+        title: 'Success',
+        message: 'Issuer has been created.',
         cancelable: false,
       }).pipe(
         switchMap(() => this.router.router.navigate(['/'])),
@@ -62,7 +97,7 @@ export class AdminIssuerNewComponent {
     )
   }
 
-  logout() {
-    this.userService.logout().subscribe()
+  get issuerUrlPrefix() {
+    return getWindow().location.origin + this.issuerPathPipe.transform('/', {ignoreIssuer: true})
   }
 }
