@@ -1,11 +1,11 @@
 import {Injectable} from '@angular/core'
-import {Observable} from 'rxjs'
+import {from, Observable, switchMap} from 'rxjs'
 import {environment} from '../../../../environments/environment'
 import {BackendHttpClient} from "./backend-http-client.service"
 import {PreferenceQuery} from '../../../preference/state/preference.query'
 import {address} from '../../../../../types/common'
 import {map} from 'rxjs/operators'
-import {StablecoinBigNumber} from '../blockchain/stablecoin.service'
+import {SessionQuery} from '../../../session/state/session.query'
 
 @Injectable({
   providedIn: 'root',
@@ -14,17 +14,22 @@ export class PayoutService {
   path = `${environment.backendURL}/api/payout`
 
   constructor(private http: BackendHttpClient,
+              private sessionQuery: SessionQuery,
               private preferenceQuery: PreferenceQuery) {
   }
 
-  // createPayout(amount: StablecoinBigNumber): Observable<void> {
-  //   const chainID = this.preferenceQuery.network.chainID
-  //   const issuerAddress = this.preferenceQuery.issuer.address
-  //
-  //   return this.http.post<void>(`${this.path}/payouts/${chainID}/${issuerAddress}`, {
-  //     amount: amount.toString(),
-  //   } as CreatePayoutData)
-  // }
+  createPayout(assetAddress: string, ignoredHolderAddresses: string[] = []): Observable<CreatePayoutRes> {
+    const chainID = this.preferenceQuery.network.chainID
+
+    return from(this.sessionQuery.provider.getBlockNumber()).pipe(
+      switchMap(blockNumber => this.http.post<CreatePayoutRes>(
+        `${this.path}/payouts/${chainID}/${assetAddress}`, {
+          payout_block_number: blockNumber.toString(),
+          ignored_holder_addresses: ignoredHolderAddresses,
+          issuer_address: this.preferenceQuery.issuer.address,
+        } as CreatePayoutData)),
+    )
+  }
 
   getPayouts(): Observable<Payout[]> {
     return this.http.get<PayoutsRes>(
@@ -51,7 +56,7 @@ interface GetPayoutsParams {
   payoutManager: address,
 }
 
-enum PayoutStatus {
+export enum PayoutStatus {
   ProofPending = 'PROOF_PENDING',
   ProofFailed = 'PROOF_FAILED',
   ProofCreated = 'PROOF_CREATED',
@@ -84,7 +89,7 @@ export interface Payout {
 
 interface CreatePayoutData {
   payout_block_number: string;
-  ignored_asset_addresses: address[];
+  ignored_holder_addresses: address[];
   issuer_address: address;
 }
 

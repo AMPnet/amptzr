@@ -108,6 +108,9 @@ import {LazyImgDirective} from './shared/directives/lazy-img.directive'
 import {PayoutsShowComponent} from './payouts/payouts-show/payouts-show.component'
 import {PayoutsPayoutNewComponent} from './payouts/payouts-payout-new/payouts-payout-new.component'
 import {PayoutsPayoutShowComponent} from './payouts/payouts-payout-show/payouts-payout-show.component'
+import {AssetDataPipe} from './shared/pipes/asset-data.pipe'
+import {WithStatusPipe} from './shared/pipes/with-status.pipe'
+import {BlockTimePipe} from './shared/pipes/block-time.pipe'
 
 @NgModule({
   declarations: [
@@ -155,6 +158,9 @@ import {PayoutsPayoutShowComponent} from './payouts/payouts-payout-show/payouts-
     TruncatePipe,
     UnescapePipe,
     AssetPathSegmentPipe,
+    AssetDataPipe,
+    WithStatusPipe,
+    BlockTimePipe,
     SelectNetworkComponent,
     HomeComponent,
     GoogleTranslateComponent,

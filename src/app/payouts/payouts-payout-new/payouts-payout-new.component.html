@@ -1,1 +1,27 @@
-<p>payouts-payout-new works!</p>
+<div class="px-4 py-2 max-w-screen-lg mx-auto">
+  <div class="bg-white my-8 p-6 rounded-4xl">
+    <h1 class="my-2 text-2xl uppercase">
+      New Payout Snapshot
+    </h1>
+
+    <form [formGroup]="newPayoutForm">
+      <div class="flex flex-col gap-2 mt-4 lg:max-w-md">
+        <label class="text-lg font-semibold" for="asset-address">
+          Asset address
+        </label>
+        <input class="border-gray-400 rounded-lg" type="text"
+               formControlName="assetAddress" id="asset-address"
+               autocomplete="off">
+      </div>
+
+      <div class="flex mt-4 md:justify-end">
+        <button app-action-button
+                class="app-button !px-12"
+                text="Create"
+                [disabled]="!newPayoutForm.valid"
+                [onClick]="createPayout.bind(this)">
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

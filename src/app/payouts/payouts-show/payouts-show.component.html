@@ -1,28 +1,108 @@
-<ng-container *ngIf="(payouts$ | async) as payoutsRes">
-  <ng-container *ngIf="payoutsRes.value as payouts">
-    <div *ngIf="payouts.length === 0">
-      No payouts
-    </div>
+<div class="px-4 py-2 max-w-screen-lg mx-auto">
+  <div class="bg-white my-8 p-6 rounded-4xl">
+    <h1 class="my-2 text-2xl uppercase">
+      Payouts
+    </h1>
 
-    <div *ngIf="payouts.length > 0">
-      <div *ngFor="let payout of payouts">
-        {{ payout.payout_id }}
+    <ng-container *ngIf="(payouts$ | async) as payoutsRes">
+      <ng-container *ngIf="payoutsRes.value as payouts">
+        <div *ngIf="payouts.length === 0">
+          No payouts
+        </div>
+
+        <div *ngIf="payouts.length > 0"
+             class="flex flex-col gap-1">
+          <div *ngFor="let payout of payouts"
+               class="bg-gray-200 rounded p-2">
+            <div class="flex justify-between">
+              <div class="flex gap-1">
+                <ng-container *ngIf="(payout.asset | assetData:'tokenOnly'
+                                     | withStatus | async) as assetRes">
+                  <ng-container *ngIf="assetRes.value as asset">
+                    <span>
+                      {{ asset.tokenData.symbol }}
+                    </span>
+                  </ng-container>
+
+                  <ng-container *ngIf="assetRes.error">
+                    <span>❌</span>
+                    <div hidden>{{ assetRes.error | json }}</div>
+                  </ng-container>
+
+                  <ng-container *ngIf="assetRes.loading">
+                    <app-spinner type="inline-xs"></app-spinner>
+                  </ng-container>
+                </ng-container>
+
+                <ng-container
+                  *ngIf="(payout.asset_snapshot_block_number | blockTime | withStatus | async) as blockTimeRes">
+                  <ng-container *ngIf="blockTimeRes.value as blockTime">
+                    <span>{{ blockTime | date:'medium' }}</span>
+                  </ng-container>
+
+                  <ng-container *ngIf="blockTimeRes.error">
+                    <span>Time ❌</span>
+                    <div hidden>{{ blockTimeRes.error | json }}</div>
+                  </ng-container>
+
+                  <ng-container *ngIf="blockTimeRes.loading">
+                    <app-spinner type="inline-xs"></app-spinner>
+                  </ng-container>
+                </ng-container>
+              </div>
+
+              <div class="flex gap-1">
+                <div class="rounded p-1 bg-red-600 text-white
+                            text-xs font-semibold uppercase"
+                     *ngIf="payout.status === payoutStatus.ProofFailed">
+                  Failed
+                </div>
+
+                <div class="rounded p-1 bg-orange-400 text-white
+                            text-xs font-semibold uppercase"
+                     *ngIf="payout.status === payoutStatus.ProofPending">
+                  <span class="animate-pulse">
+                    Pending
+                  </span>
+                </div>
+
+                <a [routerLink]="payout.payout_id"
+                   class="rounded p-1 bg-cyan-500 text-white
+                          text-xs font-semibold uppercase"
+                   *ngIf="payout.status === payoutStatus.ProofCreated">
+                  <span class="">
+                    Ready
+                  </span>
+                </a>
+
+                <a [routerLink]="payout.payout_id"
+                   class="rounded p-1 bg-emerald-600 text-white
+                          text-xs font-semibold uppercase"
+                   *ngIf="payout.status === payoutStatus.PayoutCreated">
+                  <span class="">
+                    Executed
+                  </span>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </ng-container>
+
+      <ng-container *ngIf="payoutsRes.error">
+        Cannot fetch payouts.
+        <div hidden>{{ payoutsRes.error | json }}</div>
+      </ng-container>
+
+      <ng-container *ngIf="payoutsRes.loading">
+        Loading payouts...
+      </ng-container>
+
+      <div class="mt-4">
+        <button class="app-button" routerLink="new">
+          New payout
+        </button>
       </div>
-    </div>
-  </ng-container>
-
-  <ng-container *ngIf="payoutsRes.error">
-    Cannot fetch payouts.
-    <div hidden>{{ payoutsRes.error | json }}</div>
-  </ng-container>
-
-  <ng-container *ngIf="payoutsRes.loading">
-    Loading payouts...
-  </ng-container>
-
-  <div>
-    <button class="app-button" routerLink="new">
-      New payout
-    </button>
+    </ng-container>
   </div>
-</ng-container>
+</div>
