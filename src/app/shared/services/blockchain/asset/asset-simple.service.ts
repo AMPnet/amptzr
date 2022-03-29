@@ -13,9 +13,10 @@ import {
   AssetSimpleFactory,
   AssetSimpleFactory__factory,
 } from '../../../../../../types/ethers-contracts'
-import {BigNumber, BigNumberish, Signer} from 'ethers'
+import {BigNumberish, Signer} from 'ethers'
 import {Provider} from '@ethersproject/providers'
 import {findLog} from '../../../utils/ethersjs'
+import {Structs} from '../../../../../../types/ethers-contracts/AssetSimple'
 
 @Injectable({
   providedIn: 'root',
@@ -105,18 +106,4 @@ interface CreateSimpleAssetData {
   info: string,
 }
 
-export interface SimpleAssetState {
-  flavor: string;
-  version: string;
-  contractAddress: string;
-  owner: string;
-  info: string;
-  name: string;
-  symbol: string;
-  totalSupply: BigNumber;
-  decimals: number;
-  issuer: string;
-  assetApprovedByIssuer: boolean;
-  totalAmountRaised: BigNumber;
-  totalTokensSold: BigNumber;
-}
+export type SimpleAssetState = Structs.AssetSimpleStateStructOutput

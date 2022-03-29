@@ -13,9 +13,10 @@ import {
   AssetTransferableFactory,
   AssetTransferableFactory__factory,
 } from '../../../../../../types/ethers-contracts'
-import {BigNumber, BigNumberish, Signer} from 'ethers'
+import {BigNumberish, Signer} from 'ethers'
 import {Provider} from '@ethersproject/providers'
 import {findLog} from '../../../utils/ethersjs'
+import {Structs} from '../../../../../../types/ethers-contracts/AssetTransferable'
 
 @Injectable({
   providedIn: 'root',
@@ -110,25 +111,4 @@ interface CreateTransferableAssetData {
   info: string,
 }
 
-export interface TransferableAssetState {
-  flavor: string;
-  version: string;
-  contractAddress: string;
-  owner: string;
-  initialTokenSupply: BigNumber;
-  whitelistRequiredForRevenueClaim: boolean;
-  whitelistRequiredForLiquidationClaim: boolean;
-  assetApprovedByIssuer: boolean;
-  issuer: string;
-  apxRegistry: string;
-  info: string;
-  name: string;
-  symbol: string;
-  totalAmountRaised: BigNumber;
-  totalTokensSold: BigNumber;
-  highestTokenSellPrice: BigNumber;
-  liquidated: boolean;
-  liquidationFundsTotal: BigNumber;
-  liquidationTimestamp: BigNumber;
-  liquidationFundsClaimed: BigNumber;
-}
+export type TransferableAssetState = Structs.AssetTransferableStateStructOutput
