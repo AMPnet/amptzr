@@ -19,7 +19,7 @@ export class PayoutsShowComponent {
     this.payouts$ = withStatus(
       this.payoutService.getPayouts().pipe(
         map(payouts => payouts.sort((a, b) =>
-          Number(a.asset_snapshot_block_number) > Number(b.asset_snapshot_block_number) ? 1 : -1),
+          Number(a.asset_snapshot_block_number) < Number(b.asset_snapshot_block_number) ? 1 : -1),
         ),
       ),
     )

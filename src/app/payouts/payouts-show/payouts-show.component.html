@@ -1,27 +1,35 @@
 <div class="px-4 py-2 max-w-screen-lg mx-auto">
   <div class="bg-white my-8 p-6 rounded-4xl">
-    <h1 class="my-2 text-2xl uppercase">
+    <h1 class="mt-2 text-2xl uppercase">
       Payouts
     </h1>
 
     <ng-container *ngIf="(payouts$ | async) as payoutsRes">
       <ng-container *ngIf="payoutsRes.value as payouts">
-        <div *ngIf="payouts.length === 0">
+        <div *ngIf="payouts.length === 0" class="mt-4">
           No payouts
         </div>
 
         <div *ngIf="payouts.length > 0"
-             class="flex flex-col gap-1">
+             class="flex flex-col gap-1 mt-4">
           <div *ngFor="let payout of payouts"
-               class="bg-gray-200 rounded p-2">
-            <div class="flex justify-between">
-              <div class="flex gap-1">
+               class="bg-gray-100 rounded p-2">
+            <div class="flex justify-between flex-wrap">
+              <div class="flex gap-1 flex-wrap">
                 <ng-container *ngIf="(payout.asset | assetData:'tokenOnly'
                                      | withStatus | async) as assetRes">
                   <ng-container *ngIf="assetRes.value as asset">
-                    <span>
-                      {{ asset.tokenData.symbol }}
-                    </span>
+                    <div class="flex gap-0.5 items-baseline">
+                      <span>{{ asset.tokenData.symbol }}</span>
+                      <span class="text-sm">
+                        {{ asset.tokenData.address | addrShort }}
+                      </span>
+                      <app-value-copy [value]="asset.tokenData.address"></app-value-copy>
+                      <app-explorer-link [value]="asset.tokenData.address" type="token">
+                      </app-explorer-link>
+                      <app-add-to-metamask [value]="asset.tokenData.address">
+                      </app-add-to-metamask>
+                    </div>
                   </ng-container>
 
                   <ng-container *ngIf="assetRes.error">
@@ -37,7 +45,7 @@
                 <ng-container
                   *ngIf="(payout.asset_snapshot_block_number | blockTime | withStatus | async) as blockTimeRes">
                   <ng-container *ngIf="blockTimeRes.value as blockTime">
-                    <span>{{ blockTime | date:'medium' }}</span>
+                    <span>{{ blockTime | date:'short' }}</span>
                   </ng-container>
 
                   <ng-container *ngIf="blockTimeRes.error">
@@ -51,7 +59,7 @@
                 </ng-container>
               </div>
 
-              <div class="flex gap-1">
+              <div class="flex gap-1 flex-wrap">
                 <div class="rounded p-1 bg-red-600 text-white
                             text-xs font-semibold uppercase"
                      *ngIf="payout.status === payoutStatus.ProofFailed">
@@ -66,22 +74,33 @@
                   </span>
                 </div>
 
-                <a [routerLink]="payout.payout_id"
-                   class="rounded p-1 bg-cyan-500 text-white
+                <div class="rounded p-1 bg-cyan-500 text-white
                           text-xs font-semibold uppercase"
-                   *ngIf="payout.status === payoutStatus.ProofCreated">
+                     *ngIf="payout.status === payoutStatus.ProofCreated">
                   <span class="">
                     Ready
                   </span>
-                </a>
+                </div>
 
-                <a [routerLink]="payout.payout_id"
-                   class="rounded p-1 bg-emerald-600 text-white
+                <div class="rounded p-1 bg-emerald-600 text-white
                           text-xs font-semibold uppercase"
-                   *ngIf="payout.status === payoutStatus.PayoutCreated">
+                     *ngIf="payout.status === payoutStatus.PayoutCreated">
                   <span class="">
                     Executed
                   </span>
+                </div>
+
+                <a [routerLink]="payout.payout_id"
+                   class="rounded-full p-2 bg-cyan-500 text-white
+                          text-sm font-semibold uppercase
+                          flex items-center"
+                   *ngIf="payout.payout_id">
+                  <svg width="8" height="14" viewBox="0 0 8 14" fill="none" xmlns="http://www.w3.org/2000/svg"
+                       class="w-2 h-2">
+                    <path d="M1 1.16602L6.83333 6.99935L1 12.8327" stroke="white" stroke-width="2"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"/>
+                  </svg>
                 </a>
               </div>
             </div>
