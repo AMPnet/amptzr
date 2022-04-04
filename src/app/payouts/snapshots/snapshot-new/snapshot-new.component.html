@@ -1,0 +1,102 @@
+<div class="px-4 py-2 max-w-screen-lg mx-auto">
+  <div class="bg-white my-8 p-6 rounded-4xl">
+    <h1 class="my-2 text-2xl uppercase">
+      New Asset Snapshot
+    </h1>
+
+    <form [formGroup]="newSnapshotForm">
+      <ng-container *ngIf="(state$ | async) as state">
+        <div class="flex flex-col gap-2 mt-4 lg:max-w-md">
+          <label class="text-lg font-semibold" for="asset-address">
+            Asset address
+          </label>
+          <input class="border-gray-400 rounded-lg" type="text"
+                 formControlName="assetAddress" id="asset-address"
+                 autocomplete="off">
+        </div>
+
+        <div class="flex">
+          <div class="flex items-center mt-2 flex-1">
+            <ng-container *ngIf="newSnapshotForm.get('assetAddress')?.errors as err">
+              <span class="text-red-600 text-xs font-semibold">
+                <ng-container *ngIf="err.noToken">
+                  Cannot get token data for this address.
+                </ng-container>
+              </span>
+            </ng-container>
+          </div>
+        </div>
+
+        <div class="flex items-baseline gap-1.5 flex-wrap mt-4"
+             *ngIf="state.tokenData">
+          <span>{{ state.tokenData.symbol }}</span>
+          <span class="text-sm">
+            {{ state.tokenData.address | addrShort }}
+          </span>
+          <app-value-copy [value]="state.tokenData.address" [delay]="800">
+          </app-value-copy>
+          <app-explorer-link [value]="state.tokenData.address">
+          </app-explorer-link>
+          <app-add-to-metamask [value]="state.tokenData.address">
+          </app-add-to-metamask>
+        </div>
+
+        <div class="flex gap-2 mt-4 lg:max-w-md items-center">
+          <input class="rounded" type="checkbox"
+                 formControlName="excludeMyself" id="exclude-myself"
+                 autocomplete="off">
+          <label class="font-semibold" for="exclude-myself">
+            Exclude my address from snapshot
+          </label>
+        </div>
+
+        <div class="flex flex-col gap-2 mt-4 lg:max-w-md">
+          <label class="text-lg font-semibold" for="block-number">
+            Block number
+          </label>
+          <div class="flex gap-2 w-full">
+            <input class="border-gray-400 rounded-lg flex-1" type="text"
+                   formControlName="blockNumber" id="block-number"
+                   autocomplete="off">
+            <button app-action-button [onClick]="setCurrentBlockNumber.bind(this)"
+                    class="app-button">
+              <ng-template #content #loadingContent>
+                Set Current
+              </ng-template>
+            </button>
+          </div>
+
+          <div class="flex">
+            <div class="flex items-center mt-2 flex-1">
+              <ng-container *ngIf="newSnapshotForm?.invalid">
+                <span class="text-red-600 text-xs font-semibold"
+                      *ngIf="newSnapshotForm.get('blockNumber')?.errors as err">
+                  <ng-container *ngIf="err.incorrectBlockNumber">
+                    Incorrect block number.
+                  </ng-container>
+
+                  <ng-container *ngIf="err.pattern">
+                    Block number must be a positive number.
+                  </ng-container>
+                </span>
+              </ng-container>
+            </div>
+          </div>
+
+          <span class="text-sm" *ngIf="!newSnapshotForm.get('blockNumber')?.errors && state.blockTime">
+            Block time: {{ state.blockTime | date:'medium' }}
+          </span>
+        </div>
+
+        <div class="flex mt-4 md:justify-end">
+          <button app-action-button
+                  class="app-button !px-12"
+                  text="Create"
+                  [disabled]="!newSnapshotForm.valid"
+                  [onClick]="createPayout.bind(this)">
+          </button>
+        </div>
+      </ng-container>
+    </form>
+  </div>
+</div>

@@ -105,12 +105,14 @@ import {TransferComponent} from './transfer/transfer.component'
 import {ToStablecoinLogoPathPipe} from './shared/pipes/to-stablecoin-logo-path.pipe'
 import {SwapComponent} from './swap/swap.component'
 import {LazyImgDirective} from './shared/directives/lazy-img.directive'
-import {PayoutsShowComponent} from './payouts/payouts-show/payouts-show.component'
-import {PayoutsPayoutNewComponent} from './payouts/payouts-payout-new/payouts-payout-new.component'
 import {PayoutsPayoutShowComponent} from './payouts/payouts-payout-show/payouts-payout-show.component'
 import {AssetDataPipe} from './shared/pipes/asset-data.pipe'
 import {WithStatusPipe} from './shared/pipes/with-status.pipe'
 import {BlockTimePipe} from './shared/pipes/block-time.pipe'
+import {PayoutsComponent} from './payouts/payouts.component'
+import {SnapshotsComponent} from './payouts/snapshots/snapshots.component'
+import {SnapshotComponent} from './payouts/snapshots/snapshot/snapshot.component'
+import {SnapshotNewComponent} from './payouts/snapshots/snapshot-new/snapshot-new.component'
 
 @NgModule({
   declarations: [
@@ -194,9 +196,11 @@ import {BlockTimePipe} from './shared/pipes/block-time.pipe'
     AuthMagicOauthComponent,
     TransferComponent,
     SwapComponent,
-    PayoutsShowComponent,
-    PayoutsPayoutNewComponent,
     PayoutsPayoutShowComponent,
+    PayoutsComponent,
+    SnapshotsComponent,
+    SnapshotComponent,
+    SnapshotNewComponent,
   ],
   imports: [
     BrowserModule,

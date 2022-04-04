@@ -18,7 +18,7 @@ export class PayoutService {
               private preferenceQuery: PreferenceQuery) {
   }
 
-  createPayout(assetAddress: string, ignoredHolderAddresses: string[] = []): Observable<CreatePayoutRes> {
+  createSnapshot(assetAddress: string, ignoredHolderAddresses: string[] = []): Observable<CreatePayoutRes> {
     const chainID = this.preferenceQuery.network.chainID
 
     return from(this.sessionQuery.provider.getBlockNumber()).pipe(
@@ -31,7 +31,7 @@ export class PayoutService {
     )
   }
 
-  getPayouts(): Observable<Payout[]> {
+  getSnapshots(): Observable<Payout[]> {
     return this.http.get<PayoutsRes>(
       `${this.path}/payouts/${this.preferenceQuery.network.chainID}`,
       {
@@ -45,10 +45,16 @@ export class PayoutService {
       map(res => res.payouts),
     )
   }
+
+  getPayout(taskID: string): Observable<Payout> {
+    return this.http.get<Payout>(
+      `${this.path}/payouts/${this.preferenceQuery.network.chainID}/task/${taskID}`,
+    )
+  }
 }
 
 interface GetPayoutsParams {
-  status?: PayoutStatus
+  status?: SnapshotStatus
   issuer?: address,
   owner?: address,
   assetFactories: string,
@@ -56,7 +62,7 @@ interface GetPayoutsParams {
   payoutManager: address,
 }
 
-export enum PayoutStatus {
+export enum SnapshotStatus {
   ProofPending = 'PROOF_PENDING',
   ProofFailed = 'PROOF_FAILED',
   ProofCreated = 'PROOF_CREATED',
@@ -69,7 +75,7 @@ interface PayoutsRes {
 
 export interface Payout {
   task_id: string;
-  status: PayoutStatus;
+  status: SnapshotStatus;
   issuer: string;
   payout_id: string;
   payout_owner: string;
@@ -77,7 +83,7 @@ export interface Payout {
   is_canceled: boolean;
   asset: string;
   total_asset_amount: string;
-  ignored_asset_addresses: string[];
+  ignored_holder_addresses: string[];
   asset_snapshot_merkle_root: string;
   asset_snapshot_merkle_depth: number;
   asset_snapshot_block_number: string;

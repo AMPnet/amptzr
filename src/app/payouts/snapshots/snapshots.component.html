@@ -1,13 +1,13 @@
 <div class="px-4 py-2 max-w-screen-lg mx-auto">
   <div class="bg-white my-8 p-6 rounded-4xl">
     <h1 class="mt-2 text-2xl uppercase">
-      Payouts
+      Asset Snapshots
     </h1>
 
-    <ng-container *ngIf="(payouts$ | async) as payoutsRes">
+    <ng-container *ngIf="(snapshots$ | async) as payoutsRes">
       <ng-container *ngIf="payoutsRes.value as payouts">
         <div *ngIf="payouts.length === 0" class="mt-4">
-          No payouts
+          No snapshots
         </div>
 
         <div *ngIf="payouts.length > 0"
@@ -59,16 +59,16 @@
                 </ng-container>
               </div>
 
-              <div class="flex gap-1 flex-wrap">
+              <div class="flex gap-1 flex-wrap w-full justify-end md:w-auto">
                 <div class="rounded p-1 bg-red-600 text-white
                             text-xs font-semibold uppercase"
-                     *ngIf="payout.status === payoutStatus.ProofFailed">
+                     *ngIf="payout.status === snapshotStatus.ProofFailed">
                   Failed
                 </div>
 
                 <div class="rounded p-1 bg-orange-400 text-white
                             text-xs font-semibold uppercase"
-                     *ngIf="payout.status === payoutStatus.ProofPending">
+                     *ngIf="payout.status === snapshotStatus.ProofPending">
                   <span class="animate-pulse">
                     Pending
                   </span>
@@ -76,7 +76,7 @@
 
                 <div class="rounded p-1 bg-cyan-500 text-white
                           text-xs font-semibold uppercase"
-                     *ngIf="payout.status === payoutStatus.ProofCreated">
+                     *ngIf="payout.status === snapshotStatus.ProofCreated">
                   <span class="">
                     Ready
                   </span>
@@ -84,17 +84,17 @@
 
                 <div class="rounded p-1 bg-emerald-600 text-white
                           text-xs font-semibold uppercase"
-                     *ngIf="payout.status === payoutStatus.PayoutCreated">
+                     *ngIf="payout.status === snapshotStatus.PayoutCreated">
                   <span class="">
                     Executed
                   </span>
                 </div>
 
-                <a [routerLink]="payout.payout_id"
+                <a [routerLink]="payout.task_id"
                    class="rounded-full p-2 bg-cyan-500 text-white
                           text-sm font-semibold uppercase
                           flex items-center"
-                   *ngIf="payout.payout_id">
+                   *ngIf="payout.task_id">
                   <svg width="8" height="14" viewBox="0 0 8 14" fill="none" xmlns="http://www.w3.org/2000/svg"
                        class="w-2 h-2">
                     <path d="M1 1.16602L6.83333 6.99935L1 12.8327" stroke="white" stroke-width="2"
@@ -109,17 +109,17 @@
       </ng-container>
 
       <ng-container *ngIf="payoutsRes.error">
-        Cannot fetch payouts.
+        Cannot fetch snapshots.
         <div hidden>{{ payoutsRes.error | json }}</div>
       </ng-container>
 
       <ng-container *ngIf="payoutsRes.loading">
-        Loading payouts...
+        Loading snapshots...
       </ng-container>
 
       <div class="mt-4">
         <button class="app-button" routerLink="new">
-          New payout
+          New Snapshot
         </button>
       </div>
     </ng-container>

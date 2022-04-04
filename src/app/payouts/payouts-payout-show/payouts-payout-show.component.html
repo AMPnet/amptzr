@@ -1,1 +1,184 @@
-<p>payouts-payout-show works!</p>
+<div class="px-4 py-2 max-w-screen-lg mx-auto">
+  <div class="bg-white my-8 p-6 rounded-4xl">
+    <h1 class="mt-2 text-2xl uppercase">
+      Payout Details
+    </h1>
+
+    <ng-container *ngIf="(payout$ | async) as payoutRes">
+      <ng-container *ngIf="payoutRes.value as payout">
+        <ng-container *ngIf="(payout.asset | assetData:'tokenOnly' | withStatus | async) as assetRes">
+          <ng-container *ngIf="assetRes.value as asset">
+            <h2 class="font-semibold mt-4">
+              Base asset
+            </h2>
+
+            <div class="flex gap-1 items-baseline mt-2">
+              <span>{{ asset.tokenData.symbol }}</span>
+              <span class="text-sm">
+                {{ asset.tokenData.address | addrShort }}
+              </span>
+              <app-value-copy [value]="asset.tokenData.address"></app-value-copy>
+              <app-explorer-link [value]="asset.tokenData.address" type="token">
+              </app-explorer-link>
+              <app-add-to-metamask [value]="asset.tokenData.address">
+              </app-add-to-metamask>
+            </div>
+
+            <div class="flex max-w-md mt-4">
+              <span class="text-sm bg-gray-100 rounded p-2">
+                The payout is evenly distributed to the holders based on their asset share.
+              </span>
+            </div>
+
+            <ng-container *ngIf="payout.status === payoutStatus.ProofFailed">
+              <div class="mt-4">
+                The process of generating a payout cryptographic proof failed.
+                Consider creating a new payment.
+              </div>
+            </ng-container>
+
+            <ng-container *ngIf="payout.status === payoutStatus.ProofPending">
+              <app-spinner type="overlay" class="mt-4">
+                Generation of a payment cryptographic proof in progress...
+              </app-spinner>
+            </ng-container>
+
+            <ng-container *ngIf="payout.status === payoutStatus.ProofCreated">
+              <!-- show form to create a payout -->
+
+              <h2 class="font-semibold mt-4">
+                Payout asset
+              </h2>
+
+              <form [formGroup]="sendAssetForm">
+                <div class="flex flex-col gap-2 mt-4 max-w-md">
+                  <label class="font-semibold" for="payout-asset-address">
+                    Token address
+                  </label>
+                  <input class="border-gray-400 rounded-lg" type="text"
+                         formControlName="payoutAssetAddress" id="payout-asset-address"
+                         autocomplete="off">
+                </div>
+
+                <ng-container *ngIf="(distributeState$ | async) as distributeState">
+                  <div class="flex items-baseline gap-1.5 flex-wrap mt-4">
+                    <span>{{ distributeState.tokenData.symbol }}</span>
+                    <span class="text-sm">
+                      {{ distributeState.tokenData.address | addrShort }}
+                    </span>
+                    <app-value-copy [value]="distributeState.tokenData.address" [delay]="800">
+                    </app-value-copy>
+                    <app-explorer-link [value]="distributeState.tokenData.address">
+                    </app-explorer-link>
+                    <app-add-to-metamask [value]="distributeState.tokenData.address">
+                    </app-add-to-metamask>
+                  </div>
+
+                  <!-- Token box -->
+                  <div class="mt-5 bg-gray-200/20 border-gray-300/50 border-[1px] rounded-lg px-2 pb-1
+                              max-w-md">
+                    <span class="flex justify-end mt-2 text-xxs font-medium text-gray-400">
+                      Amount of {{ distributeState.tokenData.symbol }} you will distribute
+                    </span>
+
+                    <div class="flex justify-between">
+                      <div class="flex items-center">
+                        <div class="flex rounded-full items-center bg-white shadow">
+                          <div class="w-7 h-7 bg-white rounded-full overflow-hidden m-1">
+                            <img class="h-full w-full object-cover"
+                                 src="{{ (distributeState.asset?.infoData?.logo | toUrlIPFS) || (distributeState.tokenData.symbol | toStablecoinLogoPath) }}"
+                                 alt="{{ distributeState.tokenData.symbol }} logo">
+                          </div>
+
+                          <span class="ml-1 mr-3 font-medium whitespace-nowrap">
+                            {{ distributeState.tokenData.symbol }}
+                          </span>
+                        </div>
+                      </div>
+
+                      <input class="w-full py-0 pr-0 text-right bg-transparent border-none focus:ring-0 text-3xl
+                                text-ellipsis	placeholder:text-gray-400"
+                             formControlName="tokenAmount"
+                             appBigNumberInput bigNumberType="token"
+                             [tokenPrecision]="distributeState.tokenData.decimals">
+                    </div>
+
+                    <div class="flex">
+                      <div class="flex items-center min-h-[1rem] mt-2 flex-1">
+                        <ng-container *ngIf="sendAssetForm?.invalid">
+                          <span class="text-red-600 text-xs font-semibold">
+                            <ng-container *ngIf="sendAssetForm.errors?.tokenAmountAboveBalance">
+                              The amount exceeds your token balance.
+                            </ng-container>
+                          </span>
+                        </ng-container>
+                      </div>
+                    </div>
+
+                    <div class="flex justify-between items-center mt-5 text-xxs font-medium">
+                      <div>
+                        <span class="text-gray-400" *ngIf="distributeState.balance">
+                          Balance: {{ distributeState.balance
+                          | formatUnit:'token':distributeState.tokenData.decimals
+                          | currencyDefault:'token':'real':distributeState.tokenData.symbol }}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="mt-4">
+                    <button app-action-button
+                            class="app-button"
+                            [hidden]="(shouldApprove$ | async) !== true"
+                            [disabled]="sendAssetForm.invalid"
+                            [onClick]="approveAmount(distributeState).bind(this)"
+                            text="Approve">
+                    </button>
+
+                    <button app-action-button
+                            class="app-button"
+                            [hidden]="(shouldDistribute$ | async) !== true"
+                            [disabled]="sendAssetForm.invalid"
+                            [onClick]="createPayout(distributeState, payout).bind(this)"
+                            text="Create Payout">
+                    </button>
+                  </div>
+                </ng-container>
+              </form>
+            </ng-container>
+
+            <ng-container *ngIf="payout.status === payoutStatus.PayoutCreated">
+              <!-- show data about the current payout -->
+
+              <ng-container *ngIf="!payout.is_canceled">
+                <!-- show button to cancel -->
+              </ng-container>
+
+              <ng-container *ngIf="payout.is_canceled">
+                <!-- show a notice that the payment is canceled -->
+              </ng-container>
+            </ng-container>
+          </ng-container>
+
+          <ng-container *ngIf="assetRes.error">
+            Cannot fetch asset.
+            <div hidden>{{ assetRes.error | json }}</div>
+          </ng-container>
+
+          <ng-container *ngIf="assetRes.loading">
+            Loading asset...
+          </ng-container>
+        </ng-container>
+      </ng-container>
+
+      <ng-container *ngIf="payoutRes.error">
+        Cannot fetch payout.
+        <div hidden>{{ payoutRes.error | json }}</div>
+      </ng-container>
+
+      <ng-container *ngIf="payoutRes.loading">
+        Loading payout...
+      </ng-container>
+    </ng-container>
+  </div>
+</div>
