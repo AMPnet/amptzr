@@ -1,21 +1,33 @@
 import {Injectable} from '@angular/core'
 import {PayoutManager, PayoutManager__factory} from '../../../../../types/ethers-contracts'
 import {SessionQuery} from '../../../session/state/session.query'
-import {switchMap} from 'rxjs/operators'
+import {filter, map, switchMap} from 'rxjs/operators'
 import {PreferenceQuery} from '../../../preference/state/preference.query'
-import {combineLatest, from, of} from 'rxjs'
+import {combineLatest, from, Observable, of} from 'rxjs'
 import {GasService} from './gas.service'
 import {DialogService} from '../dialog.service'
 import {SignerService} from '../signer.service'
 import {ErrorService} from '../error.service'
 import {IPayoutManager} from '../../../../../types/ethers-contracts/PayoutManager'
-import {Signer} from 'ethers'
+import {BigNumber, BigNumberish, Signer} from 'ethers'
 import {Provider} from '@ethersproject/providers'
+import {Structs} from '../../../../../types/ethers-contracts/IPayoutManager'
 
 @Injectable({
   providedIn: 'root',
 })
 export class PayoutManagerService {
+  payouts$: Observable<Payout[]> = combineLatest([
+    this.sessionQuery.provider$.pipe(
+      map(provider => this.contract(provider)),
+    ),
+    this.preferenceQuery.address$,
+  ]).pipe(
+    filter(([_contract, address]) => !!address),
+    switchMap(([contract, address]) =>
+      contract.getPayoutsForOwner(address)),
+  )
+
   constructor(private sessionQuery: SessionQuery,
               private gasService: GasService,
               private dialogService: DialogService,
@@ -27,6 +39,13 @@ export class PayoutManagerService {
   contract(signerOrProvider: Signer | Provider): PayoutManager {
     return PayoutManager__factory.connect(
       this.preferenceQuery.network.tokenizerConfig.payoutManager, signerOrProvider,
+    )
+  }
+
+  getPayout(id: BigNumberish) {
+    return this.sessionQuery.provider$.pipe(
+      map(provider => this.contract(provider)),
+      switchMap(contract => contract.getPayoutInfo(id)),
     )
   }
 
@@ -45,4 +64,22 @@ export class PayoutManagerService {
       this.errorService.handleError(false, true),
     )
   }
+
+  cancelPayout(id: BigNumber) {
+    return this.signerService.ensureAuth.pipe(
+      switchMap(signer => this.dialogService.waitingApproval(
+        of(this.contract(signer)).pipe(
+          switchMap(contract => combineLatest([of(contract), this.gasService.overrides])),
+          switchMap(([contract, overrides]) => contract.populateTransaction.cancelPayout(id, overrides)),
+          switchMap(tx => this.signerService.sendTransaction(tx)),
+        ),
+      )),
+      switchMap(tx => this.dialogService.waitingTransaction(
+        from(this.sessionQuery.provider.waitForTransaction(tx.hash)),
+      )),
+      this.errorService.handleError(false, true),
+    )
+  }
 }
+
+export type Payout = Structs.PayoutStructOutput

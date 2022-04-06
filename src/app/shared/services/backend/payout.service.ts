@@ -6,6 +6,7 @@ import {PreferenceQuery} from '../../../preference/state/preference.query'
 import {address} from '../../../../../types/common'
 import {map} from 'rxjs/operators'
 import {SessionQuery} from '../../../session/state/session.query'
+import {ChainID} from '../../networks'
 
 @Injectable({
   providedIn: 'root',
@@ -23,37 +24,41 @@ export class PayoutService {
 
     return from(this.sessionQuery.provider.getBlockNumber()).pipe(
       switchMap(blockNumber => this.http.post<CreatePayoutRes>(
-        `${this.path}/payouts/${chainID}/${assetAddress}`, {
+        `${this.path}/snapshots`, {
+          chain_id: chainID,
+          asset_address: assetAddress,
           payout_block_number: blockNumber.toString(),
           ignored_holder_addresses: ignoredHolderAddresses,
           issuer_address: this.preferenceQuery.issuer.address,
-        } as CreatePayoutData)),
+        } as CreateSnapshotData)),
     )
   }
 
-  getSnapshots(): Observable<Payout[]> {
+  getSnapshots(): Observable<Snapshot[]> {
     return this.http.get<PayoutsRes>(
-      `${this.path}/payouts/${this.preferenceQuery.network.chainID}`,
+      `${this.path}/snapshots`,
       {
+        chainId: this.preferenceQuery.network.chainID,
         issuer: this.preferenceQuery.issuer.address ?? undefined,
         owner: this.preferenceQuery.getValue().address ?? undefined,
         assetFactories: this.preferenceQuery.assetFactories.join(','),
         payoutService: this.preferenceQuery.network.tokenizerConfig.payoutService,
         payoutManager: this.preferenceQuery.network.tokenizerConfig.payoutManager,
-      } as GetPayoutsParams,
+      } as getSnapshotsParams,
     ).pipe(
-      map(res => res.payouts),
+      map(res => res.snapshots),
     )
   }
 
-  getPayout(taskID: string): Observable<Payout> {
-    return this.http.get<Payout>(
-      `${this.path}/payouts/${this.preferenceQuery.network.chainID}/task/${taskID}`,
+  getSnapshot(id: string): Observable<Snapshot> {
+    return this.http.get<Snapshot>(
+      `${this.path}/snapshots/${id}`,
     )
   }
 }
 
-interface GetPayoutsParams {
+interface getSnapshotsParams {
+  chainId?: ChainID,
   status?: SnapshotStatus
   issuer?: address,
   owner?: address,
@@ -63,24 +68,21 @@ interface GetPayoutsParams {
 }
 
 export enum SnapshotStatus {
-  ProofPending = 'PROOF_PENDING',
-  ProofFailed = 'PROOF_FAILED',
-  ProofCreated = 'PROOF_CREATED',
-  PayoutCreated = 'PAYOUT_CREATED',
+  Pending = 'PENDING',
+  Failed = 'FAILED',
+  Created = 'CREATED',
 }
 
 interface PayoutsRes {
-  payouts: Payout[]
+  snapshots: Snapshot[]
 }
 
-export interface Payout {
-  task_id: string;
+export interface Snapshot {
+  id: string;
+  name: string;
+  chain_id: number;
   status: SnapshotStatus;
-  issuer: string;
-  payout_id: string;
-  payout_owner: string;
-  payout_info: string;
-  is_canceled: boolean;
+  owner: string;
   asset: string;
   total_asset_amount: string;
   ignored_holder_addresses: string[];
@@ -88,17 +90,15 @@ export interface Payout {
   asset_snapshot_merkle_depth: number;
   asset_snapshot_block_number: string;
   asset_snapshot_merkle_ipfs_hash: string;
-  reward_asset: string;
-  total_reward_amount: string;
-  remaining_reward_amount: string;
 }
 
-interface CreatePayoutData {
+interface CreateSnapshotData {
+  chain_id: ChainID,
+  asset_address: address
   payout_block_number: string;
   ignored_holder_addresses: address[];
-  issuer_address: address;
 }
 
 interface CreatePayoutRes {
-  task_id: string;
+  id: string;
 }

@@ -80,7 +80,7 @@ export class SnapshotNewComponent {
       debounceTime(100),
       take(1),
       map(([data]) => !data.tokenData ? {noToken: true} : null),
-      tap(() => ɵmarkDirty(this)),
+      // tap(() => ɵmarkDirty(this)),
     )
   }
 
@@ -89,7 +89,7 @@ export class SnapshotNewComponent {
       debounceTime(100),
       take(1),
       map(([data]) => !data.blockTime ? {incorrectBlockNumber: true} : null),
-      tap(() => ɵmarkDirty(this)),
+      // tap(() => ɵmarkDirty(this)),
     )
   }
 

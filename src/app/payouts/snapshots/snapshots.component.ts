@@ -1,7 +1,7 @@
 import {ChangeDetectionStrategy, Component} from '@angular/core'
 import {Observable} from 'rxjs'
 import {withStatus, WithStatus} from '../../shared/utils/observables'
-import {Payout, PayoutService, SnapshotStatus} from '../../shared/services/backend/payout.service'
+import {Snapshot, PayoutService, SnapshotStatus} from '../../shared/services/backend/payout.service'
 import {map} from 'rxjs/operators'
 
 @Component({
@@ -11,13 +11,13 @@ import {map} from 'rxjs/operators'
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SnapshotsComponent {
-  snapshots$: Observable<WithStatus<Payout[]>>
+  snapshots$: Observable<WithStatus<Snapshot[]>>
   snapshotStatus = SnapshotStatus
 
   constructor(private payoutService: PayoutService) {
     this.snapshots$ = withStatus(
       this.payoutService.getSnapshots().pipe(
-        map(payouts => payouts.sort((a, b) =>
+        map(snapshots => snapshots.sort((a, b) =>
           Number(a.asset_snapshot_block_number) < Number(b.asset_snapshot_block_number) ? 1 : -1),
         ),
       ),

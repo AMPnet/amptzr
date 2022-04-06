@@ -31,10 +31,13 @@ import {
 import {AuthMagicOauthComponent} from './auth/auth-magic-oauth/auth-magic-oauth.component'
 import {TransferComponent} from './transfer/transfer.component'
 import {SwapComponent} from './swap/swap.component'
-import {PayoutsPayoutShowComponent} from './payouts/payouts-payout-show/payouts-payout-show.component'
 import {SnapshotsComponent} from './payouts/snapshots/snapshots.component'
 import {SnapshotNewComponent} from './payouts/snapshots/snapshot-new/snapshot-new.component'
 import {SnapshotComponent} from './payouts/snapshots/snapshot/snapshot.component'
+import {PayoutsComponent} from './payouts/payouts.component'
+import {PayoutComponent} from './payouts/payout/payout.component'
+import {PayoutNewComponent} from './payouts/payout-new/payout-new.component'
+import {ClaimsComponent} from './payouts/claims/claims.component'
 
 const appRoutes: Routes = [
   {path: 'callback', component: AuthMagicOauthComponent},
@@ -52,6 +55,21 @@ const appRoutes: Routes = [
       {path: 'orders', component: OrdersComponent},
     ],
   },
+  {
+    path: 'payouts', canActivate: [], children: [
+      {path: 'claims', component: ClaimsComponent},
+      {
+        path: 'snapshots', canActivate: [], children: [
+          {path: '', pathMatch: 'full', component: SnapshotsComponent},
+          {path: 'new', component: SnapshotNewComponent},
+          {path: ':id', component: SnapshotComponent},
+        ],
+      },
+      {path: '', pathMatch: 'full', component: PayoutsComponent},
+      {path: 'new/:snapshotID', component: PayoutNewComponent},
+      {path: ':id', component: PayoutComponent},
+    ],
+  },
   {path: 'faq', component: FaqComponent},
   {
     path: 'admin', canActivate: [AuthGuard, AdminGuard], children: [
@@ -66,20 +84,6 @@ const appRoutes: Routes = [
       {path: 'campaigns/:campaignId', component: AdminCampaignDetailComponent},
       {path: 'campaigns/:campaignId/edit', component: AdminCampaignEditComponent},
       {path: 'campaigns/:campaignId/add-tokens', component: AdminCampaignAddTokensComponent},
-      {
-        path: 'snapshots', canActivate: [], children: [
-          {path: '', pathMatch: 'full', component: SnapshotsComponent},
-          {path: 'new', component: SnapshotNewComponent},
-          {path: ':id', component: SnapshotComponent},
-        ],
-      },
-      {
-        path: 'payouts', canActivate: [], children: [
-          // {path: '', pathMatch: 'full', component: PayoutsShowComponent},
-          // {path: 'new', component: PayoutsPayoutNewComponent},
-          {path: ':id', component: PayoutsPayoutShowComponent},
-        ],
-      },
     ],
   },
   {path: 'dev_playground', component: DevPlaygroundComponent},

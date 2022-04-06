@@ -4,19 +4,19 @@
       Asset Snapshots
     </h1>
 
-    <ng-container *ngIf="(snapshots$ | async) as payoutsRes">
-      <ng-container *ngIf="payoutsRes.value as payouts">
-        <div *ngIf="payouts.length === 0" class="mt-4">
+    <ng-container *ngIf="(snapshots$ | async) as snapshotsRes">
+      <ng-container *ngIf="snapshotsRes.value as snapshots">
+        <div *ngIf="snapshots.length === 0" class="mt-4">
           No snapshots
         </div>
 
-        <div *ngIf="payouts.length > 0"
+        <div *ngIf="snapshots.length > 0"
              class="flex flex-col gap-1 mt-4">
-          <div *ngFor="let payout of payouts"
+          <div *ngFor="let snapshot of snapshots"
                class="bg-gray-100 rounded p-2">
             <div class="flex justify-between flex-wrap">
               <div class="flex gap-1 flex-wrap">
-                <ng-container *ngIf="(payout.asset | assetData:'tokenOnly'
+                <ng-container *ngIf="(snapshot.asset | assetData:'tokenOnly'
                                      | withStatus | async) as assetRes">
                   <ng-container *ngIf="assetRes.value as asset">
                     <div class="flex gap-0.5 items-baseline">
@@ -43,7 +43,7 @@
                 </ng-container>
 
                 <ng-container
-                  *ngIf="(payout.asset_snapshot_block_number | blockTime | withStatus | async) as blockTimeRes">
+                  *ngIf="(snapshot.asset_snapshot_block_number | blockTime | withStatus | async) as blockTimeRes">
                   <ng-container *ngIf="blockTimeRes.value as blockTime">
                     <span>{{ blockTime | date:'short' }}</span>
                   </ng-container>
@@ -62,39 +62,31 @@
               <div class="flex gap-1 flex-wrap w-full justify-end md:w-auto">
                 <div class="rounded p-1 bg-red-600 text-white
                             text-xs font-semibold uppercase"
-                     *ngIf="payout.status === snapshotStatus.ProofFailed">
+                     *ngIf="snapshot.status === snapshotStatus.Failed">
                   Failed
                 </div>
 
                 <div class="rounded p-1 bg-orange-400 text-white
                             text-xs font-semibold uppercase"
-                     *ngIf="payout.status === snapshotStatus.ProofPending">
+                     *ngIf="snapshot.status === snapshotStatus.Pending">
                   <span class="animate-pulse">
                     Pending
                   </span>
                 </div>
 
-                <div class="rounded p-1 bg-cyan-500 text-white
-                          text-xs font-semibold uppercase"
-                     *ngIf="payout.status === snapshotStatus.ProofCreated">
-                  <span class="">
-                    Ready
-                  </span>
-                </div>
-
                 <div class="rounded p-1 bg-emerald-600 text-white
                           text-xs font-semibold uppercase"
-                     *ngIf="payout.status === snapshotStatus.PayoutCreated">
+                     *ngIf="snapshot.status === snapshotStatus.Created">
                   <span class="">
-                    Executed
+                    Created
                   </span>
                 </div>
 
-                <a [routerLink]="payout.task_id"
+                <a [routerLink]="snapshot.id"
                    class="rounded-full p-2 bg-cyan-500 text-white
                           text-sm font-semibold uppercase
                           flex items-center"
-                   *ngIf="payout.task_id">
+                   *ngIf="snapshot.id">
                   <svg width="8" height="14" viewBox="0 0 8 14" fill="none" xmlns="http://www.w3.org/2000/svg"
                        class="w-2 h-2">
                     <path d="M1 1.16602L6.83333 6.99935L1 12.8327" stroke="white" stroke-width="2"
@@ -108,12 +100,12 @@
         </div>
       </ng-container>
 
-      <ng-container *ngIf="payoutsRes.error">
+      <ng-container *ngIf="snapshotsRes.error">
         Cannot fetch snapshots.
-        <div hidden>{{ payoutsRes.error | json }}</div>
+        <div hidden>{{ snapshotsRes.error | json }}</div>
       </ng-container>
 
-      <ng-container *ngIf="payoutsRes.loading">
+      <ng-container *ngIf="snapshotsRes.loading">
         Loading snapshots...
       </ng-container>
 

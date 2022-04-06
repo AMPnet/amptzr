@@ -19,9 +19,10 @@ export class GasService {
   }
 
   get overrides(): Observable<Partial<Overrides>> {
-    if (this.shouldUseGasStation) {
-      return this.gasPriceOracleOverrides
-    }
+    // TODO: temporarily removed due to magic issues
+    // if (this.shouldUseGasStation) {
+    //   return this.gasPriceOracleOverrides
+    // }
 
     return this.isEip1559Supported.pipe(
       switchMap(isEip1559Supported => isEip1559Supported ?

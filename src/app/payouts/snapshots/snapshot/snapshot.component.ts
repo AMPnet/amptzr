@@ -1,16 +1,28 @@
-import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import {ChangeDetectionStrategy, Component} from '@angular/core'
+import {BehaviorSubject, Observable, switchMap} from 'rxjs'
+import {withStatus, WithStatus} from '../../../shared/utils/observables'
+import {ActivatedRoute} from '@angular/router'
+import {PayoutService, Snapshot, SnapshotStatus} from '../../../shared/services/backend/payout.service'
 
 @Component({
   selector: 'app-snapshot',
   templateUrl: './snapshot.component.html',
   styleUrls: ['./snapshot.component.css'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class SnapshotComponent implements OnInit {
+export class SnapshotComponent {
+  snapshot$: Observable<WithStatus<Snapshot>>
+  refreshSnapshotSub = new BehaviorSubject<void>(undefined)
+  snapshotStatus = SnapshotStatus
 
-  constructor() { }
+  constructor(private payoutService: PayoutService,
+              private route: ActivatedRoute) {
+    const snapshotID = this.route.snapshot.params.id
 
-  ngOnInit(): void {
+    this.snapshot$ = withStatus(
+      this.refreshSnapshotSub.asObservable().pipe(
+        switchMap(() => this.payoutService.getSnapshot(snapshotID)),
+      ),
+    )
   }
-
 }

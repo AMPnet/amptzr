@@ -1,34 +1,35 @@
 import {ChangeDetectionStrategy, Component, ɵmarkDirty} from '@angular/core'
 import {BehaviorSubject, combineLatest, Observable, of, switchMap} from 'rxjs'
 import {withStatus, WithStatus} from '../../shared/utils/observables'
-import {Payout, PayoutService, SnapshotStatus} from '../../shared/services/backend/payout.service'
+import {PayoutService, Snapshot, SnapshotStatus} from '../../shared/services/backend/payout.service'
 import {ActivatedRoute} from '@angular/router'
 import {AbstractControl, FormBuilder, FormGroup, ValidationErrors, Validators} from '@angular/forms'
 import {catchError, distinctUntilChanged, map, shareReplay, startWith, take, tap} from 'rxjs/operators'
 import {Erc20Service, ERC20TokenData} from '../../shared/services/blockchain/erc20.service'
+import {AssetService, CommonAssetWithInfo} from '../../shared/services/blockchain/asset/asset.service'
 import {BigNumber, constants} from 'ethers'
+import {PayoutManagerService} from '../../shared/services/blockchain/payout-manager.service'
 import {PreferenceQuery} from '../../preference/state/preference.query'
 import {ConversionService} from '../../shared/services/conversion.service'
-import {AssetService, CommonAssetWithInfo} from '../../shared/services/blockchain/asset/asset.service'
-import {PayoutManagerService} from '../../shared/services/blockchain/payout-manager.service'
+import {DialogService} from '../../shared/services/dialog.service'
 import {RouterService} from '../../shared/services/router.service'
 
 @Component({
-  selector: 'app-payouts-payout-show',
-  templateUrl: './payouts-payout-show.component.html',
-  styleUrls: ['./payouts-payout-show.component.css'],
+  selector: 'app-payout-new',
+  templateUrl: './payout-new.component.html',
+  styleUrls: ['./payout-new.component.css'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class PayoutsPayoutShowComponent {
-  payout$: Observable<WithStatus<Payout>>
-  refreshPayoutSub = new BehaviorSubject<void>(undefined)
+export class PayoutNewComponent {
+  snapshot$: Observable<WithStatus<Snapshot>>
+  refreshSnapshotSub = new BehaviorSubject<void>(undefined)
+  snapshotStatus = SnapshotStatus
 
-  sendAssetForm: FormGroup
-  payoutStatus = SnapshotStatus
+  newPayoutForm: FormGroup
 
-  distributeState$: Observable<DistributeState | undefined>
+  payoutState$: Observable<PayoutState | undefined>
   shouldApprove$: Observable<boolean>
-  shouldDistribute$: Observable<boolean>
+  shouldCreatePayout$: Observable<boolean>
 
   constructor(private payoutService: PayoutService,
               private fb: FormBuilder,
@@ -37,18 +38,19 @@ export class PayoutsPayoutShowComponent {
               private payoutManagerService: PayoutManagerService,
               private preferenceQuery: PreferenceQuery,
               private conversion: ConversionService,
+              private dialogService: DialogService,
               private router: RouterService,
               private route: ActivatedRoute) {
-    const taskID = this.route.snapshot.params.id
+    const snapshotID = this.route.snapshot.params.snapshotID
 
-    this.payout$ = withStatus(
-      this.refreshPayoutSub.asObservable().pipe(
-        switchMap(() => this.payoutService.getPayout(taskID)),
+    this.snapshot$ = withStatus(
+      this.refreshSnapshotSub.asObservable().pipe(
+        switchMap(() => this.payoutService.getSnapshot(snapshotID)),
       ),
     )
 
-    this.sendAssetForm = this.fb.group({
-      payoutAssetAddress: [
+    this.newPayoutForm = this.fb.group({
+      rewardAssetAddress: [
         '',
         [Validators.required, Validators.pattern(/^0x[a-fA-F0-9]{40}$/)],
       ],
@@ -57,19 +59,19 @@ export class PayoutsPayoutShowComponent {
       asyncValidators: this.amountValidator.bind(this),
     })
 
-    const payoutAssetAddressChanged$ = this.sendAssetForm.get('payoutAssetAddress')!.valueChanges.pipe(
-      startWith(this.sendAssetForm.value.payoutAssetAddress),
+    const rewardAssetAddressChanged$ = this.newPayoutForm.get('rewardAssetAddress')!.valueChanges.pipe(
+      startWith(this.newPayoutForm.value.rewardAssetAddress),
       distinctUntilChanged(),
       shareReplay(1),
     )
 
-    const tokenAmountChanged$ = this.sendAssetForm.get('tokenAmount')!.valueChanges.pipe(
-      startWith(''),
+    const tokenAmountChanged$ = this.newPayoutForm.get('tokenAmount')!.valueChanges.pipe(
+      startWith(this.newPayoutForm.value.tokenAmount),
       distinctUntilChanged((p, c) => p == c),
       shareReplay(1),
     )
 
-    const payoutAsset$ = payoutAssetAddressChanged$.pipe(
+    const rewardAsset$ = rewardAssetAddressChanged$.pipe(
       switchMap(address => /^0x[a-fA-F0-9]{40}$/.test(address) ?
         this.erc20Service.getData(address).pipe(
           catchError(() => of(undefined)),
@@ -77,7 +79,7 @@ export class PayoutsPayoutShowComponent {
       ),
     )
 
-    this.distributeState$ = payoutAsset$.pipe(
+    this.payoutState$ = rewardAsset$.pipe(
       switchMap(tokenData => !!tokenData ? combineLatest([
         of(tokenData),
         this.assetService.getAssetWithInfo(tokenData.address, true).pipe(
@@ -94,7 +96,7 @@ export class PayoutsPayoutShowComponent {
     )
 
     this.shouldApprove$ = combineLatest([
-      this.distributeState$,
+      this.payoutState$,
       tokenAmountChanged$,
     ]).pipe(
       map(([state, tokenAmount]) => {
@@ -111,7 +113,7 @@ export class PayoutsPayoutShowComponent {
       distinctUntilChanged(),
     )
 
-    this.shouldDistribute$ = combineLatest([
+    this.shouldCreatePayout$ = combineLatest([
       this.shouldApprove$,
     ]).pipe(
       map(([shouldApprove]) => {
@@ -122,7 +124,7 @@ export class PayoutsPayoutShowComponent {
   }
 
   private amountValidator(control: AbstractControl): Observable<ValidationErrors | null> {
-    return combineLatest([this.distributeState$]).pipe(take(1),
+    return combineLatest([this.payoutState$]).pipe(take(1),
       map(([data]) => {
         if (!data) return {noToken: true}
 
@@ -140,10 +142,10 @@ export class PayoutsPayoutShowComponent {
     )
   }
 
-  approveAmount(state: DistributeState) {
+  approveAmount(state: PayoutState) {
     return () => {
       const amount = this.conversion.toToken(
-        this.sendAssetForm.value.tokenAmount, state.tokenData.decimals,
+        this.newPayoutForm.value.tokenAmount, state.tokenData.decimals,
       )
 
       return this.erc20Service.approveAmount(
@@ -154,28 +156,33 @@ export class PayoutsPayoutShowComponent {
     }
   }
 
-  createPayout(state: DistributeState, payout: Payout) {
+  createPayout(state: PayoutState, snapshot: Snapshot) {
     return () => {
       return this.payoutManagerService.createPayout({
-          asset: payout.asset,
-          totalAssetAmount: payout.total_asset_amount,
-          ignoredAssetAddresses: payout.ignored_holder_addresses,
-          payoutInfo: payout.payout_info || '',
-          assetSnapshotMerkleRoot: payout.asset_snapshot_merkle_root,
-          assetSnapshotMerkleDepth: payout.asset_snapshot_merkle_depth,
-          assetSnapshotBlockNumber: payout.asset_snapshot_block_number,
-          assetSnapshotMerkleIpfsHash: payout.asset_snapshot_merkle_ipfs_hash,
+          asset: snapshot.asset,
+          totalAssetAmount: snapshot.total_asset_amount,
+          ignoredAssetAddresses: snapshot.ignored_holder_addresses,
+          payoutInfo: '', // TODO: set payout info from the user form input
+          assetSnapshotMerkleRoot: snapshot.asset_snapshot_merkle_root,
+          assetSnapshotMerkleDepth: snapshot.asset_snapshot_merkle_depth,
+          assetSnapshotBlockNumber: snapshot.asset_snapshot_block_number,
+          assetSnapshotMerkleIpfsHash: snapshot.asset_snapshot_merkle_ipfs_hash,
           rewardAsset: state.tokenData.address,
           totalRewardAmount: this.conversion.toToken(
-            this.sendAssetForm.value.tokenAmount, state.tokenData.decimals,
+            this.newPayoutForm.value.tokenAmount, state.tokenData.decimals,
           ),
         },
+      ).pipe(
+        switchMap(() => this.dialogService.success({
+          message: 'Payout created.',
+        })),
+        switchMap(() => this.router.navigate(['..'], {relativeTo: this.route})),
       )
     }
   }
 }
 
-interface DistributeState {
+interface PayoutState {
   tokenData: ERC20TokenData,
   asset: CommonAssetWithInfo | undefined,
   allowance: BigNumber,
