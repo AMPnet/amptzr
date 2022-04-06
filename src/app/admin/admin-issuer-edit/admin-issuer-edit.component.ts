@@ -86,9 +86,8 @@ export class AdminIssuerEditComponent {
         issuer: issuer.infoData,
       }).pipe(
         switchMap(uploadRes => this.issuerService.updateInfo(issuer.contractAddress, uploadRes.path)),
-        switchMap(() => this.dialogService.info({
-          title: 'Issuer has been updated',
-          cancelable: false,
+        switchMap(() => this.dialogService.success({
+          message: 'Issuer has been updated.',
         })),
         tap(() => this.refreshIssuer()),
         tap(() => this.routerService.navigate(['/admin'])),
@@ -102,9 +101,8 @@ export class AdminIssuerEditComponent {
         issuer.contractAddress, this.updateWalletApproverAddressForm.value.walletApproverAddress,
       ).pipe(
         tap(() => this.updateWalletApproverAddressForm.markAsPristine()),
-        switchMap(() => this.dialogService.info({
-          title: 'Wallet approver has been changed',
-          cancelable: false,
+        switchMap(() => this.dialogService.success({
+          message: 'Wallet approver has been changed.',
         })),
       )
     }
@@ -115,9 +113,8 @@ export class AdminIssuerEditComponent {
       return this.issuerService.changeOwner(
         issuer.contractAddress, this.updateOwnerAddressForm.value.ownerAddress,
       ).pipe(
-        switchMap(() => this.dialogService.info({
-          title: 'The owner has been changed',
-          cancelable: false,
+        switchMap(() => this.dialogService.success({
+          message: 'The owner has been changed.',
         })),
         tap(() => this.refreshIssuer()),
         tap(() => this.routerService.navigate(['/'])),

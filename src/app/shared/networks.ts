@@ -126,11 +126,11 @@ export const PrivateNetwork: Network = {
     symbol: 'AMP',
   },
   maxGasPrice: 0,
-  rpcURLs: ['http://206.189.241.69/rpc'],
+  rpcURLs: ['https://poa.ampnet.io/rpc'],
   wssRpcURLs: [
-    // 'http://206.189.241.69/ws'
+    // 'https://poa.ampnet.io/ws' // TODO: uncomment when WS is enabled
   ],
-  explorerURLs: ['http://206.189.241.69/'],
+  explorerURLs: ['https://poa.ampnet.io/'],
   tokenizerConfig: {
     apxRegistry: TPPrivate.apxRegistry.address,
     issuerFactory: TPPrivate.issuerFactory,
