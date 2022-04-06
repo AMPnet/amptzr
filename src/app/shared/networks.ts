@@ -1,6 +1,6 @@
 import {providers} from 'ethers'
-import {ReconnectingWebsocketProvider} from './ethersjs/reconnecting-websocket-provider'
 import {Matic as TPMatic, Mumbai as TPMumbai} from '../../../tokenizer-prototype/deployments'
+import ReconnectingWebSocket from 'reconnecting-websocket'
 
 export enum ChainID {
   MATIC_MAINNET = 137, // Polygon
@@ -162,7 +162,7 @@ const getEthersNetwork = (network: Network): providers.Network => ({
   chainId: network.chainID,
   _defaultProvider: (_providers: any) => {
     if (network.wssRpcURLs?.[0]) {
-      return new ReconnectingWebsocketProvider(network.wssRpcURLs![0], network.chainID)
+      return new providers.WebSocketProvider(new ReconnectingWebSocket(network.wssRpcURLs![0]) as any, network.chainID)
     }
 
     return new providers.StaticJsonRpcProvider(network.rpcURLs[0], network.chainID)
