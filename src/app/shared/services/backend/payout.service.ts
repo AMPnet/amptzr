@@ -7,6 +7,7 @@ import {address} from '../../../../../types/common'
 import {map} from 'rxjs/operators'
 import {SessionQuery} from '../../../session/state/session.query'
 import {ChainID} from '../../networks'
+import {Payout} from '../blockchain/payout-manager.service'
 
 @Injectable({
   providedIn: 'root',
@@ -35,7 +36,7 @@ export class PayoutService {
   }
 
   getSnapshots(): Observable<Snapshot[]> {
-    return this.http.get<PayoutsRes>(
+    return this.http.get<GetSnapshotsRes>(
       `${this.path}/snapshots`,
       {
         chainId: this.preferenceQuery.network.chainID,
@@ -44,7 +45,7 @@ export class PayoutService {
         assetFactories: this.preferenceQuery.assetFactories.join(','),
         payoutService: this.preferenceQuery.network.tokenizerConfig.payoutService,
         payoutManager: this.preferenceQuery.network.tokenizerConfig.payoutManager,
-      } as getSnapshotsParams,
+      } as GetSnapshotsParams,
     ).pipe(
       map(res => res.snapshots),
     )
@@ -55,9 +56,24 @@ export class PayoutService {
       `${this.path}/snapshots/${id}`,
     )
   }
+
+  getClaimablePayouts(): Observable<ClaimablePayout[]> {
+    return this.http.get<GetClaimablePayoutsRes>(
+      `${this.path}/claimable_payouts`,
+      {
+        chainId: this.preferenceQuery.network.chainID,
+        issuer: this.preferenceQuery.issuer.address ?? undefined,
+        assetFactories: this.preferenceQuery.assetFactories.join(','),
+        payoutService: this.preferenceQuery.network.tokenizerConfig.payoutService,
+        payoutManager: this.preferenceQuery.network.tokenizerConfig.payoutManager,
+      } as GetClaimablePayoutsParams,
+    ).pipe(
+      map(res => res.claimable_payouts),
+    )
+  }
 }
 
-interface getSnapshotsParams {
+interface GetSnapshotsParams {
   chainId?: ChainID,
   status?: SnapshotStatus
   issuer?: address,
@@ -73,7 +89,7 @@ export enum SnapshotStatus {
   Created = 'CREATED',
 }
 
-interface PayoutsRes {
+interface GetSnapshotsRes {
   snapshots: Snapshot[]
 }
 
@@ -93,12 +109,33 @@ export interface Snapshot {
 }
 
 interface CreateSnapshotData {
-  chain_id: ChainID,
-  asset_address: address
+  chain_id: ChainID;
+  asset_address: address;
   payout_block_number: string;
   ignored_holder_addresses: address[];
 }
 
 interface CreatePayoutRes {
   id: string;
+}
+
+interface GetClaimablePayoutsParams {
+  chainId: ChainID;
+  issuer?: address;
+  assetFactories: string;
+  payoutService: address;
+  payoutManager: address;
+}
+
+interface GetClaimablePayoutsRes {
+  claimable_payouts: ClaimablePayout[]
+}
+
+export interface ClaimablePayout {
+  payout: Payout,
+  investor: string;
+  amount_claimed: string;
+  amount_claimable: string;
+  balance: string;
+  proof: string[];
 }

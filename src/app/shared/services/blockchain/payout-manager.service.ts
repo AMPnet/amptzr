@@ -9,7 +9,7 @@ import {DialogService} from '../dialog.service'
 import {SignerService} from '../signer.service'
 import {ErrorService} from '../error.service'
 import {IPayoutManager} from '../../../../../types/ethers-contracts/PayoutManager'
-import {BigNumber, BigNumberish, Signer} from 'ethers'
+import {BigNumber, BigNumberish, BytesLike, Signer} from 'ethers'
 import {Provider} from '@ethersproject/providers'
 import {Structs} from '../../../../../types/ethers-contracts/IPayoutManager'
 
@@ -80,6 +80,31 @@ export class PayoutManagerService {
       this.errorService.handleError(false, true),
     )
   }
+
+  claimPayout(data: ClaimData) {
+    return this.signerService.ensureAuth.pipe(
+      switchMap(signer => this.dialogService.waitingApproval(
+        of(this.contract(signer)).pipe(
+          switchMap(contract => combineLatest([of(contract), this.gasService.overrides])),
+          switchMap(([contract, overrides]) => contract.populateTransaction.claim(
+            data.payoutId, data.wallet, data.balance, data.proof, overrides),
+          ),
+          switchMap(tx => this.signerService.sendTransaction(tx)),
+        ),
+      )),
+      switchMap(tx => this.dialogService.waitingTransaction(
+        from(this.sessionQuery.provider.waitForTransaction(tx.hash)),
+      )),
+      this.errorService.handleError(false, true),
+    )
+  }
 }
 
 export type Payout = Structs.PayoutStructOutput
+
+interface ClaimData {
+  payoutId: BigNumberish,
+  wallet: string,
+  balance: BigNumberish,
+  proof: BytesLike[],
+}
