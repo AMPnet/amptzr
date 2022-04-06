@@ -1,7 +1,7 @@
 <div class="px-4 py-2 max-w-screen-lg mx-auto">
   <div class="bg-white my-8 p-6 rounded-4xl">
     <h1 class="mt-2 text-2xl uppercase">
-      Payout Claims
+      Claimable payouts
     </h1>
 
     <ng-container *ngIf="(claimablePayouts$ | async) as claimablePayoutsRes">
@@ -60,7 +60,7 @@
               </div>
 
               <div class="flex gap-1 flex-wrap w-full justify-end md:w-auto">
-                <button app-action-button class="app-button"
+                <button app-action-button class="app-button !text-sm !p-2"
                         text="Claim" [onClick]="claim(claimablePayout).bind(this)">
                 </button>
               </div>
