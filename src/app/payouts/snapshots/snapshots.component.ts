@@ -1,7 +1,7 @@
 import {ChangeDetectionStrategy, Component} from '@angular/core'
 import {Observable} from 'rxjs'
 import {withStatus, WithStatus} from '../../shared/utils/observables'
-import {Snapshot, PayoutService, SnapshotStatus} from '../../shared/services/backend/payout.service'
+import {PayoutService, Snapshot, SnapshotStatus} from '../../shared/services/backend/payout.service'
 import {map} from 'rxjs/operators'
 
 @Component({

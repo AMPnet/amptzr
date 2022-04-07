@@ -1,8 +1,5 @@
 import {Injectable, Pipe, PipeTransform} from '@angular/core'
-import {combineLatest, Observable, of} from 'rxjs'
-import {catchError, map} from 'rxjs/operators'
-import {Erc20Service, ERC20TokenData} from '../services/blockchain/erc20.service'
-import {AssetService, CommonAssetWithInfo} from '../services/blockchain/asset/asset.service'
+import {Observable} from 'rxjs'
 import {withStatus, WithStatus} from '../utils/observables'
 
 @Injectable({
