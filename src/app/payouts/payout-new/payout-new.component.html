@@ -22,55 +22,55 @@
               </app-explorer-link>
               <app-add-to-metamask [value]="asset.tokenData.address">
               </app-add-to-metamask>
+            </div>
 
-              <div class="flex items-baseline gap-1.5 flex-wrap mt-2">
-                <span>Snapshot creator:</span>
-                <span class="text-sm">
-                  {{ snapshot.owner | addrShort }}
-                </span>
-                <app-value-copy [value]="snapshot.owner" [delay]="800">
-                </app-value-copy>
-                <app-explorer-link [value]="snapshot.owner">
-                </app-explorer-link>
-              </div>
+            <div class="flex items-baseline gap-1.5 flex-wrap mt-2">
+              <span>Snapshot creator:</span>
+              <span class="text-sm">
+                {{ snapshot.owner | addrShort }}
+              </span>
+              <app-value-copy [value]="snapshot.owner" [delay]="800">
+              </app-value-copy>
+              <app-explorer-link [value]="snapshot.owner">
+              </app-explorer-link>
+            </div>
 
-              <div class="flex items-baseline gap-1.5 flex-wrap mt-2"
-                   *ngIf="snapshot.asset_snapshot_block_number | formatUnit:'toNumber' as blockNumber">
-                <span>Snapshot block number:</span>
-                <span class="text-sm font-mono">
-                  {{ blockNumber }}
-                </span>
-                <app-value-copy value="{{ blockNumber }}" [delay]="800">
-                </app-value-copy>
-              </div>
+            <div class="flex items-baseline gap-1.5 flex-wrap mt-2"
+                 *ngIf="snapshot.asset_snapshot_block_number | formatUnit:'toNumber' as blockNumber">
+              <span>Snapshot block number:</span>
+              <span class="text-sm font-mono">
+                {{ blockNumber }}
+              </span>
+              <app-value-copy value="{{ blockNumber }}" [delay]="800">
+              </app-value-copy>
+            </div>
 
-              <div class="flex items-baseline gap-1.5 flex-wrap mt-2">
-                <span>Snapshot time:</span>
-                <span class="text-sm">
-                  <ng-container
-                    *ngIf="(snapshot.asset_snapshot_block_number | blockTime | withStatus | async) as blockTimeRes">
-                    <ng-container *ngIf="blockTimeRes.value as blockTime">
-                      <span>{{ blockTime | date:'medium' }}</span>
-                    </ng-container>
-
-                    <ng-container *ngIf="blockTimeRes.error">
-                      <span>❌</span>
-                      <div hidden>{{ blockTimeRes.error | json }}</div>
-                    </ng-container>
-
-                    <ng-container *ngIf="blockTimeRes.loading">
-                      <app-spinner type="inline-xs"></app-spinner>
-                    </ng-container>
+            <div class="flex items-baseline gap-1.5 flex-wrap mt-2">
+              <span>Snapshot time:</span>
+              <span class="text-sm">
+                <ng-container
+                  *ngIf="(snapshot.asset_snapshot_block_number | blockTime | withStatus | async) as blockTimeRes">
+                  <ng-container *ngIf="blockTimeRes.value as blockTime">
+                    <span>{{ blockTime | date:'medium' }}</span>
                   </ng-container>
-                </span>
-              </div>
 
-              <div class="mt-2">
-                <a class="text-sky-600" href="{{ snapshot.asset_snapshot_merkle_ipfs_hash | toUrlIPFS }}"
-                   target="_blank" rel="noopener noreferrer">
-                  Open raw snapshot data
-                </a>
-              </div>
+                  <ng-container *ngIf="blockTimeRes.error">
+                    <span>❌</span>
+                    <div hidden>{{ blockTimeRes.error | json }}</div>
+                  </ng-container>
+
+                  <ng-container *ngIf="blockTimeRes.loading">
+                    <app-spinner type="inline-xs"></app-spinner>
+                  </ng-container>
+                </ng-container>
+              </span>
+            </div>
+
+            <div class="mt-2">
+              <a class="text-sky-600" href="{{ snapshot.asset_snapshot_merkle_ipfs_hash | toUrlIPFS }}"
+                 target="_blank" rel="noopener noreferrer">
+                Open raw snapshot data
+              </a>
             </div>
 
             <ng-container *ngIf="snapshot.status === snapshotStatus.Failed">
@@ -86,7 +86,7 @@
               </app-spinner>
             </ng-container>
 
-            <ng-container *ngIf="snapshot.status === snapshotStatus.Created">
+            <ng-container *ngIf="snapshot.status === snapshotStatus.Success">
               <h2 class="font-semibold mt-4">
                 Payout asset
               </h2>

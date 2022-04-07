@@ -7,7 +7,6 @@ import {address} from '../../../../../types/common'
 import {map} from 'rxjs/operators'
 import {SessionQuery} from '../../../session/state/session.query'
 import {ChainID} from '../../networks'
-import {Payout} from '../blockchain/payout-manager.service'
 
 @Injectable({
   providedIn: 'root',
@@ -21,16 +20,14 @@ export class PayoutService {
   }
 
   createSnapshot(assetAddress: string, ignoredHolderAddresses: string[] = []): Observable<CreatePayoutRes> {
-    const chainID = this.preferenceQuery.network.chainID
-
     return from(this.sessionQuery.provider.getBlockNumber()).pipe(
       switchMap(blockNumber => this.http.post<CreatePayoutRes>(
         `${this.path}/snapshots`, {
-          chain_id: chainID,
+          name: '', // TODO add name from the form
+          chain_id: this.preferenceQuery.network.chainID,
           asset_address: assetAddress,
           payout_block_number: blockNumber.toString(),
           ignored_holder_addresses: ignoredHolderAddresses,
-          issuer_address: this.preferenceQuery.issuer.address,
         } as CreateSnapshotData)),
     )
   }
@@ -86,7 +83,7 @@ interface GetSnapshotsParams {
 export enum SnapshotStatus {
   Pending = 'PENDING',
   Failed = 'FAILED',
-  Created = 'CREATED',
+  Success = 'SUCCESS',
 }
 
 interface GetSnapshotsRes {
@@ -109,6 +106,7 @@ export interface Snapshot {
 }
 
 interface CreateSnapshotData {
+  name: string;
   chain_id: ChainID;
   asset_address: address;
   payout_block_number: string;
@@ -138,4 +136,21 @@ export interface ClaimablePayout {
   amount_claimable: string;
   balance: string;
   proof: string[];
+}
+
+interface Payout {
+  payout_id: string;
+  payout_owner: string;
+  payout_info: string;
+  is_canceled: boolean;
+  asset: string;
+  total_asset_amount: string;
+  ignored_holder_addresses: string[];
+  asset_snapshot_merkle_root: string;
+  asset_snapshot_merkle_depth: number;
+  asset_snapshot_block_number: string;
+  asset_snapshot_merkle_ipfs_hash: string;
+  reward_asset: string;
+  total_reward_amount: string;
+  remaining_reward_amount: string;
 }

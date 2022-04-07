@@ -176,7 +176,7 @@ export class PayoutNewComponent {
         switchMap(() => this.dialogService.success({
           message: 'Payout created.',
         })),
-        switchMap(() => this.router.navigate(['..'], {relativeTo: this.route})),
+        switchMap(() => this.router.navigate(['../..'], {relativeTo: this.route})),
       )
     }
   }

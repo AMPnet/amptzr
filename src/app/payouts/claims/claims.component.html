@@ -42,7 +42,7 @@
                   </ng-container>
                 </ng-container>
 
-                <ng-container *ngIf="(claimablePayout.payout.assetSnapshotBlockNumber
+                <ng-container *ngIf="(claimablePayout.payout.asset_snapshot_block_number
                                         | blockTime | withStatus | async) as blockTimeRes">
                   <ng-container *ngIf="blockTimeRes.value as blockTime">
                     <span>{{ blockTime | date:'short' }}</span>

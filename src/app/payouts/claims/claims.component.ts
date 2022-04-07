@@ -4,6 +4,8 @@ import {withStatus, WithStatus} from '../../shared/utils/observables'
 import {ClaimablePayout, PayoutService} from '../../shared/services/backend/payout.service'
 import {PayoutManagerService} from '../../shared/services/blockchain/payout-manager.service'
 import {DialogService} from '../../shared/services/dialog.service'
+import {map} from 'rxjs/operators'
+import {BigNumber, constants} from 'ethers'
 
 @Component({
   selector: 'app-claims',
@@ -21,6 +23,9 @@ export class ClaimsComponent {
     this.claimablePayouts$ = withStatus(
       this.refreshClaimablePayoutsSub.asObservable().pipe(
         switchMap(() => this.payoutService.getClaimablePayouts()),
+        map(payouts => payouts.filter(payout =>
+          BigNumber.from(payout.amount_claimable).gt(constants.Zero),
+        )),
       ),
     )
   }
@@ -28,7 +33,7 @@ export class ClaimsComponent {
   claim(claimablePayout: ClaimablePayout) {
     return () => {
       return this.payoutManagerService.claimPayout({
-        payoutId: claimablePayout.payout.payoutId,
+        payoutId: claimablePayout.payout.payout_id,
         wallet: claimablePayout.investor,
         balance: claimablePayout.balance,
         proof: claimablePayout.proof,
