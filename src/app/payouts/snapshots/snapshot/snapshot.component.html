@@ -66,6 +66,27 @@
               </span>
             </div>
 
+
+            <div class="mt-4 lg:max-w-md">
+              <h2 class="font-semibold">
+                Ignored asset holders
+              </h2>
+
+              <div class="flex flex-col gap-2 mt-2">
+                <div *ngFor="let holderAddress of snapshot.ignored_holder_addresses">
+                  <div class="flex items-baseline gap-1.5 flex-wrap">
+                    <span class="text-sm">
+                      {{ holderAddress | addrShort }}
+                    </span>
+                    <app-value-copy [value]="holderAddress" [delay]="800">
+                    </app-value-copy>
+                    <app-explorer-link [value]="holderAddress">
+                    </app-explorer-link>
+                  </div>
+                </div>
+              </div>
+            </div>
+
             <div class="mt-2">
               <a class="text-sky-600" href="{{ snapshot.asset_snapshot_merkle_ipfs_hash | toUrlIPFS }}"
                  target="_blank" rel="noopener noreferrer">

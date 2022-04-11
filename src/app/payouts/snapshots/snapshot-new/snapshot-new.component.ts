@@ -19,6 +19,7 @@ import {PreferenceQuery} from '../../../preference/state/preference.query'
 })
 export class SnapshotNewComponent {
   newSnapshotForm: FormGroup
+  ignoredAddressInputForm: FormGroup
   state$: Observable<NewSnapshotState>
 
   constructor(private payoutService: PayoutService,
@@ -39,6 +40,10 @@ export class SnapshotNewComponent {
       blockNumber: ['', [Validators.required, Validators.pattern(/^[1-9][0-9]*$/)], [
         this.blockNumberValidator.bind(this),
       ]],
+    })
+
+    this.ignoredAddressInputForm = this.fb.group({
+      holderAddress: ['', [Validators.required, Validators.pattern(/^0x[a-fA-F0-9]{40}$/)]],
     })
 
     const assetAddressChanged$ = this.newSnapshotForm.get('assetAddress')!.valueChanges.pipe(
@@ -95,9 +100,7 @@ export class SnapshotNewComponent {
 
   createPayout() {
     if (this.newSnapshotForm.value.excludeMyself) {
-      this.newSnapshotForm.value.ignoredHolderAddresses.push(
-        this.preferenceQuery.getValue().address,
-      )
+      this.appendIgnoredHolder(this.preferenceQuery.getValue().address)
     }
 
     return this.payoutService.createSnapshot(
@@ -117,6 +120,27 @@ export class SnapshotNewComponent {
         this.newSnapshotForm.get('blockNumber')?.setValue(blockNumber.toString())
       }),
       tap(() => ɵmarkDirty(this)),
+    )
+  }
+
+  appendIgnoredHolder(address: string) {
+    if (this.newSnapshotForm.value.ignoredHolderAddresses.includes(address)) return
+
+    this.newSnapshotForm.value.ignoredHolderAddresses.push(address)
+  }
+
+  addIgnoredHolderFromInput() {
+    const address = this.ignoredAddressInputForm.value.holderAddress
+    this.ignoredAddressInputForm.get('holderAddress')?.setValue('')
+
+    this.appendIgnoredHolder(address)
+  }
+
+  removeIgnoredHolder(removeAddress: string) {
+    const addresses: string[] = this.newSnapshotForm.value.ignoredHolderAddresses
+
+    this.newSnapshotForm.get('ignoredHolderAddresses')?.setValue(
+      addresses.filter((address: string) => address !== removeAddress),
     )
   }
 }

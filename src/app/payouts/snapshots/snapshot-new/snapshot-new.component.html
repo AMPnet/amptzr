@@ -41,15 +41,6 @@
           </app-add-to-metamask>
         </div>
 
-        <div class="flex gap-2 mt-4 lg:max-w-md items-center">
-          <input class="rounded" type="checkbox"
-                 formControlName="excludeMyself" id="exclude-myself"
-                 autocomplete="off">
-          <label class="font-semibold" for="exclude-myself">
-            Exclude my address from snapshot
-          </label>
-        </div>
-
         <div class="flex flex-col gap-2 mt-4 lg:max-w-md">
           <label class="text-lg font-semibold" for="block-number">
             Block number
@@ -86,6 +77,54 @@
           <span class="text-sm" *ngIf="!newSnapshotForm.get('blockNumber')?.errors && state.blockTime">
             Block time: {{ state.blockTime | date:'medium' }}
           </span>
+        </div>
+
+        <div class="flex gap-2 mt-4 lg:max-w-md items-center">
+          <input class="rounded" type="checkbox"
+                 formControlName="excludeMyself" id="exclude-myself"
+                 autocomplete="off">
+          <label class="font-semibold" for="exclude-myself">
+            Exclude my address from snapshot
+          </label>
+        </div>
+
+        <form [formGroup]="ignoredAddressInputForm">
+          <div class="flex flex-col gap-2 mt-4 lg:max-w-md">
+            <label class="text-lg font-semibold" for="ignored-holder-address">
+              Ignored holder addresses for snapshot
+            </label>
+            <div class="flex gap-2 w-full">
+              <input class="border-gray-400 rounded-lg flex-1" type="text"
+                     formControlName="holderAddress" id="ignored-holder-address"
+                     autocomplete="off">
+              <button (click)="addIgnoredHolderFromInput()"
+                      [disabled]="!ignoredAddressInputForm.valid"
+                      class="app-button">
+                Add
+              </button>
+            </div>
+          </div>
+        </form>
+
+        <div *ngFor="let holderAddress of newSnapshotForm.get('ignoredHolderAddresses')?.value"
+             class="mt-4 lg:max-w-md">
+          <div class="flex gap-2 justify-between flex-wrap">
+            <div class="flex items-baseline gap-1.5 flex-wrap">
+              <span class="text-sm">
+                {{ holderAddress | addrShort }}
+              </span>
+              <app-value-copy [value]="holderAddress" [delay]="800">
+              </app-value-copy>
+              <app-explorer-link [value]="holderAddress">
+              </app-explorer-link>
+            </div>
+            <div>
+              <button (click)="removeIgnoredHolder(holderAddress)"
+                      class="text-sm px-2 py-1 bg-red-600 text-white rounded-lg">
+                Remove
+              </button>
+            </div>
+          </div>
         </div>
 
         <div class="flex mt-4 md:justify-end">
