@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core'
 import {HttpClient, HttpHeaders} from '@angular/common/http'
-import {EMPTY, merge, Observable, of, throwError} from 'rxjs'
-import {catchError, concatMap, map, switchMap} from 'rxjs/operators'
+import {merge, Observable, of, throwError} from 'rxjs'
+import {catchError, concatMap, map, switchMap, tap} from 'rxjs/operators'
 import {JwtTokenService} from './jwt-token.service'
 import {ErrorService} from '../error.service'
 import {PreferenceQuery} from '../../../preference/state/preference.query'
@@ -115,8 +115,9 @@ export class BackendHttpClient {
     return httpOptions
   }
 
-  private handleError = (handleErrors: boolean) => (source: Observable<any>) =>
-    source.pipe(handleErrors ? this.errorService.handleError() : () => EMPTY)
+  private handleError = (handleErrors: boolean) => (source: Observable<any>) => {
+    return source.pipe(handleErrors ? this.errorService.handleError() : tap())
+  }
 
   private subscribeToChanges() {
     merge(

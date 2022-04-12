@@ -98,7 +98,7 @@ export class OrdersComponent {
       }).pipe(
         switchMap(() => this.campaignService.cancelInvestment(contractAddress, flavor as CampaignFlavor)),
         switchMap(() => this.dialogService.success({
-          title: 'Investment has been cancelled',
+          message: 'Investment has been cancelled.',
         })),
         tap(() => this.ordersSub.next()),
       )

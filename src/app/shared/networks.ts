@@ -1,12 +1,13 @@
 import {providers} from 'ethers'
 import {ReconnectingWebsocketProvider} from './ethersjs/reconnecting-websocket-provider'
-import {Matic as TPMatic, Mumbai as TPMumbai} from '../../../tokenizer-prototype/deployments'
+import {Matic as TPMatic, Mumbai as TPMumbai, Private as TPPrivate} from '../../../tokenizer-prototype/deployments'
 
 export enum ChainID {
   MATIC_MAINNET = 137, // Polygon
   MUMBAI_TESTNET = 80001, // Polygon
   // ETHEREUM_MAINNET = 1,
   GOERLI_TESTNET = 5,
+  PRIVATE_NETWORK = 1984
 }
 
 export interface Network {
@@ -41,7 +42,7 @@ interface TokenizerConfig {
   },
   queryService: string,
   nameRegistry: string,
-  feeManager: string,
+  campaignFeeManager: string,
   defaultWalletApprover: string,
   defaultStableCoin: string,
 }
@@ -76,7 +77,7 @@ export const MaticNetwork: Network = {
     cfManagerFactory: TPMatic.cfManagerFactory,
     queryService: TPMatic.queryService,
     nameRegistry: TPMatic.nameRegistry.address,
-    feeManager: TPMatic.feeManager.address,
+    campaignFeeManager: TPMatic.campaignFeeManager.address,
     defaultWalletApprover: TPMatic.walletApproverService.address,
     defaultStableCoin: '0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174',
   },
@@ -108,13 +109,40 @@ export const MumbaiNetwork: Network = {
     cfManagerFactory: TPMumbai.cfManagerFactory,
     queryService: TPMumbai.queryService,
     nameRegistry: TPMumbai.nameRegistry.address,
-    feeManager: TPMumbai.feeManager.address,
+    campaignFeeManager: TPMumbai.campaignFeeManager.address,
     defaultWalletApprover: TPMumbai.walletApproverService.address,
     defaultStableCoin: '0x1eDaD4f5Dac6f2B97E7F6e5D3fF5f04D666685c3',
   },
   ramp: {
     swapAsset: 'MATIC_USDC2',
     url: 'https://ri-widget-staging.firebaseapp.com/',
+  },
+}
+
+export const PrivateNetwork: Network = {
+  chainID: ChainID.PRIVATE_NETWORK,
+  name: 'AMPnet PoA',
+  shortName: 'ampnet-poa',
+  nativeCurrency: {
+    name: 'AMP',
+    symbol: 'AMP',
+  },
+  maxGasPrice: 0,
+  rpcURLs: ['https://poa.ampnet.io/rpc'],
+  wssRpcURLs: [
+    'wss://poa.ampnet.io/ws',
+  ],
+  explorerURLs: ['https://poa.ampnet.io/'],
+  tokenizerConfig: {
+    apxRegistry: TPPrivate.apxRegistry.address,
+    issuerFactory: TPPrivate.issuerFactory,
+    assetFactory: TPPrivate.assetFactory,
+    cfManagerFactory: TPPrivate.cfManagerFactory,
+    queryService: TPPrivate.queryService,
+    nameRegistry: TPPrivate.nameRegistry.address,
+    campaignFeeManager: TPPrivate.campaignFeeManager.address,
+    defaultWalletApprover: TPPrivate.walletApproverService.address,
+    defaultStableCoin: '0xC5C69f646E94abD4D169a0b8a4F4A493360BF7F9',
   },
 }
 
@@ -145,7 +173,7 @@ export const GoerliNetwork: Network = {
     },
     queryService: '0x5A22bc3a5078801CB0e8B5C61bb8361D16C8Ed73',
     nameRegistry: '0x41b90C4C84f6388c29835CBA03Cd50D92fB24e8E',
-    feeManager: '',
+    campaignFeeManager: '',
     defaultWalletApprover: '0x893152e259BdDEa9D42f935f38d7c2c88431c748',
     defaultStableCoin: '0x7A6E8B47ab83cA0374ef6D59a0B0459BCB5c0510', // custom stablecoin issued by filip
   },
@@ -155,6 +183,7 @@ export const Networks: { [key in ChainID]: Network } = {
   [ChainID.MATIC_MAINNET]: MaticNetwork,
   [ChainID.MUMBAI_TESTNET]: MumbaiNetwork,
   [ChainID.GOERLI_TESTNET]: GoerliNetwork,
+  [ChainID.PRIVATE_NETWORK]: PrivateNetwork,
 }
 
 const getEthersNetwork = (network: Network): providers.Network => ({

@@ -225,16 +225,13 @@ export class AdminAssetCampaignNewComponent {
           info: uploadRes.path,
         }, this.preview.flavor)),
         switchMap(campaignAddress =>
-          this.dialogService.info({
-            title: 'Success',
+          this.dialogService.success({
             message: `Campaign has been created. You will be asked to sign a transaction to
             transfer your ${state.asset.symbol} tokens to the campaign.`,
-            cancelable: false,
           }).pipe(
             switchMap(() => this.addTokensToCampaign(campaignAddress!, state)),
-            switchMap(() => this.dialogService.info({
-              title: 'Tokens added to the campaign',
-              cancelable: false,
+            switchMap(() => this.dialogService.success({
+              message: 'Tokens added to the campaign.',
             })),
             switchMap(() => this.routerService.navigate([`/admin/campaigns/${campaignAddress}`])),
           ),
