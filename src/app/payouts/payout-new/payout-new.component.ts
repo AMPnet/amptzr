@@ -1,10 +1,10 @@
 import {ChangeDetectionStrategy, Component, ɵmarkDirty} from '@angular/core'
-import {BehaviorSubject, combineLatest, Observable, of, switchMap} from 'rxjs'
+import {BehaviorSubject, combineLatest, EMPTY, from, Observable, of, switchMap} from 'rxjs'
 import {withStatus, WithStatus} from '../../shared/utils/observables'
 import {PayoutService, Snapshot, SnapshotStatus} from '../../shared/services/backend/payout.service'
 import {ActivatedRoute} from '@angular/router'
 import {AbstractControl, FormBuilder, FormGroup, ValidationErrors, Validators} from '@angular/forms'
-import {catchError, distinctUntilChanged, map, shareReplay, startWith, take, tap} from 'rxjs/operators'
+import {catchError, debounceTime, distinctUntilChanged, map, shareReplay, startWith, take, tap} from 'rxjs/operators'
 import {Erc20Service, ERC20TokenData} from '../../shared/services/blockchain/erc20.service'
 import {AssetService, CommonAssetWithInfo} from '../../shared/services/blockchain/asset/asset.service'
 import {BigNumber, constants} from 'ethers'
@@ -13,6 +13,7 @@ import {PreferenceQuery} from '../../preference/state/preference.query'
 import {ConversionService} from '../../shared/services/conversion.service'
 import {DialogService} from '../../shared/services/dialog.service'
 import {RouterService} from '../../shared/services/router.service'
+import {PayoutService as ContractPayoutService} from '../../shared/services/blockchain/payout.service'
 
 @Component({
   selector: 'app-payout-new',
@@ -36,6 +37,7 @@ export class PayoutNewComponent {
               private erc20Service: Erc20Service,
               private assetService: AssetService,
               private payoutManagerService: PayoutManagerService,
+              private contractPayoutService: ContractPayoutService,
               private preferenceQuery: PreferenceQuery,
               private conversion: ConversionService,
               private dialogService: DialogService,
@@ -43,11 +45,11 @@ export class PayoutNewComponent {
               private route: ActivatedRoute) {
     const snapshotID = this.route.snapshot.params.snapshotID
 
-    this.snapshot$ = withStatus(
-      this.refreshSnapshotSub.asObservable().pipe(
-        switchMap(() => this.payoutService.getSnapshot(snapshotID)),
-      ),
+    const snapshot$ = this.refreshSnapshotSub.asObservable().pipe(
+      switchMap(() => this.payoutService.getSnapshot(snapshotID)),
+      shareReplay(1),
     )
+    this.snapshot$ = withStatus(snapshot$)
 
     this.newPayoutForm = this.fb.group({
       rewardAssetAddress: [
@@ -79,6 +81,29 @@ export class PayoutNewComponent {
       ),
     )
 
+    const feeData$: Observable<FeeData | undefined> = combineLatest([
+      snapshot$,
+      rewardAsset$,
+      tokenAmountChanged$,
+    ]).pipe(
+      switchMap(([snapshot, rewardAsset, rewardAmount]) => {
+        const amount = this.conversion.toToken(
+          rewardAmount || 0, rewardAsset?.decimals,
+        )
+
+        return from(this.contractPayoutService.getPayoutFeeForAssetAndAmount(
+          snapshot.asset, amount,
+        )).pipe(
+          map(feeRes => ({
+            amount: amount,
+            fee: feeRes.fee,
+            amountWithFee: amount.add(feeRes.fee),
+          } as FeeData)),
+          catchError(() => of(undefined)),
+        )
+      }),
+    )
+
     this.payoutState$ = rewardAsset$.pipe(
       switchMap(tokenData => !!tokenData ? combineLatest([
         of(tokenData),
@@ -89,8 +114,11 @@ export class PayoutNewComponent {
           tokenData.address, this.preferenceQuery.network.tokenizerConfig.payoutManager,
         ),
         this.erc20Service.tokenBalance$(tokenData.address),
+        feeData$,
       ]).pipe(
-        map(([tokenData, asset, allowance, balance]) => ({tokenData, asset, allowance, balance})),
+        map(([tokenData, asset, allowance, balance, feeData]) =>
+          ({tokenData, asset, allowance, balance, feeData}),
+        ),
       ) : of(undefined)),
       shareReplay(1),
     )
@@ -99,13 +127,10 @@ export class PayoutNewComponent {
       this.payoutState$,
       tokenAmountChanged$,
     ]).pipe(
-      map(([state, tokenAmount]) => {
-        if (!state?.balance) return false
+      map(([state, _tokenAmount]) => {
+        if (!state?.balance || !state?.feeData) return false
 
-        const amount = this.conversion.toToken(
-          tokenAmount || 0, state.tokenData.decimals,
-        )
-
+        const amount = state.feeData.amountWithFee
         if (state.balance.lt(amount)) return false
 
         return state.allowance.lt(amount)
@@ -124,7 +149,9 @@ export class PayoutNewComponent {
   }
 
   private amountValidator(control: AbstractControl): Observable<ValidationErrors | null> {
-    return combineLatest([this.payoutState$]).pipe(take(1),
+    return combineLatest([this.payoutState$]).pipe(
+      debounceTime(300),
+      take(1),
       map(([data]) => {
         if (!data) return {noToken: true}
 
@@ -134,6 +161,10 @@ export class PayoutNewComponent {
           return {tokenAmountBelowZero: true}
         } else if (tokenAmount.gt(data.balance!)) {
           return {tokenAmountAboveBalance: true}
+        } else if (!data.feeData) {
+          return {feeFetchFailed: true}
+        } else if (data.feeData.amountWithFee.gt(data.balance!)) {
+          return {tokenAmountWithFeeAboveBalance: true}
         }
 
         return null
@@ -144,33 +175,31 @@ export class PayoutNewComponent {
 
   approveAmount(state: PayoutState) {
     return () => {
-      const amount = this.conversion.toToken(
-        this.newPayoutForm.value.tokenAmount, state.tokenData.decimals,
-      )
+      if (!state.feeData?.amountWithFee) return EMPTY
 
       return this.erc20Service.approveAmount(
         state.tokenData.address,
         this.preferenceQuery.network.tokenizerConfig.payoutManager,
-        amount,
+        state.feeData.amountWithFee,
       )
     }
   }
 
   createPayout(state: PayoutState, snapshot: Snapshot) {
     return () => {
+      if (!state.feeData?.amountWithFee) return EMPTY
+
       return this.payoutManagerService.createPayout({
           asset: snapshot.asset,
           totalAssetAmount: snapshot.total_asset_amount,
-          ignoredAssetAddresses: snapshot.ignored_holder_addresses,
+          ignoredHolderAddresses: snapshot.ignored_holder_addresses,
           payoutInfo: '', // TODO: set payout info from the user form input
           assetSnapshotMerkleRoot: snapshot.asset_snapshot_merkle_root,
           assetSnapshotMerkleDepth: snapshot.asset_snapshot_merkle_depth,
           assetSnapshotBlockNumber: snapshot.asset_snapshot_block_number,
           assetSnapshotMerkleIpfsHash: snapshot.asset_snapshot_merkle_ipfs_hash,
           rewardAsset: state.tokenData.address,
-          totalRewardAmount: this.conversion.toToken(
-            this.newPayoutForm.value.tokenAmount, state.tokenData.decimals,
-          ),
+          totalRewardAmount: state.feeData.amount,
         },
       ).pipe(
         switchMap(() => this.dialogService.success({
@@ -187,4 +216,11 @@ interface PayoutState {
   asset: CommonAssetWithInfo | undefined,
   allowance: BigNumber,
   balance: BigNumber | undefined,
+  feeData: FeeData | undefined
+}
+
+interface FeeData {
+  amount: BigNumber
+  fee: BigNumber,
+  amountWithFee: BigNumber
 }

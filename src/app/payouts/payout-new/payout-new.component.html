@@ -165,12 +165,45 @@
                              [tokenPrecision]="payoutState.tokenData.decimals">
                     </div>
 
+                    <div class="flex flex-col gap-2 mt-2 text-orange-400 text-xs font-semibold"
+                         *ngIf="payoutState.feeData as feeData">
+                      <span>
+                        Payout fee: {{ feeData.fee
+                        | formatUnit:'token':payoutState.tokenData.decimals
+                        | currencyDefault:'token':'real':payoutState.tokenData.symbol }}
+                      </span>
+
+                      <span>
+                        Payout amount: {{ feeData.amount
+                        | formatUnit:'token':payoutState.tokenData.decimals
+                        | currencyDefault:'token':'real':payoutState.tokenData.symbol }}
+                      </span>
+
+                      <span>
+                        Total (amount + fee): {{ feeData.amountWithFee
+                        | formatUnit:'token':payoutState.tokenData.decimals
+                        | currencyDefault:'token':'real':payoutState.tokenData.symbol }}
+                      </span>
+                    </div>
+
                     <div class="flex">
                       <div class="flex items-center min-h-[1rem] mt-2 flex-1">
                         <ng-container *ngIf="newPayoutForm?.invalid">
                           <span class="text-red-600 text-xs font-semibold">
                             <ng-container *ngIf="newPayoutForm.errors?.tokenAmountAboveBalance">
                               The amount exceeds your token balance.
+                            </ng-container>
+
+                            <ng-container *ngIf="newPayoutForm.errors?.tokenAmountWithFeeAboveBalance">
+                              The amount exceeds your token balance with fee.
+                            </ng-container>
+
+                            <ng-container *ngIf="newPayoutForm.errors?.feeFetchFailed">
+                              The fee cannot be fetched.
+                            </ng-container>
+
+                            <ng-container *ngIf="newPayoutForm.errors?.feeAboveTokenAmount">
+                              The fee is above the given amount.
                             </ng-container>
                           </span>
                         </ng-container>

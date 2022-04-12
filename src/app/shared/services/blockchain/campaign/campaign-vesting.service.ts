@@ -78,7 +78,7 @@ export class CampaignVestingService {
           data.minInvestment, data.maxInvestment,
           data.whitelistRequired, data.info,
           this.preferenceQuery.network.tokenizerConfig.nameRegistry,
-          this.preferenceQuery.network.tokenizerConfig.feeManager,
+          this.preferenceQuery.network.tokenizerConfig.campaignFeeManager,
           overrides,
         )).pipe(
           switchMap(tx => this.signerService.sendTransaction(tx)),
