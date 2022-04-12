@@ -59,7 +59,8 @@ export class PayoutService {
       `${this.path}/claimable_payouts`,
       {
         chainId: this.preferenceQuery.network.chainID,
-        issuer: this.preferenceQuery.issuer.address ?? undefined,
+        // Commented out to see claims for all issuers (implicitly all tokens).
+        // issuer: this.preferenceQuery.issuer.address ?? undefined,
         assetFactories: this.preferenceQuery.assetFactories.join(','),
         payoutService: this.preferenceQuery.network.tokenizerConfig.payoutService,
         payoutManager: this.preferenceQuery.network.tokenizerConfig.payoutManager,
