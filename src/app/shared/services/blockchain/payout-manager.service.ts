@@ -1,9 +1,9 @@
 import {Injectable} from '@angular/core'
 import {PayoutManager, PayoutManager__factory} from '../../../../../types/ethers-contracts'
 import {SessionQuery} from '../../../session/state/session.query'
-import {filter, map, switchMap} from 'rxjs/operators'
+import {catchError, filter, map, switchMap} from 'rxjs/operators'
 import {PreferenceQuery} from '../../../preference/state/preference.query'
-import {combineLatest, from, Observable, of} from 'rxjs'
+import {combineLatest, EMPTY, from, Observable, of} from 'rxjs'
 import {GasService} from './gas.service'
 import {DialogService} from '../dialog.service'
 import {SignerService} from '../signer.service'
@@ -90,12 +90,12 @@ export class PayoutManagerService {
             data.payoutId, data.wallet, data.balance, data.proof, overrides),
           ),
           switchMap(tx => this.signerService.sendTransaction(tx)),
+          catchError(() => EMPTY),
         ),
       )),
       switchMap(tx => this.dialogService.waitingTransaction(
         from(this.sessionQuery.provider.waitForTransaction(tx.hash)),
       )),
-      this.errorService.handleError(false, true),
     )
   }
 }
