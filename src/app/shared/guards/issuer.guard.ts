@@ -46,6 +46,9 @@ export class IssuerGuard implements CanActivate {
       tap(issuer => this.setupManifest(issuer).subscribe()),
       // this is needed to reload the latest issuer config
       switchMap(() => combineLatest([this.stablecoin.contract$]).pipe(take(1))),
+      tap({
+        error: (err) => console.log(err),
+      }),
       switchMap(() => of(true)),
     )
 
