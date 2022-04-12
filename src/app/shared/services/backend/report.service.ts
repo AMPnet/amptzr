@@ -24,8 +24,9 @@ export class ReportService {
     const chainID = this.preferenceQuery.network.chainID
     const issuer = this.preferenceQuery.issuer.address
     return this.http.ensureAuth.pipe(
-      switchMap(() => this.http.get<TransactionHistory>(`${this.path}/tx_history/${chainID}/${issuer}`, params)),
-      this.errorService.handleError(),
+      switchMap(() => this.http.get<TransactionHistory>(
+        `${this.path}/tx_history/${chainID}/${issuer}`, params, false, false),
+      ),
     )
   }
 

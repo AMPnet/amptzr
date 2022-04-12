@@ -128,7 +128,7 @@ export class TransferComponent {
         )),
         this.errorService.handleError(),
         switchMap(() => this.dialogService.success({
-          title: 'Transfer done',
+          message: 'Transfer done.',
         })),
         tap(() => this.router.navigate(['/wallet'])),
       )

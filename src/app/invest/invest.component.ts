@@ -243,7 +243,8 @@ export class InvestComponent {
       const amount = this.conversion.toStablecoin(this.investmentForm.value.stablecoinAmount)
 
       return this.userService.nativeTokenBalance$.pipe(
-        filter(balance => balance.gt(constants.Zero)), take(1),
+        filter(balance => this.preferenceQuery.network.maxGasPrice === 0 || balance.gt(constants.Zero)),
+        take(1),
         concatMap(() => this.erc20Service.approveAmount(campaign.stablecoin, campaign.contractAddress, amount)),
       )
     }
