@@ -17,6 +17,7 @@ import {PreferenceQuery} from '../../preference/state/preference.query'
 import {AuthProvider} from '../../preference/state/preference.store'
 import {RampInstantEventTypes} from '@ramp-network/ramp-instant-sdk'
 import {ConversionService} from '../../shared/services/conversion.service'
+import {Erc20Service} from '../../shared/services/blockchain/erc20.service'
 
 
 @Component({
@@ -40,6 +41,7 @@ export class DepositDialogComponent implements OnInit {
               private dialogService: DialogService,
               private router: RouterService,
               public stablecoin: StablecoinService,
+              private erc20Service: Erc20Service,
               private http: BackendHttpClient,
               private conversion: ConversionService,
               private userService: UserService,
@@ -84,7 +86,9 @@ export class DepositDialogComponent implements OnInit {
                   'You will receive emails from RAMP about the wallet funding process. ' +
                   'Visit the Orders page to check the investment status.',
               })),
-              switchMap(() => this.stablecoin.approveAmount(campaignAddress, adjustedAmount)),
+              switchMap(() => this.erc20Service.approveAmount(
+                this.stablecoin.config.address, campaignAddress, adjustedAmount,
+              )),
             ) : of(undefined)
         }),
         switchMapTap(state => {

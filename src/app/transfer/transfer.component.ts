@@ -8,7 +8,6 @@ import {SessionQuery} from '../session/state/session.query'
 import {PreferenceQuery} from '../preference/state/preference.query'
 import {SignerService} from '../shared/services/signer.service'
 import {ConversionService} from '../shared/services/conversion.service'
-import {UserService} from '../shared/services/user.service'
 import {RouterService} from '../shared/services/router.service'
 import {ActivatedRoute} from '@angular/router'
 import {catchError, distinctUntilChanged, map, shareReplay, switchMap, take, tap} from 'rxjs/operators'
@@ -47,7 +46,6 @@ export class TransferComponent {
               private dialogService: DialogService,
               private gasService: GasService,
               private errorService: ErrorService,
-              private userService: UserService,
               public crispService: CrispService,
               private router: RouterService,
               private route: ActivatedRoute) {
@@ -55,7 +53,7 @@ export class TransferComponent {
 
     const tokenBalance$: Observable<BigNumber | undefined> = this.preferenceQuery.address$.pipe(
       switchMap(address => !!address ?
-        this.userService.tokenBalance$(transferParams.tokenAddress) :
+        this.erc20Service.tokenBalance$(transferParams.tokenAddress) :
         of(undefined),
       ),
     )
