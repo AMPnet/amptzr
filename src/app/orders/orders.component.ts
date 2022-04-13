@@ -13,6 +13,7 @@ import {AssetService, CommonAssetWithInfo} from '../shared/services/blockchain/a
 import {ConversionService} from '../shared/services/conversion.service'
 import {TokenBigNumber} from '../shared/utils/token'
 import {PreferenceQuery} from '../preference/state/preference.query'
+import {Erc20Service} from '../shared/services/blockchain/erc20.service'
 
 @Component({
   selector: 'app-orders',
@@ -58,7 +59,7 @@ export class OrdersComponent {
         this.campaignService.getCampaignWithInfo(item.campaign_address).pipe(
           switchMap(campaign => combineLatest([
             this.getCampaignWithAsset(campaign),
-            this.stablecoin.getAllowance$(campaign.contractAddress).pipe(
+            this.erc20Service.getAllowance$(campaign.stablecoin, campaign.contractAddress).pipe(
               map(allowance => allowance.gte(item.amount)),
               takeWhile(enoughAllowance => !enoughAllowance, true),
             ),
@@ -84,6 +85,7 @@ export class OrdersComponent {
               private queryService: QueryService,
               private dialogService: DialogService,
               public stablecoin: StablecoinService,
+              private erc20Service: Erc20Service,
               private autoInvestService: AutoInvestService,
               private conversion: ConversionService,
               private campaignService: CampaignService,
@@ -98,16 +100,16 @@ export class OrdersComponent {
       }).pipe(
         switchMap(() => this.campaignService.cancelInvestment(contractAddress, flavor as CampaignFlavor)),
         switchMap(() => this.dialogService.success({
-          title: 'Investment has been cancelled',
+          message: 'Investment has been cancelled.',
         })),
         tap(() => this.ordersSub.next()),
       )
     }
   }
 
-  approveFunds(campaignAddress: string, amount: StablecoinBigNumber) {
+  approveFunds(campaign: CampaignWithInfo, amount: StablecoinBigNumber) {
     return () => {
-      return this.stablecoin.approveAmount(campaignAddress, amount)
+      return this.erc20Service.approveAmount(campaign.stablecoin, campaign.contractAddress, amount)
     }
   }
 

@@ -8,6 +8,7 @@ import {AssetService, CommonAssetWithInfo} from '../../shared/services/blockchai
 import {IssuerService, IssuerWithInfo} from '../../shared/services/blockchain/issuer/issuer.service'
 import {QueryService} from '../../shared/services/blockchain/query.service'
 import {IssuerBasicService, IssuerBasicState} from '../../shared/services/blockchain/issuer/issuer-basic.service'
+import {PhysicalInputService} from '../../shared/services/physical-input.service'
 
 @Component({
   selector: 'app-admin',
@@ -21,9 +22,12 @@ export class AdminIssuerComponent {
   assets$: Observable<WithStatus<CommonAssetWithInfo[]>>
   stableCoinSymbol: string
 
+  altKeyActive$ = this.physicalInputService.altKeyActive$
+
   constructor(private issuerService: IssuerService,
               private stablecoin: StablecoinService,
               private assetService: AssetService,
+              private physicalInputService: PhysicalInputService,
               private issuerBasicService: IssuerBasicService,
               private queryService: QueryService,
               private reportService: ReportService) {

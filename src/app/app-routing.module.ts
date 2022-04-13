@@ -31,6 +31,13 @@ import {
 import {AuthMagicOauthComponent} from './auth/auth-magic-oauth/auth-magic-oauth.component'
 import {TransferComponent} from './transfer/transfer.component'
 import {SwapComponent} from './swap/swap.component'
+import {SnapshotsComponent} from './payouts/snapshots/snapshots.component'
+import {SnapshotNewComponent} from './payouts/snapshots/snapshot-new/snapshot-new.component'
+import {SnapshotComponent} from './payouts/snapshots/snapshot/snapshot.component'
+import {PayoutsComponent} from './payouts/payouts.component'
+import {PayoutComponent} from './payouts/payout/payout.component'
+import {PayoutNewComponent} from './payouts/payout-new/payout-new.component'
+import {ClaimsComponent} from './payouts/claims/claims.component'
 
 const appRoutes: Routes = [
   {path: 'callback', component: AuthMagicOauthComponent},
@@ -46,6 +53,21 @@ const appRoutes: Routes = [
       {path: 'wallet', component: WalletComponent},
       {path: 'deposit', component: DepositComponent},
       {path: 'orders', component: OrdersComponent},
+    ],
+  },
+  {
+    path: 'payouts', canActivate: [], children: [
+      {path: 'claims', component: ClaimsComponent},
+      {
+        path: 'snapshots', canActivate: [], children: [
+          {path: '', pathMatch: 'full', component: SnapshotsComponent},
+          {path: 'new', component: SnapshotNewComponent},
+          {path: ':id', component: SnapshotComponent},
+        ],
+      },
+      {path: '', pathMatch: 'full', component: PayoutsComponent},
+      {path: 'new/:snapshotID', component: PayoutNewComponent},
+      {path: ':id', component: PayoutComponent},
     ],
   },
   {path: 'faq', component: FaqComponent},

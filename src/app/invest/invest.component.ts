@@ -21,6 +21,7 @@ import {DepositService} from '../deposit/deposit.service'
 import {PreferenceQuery} from '../preference/state/preference.query'
 import {UserService} from '../shared/services/user.service'
 import {BigNumberMin} from '../shared/utils/ethersjs'
+import {Erc20Service} from '../shared/services/blockchain/erc20.service'
 
 @Component({
   selector: 'app-invest',
@@ -51,6 +52,7 @@ export class InvestComponent {
               private preferenceQuery: PreferenceQuery,
               private signerService: SignerService,
               private stablecoin: StablecoinService,
+              private erc20Service: Erc20Service,
               private conversion: ConversionService,
               private dialogService: DialogService,
               private depositService: DepositService,
@@ -84,7 +86,7 @@ export class InvestComponent {
       switchMap(campaign => combineLatest([
         of(this.stablecoin.config.symbol),
         this.stablecoin.balance$,
-        this.stablecoin.getAllowance$(campaign.contractAddress),
+        this.erc20Service.getAllowance$(campaign.stablecoin, campaign.contractAddress),
         of(campaign),
         this.assetService.getAssetWithInfo(campaign.asset, true),
         preInvestData$,
@@ -241,8 +243,9 @@ export class InvestComponent {
       const amount = this.conversion.toStablecoin(this.investmentForm.value.stablecoinAmount)
 
       return this.userService.nativeTokenBalance$.pipe(
-        filter(balance => balance.gt(constants.Zero)), take(1),
-        concatMap(() => this.stablecoin.approveAmount(campaign.contractAddress, amount)),
+        filter(balance => this.preferenceQuery.network.maxGasPrice === 0 || balance.gt(constants.Zero)),
+        take(1),
+        concatMap(() => this.erc20Service.approveAmount(campaign.stablecoin, campaign.contractAddress, amount)),
       )
     }
   }
