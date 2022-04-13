@@ -142,7 +142,7 @@
               </ng-container>
             </ng-container>
 
-            <ng-container *ngIf="!payout.isCanceled">
+            <ng-container *ngIf="!payout.isCanceled && !payout.remainingRewardAmount.isZero()">
               <div class="mt-2">
                 <button app-action-button
                         class="app-button mt-2"

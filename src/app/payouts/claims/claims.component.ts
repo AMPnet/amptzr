@@ -23,9 +23,10 @@ export class ClaimsComponent {
     this.claimablePayouts$ = withStatus(
       this.refreshClaimablePayoutsSub.asObservable().pipe(
         switchMap(() => this.payoutService.getClaimablePayouts()),
-        map(payouts => payouts.filter(payout =>
-          BigNumber.from(payout.amount_claimable).gt(constants.Zero),
-        )),
+        map(payouts => payouts
+          .filter(payout => BigNumber.from(payout.amount_claimable).gt(constants.Zero))
+          .filter(payout => !payout.payout.is_canceled),
+        ),
       ),
     )
   }

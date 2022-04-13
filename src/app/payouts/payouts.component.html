@@ -76,7 +76,7 @@
 
                 <div class="rounded p-1 bg-emerald-600 text-white
                           text-xs font-semibold uppercase"
-                     *ngIf="!payout.isCanceled && payout.remainingRewardAmount.eq(bigNumberConstants.Zero)">
+                     *ngIf="!payout.isCanceled && payout.remainingRewardAmount.isZero()">
                   <span class="">
                     Finished
                   </span>
