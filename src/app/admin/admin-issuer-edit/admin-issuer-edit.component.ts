@@ -9,6 +9,7 @@ import {PreferenceStore} from '../../preference/state/preference.store'
 import {IssuerService, IssuerWithInfo} from '../../shared/services/blockchain/issuer/issuer.service'
 import {IssuerBasicService, IssuerBasicState} from '../../shared/services/blockchain/issuer/issuer-basic.service'
 import {WithStatus, withStatus} from '../../shared/utils/observables'
+import {PhysicalInputService} from '../../shared/services/physical-input.service'
 
 @Component({
   selector: 'app-admin-issuer-edit',
@@ -19,6 +20,7 @@ import {WithStatus, withStatus} from '../../shared/utils/observables'
 export class AdminIssuerEditComponent {
   issuer$: Observable<WithStatus<IssuerView>>
   stableCoinSymbol = this.stablecoin.config.symbol
+  isAdvancedMode$ = this.physicalInputService.altKeyActive$
 
   updateForm: FormGroup
   updateWalletApproverAddressForm: FormGroup
@@ -30,6 +32,7 @@ export class AdminIssuerEditComponent {
               private stablecoin: StablecoinService,
               private preferenceStore: PreferenceStore,
               private dialogService: DialogService,
+              private physicalInputService: PhysicalInputService,
               private fb: FormBuilder) {
     this.updateForm = this.fb.group({
       name: ['', Validators.required],

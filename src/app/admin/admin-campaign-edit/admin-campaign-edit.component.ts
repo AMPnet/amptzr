@@ -13,6 +13,7 @@ import {dateToIsoString} from '../../shared/utils/date'
 import {ReturnFrequency} from '../../../../types/ipfs/campaign'
 import {AdminIssuerEditComponent} from '../admin-issuer-edit/admin-issuer-edit.component'
 import {CampaignFlavor} from '../../shared/services/blockchain/flavors'
+import {PhysicalInputService} from '../../shared/services/physical-input.service'
 
 @Component({
   selector: 'app-admin-campaign-edit',
@@ -22,7 +23,7 @@ import {CampaignFlavor} from '../../shared/services/blockchain/flavors'
 })
 export class AdminCampaignEditComponent {
   campaign$: Observable<WithStatus<CampaignWithInfo>>
-  isAdvancedMode = false
+  isAdvancedMode$ = this.physicalInputService.altKeyActive$
 
   updateForm: FormGroup
   updateInfoForm: FormGroup
@@ -43,9 +44,8 @@ export class AdminCampaignEditComponent {
               private route: ActivatedRoute,
               private routerService: RouterService,
               private dialogService: DialogService,
+              private physicalInputService: PhysicalInputService,
               private fb: FormBuilder) {
-    this.isAdvancedMode = this.route.snapshot.queryParams.advanced
-
     this.updateForm = this.fb.group({
       name: ['', Validators.required],
       logo: [undefined],

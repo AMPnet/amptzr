@@ -31,7 +31,7 @@ export class WalletComponent {
   transactionType = TransactionType
 
   authProvider$ = this.preferenceQuery.authProvider$
-  altKeyActive$ = this.physicalInputService.altKeyActive$
+  isAdvancedMode$ = this.physicalInputService.altKeyActive$
 
   user$: Observable<Partial<BackendUser>> = this.preferenceQuery.isBackendAuthorized$.pipe(
     switchMap(isAuth => isAuth ? this.backendUserService.getUser() : of({})),

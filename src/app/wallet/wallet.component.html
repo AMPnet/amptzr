@@ -51,7 +51,7 @@
           </button>
 
           <button [routerLink]="'/payouts/claims' | issuerPath"
-                  *ngIf="(altKeyActive$ | async) === true"
+                  *ngIf="(isAdvancedMode$ | async) === true"
                   class="flex items-center gap-1 px-4 py-1 bg-gray-200 rounded-full">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none" viewBox="0 0 24 24"
                  stroke="currentColor" stroke-width="2">

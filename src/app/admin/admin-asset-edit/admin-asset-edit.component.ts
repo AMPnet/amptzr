@@ -10,6 +10,7 @@ import {AssetService, CommonAssetWithInfo} from '../../shared/services/blockchai
 import {NameService} from '../../shared/services/blockchain/name.service'
 import {AdminIssuerEditComponent} from '../admin-issuer-edit/admin-issuer-edit.component'
 import {AssetFlavor} from '../../shared/services/blockchain/flavors'
+import {PhysicalInputService} from '../../shared/services/physical-input.service'
 
 @Component({
   selector: 'app-admin-asset-edit',
@@ -24,16 +25,15 @@ export class AdminAssetEditComponent {
   updateForm: FormGroup
   updateOwnerAddressForm: FormGroup
 
-  isAdvancedMode = false
+  isAdvancedMode$ = this.physicalInputService.altKeyActive$
 
   constructor(private route: ActivatedRoute,
               private routerService: RouterService,
               private nameService: NameService,
               private assetService: AssetService,
               private dialogService: DialogService,
+              private physicalInputService: PhysicalInputService,
               private fb: FormBuilder) {
-    this.isAdvancedMode = this.route.snapshot.queryParams.advanced
-
     this.updateForm = this.fb.group({
       logo: [undefined],
     })
