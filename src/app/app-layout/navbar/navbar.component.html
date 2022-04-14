@@ -207,13 +207,13 @@
 
   <!-- Dropdown -->
   <div *ngIf="(isDropdownOpen$ | async) === true"
-       class="flex flex-col justify-start items-center h-full transition-all lg:hidden">
+       class="flex flex-col gap-4 justify-start items-center h-full transition-all lg:hidden">
 
     <!-- Navigation links -->
     <ng-container *ngFor="let navbarItem of navbarScreenLinks">
       <button *ngIf="(navbarItem.showItem | async) === true" (click)="toggleDropdown()"
-              class="pt-8 pb-4 text-gray-700 text-3xl text-left whitespace-nowrap
-                       border-b-8 border-transparent font-semibold"
+              class="pt-2 pb-2 text-gray-700 text-lg whitespace-nowrap
+                       border-b-4 border-transparent font-bold"
               [routerLink]="navbarItem.routerLink | issuerPath"
               routerLinkActive="!text-violet-600 !border-violet-600">
         {{ navbarItem.title }}
@@ -221,11 +221,11 @@
     </ng-container>
 
     <app-wallet-button *ngIf="(isLoggedIn$ | async) === true"
-                       (click)="toggleDropdown()"
-                       class="mt-6">
+                       (click)="toggleDropdown()">
     </app-wallet-button>
 
-    <app-google-translate class="py-8"></app-google-translate>
+    <app-google-translate class="p-2">
+    </app-google-translate>
   </div>
 </div>
 

@@ -23,7 +23,7 @@ export class WalletButtonComponent {
               private tailwindService: TailwindService) {
     this.authProviderIconSize$ = this.tailwindService.screenResize$.pipe(
       startWith(this.tailwindService.getScreen()),
-      map(screen => screen !== ('sm' || 'md') ? 24 : 36),
+      map(screen => screen !== ('xxs' || 'xs' || 'sm' || 'md') ? 24 : 36),
     )
   }
 }
