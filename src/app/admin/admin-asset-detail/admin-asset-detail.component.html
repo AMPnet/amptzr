@@ -2,7 +2,7 @@
   <div class="w-full max-w-6xl">
     <ng-container *ngIf="(asset$ | async) as assetRes">
       <ng-container *ngIf="assetRes.value as asset">
-        <div class="flex flex-col justify-start lg:flex-row w-full my-4 shadow-xl rounded-4xl bg-white">
+        <div class="flex flex-col justify-start lg:flex-row w-full my-4 rounded-4xl bg-white">
           <div class="flex justify-center relative w-full lg:w-1/5 mt-4 lg:ml-4">
             <img *ngIf="asset.infoData.logo; else noImage" class="w-40 h-40 object-cover rounded-full"
                  src="{{ asset.infoData.logo | toUrlIPFS }}" alt="Asset logo">
@@ -29,7 +29,7 @@
             </div>
             <div class="flex flex-col justify-end">
               <div class="flex justify-center lg:justify-end">
-                <button class="flex items-center gap-4 px-24 py-2 rounded-full bg-indigo-800 text-white text-lg"
+                <button class="app-button !px-24 !py-2 flex items-center gap-2"
                         routerLink="edit">
                   <span>Edit asset</span>
                   <svg width="8" height="14" viewBox="0 0 8 14" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -52,7 +52,7 @@
           <ng-container *ngIf="(campaigns$ | async) as campaignsRes">
             <ng-container *ngIf="campaignsRes.value as campaigns">
               <ng-container *ngIf="campaigns.length === 0">
-                <div class="flex flex-col items-center justify-center lg:flex-row w-full h-36 mt-4 mb-8 shadow-xl rounded-4xl
+                <div class="flex flex-col items-center justify-center lg:flex-row w-full h-36 mt-4 mb-8 rounded-4xl
                     bg-white text-indigo-800">
                   No related campaigns.
                 </div>
@@ -66,7 +66,7 @@
             </ng-container>
 
             <ng-container *ngIf="campaignsRes.error">
-              <div class="flex flex-col items-center justify-center lg:flex-row w-full h-36 mt-4 mb-8 shadow-xl rounded-4xl
+              <div class="flex flex-col items-center justify-center lg:flex-row w-full h-36 mt-4 mb-8 rounded-4xl
                   bg-white text-indigo-800">
                 Cannot fetch related campaigns.
                 <div hidden>{{ campaignsRes.error | json }}</div>
