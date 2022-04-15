@@ -61,13 +61,10 @@
             </span>
           </div>
           <div [ngSwitch]="true">
-            <!-- TODO: Commented out due to some business concerns from biznisport 🔥-->
-            <!--  about VATRENI token campaign. Uncomment the following code as soon as -->
-            <!--  the concerns go away because it's important data to be shown. -->
-            <!--            <span *ngSwitchCase="data.softCap.gt(bigNumberConstants.Zero) && data.total.gt(data.softCap)"-->
-            <!--                  class="text-sm text-gray-500 font-light">-->
-            <!--              Max target {{ data.total | formatUnit:'stablecoin' | currencyDefault:'stablecoin':'implicit' }}-->
-            <!--            </span>-->
+            <span *ngSwitchCase="data.softCap.gt(bigNumberConstants.Zero) && data.total.gt(data.softCap)"
+                  class="text-sm text-gray-500 font-light">
+              Max target {{ data.total | formatUnit:'stablecoin' | currencyDefault:'stablecoin':'implicit' }}
+            </span>
           </div>
         </div>
       </div>

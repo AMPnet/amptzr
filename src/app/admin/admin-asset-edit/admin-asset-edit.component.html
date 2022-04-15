@@ -46,7 +46,7 @@
                 <div class="flex flex-col justify-end">
                   <div class="flex justify-center lg:justify-end mt-12 lg:mt-0">
                     <button app-action-button
-                            class="bg-indigo-800 disabled:bg-gray-400 px-24 py-2 rounded-full text-white"
+                            class="app-button !px-24 !py-2 flex items-center gap-2"
                             text="Update"
                             [disabled]="!updateForm.valid || !updateForm.dirty"
                             [onClick]="update(asset).bind(this)">
