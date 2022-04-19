@@ -24,6 +24,28 @@ export class BackendHttpClient {
     this.subscribeToChanges()
   }
 
+  get ensureAuth(): Observable<unknown> {
+    return of(this.jwtTokenService.isLoggedIn()).pipe(
+      concatMap(isLoggedIn => isLoggedIn ?
+        of(undefined) : this.loginProcedure,
+      ),
+    )
+  }
+
+  private get loginProcedure(): Observable<any> {
+    return this.signerService.ensureAuth.pipe(
+      map(() => this.preferenceQuery.getValue().address!),
+      switchMap(address => this.jwtTokenService.getSignPayload(address).pipe(
+        switchMap(resToSign => this.authDialog(resToSign)),
+        switchMap(resToSign => this.signerService.signMessage(resToSign.payload).pipe(
+          catchError(() => throwError(() => 'SIGNING_INTERRUPTED')),
+        )),
+        switchMap(signedPayload => this.jwtTokenService.authJWT(address, signedPayload)),
+        this.errorService.handleError(false, true),
+      )),
+    )
+  }
+
   get<T>(path: string, params?: object, publicRoute = false, shouldHandleErrors = true): Observable<T> {
     return (publicRoute ? of(undefined) : this.ensureAuth).pipe(
       switchMap(() => {
@@ -62,41 +84,6 @@ export class BackendHttpClient {
     )
   }
 
-  get ensureAuth(): Observable<unknown> {
-    return of(this.jwtTokenService.isLoggedIn()).pipe(
-      concatMap(isLoggedIn => isLoggedIn ?
-        of(undefined) : this.loginProcedure,
-      ),
-    )
-  }
-
-  private get loginProcedure(): Observable<any> {
-    return this.signerService.ensureAuth.pipe(
-      map(() => this.preferenceQuery.getValue().address!),
-      switchMap(address => this.jwtTokenService.getSignPayload(address).pipe(
-        switchMap(resToSign => this.authDialog(resToSign)),
-        switchMap(resToSign => this.signerService.signMessage(resToSign.payload).pipe(
-          catchError(() => throwError(() => 'SIGNING_INTERRUPTED')),
-        )),
-        switchMap(signedPayload => this.jwtTokenService.authJWT(address, signedPayload)),
-        this.errorService.handleError(false, true),
-      )),
-    )
-  }
-
-  private authDialog<T>(payload: T) {
-    switch (this.preferenceQuery.getValue().authProvider) {
-      case AuthProvider.MAGIC:
-        return of(payload)
-      default:
-        return this.dialogService.info({
-          title: 'Authorization required',
-          message: 'You will be asked to authorize yourself by signing a message.',
-          cancelable: false,
-        }).pipe(switchMap(confirm => confirm ? of(payload) : throwError(() => 'SIGNING_DISMISSED')))
-    }
-  }
-
   logout(): Observable<void> {
     return this.jwtTokenService.logout()
   }
@@ -113,6 +100,20 @@ export class BackendHttpClient {
     }
 
     return httpOptions
+  }
+
+  private authDialog<T>(payload: T) {
+    switch (this.preferenceQuery.getValue().authProvider) {
+      case AuthProvider.MAGIC:
+        return of(payload)
+      default:
+        return this.dialogService.info({
+          icon: '/assets/dialog-icons/sign.png',
+          title: 'Authorization required',
+          message: 'You will be asked to authorize yourself by signing a message.',
+          cancelable: false,
+        }).pipe(switchMap(confirm => confirm ? of(payload) : throwError(() => 'SIGNING_DISMISSED')))
+    }
   }
 
   private handleError = (handleErrors: boolean) => (source: Observable<any>) => {

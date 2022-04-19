@@ -35,6 +35,7 @@ export class DialogService {
     return this.dialog.open(InfoDialogComponent, {
       ...this.configDefaults,
       data: {
+        icon: data.icon ?? DialogIcon.INFO,
         title: data.title ?? 'Info',
         message: data.message,
         cancelable: data.cancelable ?? true,
@@ -58,7 +59,7 @@ export class DialogService {
     return this.dialog.open(InfoDialogComponent, {
       ...this.configDefaults,
       data: {
-        icon: DialogIcon.SUCCESS,
+        icon: data.icon ?? DialogIcon.SUCCESS,
         title: data.title ?? 'Success',
         message: data.message,
         cancelable: data.cancelable ?? false,
@@ -71,7 +72,7 @@ export class DialogService {
     return this.dialog.open(InfoDialogComponent, {
       ...this.configDefaults,
       data: {
-        icon: DialogIcon.ERROR,
+        icon: data.icon ?? DialogIcon.ERROR,
         title: data.title ?? 'Error',
         message: data.message,
         cancelable: data.cancelable ?? false,
@@ -151,6 +152,7 @@ export class DialogService {
 }
 
 interface DialogData {
+  icon?: DialogIcon | string
   title?: string
   message?: string
   cancelable?: boolean
