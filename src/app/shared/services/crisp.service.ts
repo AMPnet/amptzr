@@ -12,6 +12,7 @@ import {switchMapTap} from '../utils/observables'
   providedIn: 'root',
 })
 export class CrispService {
+  private readonly scriptID = 'crisp-chat-widget'
   private crispSub = new BehaviorSubject<boolean>(false)
 
   isAvailable$: Observable<boolean>
@@ -87,6 +88,10 @@ export class CrispService {
     this.$crisp?.push(["do", "chat:open"])
   }
 
+  sessionReset() {
+    this.$crisp?.push(["do", "session:reset"])
+  }
+
   setUserEmail(email: string) {
     this.$crisp?.push(["set", "user:email", email])
   }
@@ -102,18 +107,29 @@ export class CrispService {
   private loadScript(crispWebsiteId: string): Observable<boolean> {
     if (this.crispSub.value) return of(true)
 
-    const loadScript$ = new Observable<boolean>(subscriber => {
-      const head = this.document.getElementsByTagName('head')[0]
-
-      getWindow().$crisp = []
+    return new Observable<boolean>(subscriber => {
       getWindow().CRISP_WEBSITE_ID = crispWebsiteId
+
+      if (this.document.getElementById(this.scriptID)) {
+        this.sessionReset()
+        subscriber.next(true)
+        subscriber.complete()
+        return
+      }
+
+      const head = this.document.getElementsByTagName('head')[0]
+      getWindow().$crisp = []
       const script: HTMLScriptElement = this.document.createElement('script')
+      script.id = this.scriptID
       script.src = 'https://client.crisp.chat/l.js'
       script.async = true
 
       script.onload = () => {
-        subscriber.next(true)
-        subscriber.complete()
+        getWindow().CRISP_READY_TRIGGER = () => {
+          getWindow().CRISP_READY_TRIGGER = undefined
+          subscriber.next(true)
+          subscriber.complete()
+        }
       }
       script.onerror = () => {
         subscriber.error(false)
@@ -122,11 +138,5 @@ export class CrispService {
 
       head.appendChild(script)
     })
-
-    return loadScript$.pipe(
-      switchMapTap(() => fromEventPattern(
-        handler => getWindow().CRISP_READY_TRIGGER = handler(),
-      ).pipe(take(1))),
-    )
   }
 }

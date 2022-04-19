@@ -112,8 +112,9 @@ export class FaqComponent {
   constructor() {
   }
 
-  selectCategory(category: QuestionCategory) {
+  selectCategory(category: QuestionCategory, currentEl: HTMLElement, parentEl: HTMLElement) {
     this.selectedCategory$.next(category)
+    parentEl.scrollTo({left: currentEl.offsetLeft - parentEl.offsetLeft})
   }
 }
 
