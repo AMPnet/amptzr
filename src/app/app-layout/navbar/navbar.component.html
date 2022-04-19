@@ -27,7 +27,7 @@
               </button>
             </ng-container>
 
-            <app-wallet-button *ngIf="(isLoggedIn$ | async) === true" class="hidden lg:flex"></app-wallet-button>
+            <app-wallet-button *ngIf="(isLoggedIn$ | async) === true"></app-wallet-button>
             <button app-action-button class="transition-all lg:mx-4 px-4 py-1 border-2 border-current
                                          rounded-full text-sm font-semibold uppercase
                                          text-violet-600 whitespace-nowrap inline
