@@ -114,7 +114,7 @@ export class FaqComponent {
 
   selectCategory(category: QuestionCategory, currentEl: HTMLElement, parentEl: HTMLElement) {
     this.selectedCategory$.next(category)
-    parentEl.scrollTo({left: currentEl.offsetLeft - 8}) // TODO: remove hardcoded padding value
+    parentEl.scrollTo({left: currentEl.offsetLeft - parentEl.offsetLeft})
   }
 }
 
