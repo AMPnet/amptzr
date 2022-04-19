@@ -12,10 +12,14 @@
       <img *ngIf="data.icon === iconType.ERROR"
            class="w-48 h-48 object-cover rounded-full"
            src="/assets/dialog-icons/error.png" alt="Error logo">
+
+      <img *ngIf="!!data.icon && !icons.includes(data.icon)"
+           class="w-48 h-48 object-cover rounded-full"
+           src="{{ data.icon }}" alt="Dialog logo">
     </div>
 
     <div *ngIf="data.title" class="mt-4 px-4">
-      <h1 class="text-3xl text-center">
+      <h1 class="text-2xl text-center">
         {{ data.title }}
       </h1>
     </div>

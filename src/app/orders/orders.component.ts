@@ -95,6 +95,8 @@ export class OrdersComponent {
   cancel(contractAddress: string, flavor: CampaignFlavor | string) {
     return () => {
       return this.dialogService.withPermission({
+        icon: '/assets/dialog-icons/cancel-investment.png',
+        title: 'Cancel investment',
         message: 'If you cancel the investment, somebody could take your place in the campaign.',
         confirmText: 'Proceed',
       }).pipe(

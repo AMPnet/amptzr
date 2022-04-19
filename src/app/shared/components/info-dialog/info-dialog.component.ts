@@ -11,6 +11,7 @@ import {catchError, tap} from 'rxjs/operators'
 })
 export class InfoDialogComponent implements OnInit {
   iconType = DialogIcon
+  icons = Object.values(DialogIcon)
 
   private dataSub = new BehaviorSubject<InfoDialogData<unknown>>({
     icon: DialogIcon.INFO,
@@ -59,7 +60,7 @@ export class InfoDialogComponent implements OnInit {
 }
 
 export interface InfoDialogData<T> {
-  icon: DialogIcon
+  icon: DialogIcon | string
   title: string;
   message: string;
   confirm_text: string;

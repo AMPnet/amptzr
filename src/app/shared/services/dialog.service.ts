@@ -136,7 +136,7 @@ export class DialogService {
 
   withPermission<A = undefined>(data: DialogPermissionData<A>) {
     return this.infoWithOnConfirm({
-      icon: DialogIcon.INFO,
+      icon: data.icon ?? DialogIcon.INFO,
       title: data.title ?? 'Are you sure?',
       message: data.message ?? 'Are you sure?',
       confirm_text: data.confirmText ?? 'OK',
@@ -157,6 +157,7 @@ interface DialogData {
 }
 
 interface DialogPermissionData<A> {
+  icon?: DialogIcon | string
   title?: string
   message?: string
   confirmText?: string
