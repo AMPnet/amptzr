@@ -115,6 +115,7 @@ import {SnapshotComponent} from './payouts/snapshots/snapshot/snapshot.component
 import {PayoutComponent} from './payouts/payout/payout.component'
 import {PayoutNewComponent} from './payouts/payout-new/payout-new.component'
 import {ClaimsComponent} from './payouts/claims/claims.component'
+import {WrongNetworkComponent} from './shared/components/wrong-network/wrong-network.component'
 
 @NgModule({
   declarations: [
@@ -205,6 +206,7 @@ import {ClaimsComponent} from './payouts/claims/claims.component'
     PayoutComponent,
     PayoutNewComponent,
     ClaimsComponent,
+    WrongNetworkComponent,
   ],
   imports: [
     BrowserModule,

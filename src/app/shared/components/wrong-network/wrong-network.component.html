@@ -1,0 +1,48 @@
+<div *ngIf="networkMismatch$ | async"
+     class="absolute w-full h-full z-50 flex justify-center items-center
+            bg-gray-600/10
+            backdrop-blur-md">
+  <div class="max-w-sm w-full bg-white rounded-4xl px-4 py-4 mx-4">
+    <h2 class="text-2xl text-center mt-8">
+      Wrong network detected
+    </h2>
+
+    <p class="text-sm mt-4">
+      You are connected to the wrong network. Change network to requested network to continue using the application.
+      However, you can always logout and connect another wallet.
+    </p>
+
+    <div class="flex gap-2 mt-4"
+         *ngIf="(currentNetwork$ | async) as currentNetwork">
+      <span>
+        Current network:
+      </span>
+      <span>
+        {{ currentNetwork.name ?? 'Unknown' }} [{{ currentNetwork.chainID }}]
+      </span>
+    </div>
+
+    <div class="flex gap-2 mt-4"
+         *ngIf="(requestedNetwork$ | async) as requestedNetwork">
+      <span>
+        Requested network:
+      </span>
+      <span>
+        {{ requestedNetwork.name }} [{{ requestedNetwork.chainID }}]
+      </span>
+    </div>
+
+    <div class="flex justify-center gap-2 flex-wrap mt-8">
+      <button class="app-button"
+              *ngIf="isConnectedWithMetamask$ | async"
+              (click)="changeNetwork()">
+        <span>Change network</span>
+      </button>
+
+      <button class="app-button"
+              (click)="logout()">
+        <span>Log out</span>
+      </button>
+    </div>
+  </div>
+</div>
