@@ -1,8 +1,8 @@
 import {ChangeDetectionStrategy, Component, Optional} from '@angular/core'
 import {PreferenceQuery} from '../../../preference/state/preference.query'
 import {SessionQuery} from '../../../session/state/session.query'
-import {combineLatest, Observable, of, switchMap, tap} from 'rxjs'
-import {map, startWith} from 'rxjs/operators'
+import {combineLatest, from, Observable, of, switchMap, tap} from 'rxjs'
+import {catchError, map, startWith, timeout} from 'rxjs/operators'
 import {SignerService} from '../../services/signer.service'
 import {UserService} from '../../services/user.service'
 import {ChainID, Network, Networks} from '../../networks'
@@ -23,12 +23,15 @@ export class WrongNetworkComponent {
     }),
   )
 
-  currentNetwork$: Observable<Partial<Network>> = combineLatest([
+  currentNetwork$: Observable<Partial<Network> | undefined> = combineLatest([
     this.signerService.chainChanged$.pipe(startWith('')),
     of(this.sessionQuery.signer!),
   ]).pipe(
-    switchMap(([_, signer]) => signer.getChainId()),
-    map(chainId => Networks[chainId as ChainID] || {chainID: chainId} as Network),
+    switchMap(([_, signer]) => from(signer.getChainId()).pipe(
+      timeout(2000),
+      map(chainId => Networks[chainId as ChainID] || {chainID: chainId} as Network),
+      catchError(() => of(undefined)),
+    )),
   )
 
   requestedNetwork$ = this.preferenceQuery.network$

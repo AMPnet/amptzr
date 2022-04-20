@@ -1,7 +1,18 @@
 import {Injectable, NgZone} from '@angular/core'
 import {providers, utils} from 'ethers'
 import {combineLatest, defer, from, fromEvent, merge, Observable, of, Subject, throwError} from 'rxjs'
-import {concatMap, finalize, map, shareReplay, startWith, switchMap, take, tap} from 'rxjs/operators'
+import {
+  catchError,
+  concatMap,
+  finalize,
+  map,
+  shareReplay,
+  startWith,
+  switchMap,
+  take,
+  tap,
+  timeout,
+} from 'rxjs/operators'
 import {SessionStore} from '../../session/state/session.store'
 import {SessionQuery} from '../../session/state/session.query'
 import {PreferenceStore} from '../../preference/state/preference.store'
@@ -55,7 +66,9 @@ export class SignerService {
       if (!isLoggedIn || !this.sessionQuery.signer) return of(false)
 
       return from(this.sessionQuery.signer.getChainId()).pipe(
+        timeout(2000),
         map(chainID => chainID !== network.chainID),
+        catchError(() => of(true)),
       )
     }),
     shareReplay(1),

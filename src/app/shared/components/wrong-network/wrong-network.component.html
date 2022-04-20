@@ -12,12 +12,23 @@
 
   <div class="px-4 mt-4 text-center text-sm">
     <p>
-      You are currently connected to network
-      <span *ngIf="(currentNetwork$ | async) as currentNetwork">
-        {{ currentNetwork.name ?? '' }} [{{ currentNetwork.chainID }}]</span>.
+      <ng-container *ngIf="(currentNetwork$ | async) as currentNetwork">
+        You are currently connected to network
+        <span class="font-semibold">
+          {{ currentNetwork.name ?? '' }}
+        </span>
+        <span class="bg-gray-200 px-1 py-0.5 text-xs rounded-full">
+          {{ currentNetwork.chainID }}</span>.
+      </ng-container>
       If you want to proceed, switch the network to
-      <span *ngIf="(requestedNetwork$ | async) as requestedNetwork">
-        {{ requestedNetwork.name }} [{{ requestedNetwork.chainID }}]</span>.
+      <ng-container *ngIf="(requestedNetwork$ | async) as requestedNetwork">
+        <span class="font-semibold">
+          {{ requestedNetwork.name ?? '' }}
+        </span>
+        <span class="bg-gray-200 px-1 py-0.5 text-xs rounded-full">
+          {{ requestedNetwork.chainID }}</span>
+      </ng-container>
+      .
     </p>
   </div>
 
