@@ -80,7 +80,7 @@ There are precommit rules set by [husky](https://github.com/typicode/husky). For
     - community channel; great for tips & tricks.
 
 - [Ethers.js](https://ethers.io/) (library for interacting with Ethereum Blockchain)
-  - [Official Documentation (SPA)](https://docs.ethers.io/v5/single-page/)
+  - [Official Documentation](https://docs.ethers.io/v5/single-page/)
   
-- [Polygon Network](https://polygon.technology/) (previously Matic, Ethereum-based L2 solution)
+- [Polygon Network](https://polygon.technology/) (previously Matic)
   - [Developer documentation](https://docs.matic.network/docs/develop/getting-started)
