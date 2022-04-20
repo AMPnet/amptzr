@@ -1,5 +1,5 @@
 import {ChangeDetectionStrategy, Component} from '@angular/core'
-import {Observable} from 'rxjs'
+import {defer, Observable} from 'rxjs'
 import {withStatus, WithStatus} from '../../shared/utils/observables'
 import {PayoutService, Snapshot, SnapshotStatus} from '../../shared/services/backend/payout.service'
 import {map} from 'rxjs/operators'
@@ -16,11 +16,11 @@ export class SnapshotsComponent {
 
   constructor(private payoutService: PayoutService) {
     this.snapshots$ = withStatus(
-      this.payoutService.getSnapshots().pipe(
+      defer(() => this.payoutService.getSnapshots().pipe(
         map(snapshots => snapshots.sort((a, b) =>
           Number(a.asset_snapshot_block_number) < Number(b.asset_snapshot_block_number) ? 1 : -1),
         ),
-      ),
+      )),
     )
   }
 }
