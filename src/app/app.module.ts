@@ -115,10 +115,10 @@ import {SnapshotComponent} from './payouts/snapshots/snapshot/snapshot.component
 import {PayoutComponent} from './payouts/payout/payout.component'
 import {PayoutNewComponent} from './payouts/payout-new/payout-new.component'
 import {ClaimsComponent} from './payouts/claims/claims.component'
-import {WrongNetworkComponent} from './shared/components/wrong-network/wrong-network.component';
-import { RequestSendComponent } from './request-send/request-send.component';
-import { RequestSendNewComponent } from './request-send/request-send-new/request-send-new.component';
-import { RequestSendStatusComponent } from './request-send/request-send-status/request-send-status.component'
+import {WrongNetworkComponent} from './shared/components/wrong-network/wrong-network.component'
+import {RequestSendComponent} from './request-send/request-send.component'
+import {RequestSendNewComponent} from './request-send/request-send-new/request-send-new.component'
+import {RequestSendStatusComponent} from './request-send/request-send-status/request-send-status.component'
 
 @NgModule({
   declarations: [
