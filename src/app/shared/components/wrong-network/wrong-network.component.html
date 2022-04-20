@@ -1,48 +1,39 @@
-<div *ngIf="networkMismatch$ | async"
-     class="absolute w-full h-full z-50 flex justify-center items-center
-            bg-gray-600/10
-            backdrop-blur-md">
-  <div class="max-w-sm w-full bg-white rounded-4xl px-4 py-4 mx-4">
-    <h2 class="text-2xl text-center mt-8">
+<div class="max-w-sm">
+  <div class="flex justify-center mt-2">
+    <img class="w-48 h-48 object-cover rounded-full"
+         src="/assets/dialog-icons/warning.png" alt="Warning logo">
+  </div>
+
+  <div class="mt-4 px-4">
+    <h1 class="text-2xl text-center">
       Wrong network detected
-    </h2>
+    </h1>
+  </div>
 
-    <p class="text-sm mt-4">
-      You are connected to the wrong network. Change network to requested network to continue using the application.
-      However, you can always logout and connect another wallet.
+  <div class="px-4 mt-4 text-center text-sm">
+    <p>
+      You are currently connected to network
+      <span *ngIf="(currentNetwork$ | async) as currentNetwork">
+        {{ currentNetwork.name ?? '' }} [{{ currentNetwork.chainID }}]</span>.
+      If you want to proceed, switch the network to
+      <span *ngIf="(requestedNetwork$ | async) as requestedNetwork">
+        {{ requestedNetwork.name }} [{{ requestedNetwork.chainID }}]</span>.
     </p>
+  </div>
 
-    <div class="flex gap-2 mt-4"
-         *ngIf="(currentNetwork$ | async) as currentNetwork">
-      <span>
-        Current network:
-      </span>
-      <span>
-        {{ currentNetwork.name ?? 'Unknown' }} [{{ currentNetwork.chainID }}]
-      </span>
-    </div>
+  <div class="flex flex-col space-y-2 mt-4
+              sm:flex-row sm:space-x-4 sm:space-y-0 justify-center">
+    <button (click)="logout()"
+            class="bg-gray-200 rounded-full p-2 text-sm font-semibold flex-1">
+      Log out
+    </button>
 
-    <div class="flex gap-2 mt-4"
-         *ngIf="(requestedNetwork$ | async) as requestedNetwork">
-      <span>
-        Requested network:
-      </span>
-      <span>
-        {{ requestedNetwork.name }} [{{ requestedNetwork.chainID }}]
-      </span>
-    </div>
-
-    <div class="flex justify-center gap-2 flex-wrap mt-8">
-      <button class="app-button"
-              *ngIf="isConnectedWithMetamask$ | async"
-              (click)="changeNetwork()">
-        <span>Change network</span>
-      </button>
-
-      <button class="app-button"
-              (click)="logout()">
-        <span>Log out</span>
-      </button>
-    </div>
+    <button *ngIf="isConnectedWithMetamask$ | async"
+            (click)="changeNetwork()"
+            class="app-button !p-2 !text-sm flex-1">
+      Switch network
+    </button>
   </div>
 </div>
+
+<ng-container *ngIf="dismissDialog$ | async"></ng-container>

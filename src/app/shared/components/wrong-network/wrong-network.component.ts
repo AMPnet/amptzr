@@ -1,13 +1,14 @@
-import {ChangeDetectionStrategy, Component} from '@angular/core'
+import {ChangeDetectionStrategy, Component, Optional} from '@angular/core'
 import {PreferenceQuery} from '../../../preference/state/preference.query'
 import {SessionQuery} from '../../../session/state/session.query'
-import {combineLatest, defer, from, Observable, of, switchMap} from 'rxjs'
+import {combineLatest, Observable, of, switchMap, tap} from 'rxjs'
 import {map, startWith} from 'rxjs/operators'
 import {SignerService} from '../../services/signer.service'
 import {UserService} from '../../services/user.service'
 import {ChainID, Network, Networks} from '../../networks'
 import {MetamaskSubsignerService} from '../../services/subsigners/metamask-subsigner.service'
 import {AuthProvider} from '../../../preference/state/preference.store'
+import {MatDialogRef} from '@angular/material/dialog'
 
 @Component({
   selector: 'app-wrong-network',
@@ -16,22 +17,17 @@ import {AuthProvider} from '../../../preference/state/preference.store'
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class WrongNetworkComponent {
-  networkMismatch$: Observable<boolean> = combineLatest([
-    this.preferenceQuery.network$,
-    this.sessionQuery.isLoggedIn$,
-    this.signerService.chainChanged$.pipe(startWith('')),
-  ]).pipe(
-    switchMap(([network, isLoggedIn]) => {
-      if (!isLoggedIn || !this.sessionQuery.signer) return of(false)
-
-      return from(this.sessionQuery.signer.getChainId()).pipe(
-        map(chainID => chainID !== network.chainID),
-      )
+  dismissDialog$ = this.signerService.networkMismatch$.pipe(
+    tap(isMismatch => {
+      if (!isMismatch) this.dialogRef.close(true)
     }),
   )
 
-  currentNetwork$: Observable<Partial<Network>> = defer(() => of(this.sessionQuery.signer!)).pipe(
-    switchMap(signer => signer.getChainId()),
+  currentNetwork$: Observable<Partial<Network>> = combineLatest([
+    this.signerService.chainChanged$.pipe(startWith('')),
+    of(this.sessionQuery.signer!),
+  ]).pipe(
+    switchMap(([_, signer]) => signer.getChainId()),
     map(chainId => Networks[chainId as ChainID] || {chainID: chainId} as Network),
   )
 
@@ -50,14 +46,17 @@ export class WrongNetworkComponent {
               private sessionQuery: SessionQuery,
               private userService: UserService,
               private metamaskSubsignerService: MetamaskSubsignerService,
-              private signerService: SignerService) {
+              private signerService: SignerService,
+              @Optional() private dialogRef: MatDialogRef<WrongNetworkComponent>) {
   }
 
   logout() {
-    this.userService.logout().subscribe()
+    this.userService.logout().pipe(
+      tap(() => this.dialogRef.close(false)),
+    ).subscribe()
   }
 
   changeNetwork() {
-    this.metamaskSubsignerService.switchEthereumChain({}).subscribe()
+    this.metamaskSubsignerService.switchEthereumChain().subscribe()
   }
 }

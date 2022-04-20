@@ -1,7 +1,7 @@
 import {Injectable, NgZone} from '@angular/core'
 import {providers, utils} from 'ethers'
-import {defer, from, fromEvent, merge, Observable, of, Subject, throwError} from 'rxjs'
-import {concatMap, finalize, map, switchMap, tap} from 'rxjs/operators'
+import {combineLatest, defer, from, fromEvent, merge, Observable, of, Subject, throwError} from 'rxjs'
+import {concatMap, finalize, map, shareReplay, startWith, switchMap, take, tap} from 'rxjs/operators'
 import {SessionStore} from '../../session/state/session.store'
 import {SessionQuery} from '../../session/state/session.query'
 import {PreferenceStore} from '../../preference/state/preference.store'
@@ -13,6 +13,7 @@ import {PreferenceQuery} from '../../preference/state/preference.query'
 import {getWindow} from '../utils/browser'
 import {DialogService} from './dialog.service'
 import {GetSignerOptions, SignerLoginOpts, Subsigner} from './signer-login-options'
+import {WrongNetworkComponent} from '../components/wrong-network/wrong-network.component'
 
 @Injectable({
   providedIn: 'root',
@@ -20,14 +21,16 @@ import {GetSignerOptions, SignerLoginOpts, Subsigner} from './signer-login-optio
 export class SignerService {
   provider$ = this.sessionQuery.provider$
   injectedWeb3$: Observable<any> = defer(() => of(getWindow()?.ethereum))
+
   private subsigner?: Subsigner<any>
   private accountsChangedSub = new Subject<string[]>()
-  accountsChanged$ = this.accountsChangedSub.asObservable()
   private chainChangedSub = new Subject<string>()
-  chainChanged$ = this.chainChangedSub.asObservable()
   private disconnectedSub = new Subject<void>()
-  disconnected$ = this.disconnectedSub.asObservable()
   private listenersSub = new Subject<any>()
+
+  accountsChanged$ = this.accountsChangedSub.asObservable()
+  chainChanged$ = this.chainChangedSub.asObservable()
+  disconnected$ = this.disconnectedSub.asObservable()
   listeners$ = this.listenersSub.asObservable().pipe(
     switchMap(provider => merge(
       fromEvent<string[]>(provider, 'accountsChanged').pipe(
@@ -41,6 +44,21 @@ export class SignerService {
       ),
     )),
     tap(action => this.ngZone.run(() => action())),
+  )
+
+  networkMismatch$: Observable<boolean> = combineLatest([
+    this.preferenceQuery.network$,
+    this.sessionQuery.isLoggedIn$,
+    this.chainChanged$.pipe(startWith('')),
+  ]).pipe(
+    switchMap(([network, isLoggedIn]) => {
+      if (!isLoggedIn || !this.sessionQuery.signer) return of(false)
+
+      return from(this.sessionQuery.signer.getChainId()).pipe(
+        map(chainID => chainID !== network.chainID),
+      )
+    }),
+    shareReplay(1),
   )
 
   constructor(private sessionStore: SessionStore,
@@ -69,6 +87,16 @@ export class SignerService {
     )
   }
 
+  get ensureNetwork(): Observable<providers.JsonRpcSigner> {
+    return combineLatest([this.networkMismatch$]).pipe(
+      take(1),
+      concatMap(([isMismatch]) => isMismatch ?
+        defer(() => this.changeNetworkDialog()) : of(undefined),
+      ),
+      map(() => this.sessionQuery.signer!),
+    )
+  }
+
   private get loginDialog() {
     return this.dialogService.dialog.open(AuthComponent, {
       ...this.dialogService.configDefaults,
@@ -76,6 +104,15 @@ export class SignerService {
       concatMap(authCompleted => authCompleted ?
         this.sessionQuery.waitUntilLoggedIn() :
         throwError(() => 'LOGIN_MODAL_DISMISSED')),
+    )
+  }
+
+  private changeNetworkDialog() {
+    return this.dialogService.dialog.open(WrongNetworkComponent, {
+      ...this.dialogService.configDefaults,
+    }).afterClosed().pipe(
+      concatMap(changeNetworkCompleted => changeNetworkCompleted ?
+        of(true) : throwError(() => 'CHANGE_NETWORK_MODAL_DISMISSED')),
     )
   }
 
@@ -119,6 +156,7 @@ export class SignerService {
   sendTransaction(transaction: providers.TransactionRequest):
     Observable<providers.TransactionResponse> {
     return this.ensureAuth.pipe(
+      switchMap(() => this.ensureNetwork),
       switchMap(signer => from(signer.sendTransaction(transaction))),
       this.errorService.handleError(false, true),
     )
