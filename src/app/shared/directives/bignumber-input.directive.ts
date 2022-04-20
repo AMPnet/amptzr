@@ -42,10 +42,10 @@ export class BigNumberInputDirective implements ControlValueAccessor {
   }
 
   @HostListener('blur', ['$event']) onBlur(_e: any) {
-    this.onTouched()
+    // this?.onTouched()
   }
 
-  @HostBinding() disabled = false
+  @HostBinding('disabled') disabled = false
   @HostBinding('attr.inputmode') inputMode = 'decimal'
   @HostBinding('autocomplete') autoComplete = 'off'
   @HostBinding('type') type = 'text'
@@ -67,7 +67,7 @@ export class BigNumberInputDirective implements ControlValueAccessor {
     }
 
     this.writeValue(clearedValue)
-    this.onChange(this.parseValue(bigNumberValue))
+    // this?.onChange(this.parseValue(bigNumberValue))
 
     this.previousValue = clearedValue
   }
@@ -111,11 +111,13 @@ export class BigNumberInputDirective implements ControlValueAccessor {
   }
 
   registerOnChange(fn: (_: any) => void): void {
-    this.onChange = fn
+    this.onChange = fn || (() => {
+    })
   }
 
   registerOnTouched(fn: any): void {
-    this.onTouched = fn
+    this.onTouched = fn || (() => {
+    })
   }
 
   setDisabledState(isDisabled: boolean) {
