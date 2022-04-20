@@ -13,7 +13,7 @@ export class PreferenceQuery extends Query<PreferenceState> {
     map(chainID => Networks[chainID]),
   )
   issuer$ = this.select('issuer')
-  isBackendAuthorized$: Observable<boolean> = this.select().pipe(
+  isBackendAuthorized$: Observable<boolean> = this.select(['JWTAccessToken', 'JWTRefreshToken']).pipe(
     map(state => !!state.JWTAccessToken && !!state.JWTRefreshToken),
   )
 

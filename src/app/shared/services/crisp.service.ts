@@ -1,12 +1,11 @@
 import {Inject, Injectable} from '@angular/core'
 import {DOCUMENT} from '@angular/common'
 import {IssuerService} from './blockchain/issuer/issuer.service'
-import {BehaviorSubject, combineLatest, fromEventPattern, Observable, of, switchMap, tap} from 'rxjs'
-import {distinctUntilChanged, map, shareReplay, take} from 'rxjs/operators'
+import {BehaviorSubject, combineLatest, Observable, of, switchMap, tap} from 'rxjs'
+import {distinctUntilChanged, map, shareReplay} from 'rxjs/operators'
 import {getWindow} from '../utils/browser'
 import {PreferenceQuery} from '../../preference/state/preference.query'
 import {BackendUserService} from './backend/backend-user.service'
-import {switchMapTap} from '../utils/observables'
 
 @Injectable({
   providedIn: 'root',

@@ -1,6 +1,5 @@
 import {ChangeDetectionStrategy, Component, Inject, OnInit, ViewEncapsulation} from '@angular/core'
 import {DOCUMENT} from '@angular/common'
-import {getWindow} from '../../utils/browser'
 
 @Component({
   selector: 'app-google-translate',

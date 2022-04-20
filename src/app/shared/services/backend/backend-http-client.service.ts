@@ -122,9 +122,7 @@ export class BackendHttpClient {
 
   private subscribeToChanges() {
     merge(
-      this.signerService.accountsChanged$,
-      this.signerService.chainChanged$,
-      this.signerService.disconnected$,
+      this.preferenceQuery.address$,
     ).pipe(
       switchMap(() => this.logout()),
     ).subscribe()
