@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core'
 import {HttpClient, HttpHeaders} from '@angular/common/http'
-import {merge, Observable, of, throwError} from 'rxjs'
-import {catchError, concatMap, map, switchMap, tap} from 'rxjs/operators'
+import {Observable, of, throwError} from 'rxjs'
+import {catchError, concatMap, filter, map, pairwise, startWith, switchMap, tap} from 'rxjs/operators'
 import {JwtTokenService} from './jwt-token.service'
 import {ErrorService} from '../error.service'
 import {PreferenceQuery} from '../../../preference/state/preference.query'
@@ -121,8 +121,10 @@ export class BackendHttpClient {
   }
 
   private subscribeToChanges() {
-    merge(
-      this.preferenceQuery.address$,
+    this.preferenceQuery.address$.pipe(
+      startWith(''),
+      pairwise(),
+      filter(([last, curr]) => !!last && last !== curr),
     ).pipe(
       switchMap(() => this.logout()),
     ).subscribe()
