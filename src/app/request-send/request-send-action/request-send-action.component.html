@@ -2,7 +2,6 @@
   <div class="w-full max-w-5xl">
     <ng-container *ngIf="(stateWithStatus$ | async) as stateRes">
       <ng-container *ngIf="stateRes.value as state">
-
         <form [formGroup]="transferForm">
           <div class="max-w-md mx-auto bg-white rounded-4xl px-6 py-4">
             <h1 class="flex gap-1.5 justify-center items-center mt-4 mx-4 text-3xl">
@@ -44,7 +43,20 @@
                 <input class="w-full py-0 pr-0 text-right bg-transparent border-none focus:ring-0 text-3xl
                                 text-ellipsis	placeholder:text-gray-400"
                        formControlName="tokenAmount"
+                       [attr.disabled]="true"
                        appBigNumberInput bigNumberType="token" [tokenPrecision]="state.tokenData.decimals">
+              </div>
+
+              <div class="flex" *ngIf="!state.requestSend.send_tx.tx_hash">
+                <div class="flex items-center min-h-[1rem] mt-2 flex-1">
+                  <ng-container *ngIf="transferForm.get('tokenAmount')?.errors as errs">
+                    <span class="text-red-600 text-xs font-semibold">
+                      <ng-container *ngIf="errs.tokenAmountAboveBalance">
+                        The amount exceeds your token balance.
+                      </ng-container>
+                    </span>
+                  </ng-container>
+                </div>
               </div>
 
               <div class="flex justify-between items-center mt-5 text-xxs font-medium">
@@ -59,32 +71,18 @@
             </div>
 
             <div class="flex flex-col gap-2 mt-5">
-              <label class="text-sm text-gray-500 text-center" for="recipientAddress">
-                Recipient address
+              <label class="text-sm text-gray-500 text-center">
+                Recipient
               </label>
-              <input class="bg-gray-200/20 border-gray-300/50 rounded-lg
-                              text-ellipsis	placeholder:text-gray-400
-                              font-semibold overflow-ellipsis" type="text"
-                     id="recipientAddress"
-                     formControlName="recipientAddress"
-                     spellcheck="false">
-            </div>
 
-            <div class="flex items-center gap-2 mt-2 bg-gray-200/20 rounded-lg p-2">
-              <svg class="w-6 h-6 text-orange-400 shrink-0"
-                   viewBox="0 0 26 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path
-                  d="M13 9v2.667M13 17h.013m-9.25 5.334h18.474c2.054 0 3.336-2.223 2.31-4l-9.238-16c-1.026-1.778-3.592-1.778-4.618 0l-9.238 16c-1.026 1.777.256 4 2.31 4Z"
-                  stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-              </svg>
-
-              <div class="flex flex-col gap-1 text-xs flex-1">
-                <div class="text-orange-400">
-                  Transferring to an exchange?
-                </div>
-                <div class="text-gray-400">
-                  Make sure to specify you are transferring {{ state.tokenData.symbol }} on {{ state.network.name }}
-                </div>
+              <div class="flex gap-1 items-baseline mt-2 self-center"
+                   *ngIf="transferForm.get('recipientAddress')?.value as recipientAddress">
+                <span class="text-sm">
+                  {{ recipientAddress | addrShort }}
+                </span>
+                <app-value-copy [value]="recipientAddress"></app-value-copy>
+                <app-explorer-link [value]="recipientAddress">
+                </app-explorer-link>
               </div>
             </div>
 
@@ -98,14 +96,15 @@
               <button app-action-button
                       class="w-full app-button"
                       [hidden]="(shouldTransfer$ | async) !== true"
+                      [disabled]="transferForm.invalid"
                       [onClick]="transfer(state).bind(this)"
                       text="Transfer">
               </button>
             </div>
 
-            <div class="mt-4" *ngIf="state.requestSend.send_tx.tx_hash">
-              Transaction submitted
-              <app-explorer-link type="tx" [value]="state.requestSend.send_tx.tx_hash"></app-explorer-link>
+            <div class="mt-4 text-center"
+                 *ngIf="state.requestSend.send_tx.tx_hash">
+              Action complete
             </div>
           </div>
         </form>

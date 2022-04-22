@@ -1,31 +1,31 @@
-import {ChangeDetectionStrategy, Component} from '@angular/core'
+import {ChangeDetectionStrategy, Component, ɵmarkDirty} from '@angular/core'
 import {BehaviorSubject, combineLatest, concatMap, from, Observable, of} from 'rxjs'
-import {switchMapTap, withStatus, WithStatus} from '../shared/utils/observables'
-import {FormBuilder, FormGroup} from '@angular/forms'
+import {switchMapTap, withStatus, WithStatus} from '../../shared/utils/observables'
+import {AbstractControl, AsyncValidatorFn, FormBuilder, FormGroup, ValidationErrors, Validators} from '@angular/forms'
 import {BigNumber, constants} from 'ethers'
-import {AssetService, CommonAssetWithInfo} from '../shared/services/blockchain/asset/asset.service'
-import {SessionQuery} from '../session/state/session.query'
-import {PreferenceQuery} from '../preference/state/preference.query'
-import {SignerService} from '../shared/services/signer.service'
-import {Erc20Service, ERC20TokenData} from '../shared/services/blockchain/erc20.service'
-import {ConversionService} from '../shared/services/conversion.service'
-import {DialogService} from '../shared/services/dialog.service'
-import {GasService} from '../shared/services/blockchain/gas.service'
-import {ErrorService} from '../shared/services/error.service'
-import {RouterService} from '../shared/services/router.service'
+import {AssetService, CommonAssetWithInfo} from '../../shared/services/blockchain/asset/asset.service'
+import {RequestSend, RequestSendService} from '../request-send.service'
+import {SessionQuery} from '../../session/state/session.query'
+import {PreferenceQuery} from '../../preference/state/preference.query'
+import {SignerService} from '../../shared/services/signer.service'
+import {Erc20Service, ERC20TokenData} from '../../shared/services/blockchain/erc20.service'
+import {ConversionService} from '../../shared/services/conversion.service'
+import {DialogService} from '../../shared/services/dialog.service'
+import {GasService} from '../../shared/services/blockchain/gas.service'
+import {ErrorService} from '../../shared/services/error.service'
+import {RouterService} from '../../shared/services/router.service'
 import {ActivatedRoute} from '@angular/router'
-import {catchError, distinctUntilChanged, map, shareReplay, switchMap, tap} from 'rxjs/operators'
-import {ERC20__factory} from '../../../types/ethers-contracts'
-import {RequestSend, RequestSendService} from './request-send.service'
-import {Network} from '../shared/networks'
+import {catchError, distinctUntilChanged, map, shareReplay, switchMap, take, tap} from 'rxjs/operators'
+import {ERC20__factory} from '../../../../types/ethers-contracts'
+import {Network} from '../../shared/networks'
 
 @Component({
-  selector: 'app-request-send',
-  templateUrl: './request-send.component.html',
-  styleUrls: ['./request-send.component.css'],
+  selector: 'app-request-send-action',
+  templateUrl: './request-send-action.component.html',
+  styleUrls: ['./request-send-action.component.css'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class RequestSendComponent {
+export class RequestSendActionComponent {
   refreshRequestSend = new BehaviorSubject<void>(undefined)
 
   state$!: Observable<RequestSendState>
@@ -53,11 +53,6 @@ export class RequestSendComponent {
               private route: ActivatedRoute) {
     const requestSendID = this.route.snapshot.params.id
 
-    this.transferForm = this.fb.group({
-      tokenAmount: [{value: '', disabled: true}],
-      recipientAddress: [{value: '', disabled: true}],
-    })
-
     const tokenBalance$ = (tokenAddress: string): Observable<BigNumber | undefined> => {
       return this.preferenceQuery.address$.pipe(
         switchMap(address => !!address ?
@@ -83,12 +78,14 @@ export class RequestSendComponent {
       })),
       distinctUntilChanged((p, c) => JSON.stringify(p) === JSON.stringify(c)),
       tap(state => {
-        this.transferForm.patchValue({
-          tokenAmount: this.conversion.parseToken(
+        this.transferForm.get('tokenAmount')?.patchValue(
+          this.conversion.parseToken(
             BigNumber.from(state.requestSend.amount), state.tokenData.decimals,
           ).replace(/(\.0$)/, ''),
-          recipientAddress: state.requestSend.to_address,
-        })
+        )
+        this.transferForm.get('recipientAddress')?.setValue(
+          state.requestSend.recipient_address,
+        )
       }),
       shareReplay(1),
     )
@@ -100,6 +97,11 @@ export class RequestSendComponent {
       map(([isUserLoggedIn]) => isUserLoggedIn),
       distinctUntilChanged(),
     )
+
+    this.transferForm = this.fb.group({
+      tokenAmount: ['', Validators.required, this.amountValidator(this.state$)],
+      recipientAddress: ['', Validators.required],
+    })
   }
 
   transfer(state: RequestSendState) {
@@ -114,7 +116,7 @@ export class RequestSendComponent {
               )
 
               return contract.populateTransaction.transfer(
-                state.requestSend.to_address, tokenAmount.toString(), overrides,
+                state.requestSend.recipient_address, tokenAmount.toString(), overrides,
               )
             }),
             map(tx => {
@@ -131,10 +133,31 @@ export class RequestSendComponent {
         switchMapTap(tx => this.requestSendService.updateRequest(state.requestSend.id, {
           tx_hash: tx.transactionHash,
         })),
+        tap(() => this.refreshRequestSend.next()),
         switchMap(() => this.dialogService.success({
           message: 'Transfer done.',
         })),
-        tap(() => this.refreshRequestSend.next()),
+      )
+    }
+  }
+
+  private amountValidator(state$: Observable<RequestSendState>): AsyncValidatorFn {
+    return (control: AbstractControl): Observable<ValidationErrors | null> => {
+      return state$.pipe(take(1),
+        map((data) => {
+          const tokenAmount = this.conversion.toToken(control.value || 0, data.tokenData.decimals)
+
+          if (data.balance === undefined) {
+            return {userNotLoggedIn: true}
+          } else if (tokenAmount.lte(constants.Zero)) {
+            return {tokenAmountBelowZero: true}
+          } else if (tokenAmount.gt(data.balance)) {
+            return {tokenAmountAboveBalance: true}
+          }
+
+          return null
+        }),
+        tap(() => ɵmarkDirty(this)),
       )
     }
   }

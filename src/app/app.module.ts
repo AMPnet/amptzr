@@ -116,9 +116,9 @@ import {PayoutComponent} from './payouts/payout/payout.component'
 import {PayoutNewComponent} from './payouts/payout-new/payout-new.component'
 import {ClaimsComponent} from './payouts/claims/claims.component'
 import {WrongNetworkComponent} from './shared/components/wrong-network/wrong-network.component'
-import {RequestSendComponent} from './request-send/request-send.component'
 import {RequestSendNewComponent} from './request-send/request-send-new/request-send-new.component'
-import {RequestSendStatusComponent} from './request-send/request-send-status/request-send-status.component'
+import {RequestSendActionComponent} from './request-send/request-send-action/request-send-action.component'
+import {RequestSendShowComponent} from './request-send/request-send-show/request-send-show.component'
 
 @NgModule({
   declarations: [
@@ -210,9 +210,9 @@ import {RequestSendStatusComponent} from './request-send/request-send-status/req
     PayoutNewComponent,
     ClaimsComponent,
     WrongNetworkComponent,
-    RequestSendComponent,
     RequestSendNewComponent,
-    RequestSendStatusComponent,
+    RequestSendActionComponent,
+    RequestSendShowComponent,
   ],
   imports: [
     BrowserModule,
