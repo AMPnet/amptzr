@@ -1,1 +1,93 @@
-<p>request-send-new works!</p>
+<div class="px-4 py-2 max-w-screen-lg mx-auto">
+  <div class="bg-white my-8 p-6 rounded-4xl">
+    <h1 class="mt-2 text-2xl uppercase">
+      New Send Request
+    </h1>
+
+    <form [formGroup]="newRequestSendForm">
+      <div class="flex flex-col gap-2 mt-4 max-w-md">
+        <label class="font-semibold" for="asset-address">
+          Token address
+        </label>
+        <input class="border-gray-400 rounded-lg" type="text"
+               formControlName="assetAddress" id="asset-address"
+               autocomplete="off">
+      </div>
+
+      <ng-container *ngIf="(asset$ | async) as asset">
+        <div class="flex items-baseline gap-1.5 flex-wrap mt-4">
+          <span>{{ asset.symbol }}</span>
+          <span class="text-sm">
+            {{ asset.address | addrShort }}
+          </span>
+          <app-value-copy [value]="asset.address" [delay]="800">
+          </app-value-copy>
+          <app-explorer-link [value]="asset.address">
+          </app-explorer-link>
+          <app-add-to-metamask [value]="asset.address">
+          </app-add-to-metamask>
+        </div>
+
+        <!-- Token box -->
+        <div class="mt-5 bg-gray-200/20 border-gray-300/50 border-[1px] rounded-lg px-2 pb-1
+                              max-w-md">
+          <span class="flex justify-end mt-2 text-xxs font-medium text-gray-400">
+            Amount of {{ asset.symbol }} you want to request
+          </span>
+
+          <div class="flex justify-between">
+            <div class="flex items-center">
+              <div class="flex rounded-full items-center bg-white shadow">
+                <div class="w-7 h-7 bg-white rounded-full overflow-hidden m-1">
+                  <img class="h-full w-full object-cover"
+                       src="{{ asset.symbol | toStablecoinLogoPath }}"
+                       alt="{{ asset.symbol }} logo">
+                </div>
+
+                <span class="ml-1 mr-3 font-medium whitespace-nowrap">
+                  {{ asset.symbol }}
+                </span>
+              </div>
+            </div>
+
+            <input class="w-full py-0 pr-0 text-right bg-transparent border-none focus:ring-0 text-3xl
+                                text-ellipsis	placeholder:text-gray-400"
+                   formControlName="tokenAmount"
+                   appBigNumberInput bigNumberType="token"
+                   [tokenPrecision]="asset.decimals">
+          </div>
+
+          <div class="flex">
+            <div class="flex items-center min-h-[1rem] mt-2 flex-1">
+              <ng-container *ngIf="newRequestSendForm?.invalid">
+                <span class="text-red-600 text-xs font-semibold">
+                  <ng-container *ngIf="newRequestSendForm.errors?.feeAboveTokenAmount">
+                    The fee is above the given amount.
+                  </ng-container>
+                </span>
+              </ng-container>
+            </div>
+          </div>
+        </div>
+
+        <div class="flex flex-col gap-2 mt-4 max-w-md">
+          <label class="font-semibold" for="recipient-address">
+            Receiver address
+          </label>
+          <input class="border-gray-400 rounded-lg" type="text"
+                 formControlName="recipientAddress" id="recipient-address"
+                 autocomplete="off">
+        </div>
+
+        <div class="mt-4">
+          <button app-action-button
+                  class="app-button"
+                  [disabled]="newRequestSendForm.invalid"
+                  [onClick]="createRequest(asset).bind(this)"
+                  text="Create Send Request">
+          </button>
+        </div>
+      </ng-container>
+    </form>
+  </div>
+</div>

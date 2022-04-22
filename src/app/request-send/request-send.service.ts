@@ -2,6 +2,7 @@ import {Injectable} from '@angular/core'
 import {environment} from '../../environments/environment'
 import {BackendHttpClient} from '../shared/services/backend/backend-http-client.service'
 import {Observable} from 'rxjs'
+import {getWindow} from '../shared/utils/browser'
 
 @Injectable({
   providedIn: 'root',
@@ -9,7 +10,7 @@ import {Observable} from 'rxjs'
 export class RequestSendService {
   path = `${environment.backendURL}/api/blockchain-api`
 
-  constructor(private http: BackendHttpClient) {
+  constructor(private http: BackendHttpClient,) {
   }
 
   getRequest(id: string): Observable<RequestSend> {
@@ -26,13 +27,15 @@ export class RequestSendService {
 }
 
 interface CreateRequestSendData {
-  client_id: string;
-  token_address: string;
+  client_id?: string;
+  chain_id?: number;
+  token_address?: string;
   amount: string;
-  sender_address: string;
-  recipient_address: string;
-  arbitrary_data: ArbitraryData;
-  screen_config: ScreenConfig;
+  sender_address?: string;
+  recipient_address?: string;
+  redirect_url?: string;
+  arbitrary_data?: ArbitraryData;
+  screen_config?: ScreenConfig;
 }
 
 interface UpdateRequestSendData {

@@ -3,7 +3,7 @@
     <ng-container *ngIf="(requestSend$ | async) as requestSendRes">
       <div class="flex items-center gap-4 mt-2">
         <h1 class="text-2xl uppercase">
-          Request Send Details
+          Send Request Details
         </h1>
         <button class="h-auto bg-gray-100 rounded-full p-2"
                 [disabled]="requestSendRes.loading"

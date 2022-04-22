@@ -45,7 +45,6 @@ export class BigNumberInputDirective implements ControlValueAccessor {
     this.onTouched()
   }
 
-  @HostBinding('attr.disabled') disabled = false
   @HostBinding('attr.inputmode') inputMode = 'decimal'
   @HostBinding('autocomplete') autoComplete = 'off'
   @HostBinding('type') type = 'text'
@@ -119,7 +118,8 @@ export class BigNumberInputDirective implements ControlValueAccessor {
   }
 
   setDisabledState(isDisabled: boolean) {
-    this.disabled = isDisabled
-    this.renderer.setProperty(this.el.nativeElement, 'disabled', isDisabled)
+    // commented out due to disabled issue with validations
+    // this.disabled = ''
+    // this.renderer.setProperty(this.el.nativeElement, 'disabled', isDisabled)
   }
 }

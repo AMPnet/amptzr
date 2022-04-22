@@ -15,7 +15,7 @@ import {GasService} from '../../shared/services/blockchain/gas.service'
 import {ErrorService} from '../../shared/services/error.service'
 import {RouterService} from '../../shared/services/router.service'
 import {ActivatedRoute} from '@angular/router'
-import {catchError, distinctUntilChanged, map, shareReplay, switchMap, take, tap} from 'rxjs/operators'
+import {catchError, debounceTime, distinctUntilChanged, map, shareReplay, switchMap, take, tap} from 'rxjs/operators'
 import {ERC20__factory} from '../../../../types/ethers-contracts'
 import {Network} from '../../shared/networks'
 
@@ -143,7 +143,9 @@ export class RequestSendActionComponent {
 
   private amountValidator(state$: Observable<RequestSendState>): AsyncValidatorFn {
     return (control: AbstractControl): Observable<ValidationErrors | null> => {
-      return state$.pipe(take(1),
+      return state$.pipe(
+        debounceTime(0),
+        take(1),
         map((data) => {
           const tokenAmount = this.conversion.toToken(control.value || 0, data.tokenData.decimals)
 
