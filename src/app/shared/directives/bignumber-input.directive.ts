@@ -118,7 +118,11 @@ export class BigNumberInputDirective implements ControlValueAccessor {
   }
 
   setDisabledState(isDisabled: boolean) {
-    // commented out due to disabled issue with validations
+    // Commented out due to disabled issue with validations.
+    // To set field as disabled, use [attr.disabled]="true" on an input field
+    // that has reactive form validations. In other case, e.g. when setting
+    // disabled directly, the form doesn't validate the input at all.
+    //
     // this.disabled = ''
     // this.renderer.setProperty(this.el.nativeElement, 'disabled', isDisabled)
   }
