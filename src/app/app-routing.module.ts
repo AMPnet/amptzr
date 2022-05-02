@@ -38,6 +38,9 @@ import {PayoutsComponent} from './payouts/payouts.component'
 import {PayoutComponent} from './payouts/payout/payout.component'
 import {PayoutNewComponent} from './payouts/payout-new/payout-new.component'
 import {ClaimsComponent} from './payouts/claims/claims.component'
+import {RequestSendNewComponent} from './request-send/request-send-new/request-send-new.component'
+import {RequestSendShowComponent} from './request-send/request-send-show/request-send-show.component'
+import {RequestSendActionComponent} from './request-send/request-send-action/request-send-action.component'
 
 const appRoutes: Routes = [
   {path: 'callback', component: AuthMagicOauthComponent},
@@ -53,6 +56,13 @@ const appRoutes: Routes = [
       {path: 'wallet', component: WalletComponent},
       {path: 'deposit', component: DepositComponent},
       {path: 'orders', component: OrdersComponent},
+    ],
+  },
+  {
+    path: 'request-send', canActivate: [], children: [
+      {path: 'new', component: RequestSendNewComponent},
+      {path: ':id', component: RequestSendShowComponent},
+      {path: ':id/action', component: RequestSendActionComponent},
     ],
   },
   {
