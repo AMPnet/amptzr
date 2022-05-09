@@ -1,0 +1,57 @@
+<div class="w-full h-full flex justify-center my-8 px-2">
+  <div class="w-full max-w-5xl">
+    <ng-container *ngIf="(stateWithStatus$ | async) as stateRes">
+      <ng-container *ngIf="stateRes.value as state">
+        <div class="max-w-md mx-auto bg-white rounded-4xl px-6 py-4">
+          <h1 class="flex justify-center mt-4 mx-8 text-3xl">
+            Balance check for
+          </h1>
+          <h2 class="flex gap-1.5 justify-center items-center mt-8 mx-4 text-3xl">
+            <span>
+              {{ state.tokenData.symbol }}
+            </span>
+            <app-explorer-link [value]="state.tokenData.address" type="token">
+            </app-explorer-link>
+            <app-add-to-metamask [value]="state.tokenData.address">
+            </app-add-to-metamask>
+          </h2>
+
+          <div class="mt-8" *ngIf="!state.requestBalance.signed_message">
+            <button app-action-button
+                    class="w-full app-button"
+                    [hidden]="(isUserLoggedIn$ | async) === true"
+                    [onClick]="login.bind(this)"
+                    text="Log in"></button>
+
+            <button app-action-button
+                    class="w-full app-button"
+                    [hidden]="(shouldSign$ | async) !== true"
+                    [onClick]="confirmOwnership(state).bind(this)"
+                    text="Confirm ownership">
+            </button>
+          </div>
+
+          <div class="mt-4 text-center"
+               *ngIf="state.requestBalance.signed_message">
+            Action complete
+          </div>
+        </div>
+      </ng-container>
+
+      <ng-container *ngIf="stateRes.error">
+        <div class="flex justify-center py-8">
+          Cannot fetch data.
+        </div>
+        <div hidden>{{ stateRes.error | json }}</div>
+      </ng-container>
+
+      <ng-container *ngIf="stateRes.loading">
+        <div class="flex justify-center py-8">
+          <app-spinner type="overlay">
+            Loading...
+          </app-spinner>
+        </div>
+      </ng-container>
+    </ng-container>
+  </div>
+</div>
