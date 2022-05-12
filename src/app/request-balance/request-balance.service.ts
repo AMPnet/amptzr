@@ -6,53 +6,54 @@ import {Observable} from 'rxjs'
 @Injectable({
   providedIn: 'root',
 })
-export class RequestSendService {
+export class RequestBalanceService {
   path = `${environment.backendURL}/api/blockchain-api`
 
   constructor(private http: BackendHttpClient) {
   }
 
-  getRequest(id: string): Observable<RequestSend> {
-    return this.http.get<RequestSend>(`${this.path}/send/${id}`, {}, true)
+  getRequest(id: string): Observable<RequestBalance> {
+    return this.http.get<RequestBalance>(`${this.path}/balance/${id}`, {}, true)
   }
 
-  createRequest(data: CreateRequestSendData): Observable<RequestSend> {
-    return this.http.post<RequestSend>(`${this.path}/send`, data, true)
+  createRequest(data: CreateRequestBalanceData): Observable<RequestBalance> {
+    return this.http.post<RequestBalance>(`${this.path}/balance`, data, true)
   }
 
-  updateRequest(id: string, data: UpdateRequestSendData): Observable<RequestSend> {
-    return this.http.put<RequestSend>(`${this.path}/send/${id}`, data, true)
+  updateRequest(id: string, data: UpdateRequestBalanceData): Observable<RequestBalance> {
+    return this.http.put<RequestBalance>(`${this.path}/balance/${id}`, data, true)
   }
 }
 
-interface CreateRequestSendData {
+interface CreateRequestBalanceData {
   client_id?: string;
+  block_number?: string;
   chain_id?: number;
   token_address?: string;
-  amount: string;
-  sender_address?: string;
-  recipient_address?: string;
+  wallet_address?: string;
   redirect_url?: string;
   arbitrary_data?: ArbitraryData;
   screen_config?: ScreenConfig;
 }
 
-interface UpdateRequestSendData {
-  tx_hash: string,
+interface UpdateRequestBalanceData {
+  wallet_address: string,
+  signed_message: string,
 }
 
-export interface RequestSend {
+export interface RequestBalance {
   id: string;
   status: SendRequestStatus;
   chain_id: number;
+  redirect_url: string;
   token_address: string;
-  amount: string;
-  sender_address?: string;
-  recipient_address: string;
+  block_number: string;
+  wallet_address?: string;
   arbitrary_data?: ArbitraryData;
   screen_config?: Partial<ScreenConfig>;
-  redirect_url: string;
-  send_tx: SendTx;
+  balance?: BalanceData;
+  message_to_sign: string;
+  signed_message?: string;
 }
 
 interface ArbitraryData {
@@ -64,12 +65,11 @@ interface ScreenConfig {
   after_action_message: string;
 }
 
-interface SendTx {
-  tx_hash?: string;
-  from?: string;
-  to: string;
-  data: string;
-  block_confirmations?: string;
+interface BalanceData {
+  amount: string;
+  block_number: string;
+  timestamp: Date;
+  wallet: string;
 }
 
 export enum SendRequestStatus {

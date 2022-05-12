@@ -119,6 +119,7 @@ import {WrongNetworkComponent} from './shared/components/wrong-network/wrong-net
 import {RequestSendNewComponent} from './request-send/request-send-new/request-send-new.component'
 import {RequestSendActionComponent} from './request-send/request-send-action/request-send-action.component'
 import {RequestSendShowComponent} from './request-send/request-send-show/request-send-show.component'
+import {RequestBalanceActionComponent} from './request-balance/request-balance-action/request-balance-action.component'
 
 @NgModule({
   declarations: [
@@ -213,6 +214,7 @@ import {RequestSendShowComponent} from './request-send/request-send-show/request
     RequestSendNewComponent,
     RequestSendActionComponent,
     RequestSendShowComponent,
+    RequestBalanceActionComponent,
   ],
   imports: [
     BrowserModule,
