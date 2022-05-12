@@ -18,6 +18,7 @@ import {AssetService, CommonAssetWithInfo} from '../shared/services/blockchain/a
 import {BigNumber} from 'ethers'
 import {WalletConnectSubsignerService} from '../shared/services/subsigners/walletconnect-subsigner.service'
 import {AssetFlavor} from '../shared/services/blockchain/flavors'
+import {PhysicalInputService} from '../shared/services/physical-input.service'
 
 @Component({
   selector: 'app-wallet',
@@ -30,6 +31,7 @@ export class WalletComponent {
   transactionType = TransactionType
 
   authProvider$ = this.preferenceQuery.authProvider$
+  isAdvancedMode$ = this.physicalInputService.altKeyActive$
 
   user$: Observable<Partial<BackendUser>> = this.preferenceQuery.isBackendAuthorized$.pipe(
     switchMap(isAuth => isAuth ? this.backendUserService.getUser() : of({})),
@@ -54,6 +56,7 @@ export class WalletComponent {
               private signerService: SignerService,
               public stablecoin: StablecoinService,
               public transferService: TransferService,
+              private physicalInputService: PhysicalInputService,
               private userService: UserService,
               private backendUserService: BackendUserService,
               private queryService: QueryService,

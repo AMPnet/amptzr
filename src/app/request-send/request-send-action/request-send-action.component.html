@@ -1,0 +1,139 @@
+<div class="w-full h-full flex justify-center my-8 px-2">
+  <div class="w-full max-w-5xl">
+    <ng-container *ngIf="(stateWithStatus$ | async) as stateRes">
+      <ng-container *ngIf="stateRes.value as state">
+        <form [formGroup]="transferForm">
+          <div class="max-w-md mx-auto bg-white rounded-4xl px-6 py-4">
+            <h1 class="flex gap-1.5 justify-center items-center mt-4 mx-4 text-3xl">
+              <span>
+                Send Request {{ state.tokenData.symbol }}
+              </span>
+              <app-explorer-link [value]="state.tokenData.address" type="token">
+              </app-explorer-link>
+              <app-add-to-metamask [value]="state.tokenData.address">
+              </app-add-to-metamask>
+            </h1>
+
+            <h2 class="mt-2 mx-4 text-center text-sm text-gray-500">
+              <span>
+                on {{ state.network.name }}
+              </span>
+            </h2>
+
+            <div class="mt-5 bg-gray-200/20 border-gray-300/50 border-[1px] rounded-lg px-2 pb-1">
+              <span class="flex justify-end mt-2 text-xxs font-medium text-gray-400">
+                Amount of {{ state.tokenData.symbol }} you will transfer
+              </span>
+
+              <div class="flex justify-between">
+                <div class="flex items-center">
+                  <div class="flex rounded-full items-center bg-white shadow">
+                    <div class="w-7 h-7 bg-white rounded-full overflow-hidden m-1">
+                      <img class="h-full w-full object-cover"
+                           src="{{ (state.asset?.infoData?.logo | toUrlIPFS) || (state.tokenData.symbol | toStablecoinLogoPath) }}"
+                           alt="{{ state.tokenData.symbol }} logo">
+                    </div>
+
+                    <span class="ml-1 mr-3 font-medium whitespace-nowrap">
+                      {{ state.tokenData.symbol }}
+                    </span>
+                  </div>
+                </div>
+
+                <input class="w-full py-0 pr-0 text-right bg-transparent border-none focus:ring-0 text-3xl
+                                text-ellipsis	placeholder:text-gray-400"
+                       formControlName="tokenAmount" [attr.disabled]="true"
+                       appBigNumberInput bigNumberType="token" [tokenPrecision]="state.tokenData.decimals">
+              </div>
+
+              <div class="flex" *ngIf="!state.requestSend.send_tx.tx_hash">
+                <div class="flex items-center min-h-[1rem] mt-2 flex-1">
+                  <ng-container *ngIf="transferForm.get('tokenAmount')?.errors as errs">
+                    <span class="text-red-600 text-xs font-semibold">
+                      <ng-container *ngIf="errs.tokenAmountAboveBalance">
+                        The amount exceeds your token balance.
+                      </ng-container>
+                    </span>
+                  </ng-container>
+                </div>
+              </div>
+
+              <div class="flex justify-between items-center mt-5 text-xxs font-medium">
+                <div>
+                  <span class="text-gray-400" *ngIf="state.balance">
+                    Balance: {{ state.balance
+                    | formatUnit:'token':state.tokenData.decimals
+                    | currencyDefault:'token':'real':state.tokenData.symbol }}
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            <div class="flex flex-col gap-2 mt-5">
+              <label class="text-sm text-gray-500 text-center">
+                Recipient
+              </label>
+
+              <div class="flex gap-1 items-baseline mt-2 self-center"
+                   *ngIf="transferForm.get('recipientAddress')?.value as recipientAddress">
+                <span class="text-sm">
+                  {{ recipientAddress | addrShort }}
+                </span>
+                <app-value-copy [value]="recipientAddress"></app-value-copy>
+                <app-explorer-link [value]="recipientAddress">
+                </app-explorer-link>
+              </div>
+            </div>
+
+            <div class="flex flex-col gap-4 mt-4" *ngIf="!state.requestSend.send_tx.tx_hash">
+              <div class="text-center"
+                   *ngIf="state.requestSend.screen_config?.before_action_message as beforeActionMessage">
+                {{ beforeActionMessage }}
+              </div>
+
+              <button app-action-button
+                      class="w-full app-button"
+                      [hidden]="(isUserLoggedIn$ | async) === true"
+                      [onClick]="login.bind(this)"
+                      text="Log in"></button>
+
+              <button app-action-button
+                      class="w-full app-button"
+                      [hidden]="(shouldTransfer$ | async) !== true"
+                      [disabled]="transferForm.invalid"
+                      [onClick]="transfer(state).bind(this)"
+                      text="Transfer">
+              </button>
+            </div>
+
+            <div class="mt-4 text-center"
+                 *ngIf="state.requestSend.send_tx.tx_hash">
+              <ng-container
+                *ngIf="state.requestSend.screen_config?.after_action_message as afterActionMessage; else noAfterActionMessage">
+                {{ afterActionMessage }}
+              </ng-container>
+              <ng-template #noAfterActionMessage>
+                Action complete. You can close this screen now.
+              </ng-template>
+            </div>
+          </div>
+        </form>
+      </ng-container>
+
+      <ng-container *ngIf="stateRes.error">
+        <div class="flex justify-center py-8">
+          Cannot fetch data.
+        </div>
+        <div hidden>{{ stateRes.error | json }}</div>
+      </ng-container>
+
+      <ng-container *ngIf="stateRes.loading">
+        <div class="flex justify-center py-8">
+          <app-spinner type="overlay">
+            Loading...
+          </app-spinner>
+        </div>
+      </ng-container>
+    </ng-container>
+  </div>
+</div>

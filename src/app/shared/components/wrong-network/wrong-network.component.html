@@ -1,0 +1,50 @@
+<div class="max-w-sm">
+  <div class="flex justify-center mt-2">
+    <img class="w-48 h-48 object-cover rounded-full"
+         src="/assets/dialog-icons/warning.png" alt="Warning logo">
+  </div>
+
+  <div class="mt-4 px-4">
+    <h1 class="text-2xl text-center">
+      Wrong network detected
+    </h1>
+  </div>
+
+  <div class="px-4 mt-4 text-center text-sm">
+    <p>
+      <ng-container *ngIf="(currentNetwork$ | async) as currentNetwork">
+        You are currently connected to network
+        <span class="font-semibold">
+          {{ currentNetwork.name ?? '' }}
+        </span>
+        <span class="bg-gray-200 px-1 py-0.5 text-xs rounded-full">
+          {{ currentNetwork.chainID }}</span>.
+      </ng-container>
+      If you want to proceed, switch the network to
+      <ng-container *ngIf="(requestedNetwork$ | async) as requestedNetwork">
+        <span class="font-semibold">
+          {{ requestedNetwork.name ?? '' }}
+        </span>
+        <span class="bg-gray-200 px-1 py-0.5 text-xs rounded-full">
+          {{ requestedNetwork.chainID }}</span>
+      </ng-container>
+      .
+    </p>
+  </div>
+
+  <div class="flex flex-col space-y-2 mt-4
+              sm:flex-row sm:space-x-4 sm:space-y-0 justify-center">
+    <button (click)="logout()"
+            class="bg-gray-200 rounded-full p-2 text-sm font-semibold flex-1">
+      Log out
+    </button>
+
+    <button *ngIf="isConnectedWithMetamask$ | async"
+            (click)="changeNetwork()"
+            class="app-button !p-2 !text-sm flex-1">
+      Switch network
+    </button>
+  </div>
+</div>
+
+<ng-container *ngIf="dismissDialog$ | async"></ng-container>

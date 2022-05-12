@@ -16,27 +16,6 @@ export class WalletConnectSubsignerService implements Subsigner<WalletConnectLog
   constructor(private preferenceStore: PreferenceStore) {
   }
 
-  login(opts: WalletConnectLoginOpts): Observable<providers.JsonRpcSigner> {
-    return from(this.freshWalletConnectProvider).pipe(
-      switchMapTap(p => from(p.enable())),
-      concatMap(p => p.connected && p.accounts.length > 0 ?
-        of(p) : throwError(() => 'UNABLE TO CONNECT')),
-      tap(p => {
-        if (opts.force) {
-          this.preferenceStore.update({
-            address: p.accounts[0],
-            authProvider: AuthProvider.WALLET_CONNECT,
-          })
-        }
-      }),
-      map(p => new providers.Web3Provider(p).getSigner()),
-    )
-  }
-
-  logout(): Observable<unknown> {
-    return from(this.wcProvider ? this.wcProvider.disconnect() : EMPTY)
-  }
-
   private get freshWalletConnectProvider(): Observable<WalletConnectProvider> {
     return from(
       import(
@@ -65,6 +44,27 @@ export class WalletConnectSubsignerService implements Subsigner<WalletConnectLog
         return this.wcProvider
       }),
     )
+  }
+
+  login(opts: WalletConnectLoginOpts): Observable<providers.JsonRpcSigner> {
+    return from(this.freshWalletConnectProvider).pipe(
+      switchMapTap(p => from(p.enable())),
+      concatMap(p => p.connected && p.accounts.length > 0 ?
+        of(p) : throwError(() => 'UNABLE TO CONNECT')),
+      tap(p => {
+        if (opts.force) {
+          this.preferenceStore.update({
+            address: p.accounts[0],
+            authProvider: AuthProvider.WALLET_CONNECT,
+          })
+        }
+      }),
+      map(p => new providers.Web3Provider(p, 'any').getSigner()),
+    )
+  }
+
+  logout(): Observable<unknown> {
+    return from(this.wcProvider ? this.wcProvider.disconnect() : EMPTY)
   }
 }
 

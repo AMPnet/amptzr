@@ -1,8 +1,8 @@
-import {ChangeDetectionStrategy, Component, Input} from '@angular/core'
+import {ChangeDetectionStrategy, Component, ElementRef, Input, Renderer2} from '@angular/core'
 import {PreferenceQuery} from '../../../preference/state/preference.query'
 import {MetamaskSubsignerService} from '../../services/subsigners/metamask-subsigner.service'
 import {SignerService} from '../../services/signer.service'
-import {map} from 'rxjs/operators'
+import {map, tap} from 'rxjs/operators'
 import {combineLatest, Observable} from 'rxjs'
 import {SessionQuery} from '../../../session/state/session.query'
 import {AuthProvider} from '../../../preference/state/preference.store'
@@ -23,6 +23,11 @@ export class AddToMetamaskComponent {
     map(([ethereum, authProvider]) =>
       !!ethereum.isMetaMask && authProvider === AuthProvider.METAMASK,
     ),
+    tap(isAvailable => {
+      isAvailable ?
+        this.renderer.removeStyle(this.elementRef.nativeElement, 'display') :
+        this.renderer.setStyle(this.elementRef.nativeElement, 'display', 'none')
+    }),
   )
 
   constructor(
@@ -30,6 +35,8 @@ export class AddToMetamaskComponent {
     private sessionQuery: SessionQuery,
     private signer: SignerService,
     private metamaskSubsignerService: MetamaskSubsignerService,
+    private elementRef: ElementRef,
+    private renderer: Renderer2,
   ) {
   }
 

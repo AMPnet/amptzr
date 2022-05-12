@@ -1,0 +1,266 @@
+<div class="px-4 py-2 max-w-screen-lg mx-auto">
+  <div class="bg-white my-8 p-6 rounded-4xl">
+    <h1 class="mt-2 text-2xl uppercase">
+      New Payout
+    </h1>
+
+    <ng-container *ngIf="(snapshot$ | async) as snapshotRes">
+      <ng-container *ngIf="snapshotRes.value as snapshot">
+        <ng-container *ngIf="(snapshot.asset | assetData:'tokenOnly' | withStatus | async) as assetRes">
+          <ng-container *ngIf="assetRes.value as asset">
+            <h2 class="font-semibold mt-4">
+              Base asset
+            </h2>
+
+            <div class="flex gap-1 items-baseline mt-2">
+              <span>{{ asset.tokenData.symbol }}</span>
+              <span class="text-sm">
+                {{ asset.tokenData.address | addrShort }}
+              </span>
+              <app-value-copy [value]="asset.tokenData.address"></app-value-copy>
+              <app-explorer-link [value]="asset.tokenData.address" type="token">
+              </app-explorer-link>
+              <app-add-to-metamask [value]="asset.tokenData.address">
+              </app-add-to-metamask>
+            </div>
+
+            <div class="flex items-baseline gap-1.5 flex-wrap mt-2">
+              <span>Snapshot creator:</span>
+              <span class="text-sm">
+                {{ snapshot.owner | addrShort }}
+              </span>
+              <app-value-copy [value]="snapshot.owner" [delay]="800">
+              </app-value-copy>
+              <app-explorer-link [value]="snapshot.owner">
+              </app-explorer-link>
+            </div>
+
+            <div class="flex items-baseline gap-1.5 flex-wrap mt-2"
+                 *ngIf="snapshot.asset_snapshot_block_number | formatUnit:'toNumber' as blockNumber">
+              <span>Snapshot block number:</span>
+              <span class="text-sm font-mono">
+                {{ blockNumber }}
+              </span>
+              <app-value-copy value="{{ blockNumber }}" [delay]="800">
+              </app-value-copy>
+            </div>
+
+            <div class="flex items-baseline gap-1.5 flex-wrap mt-2">
+              <span>Snapshot time:</span>
+              <span class="text-sm">
+                <ng-container
+                  *ngIf="(snapshot.asset_snapshot_block_number | blockTime | withStatus | async) as blockTimeRes">
+                  <ng-container *ngIf="blockTimeRes.value as blockTime">
+                    <span>{{ blockTime | date:'medium' }}</span>
+                  </ng-container>
+
+                  <ng-container *ngIf="blockTimeRes.error">
+                    <span>❌</span>
+                    <div hidden>{{ blockTimeRes.error | json }}</div>
+                  </ng-container>
+
+                  <ng-container *ngIf="blockTimeRes.loading">
+                    <app-spinner type="inline-xs"></app-spinner>
+                  </ng-container>
+                </ng-container>
+              </span>
+            </div>
+
+            <div class="mt-2">
+              <a class="text-sky-600" href="{{ snapshot.asset_snapshot_merkle_ipfs_hash | toUrlIPFS }}"
+                 target="_blank" rel="noopener noreferrer">
+                Open raw snapshot data
+              </a>
+            </div>
+
+            <div class="mt-4 lg:max-w-md">
+              <h2 class="font-semibold">
+                Ignored asset holders
+              </h2>
+
+              <div class="flex flex-col gap-2 mt-2">
+                <div *ngFor="let holderAddress of snapshot.ignored_holder_addresses">
+                  <div class="flex items-baseline gap-1.5 flex-wrap">
+                    <span class="text-sm">
+                      {{ holderAddress | addrShort }}
+                    </span>
+                    <app-value-copy [value]="holderAddress" [delay]="800">
+                    </app-value-copy>
+                    <app-explorer-link [value]="holderAddress">
+                    </app-explorer-link>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <ng-container *ngIf="snapshot.status === snapshotStatus.Failed">
+              <div class="mt-4">
+                The process of generating a snapshot cryptographic proof failed.
+                Consider creating a new snapshot.
+              </div>
+            </ng-container>
+
+            <ng-container *ngIf="snapshot.status === snapshotStatus.Pending">
+              <app-spinner type="overlay" class="mt-4">
+                Generation of a snapshot cryptographic proof in progress...
+              </app-spinner>
+            </ng-container>
+
+            <ng-container *ngIf="snapshot.status === snapshotStatus.Success">
+              <h2 class="font-semibold mt-4">
+                Payout asset
+              </h2>
+
+              <form [formGroup]="newPayoutForm">
+                <div class="flex flex-col gap-2 mt-4 max-w-md">
+                  <label class="font-semibold" for="payout-asset-address">
+                    Token address
+                  </label>
+                  <input class="border-gray-400 rounded-lg" type="text"
+                         formControlName="rewardAssetAddress" id="payout-asset-address"
+                         autocomplete="off">
+                </div>
+
+                <ng-container *ngIf="(payoutState$ | async) as payoutState">
+                  <div class="flex items-baseline gap-1.5 flex-wrap mt-4">
+                    <span>{{ payoutState.tokenData.symbol }}</span>
+                    <span class="text-sm">
+                      {{ payoutState.tokenData.address | addrShort }}
+                    </span>
+                    <app-value-copy [value]="payoutState.tokenData.address" [delay]="800">
+                    </app-value-copy>
+                    <app-explorer-link [value]="payoutState.tokenData.address">
+                    </app-explorer-link>
+                    <app-add-to-metamask [value]="payoutState.tokenData.address">
+                    </app-add-to-metamask>
+                  </div>
+
+                  <!-- Token box -->
+                  <div class="mt-5 bg-gray-200/20 border-gray-300/50 border-[1px] rounded-lg px-2 pb-1
+                              max-w-md">
+                    <span class="flex justify-end mt-2 text-xxs font-medium text-gray-400">
+                      Amount of {{ payoutState.tokenData.symbol }} you will distribute
+                    </span>
+
+                    <div class="flex justify-between">
+                      <div class="flex items-center">
+                        <div class="flex rounded-full items-center bg-white shadow">
+                          <div class="w-7 h-7 bg-white rounded-full overflow-hidden m-1">
+                            <img class="h-full w-full object-cover"
+                                 src="{{ (payoutState.asset?.infoData?.logo | toUrlIPFS) || (payoutState.tokenData.symbol | toStablecoinLogoPath) }}"
+                                 alt="{{ payoutState.tokenData.symbol }} logo">
+                          </div>
+
+                          <span class="ml-1 mr-3 font-medium whitespace-nowrap">
+                            {{ payoutState.tokenData.symbol }}
+                          </span>
+                        </div>
+                      </div>
+
+                      <input class="w-full py-0 pr-0 text-right bg-transparent border-none focus:ring-0 text-3xl
+                                text-ellipsis	placeholder:text-gray-400"
+                             formControlName="tokenAmount"
+                             appBigNumberInput bigNumberType="token"
+                             [tokenPrecision]="payoutState.tokenData.decimals">
+                    </div>
+
+                    <div class="flex flex-col gap-2 mt-2 text-orange-400 text-xs font-semibold"
+                         *ngIf="payoutState.feeData as feeData">
+                      <span>
+                        Payout fee: {{ feeData.fee
+                        | formatUnit:'token':payoutState.tokenData.decimals
+                        | currencyDefault:'token':'real':payoutState.tokenData.symbol }}
+                      </span>
+
+                      <span>
+                        Payout amount: {{ feeData.amount
+                        | formatUnit:'token':payoutState.tokenData.decimals
+                        | currencyDefault:'token':'real':payoutState.tokenData.symbol }}
+                      </span>
+
+                      <span>
+                        Total (amount + fee): {{ feeData.amountWithFee
+                        | formatUnit:'token':payoutState.tokenData.decimals
+                        | currencyDefault:'token':'real':payoutState.tokenData.symbol }}
+                      </span>
+                    </div>
+
+                    <div class="flex">
+                      <div class="flex items-center min-h-[1rem] mt-2 flex-1">
+                        <ng-container *ngIf="newPayoutForm?.invalid">
+                          <span class="text-red-600 text-xs font-semibold">
+                            <ng-container *ngIf="newPayoutForm.errors?.tokenAmountAboveBalance">
+                              The amount exceeds your token balance.
+                            </ng-container>
+
+                            <ng-container *ngIf="newPayoutForm.errors?.tokenAmountWithFeeAboveBalance">
+                              The amount exceeds your token balance with fee.
+                            </ng-container>
+
+                            <ng-container *ngIf="newPayoutForm.errors?.feeFetchFailed">
+                              The fee cannot be fetched.
+                            </ng-container>
+
+                            <ng-container *ngIf="newPayoutForm.errors?.feeAboveTokenAmount">
+                              The fee is above the given amount.
+                            </ng-container>
+                          </span>
+                        </ng-container>
+                      </div>
+                    </div>
+
+                    <div class="flex justify-between items-center mt-5 text-xxs font-medium">
+                      <div>
+                        <span class="text-gray-400" *ngIf="payoutState.balance">
+                          Balance: {{ payoutState.balance
+                          | formatUnit:'token':payoutState.tokenData.decimals
+                          | currencyDefault:'token':'real':payoutState.tokenData.symbol }}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="mt-4">
+                    <button app-action-button
+                            class="app-button"
+                            [hidden]="(shouldApprove$ | async) !== true"
+                            [disabled]="newPayoutForm.invalid"
+                            [onClick]="approveAmount(payoutState).bind(this)"
+                            text="Approve">
+                    </button>
+
+                    <button app-action-button
+                            class="app-button"
+                            [hidden]="(shouldCreatePayout$ | async) !== true"
+                            [disabled]="newPayoutForm.invalid"
+                            [onClick]="createPayout(payoutState, snapshot).bind(this)"
+                            text="Create Payout">
+                    </button>
+                  </div>
+                </ng-container>
+              </form>
+            </ng-container>
+          </ng-container>
+
+          <ng-container *ngIf="assetRes.error">
+            Cannot fetch asset.
+            <div hidden>{{ assetRes.error | json }}</div>
+          </ng-container>
+
+          <ng-container *ngIf="assetRes.loading">
+            Loading asset...
+          </ng-container>
+        </ng-container>
+      </ng-container>
+
+      <ng-container *ngIf="snapshotRes.error">
+        Cannot fetch snapshot.
+        <div hidden>{{ snapshotRes.error | json }}</div>
+      </ng-container>
+
+      <ng-container *ngIf="snapshotRes.loading">
+        Loading snapshot...
+      </ng-container>
+    </ng-container>
+  </div>
+</div>

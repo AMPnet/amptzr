@@ -1,7 +1,18 @@
 import {Injectable, NgZone} from '@angular/core'
 import {providers, utils} from 'ethers'
-import {defer, from, fromEvent, merge, Observable, of, Subject, throwError} from 'rxjs'
-import {catchError, concatMap, finalize, map, switchMap, take, tap} from 'rxjs/operators'
+import {combineLatest, defer, from, fromEvent, merge, Observable, of, Subject, throwError} from 'rxjs'
+import {
+  catchError,
+  concatMap,
+  finalize,
+  map,
+  shareReplay,
+  startWith,
+  switchMap,
+  take,
+  tap,
+  timeout,
+} from 'rxjs/operators'
 import {SessionStore} from '../../session/state/session.store'
 import {SessionQuery} from '../../session/state/session.query'
 import {PreferenceStore} from '../../preference/state/preference.store'
@@ -13,23 +24,24 @@ import {PreferenceQuery} from '../../preference/state/preference.query'
 import {getWindow} from '../utils/browser'
 import {DialogService} from './dialog.service'
 import {GetSignerOptions, SignerLoginOpts, Subsigner} from './signer-login-options'
+import {WrongNetworkComponent} from '../components/wrong-network/wrong-network.component'
 
 @Injectable({
   providedIn: 'root',
 })
 export class SignerService {
+  provider$ = this.sessionQuery.provider$
+  injectedWeb3$: Observable<any> = defer(() => of(getWindow()?.ethereum))
+
   private subsigner?: Subsigner<any>
   private accountsChangedSub = new Subject<string[]>()
   private chainChangedSub = new Subject<string>()
   private disconnectedSub = new Subject<void>()
+  private listenersSub = new Subject<any>()
 
   accountsChanged$ = this.accountsChangedSub.asObservable()
   chainChanged$ = this.chainChangedSub.asObservable()
   disconnected$ = this.disconnectedSub.asObservable()
-  provider$ = this.sessionQuery.provider$
-
-  private listenersSub = new Subject<any>()
-
   listeners$ = this.listenersSub.asObservable().pipe(
     switchMap(provider => merge(
       fromEvent<string[]>(provider, 'accountsChanged').pipe(
@@ -45,7 +57,22 @@ export class SignerService {
     tap(action => this.ngZone.run(() => action())),
   )
 
-  injectedWeb3$: Observable<any> = defer(() => of(getWindow()?.ethereum))
+  networkMismatch$: Observable<boolean> = combineLatest([
+    this.preferenceQuery.network$,
+    this.sessionQuery.isLoggedIn$,
+    this.chainChanged$.pipe(startWith('')),
+  ]).pipe(
+    switchMap(([network, isLoggedIn]) => {
+      if (!isLoggedIn || !this.sessionQuery.signer) return of(false)
+
+      return from(this.sessionQuery.signer.getChainId()).pipe(
+        timeout(2000),
+        map(chainID => chainID !== network.chainID),
+        catchError(() => of(true)),
+      )
+    }),
+    shareReplay(1),
+  )
 
   constructor(private sessionStore: SessionStore,
               private sessionQuery: SessionQuery,
@@ -57,13 +84,6 @@ export class SignerService {
               private dialogService: DialogService,
               private errorService: ErrorService) {
     this.subscribeToChanges()
-  }
-
-  private setSigner(signer: providers.JsonRpcSigner): void {
-    this.sessionStore.update({
-      signer,
-    })
-    this.registerListeners()
   }
 
   get ensureAuth(): Observable<providers.JsonRpcSigner> {
@@ -80,18 +100,13 @@ export class SignerService {
     )
   }
 
-  get ensureNetwork(): Observable<void> {
-    if (!this.sessionQuery.signer) return of(undefined)
-
-    return from(this.sessionQuery.signer.getChainId()).pipe(
-      switchMap(chainId => {
-        if (chainId !== this.preferenceQuery.network.chainID) {
-          return this.logout()
-        }
-
-        return of(undefined)
-      }),
-      map(() => undefined),
+  get ensureNetwork(): Observable<providers.JsonRpcSigner> {
+    return combineLatest([this.networkMismatch$]).pipe(
+      take(1),
+      concatMap(([isMismatch]) => isMismatch ?
+        defer(() => this.changeNetworkDialog()) : of(undefined),
+      ),
+      map(() => this.sessionQuery.signer!),
     )
   }
 
@@ -102,6 +117,15 @@ export class SignerService {
       concatMap(authCompleted => authCompleted ?
         this.sessionQuery.waitUntilLoggedIn() :
         throwError(() => 'LOGIN_MODAL_DISMISSED')),
+    )
+  }
+
+  private changeNetworkDialog() {
+    return this.dialogService.dialog.open(WrongNetworkComponent, {
+      ...this.dialogService.configDefaults,
+    }).afterClosed().pipe(
+      concatMap(changeNetworkCompleted => changeNetworkCompleted ?
+        of(true) : throwError(() => 'CHANGE_NETWORK_MODAL_DISMISSED')),
     )
   }
 
@@ -145,6 +169,7 @@ export class SignerService {
   sendTransaction(transaction: providers.TransactionRequest):
     Observable<providers.TransactionResponse> {
     return this.ensureAuth.pipe(
+      switchMap(() => this.ensureNetwork),
       switchMap(signer => from(signer.sendTransaction(transaction))),
       this.errorService.handleError(false, true),
     )
@@ -157,6 +182,13 @@ export class SignerService {
     this.listenersSub.next(providerWithEvents)
   }
 
+  private setSigner(signer: providers.JsonRpcSigner): void {
+    this.sessionStore.update({
+      signer,
+    })
+    this.registerListeners()
+  }
+
   private subscribeToChanges(): void {
     this.accountsChanged$.pipe(
       concatMap((accounts) => accounts.length === 0 ? this.logoutNavToOffers() : of(accounts)),
@@ -166,22 +198,6 @@ export class SignerService {
           this.preferenceStore.update({address: account})
         }
       }),
-    ).subscribe()
-
-    this.chainChanged$.pipe(
-      concatMap(chainID => this.provider$.pipe(take(1),
-        concatMap(provider => provider.getNetwork()),
-        concatMap(network => utils.hexValue(network.chainId) === chainID ?
-          of(network) : this.logoutNavToOffers())),
-      ),
-      // provider.getNetwork() sometimes throws error on network mismatch.
-      catchError(() => this.logoutNavToOffers()),
-    ).subscribe()
-
-    this.disconnected$.pipe(
-      tap(() =>
-        this.logoutNavToOffers().subscribe(),
-      ),
     ).subscribe()
 
     this.listeners$.subscribe()

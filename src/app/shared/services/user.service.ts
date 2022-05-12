@@ -2,7 +2,7 @@ import {Injectable} from '@angular/core'
 import {SignerService} from './signer.service'
 import {concatMap, distinctUntilChanged, filter, map, pairwise, shareReplay, switchMap} from 'rxjs/operators'
 import {BackendHttpClient} from './backend/backend-http-client.service'
-import {combineLatest, from, merge, Observable, of} from 'rxjs'
+import {combineLatest, from, Observable, of} from 'rxjs'
 import {SessionQuery} from '../../session/state/session.query'
 import {IssuerService} from './blockchain/issuer/issuer.service'
 import {BigNumber, constants} from 'ethers'
@@ -11,8 +11,6 @@ import {AuthProvider} from '../../preference/state/preference.store'
 import {MagicSubsignerService} from './subsigners/magic-subsigner.service'
 import {BackendUserService} from './backend/backend-user.service'
 import {withInterval} from '../utils/observables'
-import {contractEvent} from '../utils/ethersjs'
-import {ERC20__factory} from '../../../../types/ethers-contracts'
 
 @Injectable({
   providedIn: 'root',
@@ -66,23 +64,6 @@ export class UserService {
         concatMap(magic => this.backendUserService.updateUser({email: magic.email!})),
       )),
     ).subscribe()
-  }
-
-  tokenBalance$(address: string): Observable<BigNumber | undefined> {
-    return combineLatest([
-      this.sessionQuery.provider$.pipe(
-        map(provider => ERC20__factory.connect(address, provider)),
-      ),
-      this.preferenceQuery.address$,
-    ]).pipe(
-      switchMap(([contract, address]) => !address ? of(undefined) : merge(
-        of(undefined),
-        contractEvent(contract, contract.filters.Transfer(address)),
-        contractEvent(contract, contract.filters.Transfer(null, address)),
-      ).pipe(
-        switchMap(() => contract.balanceOf(address)),
-      )),
-    )
   }
 
   logout() {

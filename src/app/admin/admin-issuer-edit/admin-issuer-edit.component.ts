@@ -9,6 +9,7 @@ import {PreferenceStore} from '../../preference/state/preference.store'
 import {IssuerService, IssuerWithInfo} from '../../shared/services/blockchain/issuer/issuer.service'
 import {IssuerBasicService, IssuerBasicState} from '../../shared/services/blockchain/issuer/issuer-basic.service'
 import {WithStatus, withStatus} from '../../shared/utils/observables'
+import {PhysicalInputService} from '../../shared/services/physical-input.service'
 
 @Component({
   selector: 'app-admin-issuer-edit',
@@ -19,6 +20,7 @@ import {WithStatus, withStatus} from '../../shared/utils/observables'
 export class AdminIssuerEditComponent {
   issuer$: Observable<WithStatus<IssuerView>>
   stableCoinSymbol = this.stablecoin.config.symbol
+  isAdvancedMode$ = this.physicalInputService.altKeyActive$
 
   updateForm: FormGroup
   updateWalletApproverAddressForm: FormGroup
@@ -30,6 +32,7 @@ export class AdminIssuerEditComponent {
               private stablecoin: StablecoinService,
               private preferenceStore: PreferenceStore,
               private dialogService: DialogService,
+              private physicalInputService: PhysicalInputService,
               private fb: FormBuilder) {
     this.updateForm = this.fb.group({
       name: ['', Validators.required],
@@ -86,9 +89,8 @@ export class AdminIssuerEditComponent {
         issuer: issuer.infoData,
       }).pipe(
         switchMap(uploadRes => this.issuerService.updateInfo(issuer.contractAddress, uploadRes.path)),
-        switchMap(() => this.dialogService.info({
-          title: 'Issuer has been updated',
-          cancelable: false,
+        switchMap(() => this.dialogService.success({
+          message: 'Issuer has been updated.',
         })),
         tap(() => this.refreshIssuer()),
         tap(() => this.routerService.navigate(['/admin'])),
@@ -102,9 +104,8 @@ export class AdminIssuerEditComponent {
         issuer.contractAddress, this.updateWalletApproverAddressForm.value.walletApproverAddress,
       ).pipe(
         tap(() => this.updateWalletApproverAddressForm.markAsPristine()),
-        switchMap(() => this.dialogService.info({
-          title: 'Wallet approver has been changed',
-          cancelable: false,
+        switchMap(() => this.dialogService.success({
+          message: 'Wallet approver has been changed.',
         })),
       )
     }
@@ -115,9 +116,8 @@ export class AdminIssuerEditComponent {
       return this.issuerService.changeOwner(
         issuer.contractAddress, this.updateOwnerAddressForm.value.ownerAddress,
       ).pipe(
-        switchMap(() => this.dialogService.info({
-          title: 'The owner has been changed',
-          cancelable: false,
+        switchMap(() => this.dialogService.success({
+          message: 'The owner has been changed.',
         })),
         tap(() => this.refreshIssuer()),
         tap(() => this.routerService.navigate(['/'])),

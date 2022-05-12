@@ -24,16 +24,6 @@ export class PreferenceService {
               private signer: SignerService) {
   }
 
-  initSigner(): Observable<unknown> {
-    return this.tryImplicitLogin.pipe(
-      switchMap(() => this.tryPreviousLogin),
-      timeout(30_000),
-      catchError(() => {
-        return this.signer.logout().pipe(concatMap(() => EMPTY))
-      }),
-    )
-  }
-
   private get tryImplicitLogin(): Observable<providers.JsonRpcSigner | undefined> {
     return of(getWindow() !== getWindow().parent).pipe(
       switchMap(isIframe => isIframe ?
@@ -59,6 +49,18 @@ export class PreferenceService {
           default:
             return EMPTY
         }
+      }),
+    )
+  }
+
+  initSigner(): Observable<unknown> {
+    return this.tryImplicitLogin.pipe(
+      switchMap(() => this.tryPreviousLogin),
+      timeout(30_000),
+      catchError((err) => {
+        if (err === 'WRONG_NETWORK') return of(this.signer)
+
+        return this.signer.logout().pipe(concatMap(() => EMPTY))
       }),
     )
   }

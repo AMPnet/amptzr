@@ -2,10 +2,10 @@
   <div class="w-full max-w-6xl">
     <ng-container *ngIf="(campaign$ | async) as campaignRes">
       <ng-container *ngIf="campaignRes.value as campaign">
-        <div class="flex flex-col w-full justify-start bg-white shadow-xl rounded-4xl p-4 pt-8 gap-6">
-          <span class="text-2xl text-indigo-900">Editing campaign</span>
+        <div class="flex flex-col w-full justify-start bg-white rounded-4xl p-4 pt-8 gap-6">
+          <span class="text-2xl text-indigo-900">Edit campaign</span>
 
-          <form [formGroup]="updateInfoForm" *ngIf="isAdvancedMode">
+          <form [formGroup]="updateInfoForm" *ngIf="isAdvancedMode$ | async">
             <div class="flex flex-col gap-2 mt-6">
               <label class="text-lg font-semibold">IPFS Info CID</label>
               <div class="flex gap-2">
@@ -24,7 +24,7 @@
             <form [formGroup]="updateOwnerAddressForm">
               <div class="flex flex-col gap-1 mt-6 max-w-md">
                 <label class="text-lg font-semibold">
-                  OWNER ADDRESS
+                  Owner address
                 </label>
                 <div class="flex gap-2">
                   <input class="flex-grow border-gray-400 rounded-lg" type="text" formControlName="ownerAddress">

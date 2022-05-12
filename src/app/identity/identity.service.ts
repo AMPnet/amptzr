@@ -57,7 +57,7 @@ export class IdentityService {
         'This is usually a short process, but it might take up to a few minutes. Please wait.',
       )),
       switchMap(() => this.dialogService.success({
-        title: 'Identity verified successfully!',
+        message: 'Identity has been verified!',
       })),
     )
   }

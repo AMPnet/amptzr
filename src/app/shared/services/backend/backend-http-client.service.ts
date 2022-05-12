@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core'
 import {HttpClient, HttpHeaders} from '@angular/common/http'
-import {EMPTY, merge, Observable, of, throwError} from 'rxjs'
-import {catchError, concatMap, map, switchMap} from 'rxjs/operators'
+import {Observable, of, throwError} from 'rxjs'
+import {catchError, concatMap, filter, map, pairwise, startWith, switchMap, tap} from 'rxjs/operators'
 import {JwtTokenService} from './jwt-token.service'
 import {ErrorService} from '../error.service'
 import {PreferenceQuery} from '../../../preference/state/preference.query'
@@ -22,6 +22,28 @@ export class BackendHttpClient {
               private router: RouterService,
               private jwtTokenService: JwtTokenService) {
     this.subscribeToChanges()
+  }
+
+  get ensureAuth(): Observable<unknown> {
+    return of(this.jwtTokenService.isLoggedIn()).pipe(
+      concatMap(isLoggedIn => isLoggedIn ?
+        of(undefined) : this.loginProcedure,
+      ),
+    )
+  }
+
+  private get loginProcedure(): Observable<any> {
+    return this.signerService.ensureAuth.pipe(
+      map(() => this.preferenceQuery.getValue().address!),
+      switchMap(address => this.jwtTokenService.getSignPayload(address).pipe(
+        switchMap(resToSign => this.authDialog(resToSign)),
+        switchMap(resToSign => this.signerService.signMessage(resToSign.payload).pipe(
+          catchError(() => throwError(() => 'SIGNING_INTERRUPTED')),
+        )),
+        switchMap(signedPayload => this.jwtTokenService.authJWT(address, signedPayload)),
+        this.errorService.handleError(false, true),
+      )),
+    )
   }
 
   get<T>(path: string, params?: object, publicRoute = false, shouldHandleErrors = true): Observable<T> {
@@ -62,41 +84,6 @@ export class BackendHttpClient {
     )
   }
 
-  get ensureAuth(): Observable<unknown> {
-    return of(this.jwtTokenService.isLoggedIn()).pipe(
-      concatMap(isLoggedIn => isLoggedIn ?
-        of(undefined) : this.loginProcedure,
-      ),
-    )
-  }
-
-  private get loginProcedure(): Observable<any> {
-    return this.signerService.ensureAuth.pipe(
-      map(() => this.preferenceQuery.getValue().address!),
-      switchMap(address => this.jwtTokenService.getSignPayload(address).pipe(
-        switchMap(resToSign => this.authDialog(resToSign)),
-        switchMap(resToSign => this.signerService.signMessage(resToSign.payload).pipe(
-          catchError(() => throwError(() => 'SIGNING_INTERRUPTED')),
-        )),
-        switchMap(signedPayload => this.jwtTokenService.authJWT(address, signedPayload)),
-        this.errorService.handleError(false, true),
-      )),
-    )
-  }
-
-  private authDialog<T>(payload: T) {
-    switch (this.preferenceQuery.getValue().authProvider) {
-      case AuthProvider.MAGIC:
-        return of(payload)
-      default:
-        return this.dialogService.info({
-          title: 'Authorization required',
-          message: 'You will be asked to authorize yourself by signing a message.',
-          cancelable: false,
-        }).pipe(switchMap(confirm => confirm ? of(payload) : throwError(() => 'SIGNING_DISMISSED')))
-    }
-  }
-
   logout(): Observable<void> {
     return this.jwtTokenService.logout()
   }
@@ -115,14 +102,29 @@ export class BackendHttpClient {
     return httpOptions
   }
 
-  private handleError = (handleErrors: boolean) => (source: Observable<any>) =>
-    source.pipe(handleErrors ? this.errorService.handleError() : () => EMPTY)
+  private authDialog<T>(payload: T) {
+    switch (this.preferenceQuery.getValue().authProvider) {
+      case AuthProvider.MAGIC:
+        return of(payload)
+      default:
+        return this.dialogService.info({
+          icon: '/assets/dialog-icons/sign.png',
+          title: 'Authorization required',
+          message: 'You will be asked to authorize yourself by signing a message.',
+          cancelable: false,
+        }).pipe(switchMap(confirm => confirm ? of(payload) : throwError(() => 'SIGNING_DISMISSED')))
+    }
+  }
+
+  private handleError = (handleErrors: boolean) => (source: Observable<any>) => {
+    return source.pipe(handleErrors ? this.errorService.handleError() : tap())
+  }
 
   private subscribeToChanges() {
-    merge(
-      this.signerService.accountsChanged$,
-      this.signerService.chainChanged$,
-      this.signerService.disconnected$,
+    this.preferenceQuery.address$.pipe(
+      startWith(''),
+      pairwise(),
+      filter(([last, curr]) => !!last && last !== curr),
     ).pipe(
       switchMap(() => this.logout()),
     ).subscribe()

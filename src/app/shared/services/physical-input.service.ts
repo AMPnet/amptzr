@@ -16,7 +16,7 @@ export class PhysicalInputService {
 
   altKeyActive$: Observable<boolean> = this.keyDownUp$.pipe(
     filter(e => (e as KeyboardEvent).key === 'Alt'),
-    map(e => e.type === 'keydown'),
+    map(e => e.type === 'keydown' || (e.type === 'keyup' && (e as KeyboardEvent).shiftKey)),
     shareReplay(1),
   )
 }

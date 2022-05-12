@@ -105,6 +105,21 @@ import {TransferComponent} from './transfer/transfer.component'
 import {ToStablecoinLogoPathPipe} from './shared/pipes/to-stablecoin-logo-path.pipe'
 import {SwapComponent} from './swap/swap.component'
 import {LazyImgDirective} from './shared/directives/lazy-img.directive'
+import {AssetDataPipe} from './shared/pipes/asset-data.pipe'
+import {WithStatusPipe} from './shared/pipes/with-status.pipe'
+import {BlockTimePipe} from './shared/pipes/block-time.pipe'
+import {PayoutsComponent} from './payouts/payouts.component'
+import {SnapshotsComponent} from './payouts/snapshots/snapshots.component'
+import {SnapshotNewComponent} from './payouts/snapshots/snapshot-new/snapshot-new.component'
+import {SnapshotComponent} from './payouts/snapshots/snapshot/snapshot.component'
+import {PayoutComponent} from './payouts/payout/payout.component'
+import {PayoutNewComponent} from './payouts/payout-new/payout-new.component'
+import {ClaimsComponent} from './payouts/claims/claims.component'
+import {WrongNetworkComponent} from './shared/components/wrong-network/wrong-network.component'
+import {RequestSendNewComponent} from './request-send/request-send-new/request-send-new.component'
+import {RequestSendActionComponent} from './request-send/request-send-action/request-send-action.component'
+import {RequestSendShowComponent} from './request-send/request-send-show/request-send-show.component'
+import {RequestBalanceActionComponent} from './request-balance/request-balance-action/request-balance-action.component'
 
 @NgModule({
   declarations: [
@@ -152,6 +167,9 @@ import {LazyImgDirective} from './shared/directives/lazy-img.directive'
     TruncatePipe,
     UnescapePipe,
     AssetPathSegmentPipe,
+    AssetDataPipe,
+    WithStatusPipe,
+    BlockTimePipe,
     SelectNetworkComponent,
     HomeComponent,
     GoogleTranslateComponent,
@@ -185,6 +203,18 @@ import {LazyImgDirective} from './shared/directives/lazy-img.directive'
     AuthMagicOauthComponent,
     TransferComponent,
     SwapComponent,
+    PayoutsComponent,
+    SnapshotsComponent,
+    SnapshotComponent,
+    SnapshotNewComponent,
+    PayoutComponent,
+    PayoutNewComponent,
+    ClaimsComponent,
+    WrongNetworkComponent,
+    RequestSendNewComponent,
+    RequestSendActionComponent,
+    RequestSendShowComponent,
+    RequestBalanceActionComponent,
   ],
   imports: [
     BrowserModule,

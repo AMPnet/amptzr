@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core'
 import {combineLatest, from, Observable, of, throwError} from 'rxjs'
 import {providers, utils} from 'ethers'
-import {catchError, concatMap, delay, map, switchMap, tap} from 'rxjs/operators'
+import {catchError, concatMap, map, switchMap, tap} from 'rxjs/operators'
 import {Network, Networks} from '../../networks'
 import {AuthProvider, PreferenceStore} from '../../../preference/state/preference.store'
 import {getWindow} from '../../utils/browser'
@@ -30,28 +30,28 @@ export class MetamaskSubsignerService implements Subsigner<MetamaskLoginOpts> {
     )
   }
 
-  private registerMetamask(): Observable<providers.JsonRpcSigner> {
-    return of(getWindow()?.ethereum).pipe(
-      concatMap(web3Provider => web3Provider ?
-        of(new providers.Web3Provider(web3Provider, 'any')).pipe(
-          map(subprovider => {
-            this.subprovider = subprovider
-            return this.subprovider.getSigner()
-          }),
-        ) : throwError(() => 'NO_METAMASK')),
+  watchAsset(assetAddress: string): Observable<boolean> {
+    return of(ERC20__factory.connect(assetAddress, this.subprovider.getSigner())).pipe(
+      switchMap(contract => of(contract).pipe(
+        switchMap(contract => combineLatest([contract.decimals(), contract.symbol()])),
+        map(([decimals, symbol]) => ({
+          type: 'ERC20',
+          options: {
+            address: assetAddress,
+            decimals,
+            symbol,
+          },
+        } as WatchAssetParams)),
+        switchMap(params => this.subprovider.getSigner().provider.send('wallet_watchAsset', params as any)),
+      )),
     )
   }
 
-  private checkChainID(opts: MetamaskLoginOpts) {
-    return from(this.subprovider.getSigner().getChainId()).pipe(
-      concatMap(chainID => chainID === this.preferenceStore.getValue().chainID ?
-        of(chainID) : opts.force ? this.switchEthereumChain(opts) :
-          throwError(() => 'WRONG_NETWORK'),
-      ),
-    )
+  logout(): Observable<unknown> {
+    return of(null)
   }
 
-  private switchEthereumChain(opts: MetamaskLoginOpts): Observable<unknown> {
+  switchEthereumChain(opts: MetamaskLoginOpts = {}): Observable<unknown> {
     return from(this.subprovider.getSigner().provider.send('wallet_switchEthereumChain',
       [{chainId: MetamaskNetworks[this.preferenceStore.getValue().chainID].chainId}])).pipe(
       catchError(err => {
@@ -71,8 +71,27 @@ export class MetamaskSubsignerService implements Subsigner<MetamaskLoginOpts> {
             )
         }
       }),
-      delay(500), // avoid logout after login (caused by change chainId event)
     ).pipe(catchError(() => throwError(() => 'CANNOT_SWITCH_CHAIN')))
+  }
+
+  private registerMetamask(): Observable<providers.JsonRpcSigner> {
+    return of(getWindow()?.ethereum).pipe(
+      concatMap(web3Provider => web3Provider ?
+        of(new providers.Web3Provider(web3Provider, 'any')).pipe(
+          map(subprovider => {
+            this.subprovider = subprovider
+            return this.subprovider.getSigner()
+          }),
+        ) : throwError(() => 'NO_METAMASK')),
+    )
+  }
+
+  private checkChainID(opts: MetamaskLoginOpts) {
+    return from(this.subprovider.getSigner().getChainId()).pipe(
+      concatMap(chainID => chainID === this.preferenceStore.getValue().chainID ?
+        of(chainID) : opts.force ? this.switchEthereumChain(opts) : of(undefined),
+      ),
+    )
   }
 
   private addEthereumChain() {
@@ -80,23 +99,6 @@ export class MetamaskSubsignerService implements Subsigner<MetamaskLoginOpts> {
       [MetamaskNetworks[this.preferenceStore.getValue().chainID]])).pipe(
       concatMap(addChainResult => addChainResult === null ?
         of(addChainResult) : throwError(() => 'CANNOT_CHANGE_NETWORK')),
-    )
-  }
-
-  watchAsset(assetAddress: string): Observable<boolean> {
-    return of(ERC20__factory.connect(assetAddress, this.subprovider.getSigner())).pipe(
-      switchMap(contract => of(contract).pipe(
-        switchMap(contract => combineLatest([contract.decimals(), contract.symbol()])),
-        map(([decimals, symbol]) => ({
-          type: 'ERC20',
-          options: {
-            address: assetAddress,
-            decimals,
-            symbol,
-          },
-        } as WatchAssetParams)),
-        switchMap(params => this.subprovider.getSigner().provider.send('wallet_watchAsset', params as any)),
-      )),
     )
   }
 
@@ -110,10 +112,6 @@ export class MetamaskSubsignerService implements Subsigner<MetamaskLoginOpts> {
         opts.wallet === address ? of(address) : throwError(() => 'WRONG_ADDRESS')
       ) : of(address)),
     )
-  }
-
-  logout(): Observable<unknown> {
-    return of(null)
   }
 
   private ethRequestAccounts() {

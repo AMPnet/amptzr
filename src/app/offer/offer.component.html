@@ -2,16 +2,15 @@
   <div class="flex justify-center mb-12 mt-8 lg:mx-0">
     <ng-container *ngIf="campaignDataRes.value as campaignData">
       <ng-container *ngIf="address$ | async as address">
-        <div class=" w-full rounded-3xl pb-12 mx-2 lg:mx-auto max-w-6xl h-full bg-white flex flex-col">
+        <div class="w-full rounded-3xl pb-12 mx-2 lg:mx-auto max-w-6xl h-full bg-white flex flex-col">
           <div class="relative">
             <img class="rounded-t-3xl lg:h-96 lg:mx-auto w-full object-cover"
                  [src]="campaignData.campaign.infoData.photo | toUrlIPFS"
                  alt="Offer photo">
             <app-offer-investment-info
               [offer]="campaignData.campaign" display="wide"
-              class="bg-white shadow-lg rounded-full p-6 lg:h-10
-              flex flex-col lg:flex-row lg:items-center
-              absolute lg:bottom-8 -bottom-11 left-4 lg:left-12">
+              class="absolute rounded-full float-left shadow-lg lg:top-6 left-6
+                     -bottom-6 lg:bottom-auto py-3 px-6 bg-white">
             </app-offer-investment-info>
           </div>
           <div class="w-full h-full bg-white flex lg:flex-row gap-8 flex-col pt-8 lg:pl-14 px-4">

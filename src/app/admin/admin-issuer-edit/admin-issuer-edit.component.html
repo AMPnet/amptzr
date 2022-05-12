@@ -4,7 +4,7 @@
       <ng-container *ngIf="issuerRes.value as issuer">
         <form [formGroup]="updateForm">
           <div class="flex flex-col lg:flex-row lg:flex-wrap gap-6 mt-8">
-            <div class="flex flex-col lg:flex-row w-full justify-start shadow-xl rounded-4xl bg-white
+            <div class="flex flex-col lg:flex-row w-full justify-start rounded-4xl bg-white
                       px-3 py-6 lg:p-0 lg:pl-6 lg:pt-6">
               <div class="relative w-full lg:w-1/3">
                 <div class="flex justify-center w-full absolute top-32">
@@ -73,40 +73,43 @@
                     </div>
                   </div>
 
-                  <form [formGroup]="updateWalletApproverAddressForm"
-                        *ngIf="issuer.issuerBasic">
-                    <div class="flex flex-col gap-2 mt-6">
-                      <label>WALLET APPROVER ADDRESS:</label>
-                      <div class="flex gap-2">
-                        <input class="flex-grow border-gray-400 rounded-lg" type="text"
-                               formControlName="walletApproverAddress">
-                        <button app-action-button
-                                class="bg-indigo-800 disabled:bg-gray-400 text-white rounded-full px-6"
-                                text="Update"
-                                [disabled]="!updateWalletApproverAddressForm.dirty ||
+                  <ng-container *ngIf="isAdvancedMode$ | async">
+                    <form [formGroup]="updateWalletApproverAddressForm"
+                          *ngIf="issuer.issuerBasic">
+                      <div class="flex flex-col gap-2 mt-6">
+                        <label>WALLET APPROVER ADDRESS:</label>
+                        <div class="flex gap-2">
+                          <input class="flex-grow border-gray-400 rounded-lg" type="text"
+                                 formControlName="walletApproverAddress">
+                          <button app-action-button
+                                  class="bg-indigo-800 disabled:bg-gray-400 text-white rounded-full px-6"
+                                  text="Update"
+                                  [disabled]="!updateWalletApproverAddressForm.dirty ||
                                           !updateWalletApproverAddressForm.valid"
-                                [onClick]="updateWalletApproverAddress(issuer).bind(this)">
-                        </button>
+                                  [onClick]="updateWalletApproverAddress(issuer).bind(this)">
+                          </button>
+                        </div>
                       </div>
-                    </div>
-                  </form>
+                    </form>
 
-                  <form [formGroup]="updateOwnerAddressForm"
-                        *ngIf="issuer.issuerBasic">
-                    <div class="flex flex-col gap-1 mt-6 lg:mt-0">
-                      <label>OWNER ADDRESS:</label>
-                      <div class="flex gap-2">
-                        <input class="flex-grow border-gray-400 rounded-lg" type="text" formControlName="ownerAddress">
-                        <button app-action-button
-                                class="bg-indigo-800 disabled:bg-gray-400 text-white rounded-full px-6"
-                                text="Update"
-                                [disabled]="!updateOwnerAddressForm.dirty ||
+                    <form [formGroup]="updateOwnerAddressForm"
+                          *ngIf="issuer.issuerBasic">
+                      <div class="flex flex-col gap-1 mt-6 lg:mt-0">
+                        <label>OWNER ADDRESS:</label>
+                        <div class="flex gap-2">
+                          <input class="flex-grow border-gray-400 rounded-lg" type="text"
+                                 formControlName="ownerAddress">
+                          <button app-action-button
+                                  class="bg-indigo-800 disabled:bg-gray-400 text-white rounded-full px-6"
+                                  text="Update"
+                                  [disabled]="!updateOwnerAddressForm.dirty ||
                                           !updateOwnerAddressForm.valid"
-                                [onClick]="updateOwnerAddress(issuer).bind(this)">
-                        </button>
+                                  [onClick]="updateOwnerAddress(issuer).bind(this)">
+                          </button>
+                        </div>
                       </div>
-                    </div>
-                  </form>
+                    </form>
+                  </ng-container>
                 </div>
               </div>
             </div>
