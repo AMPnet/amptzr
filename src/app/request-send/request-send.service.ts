@@ -2,7 +2,6 @@ import {Injectable} from '@angular/core'
 import {environment} from '../../environments/environment'
 import {BackendHttpClient} from '../shared/services/backend/backend-http-client.service'
 import {Observable} from 'rxjs'
-import {getWindow} from '../shared/utils/browser'
 
 @Injectable({
   providedIn: 'root',
@@ -10,7 +9,7 @@ import {getWindow} from '../shared/utils/browser'
 export class RequestSendService {
   path = `${environment.backendURL}/api/blockchain-api`
 
-  constructor(private http: BackendHttpClient,) {
+  constructor(private http: BackendHttpClient) {
   }
 
   getRequest(id: string): Observable<RequestSend> {
@@ -61,9 +60,8 @@ interface ArbitraryData {
 }
 
 interface ScreenConfig {
-  title: string;
-  message: string;
-  logo: string;
+  before_action_message: string;
+  after_action_message: string;
 }
 
 interface SendTx {

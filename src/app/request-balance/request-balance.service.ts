@@ -61,9 +61,8 @@ interface ArbitraryData {
 }
 
 interface ScreenConfig {
-  title: string;
-  message: string;
-  logo: string;
+  before_action_message: string;
+  after_action_message: string;
 }
 
 interface BalanceData {

@@ -16,7 +16,17 @@
             </app-add-to-metamask>
           </h2>
 
-          <div class="mt-8" *ngIf="!state.requestBalance.signed_message">
+          <div class="flex flex-col gap-4 mt-8" *ngIf="!state.requestBalance.signed_message">
+            <div class="text-center">
+              <ng-container
+                *ngIf="state.requestBalance.screen_config?.before_action_message as beforeActionMessage; else noBeforeActionMessage">
+                {{ beforeActionMessage }}
+              </ng-container>
+              <ng-template #noBeforeActionMessage>
+                We are requesting you to sign a message to confirm a balance check action.
+              </ng-template>
+            </div>
+
             <button app-action-button
                     class="w-full app-button"
                     [hidden]="(isUserLoggedIn$ | async) === true"
@@ -33,7 +43,13 @@
 
           <div class="mt-4 text-center"
                *ngIf="state.requestBalance.signed_message">
-            Action complete
+            <ng-container
+              *ngIf="state.requestBalance.screen_config?.after_action_message as afterActionMessage; else noAfterActionMessage">
+              {{ afterActionMessage }}
+            </ng-container>
+            <ng-template #noAfterActionMessage>
+              Action complete. You can close this screen now.
+            </ng-template>
           </div>
         </div>
       </ng-container>

@@ -85,7 +85,12 @@
               </div>
             </div>
 
-            <div class="mt-4" *ngIf="!state.requestSend.send_tx.tx_hash">
+            <div class="flex flex-col gap-4 mt-4" *ngIf="!state.requestSend.send_tx.tx_hash">
+              <div class="text-center"
+                   *ngIf="state.requestSend.screen_config?.before_action_message as beforeActionMessage">
+                {{ beforeActionMessage }}
+              </div>
+
               <button app-action-button
                       class="w-full app-button"
                       [hidden]="(isUserLoggedIn$ | async) === true"
@@ -103,7 +108,13 @@
 
             <div class="mt-4 text-center"
                  *ngIf="state.requestSend.send_tx.tx_hash">
-              Action complete
+              <ng-container
+                *ngIf="state.requestSend.screen_config?.after_action_message as afterActionMessage; else noAfterActionMessage">
+                {{ afterActionMessage }}
+              </ng-container>
+              <ng-template #noAfterActionMessage>
+                Action complete. You can close this screen now.
+              </ng-template>
             </div>
           </div>
         </form>
