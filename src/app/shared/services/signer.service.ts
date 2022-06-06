@@ -110,6 +110,15 @@ export class SignerService {
     )
   }
 
+  get ensureNetwork$(): Observable<providers.JsonRpcSigner> {
+    return combineLatest([this.networkMismatch$]).pipe(
+      concatMap(([isMismatch]) => isMismatch ?
+        defer(() => this.changeNetworkDialog()) : of(undefined),
+      ),
+      map(() => this.sessionQuery.signer!),
+    )
+  }
+
   private get loginDialog() {
     return this.dialogService.dialog.open(AuthComponent, {
       ...this.dialogService.configDefaults,
@@ -123,8 +132,9 @@ export class SignerService {
   private changeNetworkDialog() {
     return this.dialogService.dialog.open(WrongNetworkComponent, {
       ...this.dialogService.configDefaults,
+      disableClose: true,
     }).afterClosed().pipe(
-      concatMap(changeNetworkCompleted => changeNetworkCompleted ?
+      switchMap(changeNetworkCompleted => changeNetworkCompleted ?
         of(true) : throwError(() => 'CHANGE_NETWORK_MODAL_DISMISSED')),
     )
   }
