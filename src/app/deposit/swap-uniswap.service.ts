@@ -23,7 +23,6 @@ export class SwapUniswapService {
     [ChainID.MATIC_MAINNET]: 'polygon',
     [ChainID.MUMBAI_TESTNET]: 'polygon_mumbai',
     [ChainID.GOERLI_TESTNET]: 'goerli',
-    // [ChainID.PRIVATE_NETWORK]: '',
   }
 
   constructor(private signer: SignerService,

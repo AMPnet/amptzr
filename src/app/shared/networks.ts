@@ -163,7 +163,6 @@ export const Networks: { [key in ChainID]: Network } = {
   [ChainID.MATIC_MAINNET]: MaticNetwork,
   [ChainID.MUMBAI_TESTNET]: MumbaiNetwork,
   [ChainID.GOERLI_TESTNET]: GoerliNetwork,
-  // [ChainID.PRIVATE_NETWORK]: PrivateNetwork,
 }
 
 const getEthersNetwork = (network: Network): providers.Network => ({
