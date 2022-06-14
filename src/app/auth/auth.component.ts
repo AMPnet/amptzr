@@ -1,6 +1,6 @@
 import {ChangeDetectionStrategy, Component, Optional} from '@angular/core'
 import {defer, Observable, of} from 'rxjs'
-import {catchError, tap} from 'rxjs/operators'
+import {tap} from 'rxjs/operators'
 import {PreferenceQuery} from '../preference/state/preference.query'
 import {PreferenceStore} from '../preference/state/preference.store'
 import {SignerService} from '../shared/services/signer.service'
@@ -46,12 +46,10 @@ export class AuthComponent {
   }
 
   connectMetamask(): Observable<unknown> {
-    return this.signer.login(this.metamaskSubsignerService, {avoidNetworkChange: true, force: true}).pipe(
+    return this.signer.login(this.metamaskSubsignerService, {
+      avoidNetworkChange: true, force: true,
+    }).pipe(
       tap(() => this.afterLoginActions()),
-      catchError(err => {
-        console.log('err', err)
-        return of(err)
-      }),
     )
   }
 
