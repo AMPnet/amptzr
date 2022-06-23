@@ -46,7 +46,9 @@ export class AuthComponent {
   }
 
   connectMetamask(): Observable<unknown> {
-    return this.signer.login(this.metamaskSubsignerService).pipe(
+    return this.signer.login(this.metamaskSubsignerService, {
+      avoidNetworkChange: true, force: true,
+    }).pipe(
       tap(() => this.afterLoginActions()),
     )
   }

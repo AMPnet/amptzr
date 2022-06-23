@@ -120,6 +120,7 @@ import {RequestSendNewComponent} from './request-send/request-send-new/request-s
 import {RequestSendActionComponent} from './request-send/request-send-action/request-send-action.component'
 import {RequestSendShowComponent} from './request-send/request-send-show/request-send-show.component'
 import {RequestBalanceActionComponent} from './request-balance/request-balance-action/request-balance-action.component'
+import {RequestWalletActionComponent} from './request-wallet/request-wallet-action/request-wallet-action.component'
 
 @NgModule({
   declarations: [
@@ -215,6 +216,7 @@ import {RequestBalanceActionComponent} from './request-balance/request-balance-a
     RequestSendActionComponent,
     RequestSendShowComponent,
     RequestBalanceActionComponent,
+    RequestWalletActionComponent,
   ],
   imports: [
     BrowserModule,

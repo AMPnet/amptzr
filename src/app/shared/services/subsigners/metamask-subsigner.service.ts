@@ -87,6 +87,8 @@ export class MetamaskSubsignerService implements Subsigner<MetamaskLoginOpts> {
   }
 
   private checkChainID(opts: MetamaskLoginOpts) {
+    if (opts.avoidNetworkChange) return of(undefined)
+
     return from(this.subprovider.getSigner().getChainId()).pipe(
       concatMap(chainID => chainID === this.preferenceStore.getValue().chainID ?
         of(chainID) : opts.force ? this.switchEthereumChain(opts) : of(undefined),
@@ -121,6 +123,7 @@ export class MetamaskSubsignerService implements Subsigner<MetamaskLoginOpts> {
 
 interface MetamaskLoginOpts extends SignerLoginOpts {
   wallet?: string;
+  avoidNetworkChange?: boolean;
 }
 
 /**
