@@ -1,5 +1,5 @@
 import {ChangeDetectionStrategy, Component} from '@angular/core'
-import {BehaviorSubject, combineLatest, Observable, of} from 'rxjs'
+import {BehaviorSubject, combineLatest, Observable} from 'rxjs'
 import {switchMapTap, withStatus, WithStatus} from '../../shared/utils/observables'
 import {FormBuilder} from '@angular/forms'
 import {constants} from 'ethers'
@@ -11,6 +11,7 @@ import {Erc20Service} from '../../shared/services/blockchain/erc20.service'
 import {DialogService} from '../../shared/services/dialog.service'
 import {ActivatedRoute} from '@angular/router'
 import {distinctUntilChanged, map, shareReplay, switchMap, tap} from 'rxjs/operators'
+import {getWindow} from '../../shared/utils/browser'
 
 @Component({
   selector: 'app-request-wallet-action',
@@ -72,5 +73,9 @@ export class RequestWalletActionComponent {
 
   login(): Observable<unknown> {
     return this.signerService.ensureAuth
+  }
+
+  closeWindow() {
+    getWindow()?.close()
   }
 }
