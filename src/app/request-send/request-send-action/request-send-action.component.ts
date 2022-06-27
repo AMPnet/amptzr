@@ -132,6 +132,7 @@ export class RequestSendActionComponent {
         this.errorService.handleError(),
         switchMapTap(tx => this.requestSendService.updateRequest(state.requestSend.id, {
           tx_hash: tx.transactionHash,
+          caller_address: this.preferenceQuery.getValue().address,
         })),
         tap(() => this.refreshRequestSend.next()),
         switchMap(() => this.dialogService.success({
