@@ -1,12 +1,24 @@
-<div class="w-full h-full flex justify-center mt-8 px-2 pb-8">
+
+<div *ngIf="issuer$ | async as myIssuer" class="w-full h-full flex justify-center mt-8 px-2 pb-8">
     <div class="w-full max-w-6xl flex-col">
+
+        <div class="flex flex-row text-sm">
+            <div routerLink="/" class="text-sm underline text-violet-800 cursor-pointer">
+                My Projects
+            </div>
+            <div class="ml-2 mr-2"> / </div>
+            <div>
+                {{myIssuer.infoData.name}}
+            </div>
+        </div>
+
         <div class="py-8 bg-white p-8 my-4 rounded-xl flex flex-row">
             <div class="flex justify-center flex-col">
-                <img class="h-10" src="https://lucri.fi/wp-content/uploads/2022/06/background-dev3-37-2.png" alt="" srcset="">
+                <img class="h-10" src="{{myIssuer.infoData.logo | toUrlIPFS }}" alt="" srcset="">
             </div>
             <div class="px-4 py-4 flex flex-col ml-4">
                 <div class="text-xl font-semibold text-gray-700 flex flex-row">
-                    <div class="flex flex-col justify-center">My Project</div>
+                    <div class="flex flex-col justify-center">{{myIssuer.infoData.name}}</div>
                     <div class="flex flex-col justify-center">
                         <div (click)="editIssuer()" class="flex cursor-pointer flex-row justify-center justify-items-center bg-gray-300 rounded-full ml-2 w-6 h-6">
                             <div class="flex flex-col justify-center">
@@ -16,23 +28,43 @@
                             </div>
                         </div>    
                     </div>
-                    <div class="flex flex-col justify-center bg-gray-200 text-xs px-8 mx-4 rounded-full">
-                        Deployed on Polygon
-                    </div>
-                </div>
-                <div class="flex flex-col justify-center w-52 cursor-pointer">
-                    <div class=" bg-violet-700 text-white mt-4 p-2 px-8 text-sm rounded-full flex flex-row justify-center">
-                        <div class="flex flex-col justify-center">
-                            <svg width="10" height="10" viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <path d="M5 5H1H5Z" fill="white"/>
-                                <path d="M5 1V5M5 5V9M5 5H9M5 5H1" stroke="#fff" stroke-linecap="round" stroke-linejoin="round"/>
-                                </svg>                            
-                        </div>
-                        <div class="ml-2">
-                            Generate API Key
+                    <div *ngIf="network$ | async as currentNetwork" class="flex flex-col justify-center bg-gray-200 text-xs px-8 mx-4 rounded-full">
+                        <div class="flex flex-row">
+                            <span class=" font-normal mr-1">Deployed on </span> {{currentNetwork.name}}
                         </div>
                     </div>
                 </div>
+
+                <div class="text-sm text-gray-700 mt-8 w-full"
+                        *ngIf="(apiKey$ | async) as apiKey; else createApiKeyButton">
+                        <span>Your API Key</span>
+                        <span class="ml-2 px-4 py-2 rounded-full bg-gray-100">{{apiKey.id}}</span> 
+                </div>
+
+                <ng-template #createApiKeyButton>
+                    <div class="flex flex-col justify-center w-52 cursor-pointer">
+                        <!-- <div class=" bg-violet-700 text-white mt-4 p-2 px-8 text-sm rounded-full flex flex-row justify-center">
+                            <div class="flex flex-col justify-center">
+                                <svg width="10" height="10" viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M5 5H1H5Z" fill="white"/>
+                                    <path d="M5 1V5M5 5V9M5 5H9M5 5H1" stroke="#fff" stroke-linecap="round" stroke-linejoin="round"/>
+                                    </svg>                            
+                            </div>
+                            <div class="ml-2">
+                                Generate API Key
+                            </div>
+                        </div> -->
+    
+                        
+    
+                            <button app-action-button
+                            class="app-button !px-4 mt-4"
+                            text="Create API Key" loadingText="Creating API Key"
+                            [onClick]="createApiKey.bind(this)"></button>                        
+    
+                    </div>
+                </ng-template>
+                
                 
             </div>
         </div>
@@ -71,7 +103,7 @@
                 </div>
 
                 <div [class.active-dash-sidebar-item]="navbarSelectedIndex === 3"
-                (click)="sidebarItemClicked(3)" class="py-4 m-2 text-white rounded-lg text-xs text-center flex flex-col">
+                (click)="sidebarItemClicked(3)" routerLink="utils/third-party-integrations" class="py-4 m-2 text-white rounded-lg text-xs text-center flex flex-col">
                     <div class="flex justify-center mb-2">
                         <svg width="24" height="26" viewBox="0 0 24 26" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path d="M6.66732 11.6667V6.33333C6.66732 4.91885 7.22922 3.56229 8.22941 2.5621C9.22961 1.5619 10.5862 1 12.0007 1C13.4151 1 14.7717 1.5619 15.7719 2.5621C16.7721 3.56229 17.334 4.91885 17.334 6.33333M12.0007 17V19.6667M4.00065 25H20.0006C20.7079 25 21.3862 24.719 21.8863 24.219C22.3864 23.7189 22.6673 23.0406 22.6673 22.3333V14.3333C22.6673 13.6261 22.3864 12.9478 21.8863 12.4477C21.3862 11.9476 20.7079 11.6667 20.0006 11.6667H4.00065C3.29341 11.6667 2.61513 11.9476 2.11503 12.4477C1.61494 12.9478 1.33398 13.6261 1.33398 14.3333V22.3333C1.33398 23.0406 1.61494 23.7189 2.11503 24.219C2.61513 24.719 3.29341 25 4.00065 25Z" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>

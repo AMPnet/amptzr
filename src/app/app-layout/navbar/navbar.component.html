@@ -1,4 +1,4 @@
-<div class="bg-white flex max-w-screen-lg w-screen flex-col transition-all lg:flex-row lg:justify-center"
+<div class="bg-transparent flex max-w-7xl w-screen flex-col transition-all lg:flex-row lg:justify-center"
      [class.min-h-screen]="(isDropdownOpen$ | async)">
   <!-- Navbar -->
   <div class="w-full h-16 px-4 flex justify-between sticky max-w-6xl lg:h-20"
@@ -8,10 +8,10 @@
       <ng-container *ngIf="issuer$ | async as issuerRes">
         <ng-container *ngIf="issuerRes.value as issuer">
           <!-- Logo -->
-          <div class="py-2">
+          <div class="pt-4 flex flex-col justify-center">
             <a [routerLink]="'/offers' | issuerPath">
-              <img class="h-full pl-4 py-1 object-contain"
-                   src="{{ issuer.infoData.logo | toUrlIPFS }}" alt="Logo">
+              <img class="h-2/3 py-2 object-contain flex flex-col justify-end"
+                   src="../../../assets/dev3-logo.png" alt="Logo">
             </a>
           </div>
 

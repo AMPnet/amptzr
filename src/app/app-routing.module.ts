@@ -46,6 +46,7 @@ import {RequestWalletActionComponent} from './request-wallet/request-wallet-acti
 import { DashboardHolderComponent } from './dashboard/dashboard-holder/dashboard-holder.component'
 import { Erc20Component } from './dashboard/create/tokens/erc20/erc20.component'
 import { NewAndManageHolderComponent } from './dashboard/new-and-manage-holder/new-and-manage-holder.component'
+import { ThirdPartyIntegrationsOverviewComponent } from './dashboard/utils/third-party-integrations-overview/third-party-integrations-overview.component'
 
 const appRoutes: Routes = [
   {path: 'callback', component: AuthMagicOauthComponent},
@@ -108,6 +109,7 @@ const appRoutes: Routes = [
       {path: 'dashboard', component: DashboardHolderComponent, children: [
         {path: '', component: NewAndManageHolderComponent},
         {path: 'create/erc20', component: Erc20Component},
+        {path: 'utils/third-party-integrations', component: ThirdPartyIntegrationsOverviewComponent }
       ] }
     ],
   },

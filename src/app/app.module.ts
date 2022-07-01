@@ -124,6 +124,7 @@ import {RequestWalletActionComponent} from './request-wallet/request-wallet-acti
 import { DashboardHolderComponent } from './dashboard/dashboard-holder/dashboard-holder.component'
 import { NewAndManageHolderComponent } from './dashboard/new-and-manage-holder/new-and-manage-holder.component'
 import { Erc20Component } from './dashboard/create/tokens/erc20/erc20.component'
+import { ThirdPartyIntegrationsOverviewComponent } from './dashboard/utils/third-party-integrations-overview/third-party-integrations-overview.component'
 
 @NgModule({
   declarations: [
@@ -223,6 +224,7 @@ import { Erc20Component } from './dashboard/create/tokens/erc20/erc20.component'
     DashboardHolderComponent,
     NewAndManageHolderComponent,
     Erc20Component,
+    ThirdPartyIntegrationsOverviewComponent,
   ],
   imports: [
     BrowserModule,
