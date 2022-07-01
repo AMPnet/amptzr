@@ -85,8 +85,10 @@ export class AssetTransferableService {
   changeOwner(assetAddress: string, ownerAddress: string) {
     return this.signerService.ensureAuth.pipe(
       map(signer => this.contract(assetAddress, signer)),
-      switchMap(contract => combineLatest([of(contract), this.gasService.overrides])),
-      switchMap(([contract, overrides]) => contract.changeOwnership(ownerAddress, overrides)),
+      switchMap(contract => this.gasService.withOverrides(overrides =>
+        contract.populateTransaction.changeOwnership(ownerAddress, overrides),
+      )),
+      switchMap(tx => this.signerService.sendTransaction(tx)),
       switchMap(tx => this.dialogService.loading(
         from(this.sessionQuery.provider.waitForTransaction(tx.hash)),
         'Processing transaction...',
