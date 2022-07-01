@@ -49,12 +49,9 @@ export class AssetTransferableService {
     ]).pipe(
       first(),
       map(([signer, contract]) => contract.connect(signer)),
-      switchMap(contract => combineLatest([of(contract), this.gasService.overrides])),
-      switchMap(([contract, overrides]) => {
-        const creator = this.preferenceQuery.getValue().address!
-
-        return from(contract.populateTransaction.create({
-          creator: creator,
+      switchMap(contract =>
+        this.gasService.withOverrides(o => contract.populateTransaction.create({
+          creator: this.preferenceQuery.getValue().address!,
           issuer: data.issuer,
           apxRegistry: this.preferenceQuery.network.tokenizerConfig.apxRegistry,
           nameRegistry: this.preferenceQuery.network.tokenizerConfig.nameRegistry,
@@ -65,7 +62,7 @@ export class AssetTransferableService {
           name: data.name,
           symbol: data.symbol,
           info: data.info,
-        }, overrides)).pipe(
+        }, o)).pipe(
           switchMap(tx => this.signerService.sendTransaction(tx)),
           this.errorService.handleError(),
           switchMap(tx => this.dialogService.loading(
@@ -75,8 +72,7 @@ export class AssetTransferableService {
           map(receipt => findLog(
             receipt, contract, contract.interface.getEvent('AssetTransferableCreated'),
           )?.args?.asset),
-        )
-      }),
+        )),
     )
   }
 
