@@ -1,4 +1,6 @@
-import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core'
+import { Router } from '@angular/router';
+import { RouterService } from 'src/app/shared/services/router.service';
 
 @Component({
   selector: 'app-dashboard-holder',
@@ -6,11 +8,25 @@ import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
   styleUrls: ['./dashboard-holder.component.css'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class DashboardHolderComponent implements OnInit {
+export class DashboardHolderComponent {
 
-  constructor() { }
+  navbarSelectedIndex = 0;
 
-  ngOnInit(): void {
+  constructor(private router: RouterService) { }
+
+  sidebarItemClicked(index: number) {
+    this.navbarSelectedIndex = index;
+    this.changeRoute()
+  }
+
+  changeRoute() {
+    if(this.navbarSelectedIndex === 3) {
+      
+    }
+  }
+
+  editIssuer() {
+    this.router.navigate([`/admin/issuer/edit`])
   }
 
 }

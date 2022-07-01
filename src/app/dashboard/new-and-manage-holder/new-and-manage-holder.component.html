@@ -1,17 +1,17 @@
 <div class="w-full bg-white p-8 m-4 rounded-lg flex flex-col">
 
     <div class="flex flex-row justify-center">
-        <div (click)="tabClicked(0)" [class.active-content-item]="selectedTabIndex == 0" 
-        class=" w-44 text-center text-sm uppercase pb-2 border-b-4 cursor-pointer">
+        <div (click)="tabClicked(0)" [class.active-content-item]="selectedTabIndex === 0" 
+        class=" w-44 text-center text-sm uppercase pb-2 border-b-4 font-semibold text-gray-500 cursor-pointer">
             Add New
         </div>
-        <div (click)="tabClicked(1)" [class.active-content-item]="selectedTabIndex == 1" 
-        class=" w-44 text-center text-sm uppercase border-b-4 cursor-pointer">
+        <div (click)="tabClicked(1)" [class.active-content-item]="selectedTabIndex === 1" 
+        class=" w-44 text-center text-sm font-semibold text-gray-500 uppercase border-b-4 cursor-pointer">
             Manage Existing
         </div>
     </div>
 
-    <ng-container *ngIf="selectedTabIndex == 0">
+    <ng-container *ngIf="selectedTabIndex === 0">
         <div class=" border-gray-100 border-2 p-4 flex flex-row bg-gray-100 rounded-t-lg">
             <div class="w-2/12 text-sm uppercase font-semibold">Type</div>
             <div class="w-8/12 text-sm uppercase font-semibold">Description</div>
@@ -55,7 +55,7 @@
         </div>
     </ng-container>
 
-    <ng-container *ngIf="selectedTabIndex == 1">
+    <ng-container *ngIf="selectedTabIndex === 1">
         <div class=" border-gray-100 border-2 p-4 flex flex-row bg-gray-100 rounded-t-lg">
             <div class="w-4/12 text-sm uppercase font-semibold">Name</div>
             <div class="w-3/12 text-sm uppercase font-semibold">Alias</div>

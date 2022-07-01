@@ -5,3 +5,8 @@
 .active-dash-sidebar-item {
     background-color: #8B5CF6;
 }
+
+.dash-side-holder div {
+    transition: all 200ms;
+    cursor: pointer;
+}

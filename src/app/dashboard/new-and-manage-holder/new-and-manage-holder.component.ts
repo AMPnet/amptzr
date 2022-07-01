@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core'
 
 @Component({
   selector: 'app-new-and-manage-holder',
@@ -6,9 +6,9 @@ import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
   styleUrls: ['./new-and-manage-holder.component.css'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class NewAndManageHolderComponent implements OnInit {
+export class NewAndManageHolderComponent {
 
-  selectedTabIndex = 0;
+  selectedTabIndex = 0
 
   templateItems = [
     { type: "ERC-20", description: "The first fungible token standard, ERC20 is one of the most popular token types deployed on blockchains - securing >$100B in value."},
@@ -33,11 +33,8 @@ export class NewAndManageHolderComponent implements OnInit {
 
   constructor() { }
 
-  ngOnInit(): void {
-  }
-
   tabClicked(index: number) {
-    this.selectedTabIndex = index;
+    this.selectedTabIndex = index
   }
 
 }

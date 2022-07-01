@@ -1,5 +1,5 @@
-import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
-import { FormControl, FormGroup } from '@angular/forms';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core'
+import { FormControl, FormGroup } from '@angular/forms'
 
 @Component({
   selector: 'app-erc20',
@@ -7,18 +7,15 @@ import { FormControl, FormGroup } from '@angular/forms';
   styleUrls: ['./erc20.component.css'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class Erc20Component implements OnInit {
+export class Erc20Component {
 
   createTokenForm = new FormGroup({
     tokenName: new FormControl(''),
     tokenSupply: new FormControl(''),
     tokenSymbol: new FormControl(''),
     tokenAlias: new FormControl('')
-  });
+  })
 
   constructor() { }
-
-  ngOnInit(): void {
-  }
 
 }
