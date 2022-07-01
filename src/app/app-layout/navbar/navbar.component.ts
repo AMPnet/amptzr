@@ -26,10 +26,10 @@ export class NavbarComponent {
   isAdmin$ = this.userService.isAdmin$
 
   navbarScreenLinks: NavbarItem[] = [
-    {title: 'Offers', routerLink: '/offers', showItem: of(true)},
-    {title: 'Orders', routerLink: '/orders', showItem: this.isLoggedIn$},
-    {title: 'FAQ', routerLink: '/faq', showItem: of(true)},
-    {title: 'Admin', routerLink: '/admin', showItem: this.isAdmin$},
+    {title: 'Offers', routerLink: '/offers', showItem: of(false)},
+    {title: 'Orders', routerLink: '/orders', showItem: of(false)},
+    {title: 'FAQ', routerLink: '/faq', showItem: of(false)},
+    {title: 'Dashboard', routerLink: '/admin/dashboard', showItem: this.isAdmin$},
   ]
 
   constructor(private sessionQuery: SessionQuery,

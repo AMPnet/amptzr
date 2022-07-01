@@ -1,0 +1,80 @@
+<div class="w-full bg-white p-8 m-4 rounded-lg flex flex-col">
+
+    <div class="flex flex-row justify-center">
+        <div (click)="tabClicked(0)" [class.active-content-item]="selectedTabIndex == 0" 
+        class=" w-44 text-center text-sm uppercase pb-2 border-b-4 cursor-pointer">
+            Add New
+        </div>
+        <div (click)="tabClicked(1)" [class.active-content-item]="selectedTabIndex == 1" 
+        class=" w-44 text-center text-sm uppercase border-b-4 cursor-pointer">
+            Manage Existing
+        </div>
+    </div>
+
+    <ng-container *ngIf="selectedTabIndex == 0">
+        <div class=" border-gray-100 border-2 p-4 flex flex-row bg-gray-100 rounded-t-lg">
+            <div class="w-2/12 text-sm uppercase font-semibold">Type</div>
+            <div class="w-8/12 text-sm uppercase font-semibold">Description</div>
+            <div class="w-4/12 text-sm uppercase font-semibold">Actions</div>
+        </div>
+    
+        <div *ngFor="let item of templateItems" class=" border-gray-100 border-2 p-4 flex flex-row">
+            <div class="w-2/12 text-sm flex flex-col justify-center">{{item.type}}</div>
+            <div class="w-8/12 text-sm flex flex-col justify-center pr-4 text-gray-500">
+                {{item.description}}
+                <a class="mt-2" href="">Learn More</a></div>
+            <div class="w-4/12 flex flex-row">
+
+                <div
+                routerLink="create/erc20" 
+                class="w-50 h-10 bg-gray-200 mr-2 rounded-full 
+                px-6 py-2 text-gray-800 text-sm flex flex-row
+                cursor-pointer">
+                    <div class="flex justify-center flex-col">
+                        <svg width="10" height="10" viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M5 5H1H5Z" fill="white"/>
+                            <path d="M5 1V5M5 5V9M5 5H9M5 5H1" stroke="#374151" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                    </div>
+                    <button class="ml-2 flex flex-col justify-center">Create</button>                        
+                </div>
+
+                <div class="w-50 h-10 bg-gray-200 mr-2 rounded-full 
+                px-6 py-2 text-gray-800 text-sm flex flex-row
+                cursor-pointer">
+                    <div class="flex justify-center flex-col">
+                        <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M5.99935 8.66797V0.667969V8.66797Z" fill="white"/>
+                            <path d="M0.666016 8.66797V9.33463C0.666016 9.86507 0.876729 10.3738 1.2518 10.7488C1.62687 11.1239 2.13558 11.3346 2.66602 11.3346H9.33268C9.86311 11.3346 10.3718 11.1239 10.7469 10.7488C11.122 10.3738 11.3327 9.86507 11.3327 9.33463V8.66797M8.66602 6.0013L5.99935 8.66797M5.99935 8.66797L3.33268 6.0013M5.99935 8.66797V0.667969" stroke="#374151" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>                            
+                    </div>
+                    <div class="ml-2 flex flex-col justify-center">Import</div>     
+
+                </div>
+            </div>
+        </div>
+    </ng-container>
+
+    <ng-container *ngIf="selectedTabIndex == 1">
+        <div class=" border-gray-100 border-2 p-4 flex flex-row bg-gray-100 rounded-t-lg">
+            <div class="w-4/12 text-sm uppercase font-semibold">Name</div>
+            <div class="w-3/12 text-sm uppercase font-semibold">Alias</div>
+            <div class="w-2/12 text-sm uppercase font-semibold">Symbol</div>
+            <div class="w-3/12 text-sm uppercase font-semibold">Created Date</div>
+        </div>
+    
+        <div *ngFor="let item of managedItems" class=" border-gray-100
+         hover:bg-violet-100 border-2 p-4 flex flex-row
+         cursor-pointer">
+            <div class="w-4/12 text-sm">{{item.name}}</div>
+            <div class="w-3/12 text-sm">{{item.alias}}</div>
+            <div class="w-2/12 text-sm">{{item.custom}}</div>
+            <div class="w-3/12 text-sm">{{item.createdDate}}</div>
+        </div>
+       
+    </ng-container>
+    
+
+    
+
+</div>

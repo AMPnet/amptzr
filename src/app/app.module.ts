@@ -120,7 +120,10 @@ import {RequestSendNewComponent} from './request-send/request-send-new/request-s
 import {RequestSendActionComponent} from './request-send/request-send-action/request-send-action.component'
 import {RequestSendShowComponent} from './request-send/request-send-show/request-send-show.component'
 import {RequestBalanceActionComponent} from './request-balance/request-balance-action/request-balance-action.component'
-import {RequestWalletActionComponent} from './request-wallet/request-wallet-action/request-wallet-action.component'
+import {RequestWalletActionComponent} from './request-wallet/request-wallet-action/request-wallet-action.component';
+import { DashboardHolderComponent } from './dashboard/dashboard-holder/dashboard-holder.component';
+import { NewAndManageHolderComponent } from './dashboard/new-and-manage-holder/new-and-manage-holder.component';
+import { Erc20Component } from './dashboard/create/tokens/erc20/erc20.component'
 
 @NgModule({
   declarations: [
@@ -217,6 +220,9 @@ import {RequestWalletActionComponent} from './request-wallet/request-wallet-acti
     RequestSendShowComponent,
     RequestBalanceActionComponent,
     RequestWalletActionComponent,
+    DashboardHolderComponent,
+    NewAndManageHolderComponent,
+    Erc20Component,
   ],
   imports: [
     BrowserModule,

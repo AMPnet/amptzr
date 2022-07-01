@@ -43,6 +43,9 @@ import {RequestSendShowComponent} from './request-send/request-send-show/request
 import {RequestSendActionComponent} from './request-send/request-send-action/request-send-action.component'
 import {RequestBalanceActionComponent} from './request-balance/request-balance-action/request-balance-action.component'
 import {RequestWalletActionComponent} from './request-wallet/request-wallet-action/request-wallet-action.component'
+import { DashboardHolderComponent } from './dashboard/dashboard-holder/dashboard-holder.component'
+import { Erc20Component } from './dashboard/create/tokens/erc20/erc20.component'
+import { NewAndManageHolderComponent } from './dashboard/new-and-manage-holder/new-and-manage-holder.component'
 
 const appRoutes: Routes = [
   {path: 'callback', component: AuthMagicOauthComponent},
@@ -58,6 +61,7 @@ const appRoutes: Routes = [
       {path: 'wallet', component: WalletComponent},
       {path: 'deposit', component: DepositComponent},
       {path: 'orders', component: OrdersComponent},
+      
     ],
   },
   {
@@ -101,6 +105,10 @@ const appRoutes: Routes = [
       {path: 'campaigns/:campaignId', component: AdminCampaignDetailComponent},
       {path: 'campaigns/:campaignId/edit', component: AdminCampaignEditComponent},
       {path: 'campaigns/:campaignId/add-tokens', component: AdminCampaignAddTokensComponent},
+      {path: 'dashboard', component: DashboardHolderComponent, children: [
+        {path: '', component: NewAndManageHolderComponent},
+        {path: 'create/erc20', component: Erc20Component},
+      ] }
     ],
   },
   {path: 'dev_playground', component: DevPlaygroundComponent},

@@ -1,0 +1,7 @@
+.bg-dash-l {
+    background: linear-gradient(180deg, #6D28D9 0%, #A855F7 100%);
+}
+
+.active-dash-sidebar-item {
+    background-color: #8B5CF6;
+}
