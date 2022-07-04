@@ -1,5 +1,5 @@
 import {ChangeDetectionStrategy, Component, ɵmarkDirty} from '@angular/core'
-import {combineLatest, concatMap, from, Observable, of, timer} from 'rxjs'
+import {combineLatest, from, Observable, of, timer} from 'rxjs'
 import {withStatus, WithStatus} from '../shared/utils/observables'
 import {AbstractControl, FormBuilder, FormGroup, ValidationErrors, Validators} from '@angular/forms'
 import {BigNumber, BigNumberish, constants} from 'ethers'
@@ -10,7 +10,7 @@ import {SignerService} from '../shared/services/signer.service'
 import {ConversionService} from '../shared/services/conversion.service'
 import {RouterService} from '../shared/services/router.service'
 import {ActivatedRoute} from '@angular/router'
-import {catchError, distinctUntilChanged, map, shareReplay, switchMap, take, tap} from 'rxjs/operators'
+import {catchError, concatMap, distinctUntilChanged, map, shareReplay, switchMap, take, tap} from 'rxjs/operators'
 import {ERC20__factory} from '../../../types/ethers-contracts'
 import {DialogService} from '../shared/services/dialog.service'
 import {GasService} from '../shared/services/blockchain/gas.service'
@@ -110,8 +110,8 @@ export class TransferComponent {
       return this.signerService.ensureAuth.pipe(
         map(signer => ERC20__factory.connect(state.tokenData.address, signer)),
         switchMap(contract => this.dialogService.waitingApproval(
-          combineLatest([of(contract), this.gasService.overrides]).pipe(
-            concatMap(([contract, overrides]) => {
+          this.gasService.overrides.pipe(
+            concatMap(overrides => {
               const tokenAmount = this.conversion.toToken(
                 this.transferForm.value.tokenAmount, state.tokenData.decimals,
               )

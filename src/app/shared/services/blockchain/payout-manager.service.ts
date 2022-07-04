@@ -53,8 +53,9 @@ export class PayoutManagerService {
     return this.signerService.ensureAuth.pipe(
       switchMap(signer => this.dialogService.waitingApproval(
         of(this.contract(signer)).pipe(
-          switchMap(contract => combineLatest([of(contract), this.gasService.overrides])),
-          switchMap(([contract, overrides]) => contract.populateTransaction.createPayout(data, overrides)),
+          switchMap(contract => this.gasService.withOverrides(overrides =>
+            contract.populateTransaction.createPayout(data, overrides)),
+          ),
           switchMap(tx => this.signerService.sendTransaction(tx)),
         ),
       )),

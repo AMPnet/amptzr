@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core'
-import {from, Observable, of, switchMap} from 'rxjs'
+import {from, Observable, ObservableInput, ObservedValueOf, of, switchMap} from 'rxjs'
 import {catchError, map} from 'rxjs/operators'
 import {PreferenceQuery} from '../../../preference/state/preference.query'
 import {Overrides} from 'ethers'
@@ -28,6 +28,12 @@ export class GasService {
       switchMap(isEip1559Supported => isEip1559Supported ?
         of({}) : this.gasPriceOracleOverrides,
       ),
+    )
+  }
+
+  withOverrides<T extends ObservableInput<any>>(fn: (overrides: Overrides) => T): Observable<ObservedValueOf<T>> {
+    return this.overrides.pipe(
+      switchMap(o => fn(o)),
     )
   }
 
