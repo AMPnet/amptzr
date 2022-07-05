@@ -10,3 +10,11 @@
     transition: all 200ms;
     cursor: pointer;
 }
+
+.sidebar-width {
+    width: 10%;
+}
+
+.content-width {
+    width: 90%;
+}

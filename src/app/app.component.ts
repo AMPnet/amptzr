@@ -45,6 +45,6 @@ export class AppComponent {
 
   issuerTitle$ = this.issuerService.issuerWithStatus$.pipe(
     filter(res => !!res.value),
-    tap(issuer => this.title.setTitle(issuer.value!.infoData.name)),
+    tap(issuer => this.title.setTitle(`${issuer.value!.infoData.name} / Dev3`)),
   )
 }

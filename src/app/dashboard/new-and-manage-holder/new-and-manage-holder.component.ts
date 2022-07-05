@@ -1,4 +1,5 @@
-import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core'
+import { Component, OnInit, ChangeDetectionStrategy, Input } from '@angular/core'
+import { Action } from 'rxjs/internal/scheduler/Action'
 
 @Component({
   selector: 'app-new-and-manage-holder',
@@ -10,26 +11,9 @@ export class NewAndManageHolderComponent {
 
   selectedTabIndex = 0
 
-  templateItems = [
-    { type: "ERC-20", description: "The first fungible token standard, ERC20 is one of the most popular token types deployed on blockchains - securing >$100B in value."},
-    { type: "NFT", description: "This is an NFT token, used by major NFT projects such as BAYC, CryptoPunks, ..."},
-    { type: "ERC-1400", description: "This is the Security Token standard, providing a way to tokenize assets easily"}
-  ]
-
-  managedItems = [
-    {
-      name: "Loyalty Token -> Senegal FC",
-      alias: "SENEGAL_LOYAL",
-      custom: "SFC",
-      createdDate: "22.6.2022"
-    },
-    {
-      name: "Cry NFT #1",
-      alias: "NFT1",
-      custom: "NFT1",
-      createdDate: "8.6.2022"
-    }
-  ]
+  @Input() templateItems: TemplateItemsModel[] = []
+  @Input() manageItems: ManageItemsModel[] = []
+  @Input() manageCustomFieldName: string = ""
 
   constructor() { }
 
@@ -37,4 +21,23 @@ export class NewAndManageHolderComponent {
     this.selectedTabIndex = index
   }
 
+}
+
+export interface TemplateItemsModel {
+  type: string,
+  description: string
+  actions: ActionModel[]
+}
+
+export interface ActionModel {
+  title: string,
+  url: string,
+  icon: string
+}
+
+export interface ManageItemsModel {
+  name: string,
+  alias: string,
+  custom: string,
+  createdDate: string
 }

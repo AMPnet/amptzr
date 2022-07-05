@@ -1,41 +1,55 @@
-<div class="w-full h-full flex justify-center mt-8 px-2 pb-8">
-  <div class="w-full max-w-6xl">
-    <div class="flex flex-col w-full justify-start bg-white rounded-4xl p-8">
-      <h1 class="text-2xl text-indigo-900">
-        Create your campaign
-      </h1>
+<div class="flex">
+  <div routerLink="../../.." class="ml-4 mt-2 bg-gray-600 text-white 
+  text-sm font-semibold rounded-full w-48 py-2 flex flex-row justify-center cursor-pointer">
+      < Back
+  </div>
+</div>
 
+<div class="w-full h-full flex justify-center mt-4 px-4 pb-8">
+  <div class="w-full max-w-6xl">
+    <div class="flex flex-col w-full justify-start bg-white rounded-xl p-8">
       <ng-container *ngIf="(stateWithStatus$ | async) as stateRes">
         <ng-container *ngIf="stateRes.value as stateData">
-          <form [class.hidden]="(step$ | async) !== stepType.CREATION_FIRST" class="contents"
+          <form [class.hidden]="(step$ | async) !== stepType.CREATION_FIRST" class="contents text-gray-700"
                 [formGroup]="createForm1">
-            <div class="flex flex-col gap-8 lg:w-2/3">
-              <div class="flex flex-col gap-4 pt-6">
+            <div class="flex flex-col gap-8 lg:w-3/3">
+
+              <div class="flex flex-col gap-2 pt-2">
                 <label class="text-lg font-semibold">
-                  Name your campaign
+                  Select the token you are selling
                 </label>
-                <input class="border-gray-400 rounded-lg" type="text"
-                       placeholder="CAMPAIGN TITLE" formControlName="name">
+                <small class="mt-2">Please select the token you will be selling from the dropdown.</small>
+                <input class="border-gray-400 w-full rounded-lg text-sm" type="text"
+                       placeholder="" formControlName="name">
               </div>
 
-              <div class="flex flex-col gap-4">
+              <div class="flex flex-col gap-2 pt-2 w-full">
                 <label class="text-lg font-semibold">
+                  Set campaign alias
+                </label>
+                <small class="mt-2">Give your campaign a unique alias to access it from the Dev3 API & SDK.</small>
+                <input class="border-gray-400 w-full rounded-lg text-sm" type="text"
+                       placeholder="Campaign title" formControlName="name">
+              </div>
+
+              <div class="flex flex-col gap-2">
+                <label class="text-sm uppercase font-semibold">
                   Campaign URL
                 </label>
                 <div class="flex flex-col lg:flex-row lg:items-center gap-4">
                   <div class="text-sm">
                     {{ campaignUrl }}
                   </div>
-                  <input class="border-gray-400 rounded-lg"
+                  <input class="border-gray-400 rounded-lg text-sm"
                          type="text" formControlName="slug">
                 </div>
               </div>
             </div>
 
-            <div class="flex flex-col lg:flex-row bg-gray-100 rounded-lg my-8 p-4">
+            <div class="flex flex-col lg:flex-row border-gray-200 border rounded-lg my-8 p-4">
               <div class="flex flex-col gap-8 pb-2 lg:p-6">
-                <div class="flex flex-col gap-8">
-                  <h3 class="text-lg font-semibold">
+                <div class="flex flex-col gap-2">
+                  <h3 class="text-sm uppercase mb-1 font-semibold">
                     Maximum amount you want to raise (Hard cap)
                   </h3>
                   <div class="flex flex-col lg:flex-row lg:items-center gap-4">
@@ -66,7 +80,7 @@
                     </div>
                   </div>
 
-                  <div class="flex flex-col gap-2 min-h-[1rem] mt-2">
+                  <div class="flex flex-col gap-2 min-h-[1px]">
                     <ng-container *ngIf="createForm1.get('hardCap') as hardCap">
                       <span class="text-red-600 text-xs font-semibold"
                             *ngIf="createForm1.invalid && (hardCap.dirty || hardCap.touched)">
@@ -91,11 +105,11 @@
                   </div>
                 </div>
 
-                <div class="flex flex-col gap-8 mt-4 lg:mt-0 mb-8 lg:mb-0">
-                  <h3 class="text-lg font-semibold">
+                <div class="flex flex-col">
+                  <h3 class="text-sm uppercase font-semibold mb-1">
                     Minimum target for successful campaign (Soft cap)
                   </h3>
-                  <div class="flex flex-col lg:flex-row lg:items-center gap-4">
+                  <div class="flex flex-col lg:flex-row lg:items-center gap-2">
                     <div class="flex flex-row gap-4 items-center">
                       <div class="text-sm">
                         To raise
@@ -134,8 +148,8 @@
               </div>
             </div>
 
-            <div class="flex flex-col gap-2 mb-4">
-              <label class="text-lg font-semibold">
+            <div class="flex flex-col mb-8">
+              <label class="text-sm uppercase font-semibold mb-1">
                 Campaign flavor
               </label>
               <select class="border-gray-400 rounded-lg w-full lg:w-64 disabled:bg-gray-100"
@@ -153,10 +167,10 @@
 
             <div class="flex flex-col gap-6 lg:w-2/3">
               <div class="flex flex-col gap-4">
-                <h3 class="text-lg font-semibold">
+                <h3 class="text-sm uppercase font-semibold">
                   Do you want to set up minimum & maximum amount to invest?
                 </h3>
-                <div class="flex flex-col lg:flex-row gap-8">
+                <div class="flex flex-col lg:flex-row gap-2">
                   <app-form-yes-no-buttons formControlName="hasMinAndMaxInvestment"
                                            (ngModelChange)="toggleMinAndMaxInvestmentControls($event)">
                   </app-form-yes-no-buttons>
@@ -170,7 +184,7 @@
                            class="border-gray-400 disabled:bg-gray-100 rounded-lg w-1/2">
                   </div>
                 </div>
-                <div class="flex flex-col gap-2 min-h-[1rem] mt-2">
+                <div class="flex flex-col gap-2 min-h-[1rem]">
                   <ng-container *ngIf="createForm1.get('minInvestment') as min">
                     <span class="text-red-600 text-xs font-semibold"
                           *ngIf="createForm1.invalid && (min.dirty || min.touched)">
@@ -199,8 +213,8 @@
                 </div>
               </div>
 
-              <div class="flex flex-col gap-4">
-                <h3 class="text-lg font-semibold">
+              <div class="flex flex-col gap-2">
+                <h3 class="text-sm uppercase font-semibold">
                   Will you be returning profits to your investors?
                 </h3>
                 <div class="flex flex-col lg:flex-row gap-8">
@@ -256,7 +270,7 @@
               </div>
 
               <div class="flex flex-col gap-4">
-                <h3 class="text-lg font-semibold">
+                <h3 class="text-sm uppercase font-semibold">
                   Do you require ID verification for your investors?
                 </h3>
                 <app-form-yes-no-buttons formControlName="isIdVerificationRequired">
@@ -275,7 +289,7 @@
 
           <form [class.hidden]="(step$ | async) !== stepType.CREATION_SECOND" class="contents"
                 [formGroup]="createForm2">
-            <div class="flex flex-col gap-8 lg:w-2/3">
+            <div class="flex flex-col gap-8 lg:w-3/3">
               <div class="flex flex-col gap-4 pt-6">
                 <h3 class="text-lg font-semibold">
                   Select a main image
@@ -331,33 +345,12 @@
               Describe your project
             </label>
             <div class="flex flex-col gap-4 lg:flex-row mt-2 lg:h-[36rem]">
-              <quill-editor class="lg:w-2/3 lg:h-[30rem]"
+              <quill-editor class="lg:w-3/3 lg:h-[30rem]"
                             formControlName="description"
                             (onEditorCreated)="quillMods($event)"
                             (onContentChanged)="markDescriptionAsDirty()">
               </quill-editor>
 
-              <div class="flex flex-row bg-gray-100 gap-4 p-4 my-4 lg:my-0 rounded-lg lg:w-1/3 lg:h-28">
-                <div>
-                  <svg width="26" height="26" viewBox="0 0 26 26" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M9.884 19.6667H16.1147M13 1V2.33333M21.4853 4.51467L20.5427 5.45733M25 13H23.6667M2.33333
-                             13H1M5.45733 5.45733L4.51467 4.51467M8.28533 17.7147C7.35316 16.7822 6.7184 15.5944 6.4613
-                             14.3012C6.20421 13.008 6.33634 11.6677 6.84097 10.4496C7.34561 9.23154 8.20009 8.19046
-                             9.29638 7.45799C10.3927 6.72553 11.6815 6.33458 13 6.33458C14.3185 6.33458 15.6073 6.72553
-                             16.7036 7.45799C17.7999 8.19046 18.6544 9.23154 19.159 10.4496C19.6637 11.6677 19.7958
-                             13.008 19.5387 14.3012C19.2816 15.5944 18.6468 16.7822 17.7147 17.7147L16.984
-                             18.444C16.5663 18.8618 16.2349 19.3578 16.0089 19.9036C15.7829 20.4495 15.6666 21.0345
-                             15.6667 21.6253V22.3333C15.6667 23.0406 15.3857 23.7189 14.8856 24.219C14.3855 24.719
-                             13.7072 25 13 25C12.2928 25 11.6145 24.719 11.1144 24.219C10.6143 23.7189 10.3333 23.0406
-                             10.3333 22.3333V21.6253C10.3333 20.432 9.85867 19.2867 9.016 18.444L8.28533 17.7147Z"
-                          stroke="#3F3F46" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                  </svg>
-                </div>
-                <div class="flex flex-col text-sm gap-4">
-                  <span>QUICK TIP:</span>
-                  <span>Try not to use too many font styles and sizes.</span>
-                </div>
-              </div>
             </div>
 
             <div class="flex flex-col gap-4">
@@ -475,12 +468,12 @@
 
                 <div class="flex flex-col gap-4">
                   <span class="text-lg font-semibold">Main image</span>
-                  <div class="relative w-full lg:w-2/3">
+                  <div class="relative w-full lg:w-3/3">
                     <img *ngIf="preview.info.photo; else noImage" class="w-full h-72 object-cover"
                          [src]="(preview.info.photo | safe:'fileUrl') | toUrlIPFS"
                          alt="Campaign image">
                     <ng-template #noImage>
-                      <div class="w-full h-72 bg-gray-100 border-gray-500 border-2 border-dashed">
+                      <div class="w-full h-72 bg-gray-100 border-gray-200 border rounded-xl border-dashed">
                         <svg class="w-full h-full" width="490" height="284" viewBox="0 0 490 284" fill="none"
                              xmlns="http://www.w3.org/2000/svg">
                           <path

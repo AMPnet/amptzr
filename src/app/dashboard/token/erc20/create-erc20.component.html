@@ -1,5 +1,5 @@
 <div class="flex">
-    <div routerLink="../.." class="ml-4 mt-2 bg-gray-600 text-white 
+    <div routerLink="../../overview" class="ml-4 mt-2 bg-gray-600 text-white 
     text-sm font-semibold rounded-full w-48 py-2 flex flex-row justify-center cursor-pointer">
         < Back
     </div>
@@ -29,16 +29,29 @@
             <small class="pb-2">How many tokens will be created initially. If your token is burnable or mintable, this number can change. If not, this number is fixed.</small>
             <input class="w-100 rounded-xl border-gray-200" id="token-name" type="number" formControlName="tokenName">
 
-            <label class="pb-1 mt-8 text-lg font-semibold" for="token-name">Is the token mintable?</label>
-            <small class="pb-2">If yes is selected, a user or a different smart contract will have the option to create new tokens.</small>
-            <div class="flex flex-row">
-                <div class="px-8 py-1 bg-blue-600 text-white cursor-pointer rounded-full mr-4 border-gray-700 border-2">Yes</div>
-                <div class="px-8 py-1 bg-white text-gray-700 cursor-pointer rounded-full mr-4 border-gray-700 border-2">No</div>
+            <div class="p-4 border border-gray-200 rounded-xl mt-8 flex flex-col transition-all">
+                <div class="flex flex-row justify-between items-center mb-2">
+                    <label class="text-lg font-semibold" for="can-mint">Is the token mintable?</label>
+                    <label class="switch">
+                        <input type="checkbox" [value]="checkSelected$ | async" (change)="onCheckChange($event)">
+                        <span class="slider round"></span>
+                    </label>
+                </div>
+                <small class="pb-2 text-justify">If your token is mintable, you will need to assign an entity (addess, wallet or smart contract) which can 
+                    freely create new tokens. <a class=" text-violet-800 underline" href="">Learn more</a>
+                </small>
+                <hr class="mt-4 mb-4" [hidden]="(checkSelected$ | async) === false">
+                <div class="invisibleComp" [class.visibleComp]="checkSelected$ | async">
+                    <div class="flex flex-col">
+                        <label class="pb-1 text-lg font-semibold" for="allowed-to-mint">Who is allowed to mint the tokens?</label>
+                        <small class="pb-2 text-justify">Tokens can be minted either by yourself, somebody else <i>or</i> by a smart contract representing a group of people 
+                        or a protocol. <br><br>Once you set the entity allowed to mint, only that entity will be able to change the minter permission. </small>
+                        <input class="w-100 rounded-xl border-gray-200" id="allowed-to-ming" type="text" formControlName="tokenName">
+                    </div>
+                </div>
+                
             </div>
-
-            <label class="pb-1 mt-8 text-lg font-semibold" for="token-name">Who can mint the token?</label>
-            <small class="pb-2">Please select the address or a smart contract which can mint the tokens</small>
-            <input class="w-100 rounded-xl border-gray-200" id="token-name" type="text" formControlName="tokenName">
+            
 
             <div class="flex flex-row justify-end">
                 <button type="submit" class="py-2 px-10 bg-violet-700 text-white rounded-full mt-8">Create token</button>

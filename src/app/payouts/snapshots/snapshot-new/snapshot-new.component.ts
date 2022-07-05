@@ -110,14 +110,13 @@ export class SnapshotNewComponent {
       switchMap(() => this.dialogService.success({
         message: 'Payout snapshot requested.',
       })),
-      switchMap(() => this.router.navigate(['..'], {relativeTo: this.route})),
     )
   }
 
   setCurrentBlockNumber() {
     return from(this.sessionQuery.provider.getBlockNumber()).pipe(
       tap(blockNumber => {
-        this.newSnapshotForm.get('blockNumber')?.setValue(blockNumber.toString())
+        this.newSnapshotForm.get('blockNumber')?.setValue((blockNumber - 1).toString())
       }),
       tap(() => ɵmarkDirty(this)),
     )

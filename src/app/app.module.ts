@@ -82,22 +82,14 @@ import {AdminCampaignAddTokensComponent} from './admin/admin-campaign-add-tokens
 import {AdminCampaignDetailComponent} from './admin/admin-campaign-detail/admin-campaign-detail.component'
 import {AdminAssetCampaignNewComponent} from './admin/admin-asset-campaign-new/admin-asset-campaign-new.component'
 import {AdminIssuerNewComponent} from './admin/admin-issuer-new/admin-issuer-new.component'
-import {
-  AdminIssuerEditCampaignVisibilityComponent,
-} from './admin/admin-issuer-edit-campaign-visibility/admin-issuer-edit-campaign-visibility.component'
-import {
-  AdminIssuerEditCampaignVisibilityCardComponent,
-} from './admin/admin-issuer-edit-campaign-visibility/admin-issuer-edit-campaign-visibility-card/admin-issuer-edit-campaign-visibility-card.component'
+import {AdminIssuerEditCampaignVisibilityComponent} from './admin/admin-issuer-edit-campaign-visibility/admin-issuer-edit-campaign-visibility.component'
+import {AdminIssuerEditCampaignVisibilityCardComponent} from './admin/admin-issuer-edit-campaign-visibility/admin-issuer-edit-campaign-visibility-card/admin-issuer-edit-campaign-visibility-card.component'
 import {AddToMetamaskComponent} from './shared/components/add-to-metamask/add-to-metamask.component'
 import {ExplorerLinkComponent} from './shared/components/explorer-link/explorer-link.component'
 import {AuthMagicComponent} from './auth/auth-magic/auth-magic.component'
 import {BigNumberInputDirective} from './shared/directives/bignumber-input.directive'
-import {
-  LoadingDialogApprovalComponent,
-} from './shared/components/loading-dialog/loading-dialog-approval/loading-dialog-approval.component'
-import {
-  LoadingDialogTransactionComponent,
-} from './shared/components/loading-dialog/loading-dialog-transaction/loading-dialog-transaction.component'
+import {LoadingDialogApprovalComponent} from './shared/components/loading-dialog/loading-dialog-approval/loading-dialog-approval.component'
+import {LoadingDialogTransactionComponent } from './shared/components/loading-dialog/loading-dialog-transaction/loading-dialog-transaction.component'
 import {LoadingOverlayComponent} from './shared/components/loading-dialog/loading-overlay/loading-overlay.component'
 import {DepositDialogComponent} from './deposit/deposit-dialog/deposit-dialog.component'
 import {AuthMagicOauthComponent} from './auth/auth-magic-oauth/auth-magic-oauth.component'
@@ -123,8 +115,15 @@ import {RequestBalanceActionComponent} from './request-balance/request-balance-a
 import {RequestWalletActionComponent} from './request-wallet/request-wallet-action/request-wallet-action.component'
 import { DashboardHolderComponent } from './dashboard/dashboard-holder/dashboard-holder.component'
 import { NewAndManageHolderComponent } from './dashboard/new-and-manage-holder/new-and-manage-holder.component'
-import { Erc20Component } from './dashboard/create/tokens/erc20/erc20.component'
-import { ThirdPartyIntegrationsOverviewComponent } from './dashboard/utils/third-party-integrations-overview/third-party-integrations-overview.component'
+import { CreateErc20Component } from './dashboard/token/erc20/create-erc20.component'
+import { ThirdPartyIntegrationsOverviewComponent } from './dashboard/utils/third-party-integrations-overview/third-party-integrations-overview.component';
+import { FundraisingComponent } from './dashboard/fundraising/fundraising.component';
+import { ContractsComponent } from './dashboard/contracts/contracts.component';
+import { TokensHolderComponent } from './dashboard/token/tokens-holder/tokens-holder.component';
+import { AddressBookComponent } from './dashboard/address-book/address-book.component'
+import { ApiKeyShortPipe } from './shared/pipes/api-key-short.pipe';
+import { AirdropComponent } from './dashboard/airdrop/airdrop.component';
+import { PaymentsComponent } from './payments/payments.component'
 
 @NgModule({
   declarations: [
@@ -135,6 +134,7 @@ import { ThirdPartyIntegrationsOverviewComponent } from './dashboard/utils/third
     WalletComponent,
     ActionButtonComponent,
     AddrShortPipe,
+    ApiKeyShortPipe,
     UnwrapStatusPipe,
     InfoDialogComponent,
     DevPlaygroundComponent,
@@ -223,8 +223,14 @@ import { ThirdPartyIntegrationsOverviewComponent } from './dashboard/utils/third
     RequestWalletActionComponent,
     DashboardHolderComponent,
     NewAndManageHolderComponent,
-    Erc20Component,
+    CreateErc20Component,
     ThirdPartyIntegrationsOverviewComponent,
+    FundraisingComponent,
+    ContractsComponent,
+    TokensHolderComponent,
+    AddressBookComponent,
+    AirdropComponent,
+    PaymentsComponent,
   ],
   imports: [
     BrowserModule,

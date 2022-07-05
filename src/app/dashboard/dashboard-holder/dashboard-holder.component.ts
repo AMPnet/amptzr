@@ -23,10 +23,9 @@ export class DashboardHolderComponent {
   network$ = this.preferenceQuery.network$
   isBackendAuthorized$ = this.preferenceQuery.isBackendAuthorized$
 
-  refreshSnapshotSub = new BehaviorSubject<void>(undefined)
+  refreshAPIKeySub = new BehaviorSubject<void>(undefined)
 
-
-  apiKey$ = this.refreshSnapshotSub.asObservable().pipe(
+  apiKey$ = this.refreshAPIKeySub.asObservable().pipe(
     switchMap(() => this.isBackendAuthorized$),
     switchMap(isAuthorized => isAuthorized ? this.fetchApiKey() : of(undefined))
   )
@@ -54,7 +53,7 @@ export class DashboardHolderComponent {
         title: 'Success',
         message: `Your API Key wass successfully created.`,
         cancelable: false,
-      })), tap(() => this.refreshSnapshotSub.next())
+      })), tap(() => this.refreshAPIKeySub.next())
     )
   }
 
