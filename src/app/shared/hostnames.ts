@@ -1,4 +1,4 @@
-import {MaticNetwork, MumbaiNetwork, Network} from './networks'
+import {GoerliNetwork, MaticNetwork, MumbaiNetwork, Network} from './networks'
 import {getWindow} from './utils/browser'
 
 export const Hostnames: { [host in string]: Host } = {
@@ -18,6 +18,10 @@ export const Hostnames: { [host in string]: Host } = {
     network: MumbaiNetwork,
     issuerAddress: '0x75C7193E8e0C8179A0cb2FF190Bc8E4681ffA8c7',
   },
+  'connect.dev3.sh': {
+    network: GoerliNetwork,
+    issuerAddress: '0xC7de1fC9eE14906C6B065eA574B78aAcd139E437',
+  }
 }
 
 export function getClientByHostname(): Host | undefined {
