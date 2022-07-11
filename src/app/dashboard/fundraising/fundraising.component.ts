@@ -1,5 +1,5 @@
-import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
-import { ManageItemsModel, TemplateItemsModel } from '../new-and-manage-holder/new-and-manage-holder.component';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core'
+import { ManageItemsModel, TemplateItemsModel } from '../new-and-manage-holder/new-and-manage-holder.component'
 
 @Component({
   selector: 'app-fundraising',
@@ -7,7 +7,7 @@ import { ManageItemsModel, TemplateItemsModel } from '../new-and-manage-holder/n
   styleUrls: ['./fundraising.component.css'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class FundraisingComponent implements OnInit {
+export class FundraisingComponent {
 
   templateItems: TemplateItemsModel[] = [
     {
@@ -38,8 +38,5 @@ export class FundraisingComponent implements OnInit {
   ]
 
   constructor() { }
-
-  ngOnInit(): void {
-  }
 
 }

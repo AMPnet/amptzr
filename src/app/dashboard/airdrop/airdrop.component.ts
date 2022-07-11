@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core'
 
 @Component({
   selector: 'app-airdrop',
@@ -6,11 +6,20 @@ import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
   styleUrls: ['./airdrop.component.css'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class AirdropComponent implements OnInit {
+export class AirdropComponent {
+
+  activeTab: Tab = Tab.ManageExisting
+  TabType = Tab
 
   constructor() { }
 
-  ngOnInit(): void {
+  changeTab(tab: Tab) {
+    this.activeTab = tab
   }
 
+}
+
+enum Tab {
+  CreateNew,
+  ManageExisting
 }

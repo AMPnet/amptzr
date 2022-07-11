@@ -1,5 +1,5 @@
-import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
-import { ManageItemsModel, TemplateItemsModel } from '../../new-and-manage-holder/new-and-manage-holder.component';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core'
+import { ManageItemsModel, TemplateItemsModel } from '../../new-and-manage-holder/new-and-manage-holder.component'
 
 @Component({
   selector: 'app-tokens-holder',
@@ -7,7 +7,7 @@ import { ManageItemsModel, TemplateItemsModel } from '../../new-and-manage-holde
   styleUrls: ['./tokens-holder.component.css'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class TokensHolderComponent implements OnInit {
+export class TokensHolderComponent {
 
   templateItems: TemplateItemsModel[] = [
     { 
@@ -76,8 +76,5 @@ export class TokensHolderComponent implements OnInit {
   ]
 
   constructor() { }
-
-  ngOnInit(): void {
-  }
 
 }

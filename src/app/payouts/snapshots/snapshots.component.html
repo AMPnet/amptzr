@@ -1,4 +1,4 @@
-<div class="h-full">
+<div class="h-full mx-4">
   <div class="bg-white shadow-sm h-full p-8 rounded-xl text-gray-700">
     <ng-container *ngIf="(snapshots$ | async) as snapshotsRes">
       <div class="flex flex-col">
@@ -28,16 +28,19 @@
         </div>
 
         <div *ngIf="snapshots.length > 0"
-             class="flex flex-col gap-1 mt-4">
-          <div *ngFor="let snapshot of snapshots"
-               class="border-gray-200 border rounded-lg">
+             class="flex flex-col mt-4">
+          <div *ngFor="let snapshot of snapshots; let i = index"
+               class="border-gray-200 border-x border-b"
+               [class.border-t] = "i === 0"
+               [class.rounded-t-lg] = "i === 0"
+               [class.rounded-b-lg] = "i === (snapshots.length - 1)" >
             <div class="flex justify-between flex-wrap">
-              <div class="flex gap-1 flex-wrap">
+              <div class="flex flex-row">
                 <ng-container *ngIf="(snapshot.asset | assetData:'tokenOnly'
                                      | withStatus | async) as assetRes">
                   <ng-container *ngIf="assetRes.value as asset">
-                    <div class="flex gap-0.5 items-baseline w-20 pl-4 py-2">
-                      <span class="text-sm mr-2">{{ asset.tokenData.symbol }}</span>
+                    <div class="flex items-baseline w-20 pl-4 py-4">
+                      <span class="text-sm mr-2 font-semibold">{{ asset.tokenData.symbol }}</span>
                     </div>
                   </ng-container>
 
@@ -69,23 +72,23 @@
               </div>
 
               <div class="flex flex-wrap w-full justify-end md:w-auto">
-                <div class="px-4 w-20 bg-red-200 text-red-700 flex flex-col justify-center
-                            items-center text-xxs font-semibold uppercase"
+                <div class="px-4 w-20 bg-red-100 text-red-700 flex flex-col justify-center
+                            items-center text-xs font-semibold uppercase m-2 rounded-lg"
                      *ngIf="snapshot.status === snapshotStatus.Failed">
                   Failed
                 </div>
 
-                <div class="px-4 w-20 p-1 bg-orange-200 text-orange-800 flex flex-col justify-center
-                            items-center text-xs font-semibold uppercase"
+                <div class="px-4 w-20 p-1 bg-orange-100 text-orange-800 flex flex-col justify-center
+                            items-center text-xs font-semibold uppercase m-2 rounded-lg"
                      *ngIf="snapshot.status === snapshotStatus.Pending">
                   <span class="animate-pulse">
                     Pending
                   </span>
                 </div>
 
-                <div class="px-4 p-1 w-20 bg-emerald-200 text-emerald-800
-                items-center flex flex-col justify-center
-                          text-xxs font-semibold uppercase"
+                <div class="px-4 p-1 w-20 bg-emerald-100 text-emerald-800
+                items-center flex flex-col justify-center m-2 rounded-lg
+                          text-xs font-semibold uppercase"
                      *ngIf="snapshot.status === snapshotStatus.Success">
                   <span class="">
                     Created
@@ -93,16 +96,11 @@
                 </div>
 
                 <a [routerLink]="snapshot.id"
-                   class="px-4 bg-cyan-500 text-white
-                          text-sm font-semibold uppercase rounded-r-lg
+                   class="px-4 bg-violet-700 text-white
+                          font-semibold uppercase rounded-full text-xs m-2
                           flex items-center"
                    *ngIf="snapshot.id">
-                  <svg width="8" height="14" viewBox="0 0 8 14" fill="none" xmlns="http://www.w3.org/2000/svg"
-                       class="w-2 h-2">
-                    <path d="M1 1.16602L6.83333 6.99935L1 12.8327" stroke="white" stroke-width="2"
-                          stroke-linecap="round"
-                          stroke-linejoin="round"/>
-                  </svg>
+                  Start airdrop
                 </a>
               </div>
             </div>

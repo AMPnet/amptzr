@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core'
 
 @Component({
   selector: 'app-address-book',
@@ -6,7 +6,7 @@ import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
   styleUrls: ['./address-book.component.css'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class AddressBookComponent implements OnInit {
+export class AddressBookComponent {
 
   addresses: AddressModel[] = [
     {
@@ -22,11 +22,8 @@ export class AddressBookComponent implements OnInit {
 
   constructor() { }
 
-  ngOnInit(): void {
-  }
-
   tabClicked(index: number) {
-    this.selectedTabIndex = index;
+    this.selectedTabIndex = index
   }
 
 }

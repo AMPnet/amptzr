@@ -1,148 +1,172 @@
 <div class="flex w-full flex-row justify-center">
-  <div class="bg-white w-full p-8 rounded-xl shadow-sm text-gray-700">
-    <div class="my-2 text-lg font-semibold">
-      Create a new token snapshot
-    </div>
-    <small>
-      In order to be able to create an airdrop, you must first take a <i>snapshot</i> of all token holders at a
-      certain time. After that, you will be able to execute the airdrop.
-    </small>
-
-    <form [formGroup]="newSnapshotForm">
-      <ng-container *ngIf="(state$ | async) as state">
-        <div class="flex flex-col gap-2 mt-4">
-          <label class="text-sm uppercase font-semibold" for="asset-address">
-            Token address
-          </label>
-          <div class="w-full flex flex-row border border-gray-200 rounded-lg">
-            <input class="border-0 text-sm rounded-lg w-8/12" type="text"
-            formControlName="assetAddress" id="asset-address"
-            autocomplete="off">
-
-            <div class="flex" *ngIf="!state.tokenData">
-              <div class="flex items-center mt-2 flex-1">
-                <ng-container *ngIf="newSnapshotForm.get('assetAddress')?.errors as err">
-                  <span class="text-red-600 text-xs font-semibold">
-                    <ng-container *ngIf="err.noToken">
-                      Cannot fetch token data.
+  <div class="flex flex-row w-full p-8 text-gray-700">
+    <div class="w-2/3 pr-8 border-r">
+      <div class="mt-2 text-lg font-semibold">
+        Create a new token snapshot
+      </div>
+      <small class="text-gray-400 mb-2">
+        In order to airdrop tokens or distribute dividends, you must first take a <i>snapshot</i> of all token holders at a
+        certain time. After that, you will use the snapshot to perform one or more airdrops or dividend distributions.
+      </small>
+      <hr class="mt-3">
+      <form [formGroup]="newSnapshotForm">
+        <ng-container *ngIf="(state$ | async) as state">
+          <div class="flex flex-col mt-4">
+            <label class="text-sm uppercase font-semibold" for="asset-address">
+              Token address
+            </label>
+            <small class=" text-gray-400 mt-1 mb-2">
+              Paste the address of an ERC-20 compliant token, for which you plan on distributing airdrops or dividends.
+            </small>
+            <div class="w-full flex flex-row border border-gray-200 rounded-lg">
+              <input class="border-0 text-sm rounded-lg w-8/12" type="text"
+              formControlName="assetAddress" id="asset-address"
+              autocomplete="off">
+  
+              <div class="flex" *ngIf="!state.tokenData">
+                <div class="flex items-center mt-2 flex-1">
+                  <ng-container *ngIf="newSnapshotForm.get('assetAddress')?.errors as err">
+                    <span class="text-red-600 text-xs font-semibold">
+                      <ng-container *ngIf="err.noToken">
+                        Cannot fetch token data.
+                      </ng-container>
+                    </span>
+                  </ng-container>
+                </div>
+              </div>
+      
+              <div class="flex flex-row items-center justify-end gap-1.5 flex-wrap pl-3 border-l"
+                   *ngIf="state.tokenData">
+                <span class="text-sm">{{ state.tokenData.symbol }}</span>
+                <app-value-copy [value]="state.tokenData.address" [delay]="800">
+                </app-value-copy>
+                <app-explorer-link [value]="state.tokenData.address">
+                </app-explorer-link>
+                <app-add-to-metamask [value]="state.tokenData.address">
+                </app-add-to-metamask>
+              </div>
+            </div>
+            
+          </div>
+  
+          
+  
+          <div class="flex flex-col mt-4">
+            <label class="text-sm uppercase font-semibold" for="block-number">
+              Block number / Time of snapshot
+            </label>
+            <small class=" text-gray-400 mt-1 mb-2">This represents the moment in time which will be used for the aridrop or dividend distribution. If you want to reward current token holders, select 'Current block'.</small>
+            <div class="flex gap-2 w-full border-gray-200 border rounded-lg">
+              <input class="border-0 w-4/12 text-sm rounded-lg flex-1" type="text"
+                     formControlName="blockNumber" id="block-number"
+                     autocomplete="off">
+              <span class="text-xs flex flex-col justify-center px-3 border-l" *ngIf="!newSnapshotForm.get('blockNumber')?.errors && state.blockTime">
+                {{ state.blockTime | date:'medium' }}
+              </span>
+              <button app-action-button [onClick]="setCurrentBlockNumber.bind(this)"
+                      class="text-xs uppercase font-semibold text-white rounded-r-lg px-4 bg-violet-600">
+                <ng-template #content #loadingContent>
+                  Current block
+                </ng-template>
+              </button>
+            </div>
+  
+            <div class="flex">
+              <div class="flex items-center flex-1 mb-2">
+                <ng-container *ngIf="newSnapshotForm?.invalid">
+                  <span class="text-red-600 text-xs font-semibold"
+                        *ngIf="newSnapshotForm.get('blockNumber')?.errors as err">
+                    <ng-container *ngIf="err.incorrectBlockNumber">
+                      Incorrect block number.
+                    </ng-container>
+  
+                    <ng-container *ngIf="err.pattern">
+                      Block number must be a positive number.
                     </ng-container>
                   </span>
                 </ng-container>
               </div>
             </div>
-    
-            <div class="flex flex-row items-center justify-end gap-1.5 flex-wrap pl-3 border-l"
-                 *ngIf="state.tokenData">
-              <span class="text-sm">{{ state.tokenData.symbol }}</span>
-              <app-value-copy [value]="state.tokenData.address" [delay]="800">
-              </app-value-copy>
-              <app-explorer-link [value]="state.tokenData.address">
-              </app-explorer-link>
-              <app-add-to-metamask [value]="state.tokenData.address">
-              </app-add-to-metamask>
+          </div>
+  
+         
+  
+          <form [formGroup]="ignoredAddressInputForm">
+            <div class="flex flex-col mt-4">
+              <label class="text-sm uppercase font-semibold" for="ignored-holder-address">
+                Exclude wallets from snapshot
+              </label>
+              <small class=" text-gray-400 mt-1 mb-2">
+                Add wallet addresses which should <i>not</i> receive airdrop rewards or dividends.
+              </small>
+              <div class="flex gap-2 w-full border-gray-200 border rounded-lg">
+                <input class="border-0 text-sm rounded-lg flex-1" type="text"
+                       formControlName="holderAddress" id="ignored-holder-address"
+                       autocomplete="off">
+                <button (click)="addIgnoredHolderFromInput()"
+                        [disabled]="!ignoredAddressInputForm.valid"
+                        class="text-xs font-semibold uppercase text-white rounded-r-lg px-4 bg-violet-600">
+                  + Add new
+                </button>
+              </div>
+            </div>
+          </form>
+  
+          <div class="flex gap-2 mt-4 lg:max-w-md items-center">
+            <input class="rounded" type="checkbox"
+                   formControlName="excludeMyself" id="exclude-myself"
+                   autocomplete="off">
+            <label class="text-sm" for="exclude-myself">
+              Exclude my (connected) wallet
+            </label>
+          </div>
+  
+          <div *ngFor="let holderAddress of newSnapshotForm.get('ignoredHolderAddresses')?.value"
+               class="mt-4">
+            <div class="flex gap-2 justify-between flex-wrap">
+              <div class="flex items-baseline gap-1.5 flex-wrap">
+                <span class="text-xs">
+                  {{ holderAddress }}
+                </span>
+                <app-value-copy [value]="holderAddress" [delay]="800">
+                </app-value-copy>
+                <app-explorer-link [value]="holderAddress">
+                </app-explorer-link>
+              </div>
+              <div>
+                <button (click)="removeIgnoredHolder(holderAddress)"
+                        class="text-sm w-5 h-5 bg-red-600 text-white rounded-full">
+                  -
+                </button>
+              </div>
             </div>
           </div>
-          
-        </div>
-
-        
-
-        <div class="flex flex-col gap-2 mt-4">
-          <label class="text-sm uppercase font-semibold" for="block-number">
-            Block number
-          </label>
-          <div class="flex gap-2 w-full border-gray-200 border rounded-lg">
-            <input class="border-0 w-4/12 text-sm rounded-lg flex-1" type="text"
-                   formControlName="blockNumber" id="block-number"
-                   autocomplete="off">
-            <span class="text-xs flex flex-col justify-center px-3 border-l" *ngIf="!newSnapshotForm.get('blockNumber')?.errors && state.blockTime">
-              {{ state.blockTime | date:'medium' }}
-            </span>
-            <button app-action-button [onClick]="setCurrentBlockNumber.bind(this)"
-                    class="text-xs uppercase font-semibold text-white rounded-r-lg px-4 bg-violet-600">
-              <ng-template #content #loadingContent>
-                Current block
-              </ng-template>
+  
+          <div class="flex mt-4">
+            <button app-action-button
+                    class="app-button !w-full mt-4"
+                    text="+ Create"
+                    [disabled]="!newSnapshotForm.valid"
+                    [onClick]="createPayout.bind(this)">
             </button>
           </div>
+        </ng-container>
+      </form>
 
-          <div class="flex">
-            <div class="flex items-center flex-1 mb-2">
-              <ng-container *ngIf="newSnapshotForm?.invalid">
-                <span class="text-red-600 text-xs font-semibold"
-                      *ngIf="newSnapshotForm.get('blockNumber')?.errors as err">
-                  <ng-container *ngIf="err.incorrectBlockNumber">
-                    Incorrect block number.
-                  </ng-container>
-
-                  <ng-container *ngIf="err.pattern">
-                    Block number must be a positive number.
-                  </ng-container>
-                </span>
-              </ng-container>
-            </div>
-          </div>
-        </div>
-
-       
-
-        <form [formGroup]="ignoredAddressInputForm">
-          <div class="flex flex-col gap-2 mt-4">
-            <label class="text-sm uppercase font-semibold" for="ignored-holder-address">
-              Exclude wallets from snapshot
-            </label>
-            <div class="flex gap-2 w-full border-gray-200 border rounded-lg">
-              <input class="border-0 text-sm rounded-lg flex-1" type="text"
-                     formControlName="holderAddress" id="ignored-holder-address"
-                     autocomplete="off">
-              <button (click)="addIgnoredHolderFromInput()"
-                      [disabled]="!ignoredAddressInputForm.valid"
-                      class="text-xs font-semibold uppercase text-white rounded-r-lg px-4 bg-violet-600">
-                + Add new
-              </button>
-            </div>
-          </div>
-        </form>
-
-        <div class="flex gap-2 mt-4 lg:max-w-md items-center">
-          <input class="rounded" type="checkbox"
-                 formControlName="excludeMyself" id="exclude-myself"
-                 autocomplete="off">
-          <label class="text-sm" for="exclude-myself">
-            Exclude my (connected) wallet
-          </label>
-        </div>
-
-        <div *ngFor="let holderAddress of newSnapshotForm.get('ignoredHolderAddresses')?.value"
-             class="mt-4">
-          <div class="flex gap-2 justify-between flex-wrap">
-            <div class="flex items-baseline gap-1.5 flex-wrap">
-              <span class="text-xs">
-                {{ holderAddress }}
-              </span>
-              <app-value-copy [value]="holderAddress" [delay]="800">
-              </app-value-copy>
-              <app-explorer-link [value]="holderAddress">
-              </app-explorer-link>
-            </div>
-            <div>
-              <button (click)="removeIgnoredHolder(holderAddress)"
-                      class="text-sm w-5 h-5 bg-red-600 text-white rounded-full">
-                -
-              </button>
-            </div>
-          </div>
-        </div>
-
-        <div class="flex mt-4">
-          <button app-action-button
-                  class="app-button !w-full mt-4"
-                  text="+ Create"
-                  [disabled]="!newSnapshotForm.valid"
-                  [onClick]="createPayout.bind(this)">
-          </button>
-        </div>
-      </ng-container>
-    </form>
+    </div>
+    <div class="w-1/3 pl-8">
+      <div class=" text-lg font-semibold mt-4">How to distribute dividends or make airdrops?</div>
+      <div class="mt-8 text-sm text-gray-500">
+        Airdropping tokens or distributing dividends to a certain group of people by using Dev3 is a very straightforward
+        process. 
+        <hr class="mt-4 mb-4">
+        1. Create a snapshot of token holders (e.g. snapshot of all people who held $MKR token on July 1st, 2022)
+        <hr class="mt-4 mb-4">
+        2. Decide who to exclude from the snapshot (e.g. exclude the address of founders or big investors, if rewarding smaller holders)
+        <hr class="mt-4 mb-4">
+        3. Go to 'Token Snapshots' tab and select 'Airdrop Tokens'
+      </div>
+    </div>
+    
   </div>
 </div>
