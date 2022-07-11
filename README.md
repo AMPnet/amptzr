@@ -6,7 +6,18 @@ The platform for tokenizing real–world assets – powered by blockchain.
 
 ## Development
 
-```
+### IDE setup
+
+Install [Prettier](https://prettier.io/) and enable it in your IDE.
+
+### Setup project
+
+```bash
+# Clone repo & contracts submodule
+git clone git@github.com:AMPnet/amptzr.git && \
+  git submodule init && \
+  git submodule update
+
 # install dependencies
 npm install
 
@@ -18,7 +29,7 @@ Navigate to `http://localhost:4200/`. The app will automatically reload if you c
 
 ## Code scaffolding
 
-```
+```bash
 # generate a component
 ng g c my-component
 
@@ -31,7 +42,7 @@ ng g @datorama/akita:af my-feature/my-feature --plain --entityService=default
 
 ## Build
 
-```
+```bash
 # generate production build. produced artifacts
 # will be located in `/dist` directory
 npm run build
@@ -39,14 +50,14 @@ npm run build
 
 ### Try production build
 
-```
+```bash
 # serve and open in a browser
 npm run serve-build
 ```
 
 ## Lint & Test
 
-```
+```bash
 # run linter (eslint)
 npm run lint
 
