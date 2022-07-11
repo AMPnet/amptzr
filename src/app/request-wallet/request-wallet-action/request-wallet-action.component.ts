@@ -5,7 +5,6 @@ import {
   withStatus,
   WithStatus,
 } from '../../shared/utils/observables'
-import { FormBuilder } from '@angular/forms'
 import { constants } from 'ethers'
 import {
   RequestBalance,
@@ -14,8 +13,8 @@ import {
 import { SessionQuery } from '../../session/state/session.query'
 import { PreferenceQuery } from '../../preference/state/preference.query'
 import { SignerService } from '../../shared/services/signer.service'
-import { Erc20Service } from '../../shared/services/blockchain/erc20.service'
 import { DialogService } from '../../shared/services/dialog.service'
+import { IssuerService } from '../../shared/services/blockchain/issuer/issuer.service'
 import { ActivatedRoute } from '@angular/router'
 import {
   distinctUntilChanged,
@@ -42,16 +41,16 @@ export class RequestWalletActionComponent {
   shouldSign$: Observable<boolean>
 
   bigNumberConstants = constants
+  issuer$ = this.issuerService.issuer$
 
   constructor(
-    private fb: FormBuilder,
     private requestBalanceService: RequestBalanceService,
     private sessionQuery: SessionQuery,
     private preferenceQuery: PreferenceQuery,
     private signerService: SignerService,
-    private erc20Service: Erc20Service,
     private dialogService: DialogService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private issuerService: IssuerService
   ) {
     const requestBalanceID = this.route.snapshot.params.id
 

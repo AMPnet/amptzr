@@ -1,11 +1,20 @@
-<div class="w-full h-full flex justify-center my-8 px-2">
+<div
+  *ngIf="issuer$ | async as myIssuer"
+  class="w-full h-full flex justify-center my-8 px-2"
+>
   <div class="w-full max-w-5xl">
     <ng-container *ngIf="stateWithStatus$ | async as stateRes">
       <ng-container *ngIf="stateRes.value as state">
         <div class="max-w-md mx-auto bg-white rounded-4xl p-6 lg:px-10">
-          <h1 class="flex justify-center mt-4 mx-8 text-3xl">Connect Wallet</h1>
+          <div class="flex justify-center">
+            <img
+              class="h-20"
+              src="{{ myIssuer.infoData.logo | toUrlIPFS }}"
+              alt="Issuer Logo"
+            />
+          </div>
 
-          <div class="flex flex-col gap-4 mt-8" *ngIf="!state.signed_message">
+          <div class="flex flex-col gap-4 mt-6" *ngIf="!state.signed_message">
             <div class="text-center">
               <ng-container
                 *ngIf="
@@ -18,8 +27,8 @@
               </ng-container>
 
               <ng-template #noBeforeActionMessage>
-                <span class="font-bold">DEV3</span> is requesting the following
-                info:
+                <span class="font-bold">{{ myIssuer.infoData.name }}</span> is
+                requesting the following info:
                 <div class="flex items-center mt-4 justify-center">
                   <svg
                     class="w-6 h-6 mr-2"
