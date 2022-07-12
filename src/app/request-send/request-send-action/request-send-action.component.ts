@@ -51,6 +51,7 @@ import {
 } from 'rxjs/operators'
 import { ERC20__factory } from '../../../../types/ethers-contracts'
 import { Network } from '../../shared/networks'
+import { IssuerService } from '../../shared/services/blockchain/issuer/issuer.service'
 
 @Component({
   selector: 'app-request-send-action',
@@ -71,6 +72,8 @@ export class RequestSendActionComponent {
 
   bigNumberConstants = constants
 
+  issuer$ = this.issuerService.issuer$
+
   constructor(
     private fb: FormBuilder,
     private assetService: AssetService,
@@ -83,8 +86,8 @@ export class RequestSendActionComponent {
     private dialogService: DialogService,
     private gasService: GasService,
     private errorService: ErrorService,
-    private router: RouterService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private issuerService: IssuerService
   ) {
     const requestSendID = this.route.snapshot.params.id
 
@@ -121,7 +124,7 @@ export class RequestSendActionComponent {
         asset,
       })),
       distinctUntilChanged((p, c) => JSON.stringify(p) === JSON.stringify(c)),
-      tap((state) => {
+      switchMap((state) => {
         this.transferForm
           .get('tokenAmount')
           ?.patchValue(
@@ -135,6 +138,11 @@ export class RequestSendActionComponent {
         this.transferForm
           .get('recipientAddress')
           ?.setValue(state.requestSend.recipient_address)
+
+        return of({
+          ...state,
+          parsedAmount: this.transferForm.get('tokenAmount')?.value.toString(),
+        })
       }),
       shareReplay(1)
     )
@@ -241,4 +249,5 @@ interface RequestSendState {
   balance: BigNumber | undefined
   network: Network
   asset?: CommonAssetWithInfo
+  parsedAmount: string
 }
