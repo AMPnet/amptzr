@@ -1,16 +1,18 @@
-import {Injectable} from '@angular/core'
-import {StablecoinBigNumber, StablecoinService} from './blockchain/stablecoin.service'
-import {BigNumber} from 'ethers'
-import {TokenPrice, TokenPriceBigNumber} from '../utils/token-price'
-import {Token, TokenBigNumber} from '../utils/token'
-import {formatUnits, parseUnits} from 'ethers/lib/utils'
+import { Injectable } from '@angular/core'
+import {
+  StablecoinBigNumber,
+  StablecoinService,
+} from './blockchain/stablecoin.service'
+import { BigNumber } from 'ethers'
+import { TokenPrice, TokenPriceBigNumber } from '../utils/token-price'
+import { Token, TokenBigNumber } from '../utils/token'
+import { formatUnits, parseUnits } from 'ethers/lib/utils'
 
 @Injectable({
   providedIn: 'root',
 })
 export class ConversionService {
-  constructor(private stablecoin: StablecoinService) {
-  }
+  constructor(private stablecoin: StablecoinService) {}
 
   ///
   // (number | string) -> BigNumber
@@ -20,7 +22,10 @@ export class ConversionService {
     return parseUnits(String(amount), this.stablecoin.config.decimals)
   }
 
-  toToken(amount: number | string, precision = Token.precision): StablecoinBigNumber {
+  toToken(
+    amount: number | string,
+    precision = Token.precision
+  ): StablecoinBigNumber {
     return parseUnits(String(amount), precision)
   }
 
@@ -52,7 +57,10 @@ export class ConversionService {
     return Number(this.parseStablecoin(value))
   }
 
-  parseTokenToNumber(value: TokenBigNumber, precision = Token.precision): number {
+  parseTokenToNumber(
+    value: TokenBigNumber,
+    precision = Token.precision
+  ): number {
     return Number(this.parseToken(value, precision))
   }
 
@@ -61,7 +69,10 @@ export class ConversionService {
   }
 
   // `stablecoin = token * tokenPrice`
-  calcStablecoin(token: TokenBigNumber, tokenPrice: TokenPriceBigNumber): StablecoinBigNumber {
+  calcStablecoin(
+    token: TokenBigNumber,
+    tokenPrice: TokenPriceBigNumber
+  ): StablecoinBigNumber {
     return token
       .mul(tokenPrice)
       .mul(this.pow10(this.stablecoin.config.decimals))
@@ -70,7 +81,10 @@ export class ConversionService {
   }
 
   // `token = stablecoin / tokenPrice`
-  calcTokens(stablecoin: StablecoinBigNumber, tokenPrice: TokenPriceBigNumber): TokenBigNumber {
+  calcTokens(
+    stablecoin: StablecoinBigNumber,
+    tokenPrice: TokenPriceBigNumber
+  ): TokenBigNumber {
     return stablecoin
       .mul(this.pow10(TokenPrice.precision))
       .mul(this.pow10(Token.precision))
@@ -79,7 +93,10 @@ export class ConversionService {
   }
 
   // `tokenPrice = stablecoin / token`
-  calcTokenPrice(stablecoin: StablecoinBigNumber, token: TokenBigNumber): TokenPriceBigNumber {
+  calcTokenPrice(
+    stablecoin: StablecoinBigNumber,
+    token: TokenBigNumber
+  ): TokenPriceBigNumber {
     return stablecoin
       .mul(this.pow10(Token.precision))
       .mul(this.pow10(TokenPrice.precision))
@@ -88,17 +105,20 @@ export class ConversionService {
   }
 
   scale(value: BigNumber, scaleValue: number, precision = 18): BigNumber {
-    return value.mul(parseUnits(String(scaleValue), precision))
+    return value
+      .mul(parseUnits(String(scaleValue), precision))
       .div(this.pow10(precision))
   }
 
-  trim(value: BigNumber, decimals: number | 'stablecoin' = 18, trimDecimals = 0): BigNumber {
+  trim(
+    value: BigNumber,
+    decimals: number | 'stablecoin' = 18,
+    trimDecimals = 0
+  ): BigNumber {
     if (decimals === 'stablecoin') decimals = this.stablecoin.config.decimals
     const totalDecimals = Math.max(decimals - trimDecimals, 0)
 
-    return value
-      .div(this.pow10(totalDecimals))
-      .mul(this.pow10(totalDecimals))
+    return value.div(this.pow10(totalDecimals)).mul(this.pow10(totalDecimals))
   }
 
   private pow10(to: number): BigNumber {

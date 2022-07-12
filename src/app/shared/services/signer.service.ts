@@ -1,6 +1,16 @@
-import {Injectable, NgZone} from '@angular/core'
-import {providers, utils} from 'ethers'
-import {combineLatest, defer, from, fromEvent, merge, Observable, of, Subject, throwError} from 'rxjs'
+import { Injectable, NgZone } from '@angular/core'
+import { providers, utils } from 'ethers'
+import {
+  combineLatest,
+  defer,
+  from,
+  fromEvent,
+  merge,
+  Observable,
+  of,
+  Subject,
+  throwError,
+} from 'rxjs'
 import {
   catchError,
   concatMap,
@@ -13,18 +23,22 @@ import {
   tap,
   timeout,
 } from 'rxjs/operators'
-import {SessionStore} from '../../session/state/session.store'
-import {SessionQuery} from '../../session/state/session.query'
-import {PreferenceStore} from '../../preference/state/preference.store'
-import {MetamaskSubsignerService} from './subsigners/metamask-subsigner.service'
-import {AuthComponent} from '../../auth/auth.component'
-import {RouterService} from './router.service'
-import {ErrorService} from './error.service'
-import {PreferenceQuery} from '../../preference/state/preference.query'
-import {getWindow} from '../utils/browser'
-import {DialogService} from './dialog.service'
-import {GetSignerOptions, SignerLoginOpts, Subsigner} from './signer-login-options'
-import {WrongNetworkComponent} from '../components/wrong-network/wrong-network.component'
+import { SessionStore } from '../../session/state/session.store'
+import { SessionQuery } from '../../session/state/session.query'
+import { PreferenceStore } from '../../preference/state/preference.store'
+import { MetamaskSubsignerService } from './subsigners/metamask-subsigner.service'
+import { AuthComponent } from '../../auth/auth.component'
+import { RouterService } from './router.service'
+import { ErrorService } from './error.service'
+import { PreferenceQuery } from '../../preference/state/preference.query'
+import { getWindow } from '../utils/browser'
+import { DialogService } from './dialog.service'
+import {
+  GetSignerOptions,
+  SignerLoginOpts,
+  Subsigner,
+} from './signer-login-options'
+import { WrongNetworkComponent } from '../components/wrong-network/wrong-network.component'
 
 @Injectable({
   providedIn: 'root',
@@ -43,18 +57,20 @@ export class SignerService {
   chainChanged$ = this.chainChangedSub.asObservable()
   disconnected$ = this.disconnectedSub.asObservable()
   listeners$ = this.listenersSub.asObservable().pipe(
-    switchMap(provider => merge(
-      fromEvent<string[]>(provider, 'accountsChanged').pipe(
-        map(accounts => () => this.accountsChangedSub.next(accounts)),
-      ),
-      fromEvent<string>(provider, 'chainChanged').pipe(
-        map(chainID => () => this.chainChangedSub.next(chainID)),
-      ),
-      fromEvent<void>(provider, 'disconnect').pipe(
-        map(() => () => this.disconnectedSub.next()),
-      ),
-    )),
-    tap(action => this.ngZone.run(() => action())),
+    switchMap((provider) =>
+      merge(
+        fromEvent<string[]>(provider, 'accountsChanged').pipe(
+          map((accounts) => () => this.accountsChangedSub.next(accounts))
+        ),
+        fromEvent<string>(provider, 'chainChanged').pipe(
+          map((chainID) => () => this.chainChangedSub.next(chainID))
+        ),
+        fromEvent<void>(provider, 'disconnect').pipe(
+          map(() => () => this.disconnectedSub.next())
+        )
+      )
+    ),
+    tap((action) => this.ngZone.run(() => action()))
   )
 
   networkMismatch$: Observable<boolean> = combineLatest([
@@ -67,85 +83,98 @@ export class SignerService {
 
       return from(this.sessionQuery.signer.getChainId()).pipe(
         timeout(2000),
-        map(chainID => chainID !== network.chainID),
-        catchError(() => of(true)),
+        map((chainID) => chainID !== network.chainID),
+        catchError(() => of(true))
       )
     }),
-    shareReplay(1),
+    shareReplay(1)
   )
 
-  constructor(private sessionStore: SessionStore,
-              private sessionQuery: SessionQuery,
-              private preferenceQuery: PreferenceQuery,
-              private preferenceStore: PreferenceStore,
-              private metamaskSubsignerService: MetamaskSubsignerService,
-              private ngZone: NgZone,
-              private router: RouterService,
-              private dialogService: DialogService,
-              private errorService: ErrorService) {
+  constructor(
+    private sessionStore: SessionStore,
+    private sessionQuery: SessionQuery,
+    private preferenceQuery: PreferenceQuery,
+    private preferenceStore: PreferenceStore,
+    private metamaskSubsignerService: MetamaskSubsignerService,
+    private ngZone: NgZone,
+    private router: RouterService,
+    private dialogService: DialogService,
+    private errorService: ErrorService
+  ) {
     this.subscribeToChanges()
   }
 
   get ensureAuth(): Observable<providers.JsonRpcSigner> {
     return of(this.sessionQuery.signer).pipe(
-      concatMap(signer => !!signer ?
-        // Temporarily removed hard get address check due to
-        // long waiting time to get address on some signers.
-        // from(signer.getAddress()).pipe(map(() => signer!)) :
-        of(signer) :
-        this.loginDialog.pipe(
-          map(() => this.sessionQuery.signer!),
-        ),
-      ),
+      concatMap((signer) =>
+        !!signer
+          ? // Temporarily removed hard get address check due to
+            // long waiting time to get address on some signers.
+            // from(signer.getAddress()).pipe(map(() => signer!)) :
+            of(signer)
+          : this.loginDialog.pipe(map(() => this.sessionQuery.signer!))
+      )
     )
   }
 
   get ensureNetwork(): Observable<providers.JsonRpcSigner> {
     return combineLatest([this.networkMismatch$]).pipe(
       take(1),
-      concatMap(([isMismatch]) => isMismatch ?
-        defer(() => this.changeNetworkDialog()) : of(undefined),
+      concatMap(([isMismatch]) =>
+        isMismatch ? defer(() => this.changeNetworkDialog()) : of(undefined)
       ),
-      map(() => this.sessionQuery.signer!),
+      map(() => this.sessionQuery.signer!)
     )
   }
 
   get ensureNetwork$(): Observable<providers.JsonRpcSigner> {
     return combineLatest([this.networkMismatch$]).pipe(
-      concatMap(([isMismatch]) => isMismatch ?
-        defer(() => this.changeNetworkDialog()) : of(undefined),
+      concatMap(([isMismatch]) =>
+        isMismatch ? defer(() => this.changeNetworkDialog()) : of(undefined)
       ),
-      map(() => this.sessionQuery.signer!),
+      map(() => this.sessionQuery.signer!)
     )
   }
 
   private get loginDialog() {
-    return this.dialogService.dialog.open(AuthComponent, {
-      ...this.dialogService.configDefaults,
-    }).afterClosed().pipe(
-      concatMap(authCompleted => authCompleted ?
-        this.sessionQuery.waitUntilLoggedIn() :
-        throwError(() => 'LOGIN_MODAL_DISMISSED')),
-    )
+    return this.dialogService.dialog
+      .open(AuthComponent, {
+        ...this.dialogService.configDefaults,
+      })
+      .afterClosed()
+      .pipe(
+        concatMap((authCompleted) =>
+          authCompleted
+            ? this.sessionQuery.waitUntilLoggedIn()
+            : throwError(() => 'LOGIN_MODAL_DISMISSED')
+        )
+      )
   }
 
   private changeNetworkDialog() {
-    return this.dialogService.dialog.open(WrongNetworkComponent, {
-      ...this.dialogService.configDefaults,
-      disableClose: true,
-    }).afterClosed().pipe(
-      switchMap(changeNetworkCompleted => changeNetworkCompleted ?
-        of(true) : throwError(() => 'CHANGE_NETWORK_MODAL_DISMISSED')),
-    )
+    return this.dialogService.dialog
+      .open(WrongNetworkComponent, {
+        ...this.dialogService.configDefaults,
+        disableClose: true,
+      })
+      .afterClosed()
+      .pipe(
+        switchMap((changeNetworkCompleted) =>
+          changeNetworkCompleted
+            ? of(true)
+            : throwError(() => 'CHANGE_NETWORK_MODAL_DISMISSED')
+        )
+      )
   }
 
   login<S extends Subsigner<any>, O extends GetSignerOptions<S>>(
-    subsigner: S, opts: O | SignerLoginOpts = {force: true},
+    subsigner: S,
+    opts: O | SignerLoginOpts = { force: true }
   ): Observable<providers.JsonRpcSigner> {
     this.subsigner = subsigner
-    return this.subsigner.login(opts).pipe(
-      tap(signer => this.setSigner(signer)),
-    )
+    return this.subsigner
+      .login(opts)
+      .pipe(tap((signer) => this.setSigner(signer)))
   }
 
   logout(): Observable<unknown> {
@@ -159,35 +188,38 @@ export class SignerService {
           JWTAccessToken: '',
           JWTRefreshToken: '',
         })
-      }),
+      })
     )
   }
 
   getAddress(): Observable<string> {
     return this.ensureAuth.pipe(
-      switchMap(signer => from(signer.getAddress())),
+      switchMap((signer) => from(signer.getAddress()))
     )
   }
 
   signMessage(message: string | utils.Bytes): Observable<string> {
     return this.ensureAuth.pipe(
-      switchMap(signer => from(signer.signMessage(message))),
-      this.errorService.handleError(false, true),
+      switchMap((signer) => from(signer.signMessage(message))),
+      this.errorService.handleError(false, true)
     )
   }
 
-  sendTransaction(transaction: providers.TransactionRequest):
-    Observable<providers.TransactionResponse> {
+  sendTransaction(
+    transaction: providers.TransactionRequest
+  ): Observable<providers.TransactionResponse> {
     return this.ensureAuth.pipe(
       switchMap(() => this.ensureNetwork),
-      switchMap(signer => from(signer.sendTransaction(transaction))),
-      this.errorService.handleError(false, true),
+      switchMap((signer) => from(signer.sendTransaction(transaction))),
+      this.errorService.handleError(false, true)
     )
   }
 
   registerListeners(): void {
     const provider = this.sessionQuery.signer?.provider as any
-    const providerWithEvents = provider?.provider['_events'] ? provider.provider : provider
+    const providerWithEvents = provider?.provider['_events']
+      ? provider.provider
+      : provider
 
     this.listenersSub.next(providerWithEvents)
   }
@@ -200,23 +232,27 @@ export class SignerService {
   }
 
   private subscribeToChanges(): void {
-    this.accountsChanged$.pipe(
-      concatMap((accounts) => accounts.length === 0 ? this.logoutNavToOffers() : of(accounts)),
-      concatMap(() => this.sessionQuery.signer?.getAddress() || of('')),
-      tap(account => {
-        if (account) {
-          this.preferenceStore.update({address: account})
-        }
-      }),
-    ).subscribe()
+    this.accountsChanged$
+      .pipe(
+        concatMap((accounts) =>
+          accounts.length === 0 ? this.logoutNavToOffers() : of(accounts)
+        ),
+        concatMap(() => this.sessionQuery.signer?.getAddress() || of('')),
+        tap((account) => {
+          if (account) {
+            this.preferenceStore.update({ address: account })
+          }
+        })
+      )
+      .subscribe()
 
     this.listeners$.subscribe()
   }
 
   private logoutNavToOffers(): Observable<unknown> {
     return of(this.sessionQuery.isLoggedIn()).pipe(
-      concatMap(isLoggedIn => isLoggedIn ? this.logout() : of(isLoggedIn)),
-      concatMap(() => this.ngZone.run(() => this.router.navigate(['/offers']))),
+      concatMap((isLoggedIn) => (isLoggedIn ? this.logout() : of(isLoggedIn))),
+      concatMap(() => this.ngZone.run(() => this.router.navigate(['/offers'])))
     )
   }
 }

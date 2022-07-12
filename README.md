@@ -77,11 +77,12 @@ There are precommit rules set by [husky](https://github.com/typicode/husky). For
   - [Collect, Combine and Cache RxJS Streams for User-Friendly Results by Deborah Kurata](https://www.youtube.com/watch?v=HE-xh_RBIno)
     - excellent talk why RxJS is useful and how to use it
   - [Handling Observables with NgIf and the Async Pipe](https://ultimatecourses.com/blog/angular-ngif-async-pipe)
-  
 - Akita (State Management)
+
   - [Official Documentation](https://datorama.github.io/akita/docs/angular/architecture/) – architecture
 
 - TailwindCSS (Utility-First CSS framework)
+
   - [Official Documentation](https://tailwindcss.com/)
     - the best place to get used to class names (use search! it acts as a cheatsheet).
   - [Adam Wathan (creator) YouTube videos](https://www.youtube.com/c/AdamWathan/videos)
@@ -92,6 +93,5 @@ There are precommit rules set by [husky](https://github.com/typicode/husky). For
 
 - [Ethers.js](https://ethers.io/) (library for interacting with Ethereum Blockchain)
   - [Official Documentation](https://docs.ethers.io/v5/single-page/)
-  
 - [Polygon Network](https://polygon.technology/) (previously Matic)
   - [Developer documentation](https://docs.matic.network/docs/develop/getting-started)

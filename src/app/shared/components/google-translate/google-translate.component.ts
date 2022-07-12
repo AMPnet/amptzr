@@ -1,5 +1,11 @@
-import {ChangeDetectionStrategy, Component, Inject, OnInit, ViewEncapsulation} from '@angular/core'
-import {DOCUMENT} from '@angular/common'
+import {
+  ChangeDetectionStrategy,
+  Component,
+  Inject,
+  OnInit,
+  ViewEncapsulation,
+} from '@angular/core'
+import { DOCUMENT } from '@angular/common'
 
 @Component({
   selector: 'app-google-translate',
@@ -12,8 +18,7 @@ export class GoogleTranslateComponent implements OnInit {
   private readonly translateElementScriptID = 'ga-translate-element'
   private readonly translateScriptID = 'ga-translate-script'
 
-  constructor(@Inject(DOCUMENT) private doc: any) {
-  }
+  constructor(@Inject(DOCUMENT) private doc: any) {}
 
   ngOnInit() {
     const head = this.doc.getElementsByTagName('head')[0]
@@ -30,8 +35,12 @@ export class GoogleTranslateComponent implements OnInit {
 
     this.doc.getElementById(this.translateScriptID)?.remove()
     this.doc.getElementById('goog-gt-tt')?.remove()
-    Array.from(this.doc.getElementsByClassName('goog-te-spinner-pos')).forEach((el: any) => el?.remove())
-    Array.from(this.doc.getElementsByClassName('goog-te-menu-frame')).forEach((el: any) => el?.remove())
+    Array.from(this.doc.getElementsByClassName('goog-te-spinner-pos')).forEach(
+      (el: any) => el?.remove()
+    )
+    Array.from(this.doc.getElementsByClassName('goog-te-menu-frame')).forEach(
+      (el: any) => el?.remove()
+    )
     const s2 = this.doc.createElement('script')
     s2.id = this.translateScriptID
     s2.async = true

@@ -8,9 +8,9 @@ import {
   Input,
   Renderer2,
 } from '@angular/core'
-import {ControlValueAccessor, NG_VALUE_ACCESSOR} from '@angular/forms'
-import {BigNumber} from 'ethers'
-import {ConversionService} from '../services/conversion.service'
+import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms'
+import { BigNumber } from 'ethers'
+import { ConversionService } from '../services/conversion.service'
 
 export const BIGNUMBER_INPUT_DIRECTIVE_VALUE_ACCESSOR: ExistingProvider = {
   provide: NG_VALUE_ACCESSOR,
@@ -28,9 +28,11 @@ export class BigNumberInputDirective implements ControlValueAccessor {
 
   previousValue: string
 
-  constructor(private el: ElementRef,
-              private renderer: Renderer2,
-              private conversion: ConversionService) {
+  constructor(
+    private el: ElementRef,
+    private renderer: Renderer2,
+    private conversion: ConversionService
+  ) {
     this.previousValue = this.el.nativeElement.value
   }
 
@@ -77,8 +79,10 @@ export class BigNumberInputDirective implements ControlValueAccessor {
       .replace(/[^.\d]/g, '') // remove letters
       .replace(/^0+(?=\d)/, '') // remove leading zeros
 
-    clearedValue = clearedValue.split('') // remove extra dots
-      .filter((val, i, str) => val !== '.' || str.indexOf('.') === i).join('')
+    clearedValue = clearedValue
+      .split('') // remove extra dots
+      .filter((val, i, str) => val !== '.' || str.indexOf('.') === i)
+      .join('')
 
     return clearedValue
   }

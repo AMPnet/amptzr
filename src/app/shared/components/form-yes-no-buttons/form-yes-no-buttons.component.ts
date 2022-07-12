@@ -1,5 +1,5 @@
-import {ChangeDetectionStrategy, Component} from '@angular/core'
-import {ControlValueAccessor, NG_VALUE_ACCESSOR} from '@angular/forms'
+import { ChangeDetectionStrategy, Component } from '@angular/core'
+import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms'
 
 @Component({
   selector: 'app-form-yes-no-buttons',
@@ -17,15 +17,12 @@ import {ControlValueAccessor, NG_VALUE_ACCESSOR} from '@angular/forms'
 export class FormYesNoButtonsComponent implements ControlValueAccessor {
   value?: boolean
 
-  onChange = (value: boolean) => {
-  }
-  onTouched = () => {
-  }
+  onChange = (value: boolean) => {}
+  onTouched = () => {}
   touched = false
   disabled = false
 
-  constructor() {
-  }
+  constructor() {}
 
   setValue(value: boolean) {
     if (this.value !== value) {

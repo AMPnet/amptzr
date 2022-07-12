@@ -1,40 +1,47 @@
-@import 'tailwindcss/base';
-@import 'tailwindcss/components';
-@import 'tailwindcss/utilities';
-@import '~quill/dist/quill.core.css';
-@import '~quill/dist/quill.snow.css';
+@import "tailwindcss/base";
+@import "tailwindcss/components";
+@import "tailwindcss/utilities";
+@import "~quill/dist/quill.core.css";
+@import "~quill/dist/quill.snow.css";
 /* You can add global styles to this file, and also import other style files */
 
 //@import '~@angular/material/prebuilt-themes/deeppurple-amber.css';
 
-@import '~@angular/material/theming';
+@import "~@angular/material/theming";
 
-@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;800&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;800&display=swap");
 
 @include mat-core();
 $candy-app-primary: mat-palette($mat-indigo);
 $candy-app-accent: mat-palette($mat-pink, A200, A100, A400);
 
 $candy-app-warn: mat-palette($mat-red);
-$candy-app-theme: mat-light-theme((
-  color: (
-    primary: $candy-app-primary,
-    accent: $candy-app-accent,
-    warn: $candy-app-warn,
+$candy-app-theme: mat-light-theme(
+  (
+    color: (
+      primary: $candy-app-primary,
+      accent: $candy-app-accent,
+      warn: $candy-app-warn,
+    ),
   )
-));
+);
 
 @include angular-material-theme($candy-app-theme);
 
-html, body {
+html,
+body {
   height: 100%;
 }
 
 body {
-  font-family: 'Manrope', sans-serif;
+  font-family: "Manrope", sans-serif;
 }
 
-button, textarea, input, select, a {
+button,
+textarea,
+input,
+select,
+a {
   -webkit-tap-highlight-color: transparent;
 }
 
@@ -51,7 +58,7 @@ button, textarea, input, select, a {
   overflow-x: hidden;
 
   @apply text-base;
-  font-family: 'Manrope', sans-serif;
+  font-family: "Manrope", sans-serif;
 
   h1 {
     @apply pb-4 text-cyan-700 text-xl font-bold;
@@ -79,16 +86,15 @@ button, textarea, input, select, a {
 
 /* Required for material dialogs */
 .mat-rounded-4xl .mat-dialog-container {
-  @apply rounded-4xl
+  @apply rounded-4xl;
 }
 
 .app-button {
   @apply bg-gradient-to-r from-violet-600 to-violet-800
   text-white text-sm font-semibold px-4 py-2 rounded-full
   hover:from-violet-800 hover:to-violet-900
-  disabled:from-gray-300 disabled:to-gray-300
+  disabled:from-gray-300 disabled:to-gray-300;
 }
-
 
 /* The switch - the box around the slider */
 .switch {
@@ -114,8 +120,8 @@ button, textarea, input, select, a {
   right: 0;
   bottom: 0;
   background-color: #ccc;
-  -webkit-transition: .4s;
-  transition: .4s;
+  -webkit-transition: 0.4s;
+  transition: 0.4s;
 }
 
 .slider:before {
@@ -126,16 +132,16 @@ button, textarea, input, select, a {
   left: 4px;
   bottom: 4px;
   background-color: white;
-  -webkit-transition: .4s;
-  transition: .4s;
+  -webkit-transition: 0.4s;
+  transition: 0.4s;
 }
 
 input:checked + .slider {
-  background-color: #2196F3;
+  background-color: #2196f3;
 }
 
 input:focus + .slider {
-  box-shadow: 0 0 1px #2196F3;
+  box-shadow: 0 0 1px #2196f3;
 }
 
 input:checked + .slider:before {

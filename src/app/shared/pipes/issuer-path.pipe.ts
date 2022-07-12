@@ -1,13 +1,12 @@
-import {Pipe, PipeTransform} from '@angular/core'
-import {PreferenceQuery} from '../../preference/state/preference.query'
-import {environment} from '../../../environments/environment'
+import { Pipe, PipeTransform } from '@angular/core'
+import { PreferenceQuery } from '../../preference/state/preference.query'
+import { environment } from '../../../environments/environment'
 
 @Pipe({
   name: 'issuerPath',
 })
 export class IssuerPathPipe implements PipeTransform {
-  constructor(private preferenceQuery: PreferenceQuery) {
-  }
+  constructor(private preferenceQuery: PreferenceQuery) {}
 
   public transform(value: any, opts?: Partial<Opts>): any {
     let path: string

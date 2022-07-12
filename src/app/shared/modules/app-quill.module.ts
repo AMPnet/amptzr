@@ -1,5 +1,5 @@
-import {NgModule} from '@angular/core'
-import {QuillModule} from 'ngx-quill'
+import { NgModule } from '@angular/core'
+import { QuillModule } from 'ngx-quill'
 
 @NgModule({
   imports: [
@@ -25,16 +25,16 @@ import {QuillModule} from 'ngx-quill'
         toolbar: [
           ['bold', 'italic', 'underline', 'strike'],
           ['blockquote', 'code-block'],
-          [{'header': 1}, {'header': 2}],
-          [{'list': 'ordered'}, {'list': 'bullet'}],
-          [{'script': 'sub'}, {'script': 'super'}],
-          [{'indent': '-1'}, {'indent': '+1'}],
-          [{'direction': 'rtl'}],
+          [{ header: 1 }, { header: 2 }],
+          [{ list: 'ordered' }, { list: 'bullet' }],
+          [{ script: 'sub' }, { script: 'super' }],
+          [{ indent: '-1' }, { indent: '+1' }],
+          [{ direction: 'rtl' }],
           // [{'size': ['small', false, 'large', 'huge']}], // disable font size changes
-          [{'header': [1, 2, false]}],
+          [{ header: [1, 2, false] }],
           // [{'color': []}, {'background': []}], // disable color and background changes
           // [{'font': ['']}], // disable font style changes
-          [{'align': []}],
+          [{ align: [] }],
           ['clean'],
           ['link', 'image', 'video'],
         ],
@@ -43,5 +43,4 @@ import {QuillModule} from 'ngx-quill'
   ],
   exports: [QuillModule],
 })
-export class AppQuillModule {
-}
+export class AppQuillModule {}

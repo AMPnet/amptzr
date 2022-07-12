@@ -1,4 +1,4 @@
-import {ChangeDetectionStrategy, Component, Input} from '@angular/core'
+import { ChangeDetectionStrategy, Component, Input } from '@angular/core'
 
 @Component({
   selector: 'app-add-button',
@@ -9,6 +9,5 @@ import {ChangeDetectionStrategy, Component, Input} from '@angular/core'
 export class AddButtonComponent {
   @Input() text = ''
 
-  constructor() {
-  }
+  constructor() {}
 }

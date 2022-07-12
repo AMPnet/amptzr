@@ -1,11 +1,11 @@
-import {Injectable} from '@angular/core'
-import {environment} from '../../../../environments/environment'
-import {BackendHttpClient} from './backend-http-client.service'
-import {DatePipe} from '@angular/common'
-import {Observable} from 'rxjs'
-import {ErrorService} from '../error.service'
-import {map, switchMap} from 'rxjs/operators'
-import {PreferenceQuery} from '../../../preference/state/preference.query'
+import { Injectable } from '@angular/core'
+import { environment } from '../../../../environments/environment'
+import { BackendHttpClient } from './backend-http-client.service'
+import { DatePipe } from '@angular/common'
+import { Observable } from 'rxjs'
+import { ErrorService } from '../error.service'
+import { map, switchMap } from 'rxjs/operators'
+import { PreferenceQuery } from '../../../preference/state/preference.query'
 
 @Injectable({
   providedIn: 'root',
@@ -13,57 +13,72 @@ import {PreferenceQuery} from '../../../preference/state/preference.query'
 export class ReportService {
   path = `${environment.backendURL}/api/report`
 
-  constructor(private http: BackendHttpClient,
-              private errorService: ErrorService,
-              private preferenceQuery: PreferenceQuery,
-              private datePipe: DatePipe) {
-  }
+  constructor(
+    private http: BackendHttpClient,
+    private errorService: ErrorService,
+    private preferenceQuery: PreferenceQuery,
+    private datePipe: DatePipe
+  ) {}
 
   transactionHistory(from?: Date, to?: Date): Observable<TransactionHistory> {
     const params = this.createFromToDateParams(from, to)
     const chainID = this.preferenceQuery.network.chainID
     const issuer = this.preferenceQuery.issuer.address
     return this.http.ensureAuth.pipe(
-      switchMap(() => this.http.get<TransactionHistory>(
-        `${this.path}/tx_history/${chainID}/${issuer}`, params, false, false),
-      ),
+      switchMap(() =>
+        this.http.get<TransactionHistory>(
+          `${this.path}/tx_history/${chainID}/${issuer}`,
+          params,
+          false,
+          false
+        )
+      )
     )
   }
 
   downloadTransactionHistoryReport(from?: Date, to?: Date): Observable<void> {
     const params = this.createFromToDateParams(from, to)
     return this.http.ensureAuth.pipe(
-      switchMap(() => this.http.http.get(
-        `${this.path}/report/${this.preferenceQuery.network.chainID}/${this.preferenceQuery.issuer.address}/user/transactions`,
-        {
-          params: params,
-          headers: this.http.authHttpOptions().headers,
-          responseType: 'arraybuffer',
-        },
-      )),
+      switchMap(() =>
+        this.http.http.get(
+          `${this.path}/report/${this.preferenceQuery.network.chainID}/${this.preferenceQuery.issuer.address}/user/transactions`,
+          {
+            params: params,
+            headers: this.http.authHttpOptions().headers,
+            responseType: 'arraybuffer',
+          }
+        )
+      ),
       this.errorService.handleError(),
-      map(data => {
-        ReportService.downloadFile(data, this.timestampedFileName('UserTransactions', 'pdf', params), 'application/pdf')
-      }),
+      map((data) => {
+        ReportService.downloadFile(
+          data,
+          this.timestampedFileName('UserTransactions', 'pdf', params),
+          'application/pdf'
+        )
+      })
     )
   }
 
   downloadAdminInvestorsReport(): Observable<void> {
     return this.http.ensureAuth.pipe(
-      switchMap(() => this.http.http.get(
-        `${this.path}/admin/${this.preferenceQuery.network.chainID}/${this.preferenceQuery.issuer.address}/report/xlsx`,
-        {
-          headers: this.http.authHttpOptions().headers,
-          responseType: 'arraybuffer',
-        },
-      )),
-      this.errorService.handleError(),
-      map(data => {
-        ReportService.downloadFile(
-          data, this.timestampedFileName('InvestorsReport', 'xlsx'),
-          'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+      switchMap(() =>
+        this.http.http.get(
+          `${this.path}/admin/${this.preferenceQuery.network.chainID}/${this.preferenceQuery.issuer.address}/report/xlsx`,
+          {
+            headers: this.http.authHttpOptions().headers,
+            responseType: 'arraybuffer',
+          }
         )
-      }),
+      ),
+      this.errorService.handleError(),
+      map((data) => {
+        ReportService.downloadFile(
+          data,
+          this.timestampedFileName('InvestorsReport', 'xlsx'),
+          'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+        )
+      })
     )
   }
 
@@ -82,17 +97,31 @@ export class ReportService {
     return params
   }
 
-  private timestampedFileName(prefix: string, extension: string, params?: DateFromToParams): string {
-    return [
-      prefix,
-      this.datePipe.transform(new Date(), 'yMdhhmmss'),
-      `${!!params?.['from'] ? 'from' + params['from'] : ''}`,
-      `${!!params?.['to'] ? 'to' + params['to'] : ''}`,
-    ].filter(text => !!text).join('_') + '.' + extension
+  private timestampedFileName(
+    prefix: string,
+    extension: string,
+    params?: DateFromToParams
+  ): string {
+    return (
+      [
+        prefix,
+        this.datePipe.transform(new Date(), 'yMdhhmmss'),
+        `${!!params?.['from'] ? 'from' + params['from'] : ''}`,
+        `${!!params?.['to'] ? 'to' + params['to'] : ''}`,
+      ]
+        .filter((text) => !!text)
+        .join('_') +
+      '.' +
+      extension
+    )
   }
 
-  private static downloadFile(data: ArrayBuffer, fileName: string, type: string): void {
-    const file = new Blob([data], {type})
+  private static downloadFile(
+    data: ArrayBuffer,
+    fileName: string,
+    type: string
+  ): void {
+    const file = new Blob([data], { type })
     const fileURL = URL.createObjectURL(file)
     const link = document.createElement('a')
     link.href = fileURL
@@ -101,7 +130,7 @@ export class ReportService {
   }
 }
 
-type DateFromToParams = { from?: string, to?: string }
+type DateFromToParams = { from?: string; to?: string }
 
 type eth_address = string
 

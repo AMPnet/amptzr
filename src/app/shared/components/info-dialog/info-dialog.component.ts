@@ -1,7 +1,13 @@
-import {ChangeDetectionStrategy, Component, Inject, OnInit, Optional} from '@angular/core'
-import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog'
-import {BehaviorSubject, Observable, of} from 'rxjs'
-import {catchError, tap} from 'rxjs/operators'
+import {
+  ChangeDetectionStrategy,
+  Component,
+  Inject,
+  OnInit,
+  Optional,
+} from '@angular/core'
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog'
+import { BehaviorSubject, Observable, of } from 'rxjs'
+import { catchError, tap } from 'rxjs/operators'
 
 @Component({
   selector: 'app-info-dialog',
@@ -23,9 +29,10 @@ export class InfoDialogComponent implements OnInit {
   })
   data$ = this.dataSub.asObservable()
 
-  constructor(@Inject(MAT_DIALOG_DATA) @Optional() public data: InfoDialogData<unknown>,
-              @Optional() private dialogRef: MatDialogRef<InfoDialogComponent>) {
-  }
+  constructor(
+    @Inject(MAT_DIALOG_DATA) @Optional() public data: InfoDialogData<unknown>,
+    @Optional() private dialogRef: MatDialogRef<InfoDialogComponent>
+  ) {}
 
   ngOnInit(): void {
     if (!this.data) {
@@ -40,13 +47,15 @@ export class InfoDialogComponent implements OnInit {
 
   confirm(onConfirm$?: Observable<any>) {
     return () => {
-      return onConfirm$ ? onConfirm$.pipe(
-        tap(res => this.close(true, res)),
-        catchError(err => {
-          this.close(false)
-          return err
-        }),
-      ) : of(this.close(true))
+      return onConfirm$
+        ? onConfirm$.pipe(
+            tap((res) => this.close(true, res)),
+            catchError((err) => {
+              this.close(false)
+              return err
+            })
+          )
+        : of(this.close(true))
     }
   }
 
@@ -55,25 +64,30 @@ export class InfoDialogComponent implements OnInit {
   }
 
   private close<T>(confirm: boolean, result?: T) {
-    return this.dialogRef.close({confirmed: confirm, onConfirmResult: result} as InfoDialogResponse<T>)
+    return this.dialogRef.close({
+      confirmed: confirm,
+      onConfirmResult: result,
+    } as InfoDialogResponse<T>)
   }
 }
 
 export interface InfoDialogData<T> {
   icon: DialogIcon | string
-  title: string;
-  message: string;
-  confirm_text: string;
-  cancel_text: string;
-  cancelable: boolean;
+  title: string
+  message: string
+  confirm_text: string
+  cancel_text: string
+  cancelable: boolean
   onConfirm?: Observable<T>
 }
 
 export enum DialogIcon {
-  INFO, SUCCESS, ERROR
+  INFO,
+  SUCCESS,
+  ERROR,
 }
 
 export interface InfoDialogResponse<T> {
-  confirmed: boolean;
+  confirmed: boolean
   onConfirmResult?: T
 }

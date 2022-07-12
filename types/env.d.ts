@@ -2,7 +2,7 @@ declare var process: Process
 
 interface Process {
   // prebuild-time env variables
-  env: PreBuildEnv;
+  env: PreBuildEnv
 }
 
 interface PreBuildEnv {

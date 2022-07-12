@@ -1,14 +1,14 @@
-import {ChangeDetectionStrategy, Component} from '@angular/core'
-import {Observable, of} from 'rxjs'
-import {SessionQuery} from '../../session/state/session.query'
-import {AppLayoutStore} from '../state/app-layout.store'
-import {AppLayoutQuery} from '../state/app-layout.query'
-import {filter, map, tap} from 'rxjs/operators'
-import {TailwindService} from '../../shared/services/tailwind.service'
-import {UserService} from '../../shared/services/user.service'
-import {SignerService} from '../../shared/services/signer.service'
-import {IssuerService} from '../../shared/services/blockchain/issuer/issuer.service'
-import {PreferenceQuery} from '../../preference/state/preference.query'
+import { ChangeDetectionStrategy, Component } from '@angular/core'
+import { Observable, of } from 'rxjs'
+import { SessionQuery } from '../../session/state/session.query'
+import { AppLayoutStore } from '../state/app-layout.store'
+import { AppLayoutQuery } from '../state/app-layout.query'
+import { filter, map, tap } from 'rxjs/operators'
+import { TailwindService } from '../../shared/services/tailwind.service'
+import { UserService } from '../../shared/services/user.service'
+import { SignerService } from '../../shared/services/signer.service'
+import { IssuerService } from '../../shared/services/blockchain/issuer/issuer.service'
+import { PreferenceQuery } from '../../preference/state/preference.query'
 
 @Component({
   selector: 'app-navbar',
@@ -18,7 +18,9 @@ import {PreferenceQuery} from '../../preference/state/preference.query'
 })
 export class NavbarComponent {
   isLoggedIn$ = this.sessionQuery.isLoggedIn$
-  isIssuerAvailable$ = this.preferenceQuery.issuer$.pipe(map(issuer => !!issuer.address))
+  isIssuerAvailable$ = this.preferenceQuery.issuer$.pipe(
+    map((issuer) => !!issuer.address)
+  )
   isDropdownOpen$ = this.appLayoutQuery.isDropdownMenuOpen$
   issuer$ = this.issuerService.issuerWithStatus$
   isMobileScreen$: Observable<boolean>
@@ -26,32 +28,38 @@ export class NavbarComponent {
   isAdmin$ = this.userService.isAdmin$
 
   navbarScreenLinks: NavbarItem[] = [
-    {title: 'Offers', routerLink: '/offers', showItem: of(false)},
-    {title: 'Orders', routerLink: '/orders', showItem: of(false)},
-    {title: 'FAQ', routerLink: '/faq', showItem: of(false)},
-    {title: 'Dashboard', routerLink: '/admin/dashboard', showItem: this.isAdmin$},
+    { title: 'Offers', routerLink: '/offers', showItem: of(false) },
+    { title: 'Orders', routerLink: '/orders', showItem: of(false) },
+    { title: 'FAQ', routerLink: '/faq', showItem: of(false) },
+    {
+      title: 'Dashboard',
+      routerLink: '/admin/dashboard',
+      showItem: this.isAdmin$,
+    },
   ]
 
-  constructor(private sessionQuery: SessionQuery,
-              private preferenceQuery: PreferenceQuery,
-              private issuerService: IssuerService,
-              private appLayoutStore: AppLayoutStore,
-              private appLayoutQuery: AppLayoutQuery,
-              private userService: UserService,
-              private signerService: SignerService,
-              private tailwindService: TailwindService) {
+  constructor(
+    private sessionQuery: SessionQuery,
+    private preferenceQuery: PreferenceQuery,
+    private issuerService: IssuerService,
+    private appLayoutStore: AppLayoutStore,
+    private appLayoutQuery: AppLayoutQuery,
+    private userService: UserService,
+    private signerService: SignerService,
+    private tailwindService: TailwindService
+  ) {
     this.isMobileScreen$ = this.tailwindService.screenResize$.pipe(
-      map(screen => screen === ('sm' || 'md')),
+      map((screen) => screen === ('sm' || 'md'))
     )
     this.dropdownCloser$ = this.isMobileScreen$.pipe(
-      filter(isMobile => !isMobile),
-      tap(() => this.appLayoutStore.closeDropdownMenu()),
+      filter((isMobile) => !isMobile),
+      tap(() => this.appLayoutStore.closeDropdownMenu())
     )
   }
 
   login(): Observable<unknown> {
     return this.signerService.ensureAuth.pipe(
-      tap(() => this.appLayoutStore.closeDropdownMenu()),
+      tap(() => this.appLayoutStore.closeDropdownMenu())
     )
   }
 
@@ -65,7 +73,7 @@ export class NavbarComponent {
 }
 
 interface NavbarItem {
-  title: string,
-  routerLink?: string,
-  showItem: Observable<boolean>,
+  title: string
+  routerLink?: string
+  showItem: Observable<boolean>
 }

@@ -1,15 +1,25 @@
 <div class="w-full h-full flex justify-center mt-8 px-2 pb-8">
   <div class="w-full max-w-6xl">
-    <div #parent class="w-full flex flex-row overflow-x-auto flex-nowrap lg:flex-wrap mb-8">
-      <a #current routerLink="." (click)="selectCategory(category, current, parent)"
-         class="whitespace-nowrap text-base font-semibold text-violet-600 bg-violet-200 rounded-full px-4 py-2"
-         [class.bg-violet-200]="(selectedCategory$ | async) === category"
-         *ngFor="let category of questionCategories">
+    <div
+      #parent
+      class="w-full flex flex-row overflow-x-auto flex-nowrap lg:flex-wrap mb-8"
+    >
+      <a
+        #current
+        routerLink="."
+        (click)="selectCategory(category, current, parent)"
+        class="whitespace-nowrap text-base font-semibold text-violet-600 bg-violet-200 rounded-full px-4 py-2"
+        [class.bg-violet-200]="(selectedCategory$ | async) === category"
+        *ngFor="let category of questionCategories"
+      >
         {{ category.categoryName }}
       </a>
     </div>
 
-    <app-faq-question *ngFor="let item of (selectedCategory$ | async)!.items" [question]="item.question">
+    <app-faq-question
+      *ngFor="let item of (selectedCategory$ | async)!.items"
+      [question]="item.question"
+    >
       <div [innerHtml]="item.answer"></div>
     </app-faq-question>
   </div>

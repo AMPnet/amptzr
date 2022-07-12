@@ -2,7 +2,7 @@ name: Mirror master
 on:
   push:
     branches:
-      - 'master'
+      - "master"
 jobs:
   mirror_job:
     runs-on: ubuntu-latest
@@ -13,5 +13,5 @@ jobs:
         uses: google/mirror-branch-action@v1.0
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
-          source: 'master'
-          dest: 'master-matic'
+          source: "master"
+          dest: "master-matic"

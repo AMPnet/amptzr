@@ -1,6 +1,11 @@
-import {Injectable} from '@angular/core'
-import {fromEvent} from 'rxjs'
-import {debounceTime, distinctUntilChanged, map, startWith} from 'rxjs/operators'
+import { Injectable } from '@angular/core'
+import { fromEvent } from 'rxjs'
+import {
+  debounceTime,
+  distinctUntilChanged,
+  map,
+  startWith,
+} from 'rxjs/operators'
 import resolveConfig from 'tailwindcss/resolveConfig'
 // @ts-ignore
 import tailwindConfig from '../../../../tailwind.config.js'
@@ -9,19 +14,20 @@ import tailwindConfig from '../../../../tailwind.config.js'
   providedIn: 'root',
 })
 export class TailwindService {
-  readonly screens: { name: string, width: number }[] = []
+  readonly screens: { name: string; width: number }[] = []
 
   screenResize$ = fromEvent(window, 'resize').pipe(
     startWith(this.getScreen()),
     debounceTime(300),
     map(() => this.getScreen()),
-    distinctUntilChanged(),
+    distinctUntilChanged()
   )
 
   constructor() {
-    const screens: { [breakpoint: string]: string } = (resolveConfig(tailwindConfig).theme.screens as any) || {}
+    const screens: { [breakpoint: string]: string } =
+      (resolveConfig(tailwindConfig).theme.screens as any) || {}
     this.screens = Object.keys(screens)
-      .map(key => ({
+      .map((key) => ({
         name: key,
         width: Number(screens[key].replace('px', '')),
       }))

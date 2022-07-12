@@ -1,4 +1,4 @@
-import {environment as baseEnvironment} from './env.base'
+import { environment as baseEnvironment } from './env.base'
 
 export const environment = {
   ...baseEnvironment,

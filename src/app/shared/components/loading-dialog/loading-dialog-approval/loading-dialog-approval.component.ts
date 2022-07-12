@@ -1,7 +1,13 @@
-import {ChangeDetectionStrategy, Component, Inject, OnInit, Optional} from '@angular/core'
-import {BehaviorSubject} from 'rxjs'
-import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog'
-import {LoadingDialogData} from '../loading-dialog.component'
+import {
+  ChangeDetectionStrategy,
+  Component,
+  Inject,
+  OnInit,
+  Optional,
+} from '@angular/core'
+import { BehaviorSubject } from 'rxjs'
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog'
+import { LoadingDialogData } from '../loading-dialog.component'
 
 @Component({
   selector: 'app-loading-dialog-approval',
@@ -16,9 +22,10 @@ export class LoadingDialogApprovalComponent implements OnInit {
   })
   data$ = this.dataSub.asObservable()
 
-  constructor(@Inject(MAT_DIALOG_DATA) @Optional() public data: LoadingDialogData,
-              @Optional() private dialogRef: MatDialogRef<LoadingDialogApprovalData>) {
-  }
+  constructor(
+    @Inject(MAT_DIALOG_DATA) @Optional() public data: LoadingDialogData,
+    @Optional() private dialogRef: MatDialogRef<LoadingDialogApprovalData>
+  ) {}
 
   ngOnInit(): void {
     if (!this.data) {
@@ -33,6 +40,6 @@ export class LoadingDialogApprovalComponent implements OnInit {
 }
 
 export interface LoadingDialogApprovalData {
-  title: string;
-  message: string;
+  title: string
+  message: string
 }

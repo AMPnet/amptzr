@@ -1,12 +1,20 @@
-import {ChangeDetectionStrategy, Component, Input, OnInit} from "@angular/core"
-import {CampaignService, CampaignWithInfo} from '../../services/blockchain/campaign/campaign.service'
-import {CampaignFlavor} from '../../services/blockchain/flavors'
-import {map} from 'rxjs/operators'
-import {Observable} from 'rxjs'
-import {withStatus, WithStatus} from '../../utils/observables'
-import {constants} from 'ethers'
-import {StablecoinBigNumber} from '../../services/blockchain/stablecoin.service'
-import {ConversionService} from '../../services/conversion.service'
+import {
+  ChangeDetectionStrategy,
+  Component,
+  Input,
+  OnInit,
+} from '@angular/core'
+import {
+  CampaignService,
+  CampaignWithInfo,
+} from '../../services/blockchain/campaign/campaign.service'
+import { CampaignFlavor } from '../../services/blockchain/flavors'
+import { map } from 'rxjs/operators'
+import { Observable } from 'rxjs'
+import { withStatus, WithStatus } from '../../utils/observables'
+import { constants } from 'ethers'
+import { StablecoinBigNumber } from '../../services/blockchain/stablecoin.service'
+import { ConversionService } from '../../services/conversion.service'
 
 @Component({
   selector: 'app-funding-progress',
@@ -20,9 +28,10 @@ export class FundingProgressComponent implements OnInit {
 
   bigNumberConstants = constants
 
-  constructor(private campaignService: CampaignService,
-              private conversion: ConversionService) {
-  }
+  constructor(
+    private campaignService: CampaignService,
+    private conversion: ConversionService
+  ) {}
 
   ngOnInit() {
     // 1/ campaign opened
@@ -38,20 +47,27 @@ export class FundingProgressComponent implements OnInit {
     // this.campaign.finalized = true
 
     this.progressData$ = withStatus(
-      this.campaignService.stats(
-        this.campaign.contractAddress, this.campaign.flavor as CampaignFlavor,
-      ).pipe(
-        map(stats => this.calculateProgressData(
-          stats.valueInvested, stats.softCap, stats.valueTotal,
-        )),
-      ),
+      this.campaignService
+        .stats(
+          this.campaign.contractAddress,
+          this.campaign.flavor as CampaignFlavor
+        )
+        .pipe(
+          map((stats) =>
+            this.calculateProgressData(
+              stats.valueInvested,
+              stats.softCap,
+              stats.valueTotal
+            )
+          )
+        )
     )
   }
 
   private calculateProgressData(
     valueInvested: StablecoinBigNumber,
     softCap: StablecoinBigNumber,
-    valueTotal: StablecoinBigNumber,
+    valueTotal: StablecoinBigNumber
   ) {
     // Cases with softCap == 0
     // 1.1/ before tokens are transferred to the campaign
@@ -163,15 +179,18 @@ export class FundingProgressComponent implements OnInit {
     let isRaisedOverSoftCap = false
     let isFull = false
 
-    if (valueTotal.gt(constants.Zero) && valueTotal.gte(softCap)) isStarted = true
+    if (valueTotal.gt(constants.Zero) && valueTotal.gte(softCap))
+      isStarted = true
 
     if (!valueTotal.eq(constants.Zero)) {
-      raisedPercentage = this.conversion.parseStablecoinToNumber(valueInvested) /
+      raisedPercentage =
+        this.conversion.parseStablecoinToNumber(valueInvested) /
         this.conversion.parseStablecoinToNumber(target)
 
       progressPercentage = Math.min(raisedPercentage, 1)
 
-      if (softCap.gt(constants.Zero) && valueInvested.gt(softCap)) isRaisedOverSoftCap = true
+      if (softCap.gt(constants.Zero) && valueInvested.gt(softCap))
+        isRaisedOverSoftCap = true
       if (valueInvested.eq(valueTotal)) isFull = true
     }
 
@@ -190,13 +209,13 @@ export class FundingProgressComponent implements OnInit {
 }
 
 interface ProgressData {
-  raised: StablecoinBigNumber,
-  softCap: StablecoinBigNumber,
-  total: StablecoinBigNumber,
-  target: StablecoinBigNumber,
-  raisedPercentage: number,
-  progressPercentage: number,
-  isRaisedOverSoftCap: boolean,
-  isStarted: boolean,
-  isFull: boolean,
+  raised: StablecoinBigNumber
+  softCap: StablecoinBigNumber
+  total: StablecoinBigNumber
+  target: StablecoinBigNumber
+  raisedPercentage: number
+  progressPercentage: number
+  isRaisedOverSoftCap: boolean
+  isStarted: boolean
+  isFull: boolean
 }

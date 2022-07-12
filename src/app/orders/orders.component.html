@@ -1,16 +1,23 @@
 <div class="w-full h-full flex justify-center mt-8 px-2 pb-8">
   <div class="bg-red w-full max-w-6xl">
-    <ng-container *ngIf="(ordersWithStatus$ | async) as ordersRes">
+    <ng-container *ngIf="ordersWithStatus$ | async as ordersRes">
       <ng-container *ngIf="ordersRes.value as orders">
         <!-- Overview of all investments and total unclaimed earnings -->
-        <section class="w-full rounded-3xl flex-col justify-between bg-white p-4
-        lg:p-8 flex lg:flex-row lg:items-end">
+        <section
+          class="w-full rounded-3xl flex-col justify-between bg-white p-4 lg:p-8 flex lg:flex-row lg:items-end"
+        >
           <div class="flex flex-row justify-between lg:items-center">
             <div class="flex flex-col justify-start">
-              <span class="text-sm text-black font-semibold">Total investment</span>
+              <span class="text-sm text-black font-semibold"
+                >Total investment</span
+              >
               <span class="text-3xl lg:text-4xl mt-3">
-                <ng-container *ngIf="(totalInvested$ | async) as totalInvested">
-                  {{ totalInvested.value | formatUnit:'stablecoin' | currencyDefault }}
+                <ng-container *ngIf="totalInvested$ | async as totalInvested">
+                  {{
+                    totalInvested.value
+                      | formatUnit: "stablecoin"
+                      | currencyDefault
+                  }}
                 </ng-container>
               </span>
             </div>
@@ -20,7 +27,9 @@
             <!--              <span class="text-3xl lg:text-4xl mt-3">{{ 2 | currencyDefault }}</span>-->
             <!--            </div>-->
           </div>
-          <div class="h-full lg:w-80 flex flex-col justify-end items-end lg:mt-0">
+          <div
+            class="h-full lg:w-80 flex flex-col justify-end items-end lg:mt-0"
+          >
             <!-- TODO: add when able to fetch from blockchain -->
             <!--            <button app-action-button-->
             <!--                    *ngIf="(isClaimable$ | async) === true"-->
@@ -31,29 +40,50 @@
         </section>
 
         <!-- Pending auto invest -->
-        <ng-container *ngIf="(pending$ | async) as pendingRes">
+        <ng-container *ngIf="pending$ | async as pendingRes">
           <ng-container *ngIf="pendingRes.value as item">
-            <div class="flex flex-col p-6 bg-white rounded-3xl mt-6 border-amber-600">
+            <div
+              class="flex flex-col p-6 bg-white rounded-3xl mt-6 border-amber-600"
+            >
               <div class="text-xs text-gray-400 font-medium">
                 <div class="flex gap-2 items-center">
-                  <svg class="w-5 h-5" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <svg
+                    class="w-5 h-5"
+                    viewBox="0 0 20 20"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
                     <path
                       d="M10 7.5v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3l-6.928-12c-.77-1.333-2.694-1.333-3.464 0l-6.928 12c-.77 1.333.192 3 1.732 3Z"
-                      stroke="#6B7280" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                      stroke="#6B7280"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    />
                   </svg>
 
-                  <span class="font-medium">
-                    Transaction pending
-                  </span>
+                  <span class="font-medium"> Transaction pending </span>
                 </div>
               </div>
 
-              <div *ngIf="!item.enoughBalance" class="text-xs text-gray-400 font-medium mt-2">
+              <div
+                *ngIf="!item.enoughBalance"
+                class="text-xs text-gray-400 font-medium mt-2"
+              >
                 <div class="flex gap-2 items-center">
-                  <svg class="w-5 h-5 text-amber-600"
-                       viewBox="0 0 25 25" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M9.75 12.5 5.25 8m0 0 4.5-4.5M5.25 8h13.5m-4.5 5.25 4.5 4.5m0 0-4.5 4.5m4.5-4.5H5.25"
-                          stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  <svg
+                    class="w-5 h-5 text-amber-600"
+                    viewBox="0 0 25 25"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M9.75 12.5 5.25 8m0 0 4.5-4.5M5.25 8h13.5m-4.5 5.25 4.5 4.5m0 0-4.5 4.5m4.5-4.5H5.25"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    />
                   </svg>
 
                   <span class="text-amber-600 font-semibold">
@@ -66,13 +96,24 @@
                 </div>
               </div>
 
-              <div *ngIf="!item.enoughAllowance" class="text-xs text-gray-400 font-medium mt-2">
+              <div
+                *ngIf="!item.enoughAllowance"
+                class="text-xs text-gray-400 font-medium mt-2"
+              >
                 <div class="flex gap-2 items-center">
-                  <svg class="w-5 h-5 text-amber-600"
-                       viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <svg
+                    class="w-5 h-5 text-amber-600"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
                     <path
                       d="M11 5H6a2 2 0 0 0-2 2v11a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2v-5m-1.414-9.414a2 2 0 1 1 2.828 2.828L11.828 15H9v-2.828l8.586-8.586Z"
-                      stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    />
                   </svg>
 
                   <span class="text-amber-600 font-semibold">
@@ -83,11 +124,12 @@
                     Allow spending your {{ stablecoin.config.symbol }}
                   </span>
 
-                  <button app-action-button
-                          class="bg-cyan-600 text-white px-4 py-2 font-semibold rounded-full disabled:bg-gray-400"
-                          [onClick]="approveFunds(item.campaign, item.tokenAmount)"
-                          text="Approve">
-                  </button>
+                  <button
+                    app-action-button
+                    class="bg-cyan-600 text-white px-4 py-2 font-semibold rounded-full disabled:bg-gray-400"
+                    [onClick]="approveFunds(item.campaign, item.tokenAmount)"
+                    text="Approve"
+                  ></button>
                 </div>
               </div>
 
@@ -96,9 +138,16 @@
               <div>
                 <div class="flex flex-col gap-6 sm:flex-row items-start">
                   <div class="flex justify-center">
-                    <a routerLink="{{ '/offers/' + item.campaign.contractAddress | issuerPath }}">
-                      <img class="w-40 h-40 object-contain bg-white"
-                           src="{{ item.asset.infoData.logo | toUrlIPFS }}" alt="Asset logo">
+                    <a
+                      routerLink="{{
+                        '/offers/' + item.campaign.contractAddress | issuerPath
+                      }}"
+                    >
+                      <img
+                        class="w-40 h-40 object-contain bg-white"
+                        src="{{ item.asset.infoData.logo | toUrlIPFS }}"
+                        alt="Asset logo"
+                      />
                     </a>
                   </div>
 
@@ -109,40 +158,76 @@
                     </h2>
 
                     <small class="text-sm mt-2 text-cyan-500">
-                      <a routerLink="{{ '/offers/' + item.campaign.contractAddress | issuerPath }}">
+                      <a
+                        routerLink="{{
+                          '/offers/' + item.campaign.contractAddress
+                            | issuerPath
+                        }}"
+                      >
                         {{ item.campaign.infoData.name }}
                       </a>
                     </small>
 
                     <div class="flex items-baseline gap-1 mt-2">
-                      <span class="text-4xl"
-                            [ngClass]="item.campaign.finalized ? 'text-black' : 'text-gray-400'">
-                        {{ item.tokenAmount | formatUnit:'token' | currencyDefault:'token':'real':' ' }}
+                      <span
+                        class="text-4xl"
+                        [ngClass]="
+                          item.campaign.finalized
+                            ? 'text-black'
+                            : 'text-gray-400'
+                        "
+                      >
+                        {{
+                          item.tokenAmount
+                            | formatUnit: "token"
+                            | currencyDefault: "token":"real":" "
+                        }}
                       </span>
-                      <span class="font-semibold"
-                            [ngClass]="item.campaign.finalized ? 'text-black' : 'text-gray-400'">
+                      <span
+                        class="font-semibold"
+                        [ngClass]="
+                          item.campaign.finalized
+                            ? 'text-black'
+                            : 'text-gray-400'
+                        "
+                      >
                         {{ item.asset.symbol }}
                       </span>
                       <div class="flex gap-1">
-                        <app-explorer-link [value]="item.asset.contractAddress" type="token">
+                        <app-explorer-link
+                          [value]="item.asset.contractAddress"
+                          type="token"
+                        >
                         </app-explorer-link>
-                        <app-add-to-metamask [value]="item.asset.contractAddress">
+                        <app-add-to-metamask
+                          [value]="item.asset.contractAddress"
+                        >
                         </app-add-to-metamask>
                       </div>
                     </div>
 
                     <div class="text-sm text-gray-400 mt-1">
                       <span class="font-bold">
-                        {{ item.tokenValue | formatUnit:'stablecoin' | currencyDefault:'stablecoin':'implicit' }}
+                        {{
+                          item.tokenValue
+                            | formatUnit: "stablecoin"
+                            | currencyDefault: "stablecoin":"implicit"
+                        }}
                       </span>
                       valuation with token price of
                       <span class="font-bold">
-                        {{ item.campaign.pricePerToken | formatUnit:'tokenPrice' | currencyDefault:'tokenPrice':'implicit' }}
+                        {{
+                          item.campaign.pricePerToken
+                            | formatUnit: "tokenPrice"
+                            | currencyDefault: "tokenPrice":"implicit"
+                        }}
                       </span>
                     </div>
 
                     <div class="mt-2 max-w-xs">
-                      <app-funding-progress [campaign]="item.campaign"></app-funding-progress>
+                      <app-funding-progress
+                        [campaign]="item.campaign"
+                      ></app-funding-progress>
                     </div>
 
                     <div class="flex justify-end mt-2">
@@ -165,20 +250,31 @@
           </ng-container>
 
           <ng-container *ngIf="pendingRes.loading">
-            <div class="w-full h-80 mt-6 bg-gray-200 animate-pulse rounded-4xl">
-            </div>
+            <div
+              class="w-full h-80 mt-6 bg-gray-200 animate-pulse rounded-4xl"
+            ></div>
           </ng-container>
         </ng-container>
 
         <!-- Orders investments -->
         <section>
-          <div *ngFor="let order of orders" class="flex flex-col p-6 bg-white rounded-3xl mt-6">
+          <div
+            *ngFor="let order of orders"
+            class="flex flex-col p-6 bg-white rounded-3xl mt-6"
+          >
             <div>
               <div class="flex flex-col gap-6 sm:flex-row items-start">
                 <div class="flex justify-center">
-                  <a routerLink="{{ '/offers/' + order.campaign.contractAddress | issuerPath }}">
-                    <img class="w-40 h-40 object-contain bg-white"
-                         src="{{ order.asset.infoData.logo | toUrlIPFS }}" alt="Asset logo">
+                  <a
+                    routerLink="{{
+                      '/offers/' + order.campaign.contractAddress | issuerPath
+                    }}"
+                  >
+                    <img
+                      class="w-40 h-40 object-contain bg-white"
+                      src="{{ order.asset.infoData.logo | toUrlIPFS }}"
+                      alt="Asset logo"
+                    />
                   </a>
                 </div>
 
@@ -189,56 +285,102 @@
                   </h2>
 
                   <small class="text-sm mt-2 text-cyan-500">
-                    <a routerLink="{{ '/offers/' + order.campaign.contractAddress | issuerPath }}">
+                    <a
+                      routerLink="{{
+                        '/offers/' + order.campaign.contractAddress | issuerPath
+                      }}"
+                    >
                       {{ order.campaign.infoData.name }}
                     </a>
                   </small>
 
                   <div class="flex items-baseline gap-1 mt-2">
-                    <span class="text-4xl"
-                          [ngClass]="order.campaign.finalized ? 'text-black' : 'text-gray-400'">
-                      {{ order.tokenAmount | formatUnit:'token' | currencyDefault:'token':'real':' ' }}
+                    <span
+                      class="text-4xl"
+                      [ngClass]="
+                        order.campaign.finalized
+                          ? 'text-black'
+                          : 'text-gray-400'
+                      "
+                    >
+                      {{
+                        order.tokenAmount
+                          | formatUnit: "token"
+                          | currencyDefault: "token":"real":" "
+                      }}
                     </span>
-                    <span class="font-semibold"
-                          [ngClass]="order.campaign.finalized ? 'text-black' : 'text-gray-400'">
+                    <span
+                      class="font-semibold"
+                      [ngClass]="
+                        order.campaign.finalized
+                          ? 'text-black'
+                          : 'text-gray-400'
+                      "
+                    >
                       {{ order.asset.symbol }}
                     </span>
                     <div class="flex gap-1">
-                      <app-explorer-link [value]="order.asset.contractAddress" type="token">
+                      <app-explorer-link
+                        [value]="order.asset.contractAddress"
+                        type="token"
+                      >
                       </app-explorer-link>
-                      <app-add-to-metamask [value]="order.asset.contractAddress">
+                      <app-add-to-metamask
+                        [value]="order.asset.contractAddress"
+                      >
                       </app-add-to-metamask>
                     </div>
                   </div>
 
-                  <div class="text-sm mt-1"
-                       [ngClass]="order.campaign.finalized ? 'text-black' : 'text-gray-400'">
+                  <div
+                    class="text-sm mt-1"
+                    [ngClass]="
+                      order.campaign.finalized ? 'text-black' : 'text-gray-400'
+                    "
+                  >
                     <span class="font-bold">
-                      {{ order.tokenValue | formatUnit:'stablecoin' | currencyDefault:'stablecoin':'implicit' }}
+                      {{
+                        order.tokenValue
+                          | formatUnit: "stablecoin"
+                          | currencyDefault: "stablecoin":"implicit"
+                      }}
                     </span>
                     valuation with token price of
                     <span class="font-bold">
-                      {{ order.campaign.pricePerToken | formatUnit:'tokenPrice' | currencyDefault:'tokenPrice':'implicit' }}
+                      {{
+                        order.campaign.pricePerToken
+                          | formatUnit: "tokenPrice"
+                          | currencyDefault: "tokenPrice":"implicit"
+                      }}
                     </span>
                   </div>
 
                   <div class="mt-2 max-w-xs">
-                    <app-funding-progress [campaign]="order.campaign"></app-funding-progress>
+                    <app-funding-progress
+                      [campaign]="order.campaign"
+                    ></app-funding-progress>
                   </div>
 
                   <div class="flex justify-end mt-2">
-                    <button *ngIf="!order.campaign.finalized" app-action-button
-                            class="bg-white text-black px-10 py-2 font-semibold rounded-full
-                                   disabled:bg-gray-200"
-                            [onClick]="cancel(order.campaign.contractAddress, order.campaign.flavor).bind(this)"
-                            text="Cancel Investment">
-                    </button>
+                    <button
+                      *ngIf="!order.campaign.finalized"
+                      app-action-button
+                      class="bg-white text-black px-10 py-2 font-semibold rounded-full disabled:bg-gray-200"
+                      [onClick]="
+                        cancel(
+                          order.campaign.contractAddress,
+                          order.campaign.flavor
+                        ).bind(this)
+                      "
+                      text="Cancel Investment"
+                    ></button>
 
-                    <button *ngIf="order.campaign.finalized" app-action-button
-                            class="bg-gray-200 text-black px-10 py-2 font-semibold rounded-full
-                                   disabled:bg-gray-200"
-                            text="Investment Finalized">
-                    </button>
+                    <button
+                      *ngIf="order.campaign.finalized"
+                      app-action-button
+                      class="bg-gray-200 text-black px-10 py-2 font-semibold rounded-full disabled:bg-gray-200"
+                      text="Investment Finalized"
+                    ></button>
                   </div>
                 </div>
               </div>

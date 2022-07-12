@@ -1,22 +1,25 @@
 <div class="max-w-md">
   <p class="mt-2">
-    In order to keep in touch if there is some important information to share with you, we need your
-    email address.
+    In order to keep in touch if there is some important information to share
+    with you, we need your email address.
   </p>
 
   <form [formGroup]="updateForm">
     <label class="block mt-4">
       <span>Email address</span>
-      <input type="email" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm
-    focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
-             formControlName="email">
+      <input
+        type="email"
+        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+        formControlName="email"
+      />
     </label>
 
-    <button app-action-button
-            class="bg-indigo-800 text-white mt-2 px-4 py-2 rounded-full disabled:bg-gray-400"
-            [onClick]="submit.bind(this)"
-            [disabled]="!updateForm.valid"
-            text="Submit">
-    </button>
+    <button
+      app-action-button
+      class="bg-indigo-800 text-white mt-2 px-4 py-2 rounded-full disabled:bg-gray-400"
+      [onClick]="submit.bind(this)"
+      [disabled]="!updateForm.valid"
+      text="Submit"
+    ></button>
   </form>
 </div>
