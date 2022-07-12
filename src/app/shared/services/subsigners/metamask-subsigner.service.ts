@@ -75,14 +75,12 @@ export class MetamaskSubsignerService implements Subsigner<MetamaskLoginOpts> {
 
   switchEthereumChain(opts: MetamaskLoginOpts = {}): Observable<unknown> {
     return from(
-      this.subprovider
-        .getSigner()
-        .provider.send('wallet_switchEthereumChain', [
-          {
-            chainId:
-              MetamaskNetworks[this.preferenceStore.getValue().chainID].chainId,
-          },
-        ])
+      this.subprovider.getSigner().provider.send('wallet_switchEthereumChain', [
+        {
+          chainId:
+            MetamaskNetworks[this.preferenceStore.getValue().chainID].chainId,
+        },
+      ])
     )
       .pipe(
         catchError((err) => {

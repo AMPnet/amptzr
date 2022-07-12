@@ -12,3 +12,4 @@ out-tsc
 tmp
 artifacts
 types/ethers-contracts
+tokenizer-prototype
