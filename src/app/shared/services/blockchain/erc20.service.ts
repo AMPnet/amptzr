@@ -68,6 +68,19 @@ export class Erc20Service {
     )
   }
 
+  nativeTokenBalance$(): Observable<BigNumber | undefined> {
+    return combineLatest([
+      this.sessionQuery.provider$,
+      this.preferenceQuery.address$,
+    ]).pipe(
+      switchMap(([provider, address]) => {
+        if (!address) return of(constants.Zero)
+        return provider.getBalance(address)
+      }),
+      shareReplay({ bufferSize: 1, refCount: true })
+    )
+  }
+
   getAllowance$(token: string, spender: string): Observable<BigNumber> {
     return combineLatest([
       this.sessionQuery.provider$.pipe(

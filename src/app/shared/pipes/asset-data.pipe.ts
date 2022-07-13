@@ -24,7 +24,14 @@ export class AssetDataPipe implements PipeTransform {
 
   transform(value: any, opt?: 'tokenOnly'): Observable<AssetData> {
     return combineLatest([
-      this.erc20Service.getData(value),
+      value
+        ? this.erc20Service.getData(value)
+        : of({
+            address: '0x0',
+            name: 'Native Coin',
+            decimals: 18,
+            symbol: 'Native',
+          }),
       opt === 'tokenOnly'
         ? of(undefined)
         : this.assetService

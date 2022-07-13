@@ -57,9 +57,8 @@
               <div class="flex flex-col gap-2 mt-5 mb-8 text-sm">
                 <ng-container
                   *ngIf="
-                    true ||
-                    (state.requestSend.arbitrary_data &&
-                      state.requestSend.arbitrary_data.note) as noteText
+                    state.requestSend.arbitrary_data &&
+                    state.requestSend.arbitrary_data.note as noteText
                   "
                 >
                   <div class="flex items-center justify-center">
@@ -114,7 +113,7 @@
 
                 <button
                   app-action-button
-                  class="w-full app-button"
+                  class="w-full app-button uppercase"
                   [hidden]="(isUserLoggedIn$ | async) === true"
                   [onClick]="login.bind(this)"
                   text="Log in"
@@ -122,7 +121,7 @@
 
                 <button
                   app-action-button
-                  class="w-full app-button"
+                  class="w-full app-button uppercase"
                   [hidden]="(shouldTransfer$ | async) !== true"
                   [disabled]="transferForm.invalid"
                   [onClick]="transfer(state).bind(this)"

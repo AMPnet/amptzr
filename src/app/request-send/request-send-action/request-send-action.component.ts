@@ -25,7 +25,11 @@ import {
   AssetService,
   CommonAssetWithInfo,
 } from '../../shared/services/blockchain/asset/asset.service'
-import { RequestSend, RequestSendService } from '../request-send.service'
+import {
+  RequestSend,
+  RequestSendService,
+  AssetType,
+} from '../request-send.service'
 import { SessionQuery } from '../../session/state/session.query'
 import { PreferenceQuery } from '../../preference/state/preference.query'
 import { SignerService } from '../../shared/services/signer.service'
@@ -37,7 +41,6 @@ import { ConversionService } from '../../shared/services/conversion.service'
 import { DialogService } from '../../shared/services/dialog.service'
 import { GasService } from '../../shared/services/blockchain/gas.service'
 import { ErrorService } from '../../shared/services/error.service'
-import { RouterService } from '../../shared/services/router.service'
 import { ActivatedRoute } from '@angular/router'
 import {
   catchError,
@@ -52,6 +55,7 @@ import {
 import { ERC20__factory } from '../../../../types/ethers-contracts'
 import { Network } from '../../shared/networks'
 import { IssuerService } from '../../shared/services/blockchain/issuer/issuer.service'
+import { PreferenceStore } from '../../preference/state/preference.store'
 
 @Component({
   selector: 'app-request-send-action',
@@ -80,6 +84,7 @@ export class RequestSendActionComponent {
     private requestSendService: RequestSendService,
     private sessionQuery: SessionQuery,
     private preferenceQuery: PreferenceQuery,
+    private preferenceStore: PreferenceStore,
     private signerService: SignerService,
     private erc20Service: Erc20Service,
     private conversion: ConversionService,
@@ -102,14 +107,25 @@ export class RequestSendActionComponent {
         )
       )
     }
+    const nativeTokenBalance$ = this.erc20Service.nativeTokenBalance$()
 
     this.state$ = this.refreshRequestSend.asObservable().pipe(
       switchMap(() => requestSendService.getRequest(requestSendID)),
+      tap((req) => this.preferenceStore.update({ chainID: req.chain_id })),
       switchMap((requestSend) =>
         combineLatest([
           of(requestSend),
-          this.erc20Service.getData(requestSend.token_address),
-          tokenBalance$(requestSend.token_address),
+          requestSend.asset_type == AssetType.Native
+            ? of({
+                address: '0x0',
+                name: this.preferenceQuery.network.nativeCurrency.name,
+                symbol: this.preferenceQuery.network.nativeCurrency.symbol,
+                decimals: 18,
+              })
+            : this.erc20Service.getData(requestSend.token_address),
+          requestSend.asset_type == AssetType.Native
+            ? nativeTokenBalance$
+            : tokenBalance$(requestSend.token_address),
           this.preferenceQuery.network$,
           this.assetService
             .getAssetWithInfo(requestSend.token_address, true)
@@ -162,31 +178,49 @@ export class RequestSendActionComponent {
   transfer(state: RequestSendState) {
     return () => {
       return this.signerService.ensureAuth.pipe(
-        map((signer) =>
-          ERC20__factory.connect(state.tokenData.address, signer)
-        ),
-        switchMap((contract) =>
-          this.dialogService.waitingApproval(
-            combineLatest([of(contract), this.gasService.overrides]).pipe(
-              concatMap(([contract, overrides]) => {
-                const tokenAmount = this.conversion.toToken(
-                  state.requestSend.amount,
-                  state.tokenData.decimals
+        switchMap((signer) =>
+          state.requestSend.asset_type === AssetType.Native
+            ? this.dialogService.waitingApproval(
+                this.gasService
+                  .withOverrides((overrides) =>
+                    signer.populateTransaction({
+                      to: state.requestSend.recipient_address,
+                      data: state.requestSend.send_tx.data,
+                      value: state.requestSend.amount,
+                      ...overrides,
+                    })
+                  )
+                  .pipe(
+                    switchMap((tx) => this.signerService.sendTransaction(tx))
+                  )
+              )
+            : of(ERC20__factory.connect(state.tokenData.address, signer)).pipe(
+                switchMap((contract) =>
+                  this.dialogService.waitingApproval(
+                    combineLatest([
+                      of(contract),
+                      this.gasService.overrides,
+                    ]).pipe(
+                      concatMap(([contract, overrides]) => {
+                        const tokenAmount = this.conversion.toToken(
+                          state.requestSend.amount,
+                          state.tokenData.decimals
+                        )
+                        return contract.populateTransaction.transfer(
+                          state.requestSend.recipient_address,
+                          tokenAmount.toString(),
+                          overrides
+                        )
+                      }),
+                      map((tx) => {
+                        tx.data = state.requestSend.send_tx.data
+                        return tx
+                      }),
+                      switchMap((tx) => this.signerService.sendTransaction(tx))
+                    )
+                  )
                 )
-
-                return contract.populateTransaction.transfer(
-                  state.requestSend.recipient_address,
-                  tokenAmount.toString(),
-                  overrides
-                )
-              }),
-              map((tx) => {
-                tx.data = state.requestSend.send_tx.data
-                return tx
-              }),
-              switchMap((tx) => this.signerService.sendTransaction(tx))
-            )
-          )
+              )
         ),
         switchMap((tx) =>
           this.dialogService.waitingTransaction(

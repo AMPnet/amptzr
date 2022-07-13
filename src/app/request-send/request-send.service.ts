@@ -50,6 +50,7 @@ export interface RequestSend {
   chain_id: number
   token_address: string
   amount: string
+  asset_type: AssetType
   sender_address?: string
   recipient_address: string
   arbitrary_data?: ArbitraryData
@@ -79,4 +80,9 @@ export enum SendRequestStatus {
   Pending = 'PENDING',
   Success = 'SUCCESS',
   Failed = 'FAILED',
+}
+
+export enum AssetType {
+  Native = 'NATIVE',
+  Token = 'TOKEN',
 }

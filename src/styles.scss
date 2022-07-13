@@ -90,7 +90,7 @@ a {
 }
 
 .app-button {
-  @apply bg-gradient-to-r from-violet-600 to-violet-800
+  @apply bg-gradient-to-r from-violet-700 to-violet-500
   text-white text-sm font-semibold px-4 py-2 rounded-full
   hover:from-violet-800 hover:to-violet-900
   disabled:from-gray-300 disabled:to-gray-300;
