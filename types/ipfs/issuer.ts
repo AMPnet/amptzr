@@ -1,5 +1,5 @@
-import {address, url} from '../common'
-import {cid, version} from './common'
+import { address, url } from '../common'
+import { cid, version } from './common'
 
 /**
  * Issuer interface is the agreed format of the content behind an IPFS hash

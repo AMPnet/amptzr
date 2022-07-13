@@ -4,47 +4,72 @@
       <span class="font-semibold">Transaction History</span>
 
       <div>
-        <button app-action-button
-                *ngIf="txHistoryRes?.value?.transactions?.length! > 0 && (isBackendAuthorized$ | async) === true"
-                class="app-button !py-2 text-sm flex items-center justify-center lg:mt-0 tracking-wider"
-                text="Download"
-                [onClick]="downloadTransactionHistory.bind(this)">
+        <button
+          app-action-button
+          *ngIf="
+            txHistoryRes?.value?.transactions?.length! > 0 &&
+            (isBackendAuthorized$ | async) === true
+          "
+          class="app-button !py-2 text-sm flex items-center justify-center lg:mt-0 tracking-wider"
+          text="Download"
+          [onClick]="downloadTransactionHistory.bind(this)"
+        >
           <ng-template #content>
-            <svg class="h-3.5 w-3.5 mr-2" width="22" height="18" viewBox="0 0 22 18" fill="none"
-                 xmlns="http://www.w3.org/2000/svg">
+            <svg
+              class="h-3.5 w-3.5 mr-2"
+              width="22"
+              height="18"
+              viewBox="0 0 22 18"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
               <path
                 d="M1.47461 13V14C1.47461 14.7956 1.85599 15.5587 2.53485 16.1213C3.21371 16.6839 4.13444 17 5.0945 17H17.1608C18.1209 17 19.0416 16.6839 19.7204 16.1213C20.3993 15.5587 20.7807 14.7956 20.7807 14V13M15.9542 9L11.1276 13M11.1276 13L6.30113 9M11.1276 13V1"
-                stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                stroke="white"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
             </svg>
-            <span>
-              Download
-            </span>
+            <span> Download </span>
           </ng-template>
         </button>
       </div>
     </div>
     <div class="flex flex-col my-4">
-      <div *ngIf="(isBackendAuthorized$ | async) === false"
-           class="flex flex-col items-center gap-4 mt-4">
-        <p>
-          In order to see the transactions, authorization is needed.
-        </p>
+      <div
+        *ngIf="(isBackendAuthorized$ | async) === false"
+        class="flex flex-col items-center gap-4 mt-4"
+      >
+        <p>In order to see the transactions, authorization is needed.</p>
 
-        <button app-action-button
-                class="app-button !px-8"
-                text="Authorize" loadingText="Authorizing"
-                [onClick]="backendAuthorize.bind(this)">
-        </button>
+        <button
+          app-action-button
+          class="app-button !px-8"
+          text="Authorize"
+          loadingText="Authorizing"
+          [onClick]="backendAuthorize.bind(this)"
+        ></button>
       </div>
 
       <ng-container *ngIf="txHistoryRes.value as txHistory">
-        <div class="self-center py-8"
-             *ngIf="txHistory.transactions.length === 0 && (isBackendAuthorized$ | async) === true">
+        <div
+          class="self-center py-8"
+          *ngIf="
+            txHistory.transactions.length === 0 &&
+            (isBackendAuthorized$ | async) === true
+          "
+        >
           No transactions yet
         </div>
-        <div *ngFor="let tx of txHistory.transactions"
-             class="flex items-center justify-between p-4 my-1.5 rounded-xl bg-white">
-          <app-wallet-tx-history-item [tx]="tx" class="w-full"></app-wallet-tx-history-item>
+        <div
+          *ngFor="let tx of txHistory.transactions"
+          class="flex items-center justify-between p-4 my-1.5 rounded-xl bg-white"
+        >
+          <app-wallet-tx-history-item
+            [tx]="tx"
+            class="w-full"
+          ></app-wallet-tx-history-item>
         </div>
       </ng-container>
 

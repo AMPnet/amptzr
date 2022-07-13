@@ -1,7 +1,7 @@
-import {Injectable, Pipe, PipeTransform} from '@angular/core'
-import {from, Observable, of} from 'rxjs'
-import {catchError, map} from 'rxjs/operators'
-import {SessionQuery} from '../../session/state/session.query'
+import { Injectable, Pipe, PipeTransform } from '@angular/core'
+import { from, Observable, of } from 'rxjs'
+import { catchError, map } from 'rxjs/operators'
+import { SessionQuery } from '../../session/state/session.query'
 
 @Injectable({
   providedIn: 'root',
@@ -10,17 +10,16 @@ import {SessionQuery} from '../../session/state/session.query'
   name: 'blockTime',
 })
 export class BlockTimePipe implements PipeTransform {
-  constructor(private sessionQuery: SessionQuery) {
-  }
+  constructor(private sessionQuery: SessionQuery) {}
 
   transform(value: any): Observable<number | undefined> {
     if (!value) return of(undefined)
 
     return from(this.sessionQuery.provider.getBlock(Number(value))).pipe(
-      map(block =>
-        block.timestamp * 1000, // normalize to millis
+      map(
+        (block) => block.timestamp * 1000 // normalize to millis
       ),
-      catchError(() => of(undefined)),
+      catchError(() => of(undefined))
     )
   }
 }

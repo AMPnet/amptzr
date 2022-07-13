@@ -1,19 +1,19 @@
-import {Injectable} from '@angular/core'
-import {Store, StoreConfig} from '@datorama/akita'
-import {ChainID, MaticNetwork} from '../../shared/networks'
-import {environment} from '../../../environments/environment'
-import {IssuerFlavor} from '../../shared/services/blockchain/flavors'
+import { Injectable } from '@angular/core'
+import { Store, StoreConfig } from '@datorama/akita'
+import { ChainID, MaticNetwork } from '../../shared/networks'
+import { environment } from '../../../environments/environment'
+import { IssuerFlavor } from '../../shared/services/blockchain/flavors'
 
 export interface PreferenceState {
-  address: string;
-  authProvider: AuthProvider | '';
-  JWTAccessToken: string;
-  JWTRefreshToken: string;
-  chainID: ChainID;
-  apiKey: string,
+  address: string
+  authProvider: AuthProvider | ''
+  JWTAccessToken: string
+  JWTRefreshToken: string
+  chainID: ChainID
+  apiKey: string
   issuer: {
-    address: string,
-    flavor: IssuerFlavor,
+    address: string
+    flavor: IssuerFlavor
     slug?: string
   }
 }
@@ -33,8 +33,8 @@ export function createInitialState(): PreferenceState {
   }
 }
 
-@Injectable({providedIn: 'root'})
-@StoreConfig({name: 'preference'})
+@Injectable({ providedIn: 'root' })
+@StoreConfig({ name: 'preference' })
 export class PreferenceStore extends Store<PreferenceState> {
   constructor() {
     super(createInitialState())

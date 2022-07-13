@@ -1,19 +1,27 @@
-import {Pipe, PipeTransform} from '@angular/core'
-import {ConversionService} from '../services/conversion.service'
+import { Pipe, PipeTransform } from '@angular/core'
+import { ConversionService } from '../services/conversion.service'
 
 @Pipe({
   name: 'formatUnit',
 })
 export class FormatUnitPipe implements PipeTransform {
-  constructor(private conversion: ConversionService) {
-  }
+  constructor(private conversion: ConversionService) {}
 
-  public transform(value: any, operation: Operation | string, precision?: number) {
+  public transform(
+    value: any,
+    operation: Operation | string,
+    precision?: number
+  ) {
     switch (operation) {
       case Operation.STABLECOIN:
-        return this.conversion.parseStablecoinToNumber(this.toBigNumberish(value))
+        return this.conversion.parseStablecoinToNumber(
+          this.toBigNumberish(value)
+        )
       case Operation.TOKEN:
-        return this.conversion.parseTokenToNumber(this.toBigNumberish(value), precision)
+        return this.conversion.parseTokenToNumber(
+          this.toBigNumberish(value),
+          precision
+        )
       case Operation.TOKEN_PRICE:
         return this.conversion.parseTokenPriceToNumber(value)
       case Operation.TO_NUMBER:

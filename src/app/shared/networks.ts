@@ -1,5 +1,8 @@
-import {providers} from 'ethers'
-import {Matic as TPMatic, Mumbai as TPMumbai} from '../../../tokenizer-prototype/deployments'
+import { providers } from 'ethers'
+import {
+  Matic as TPMatic,
+  Mumbai as TPMumbai,
+} from '../../../tokenizer-prototype/deployments'
 import ReconnectingWebSocket from 'reconnecting-websocket'
 
 export enum ChainID {
@@ -10,46 +13,46 @@ export enum ChainID {
 }
 
 export interface Network {
-  chainID: ChainID,
-  name: string,
-  shortName: string,
+  chainID: ChainID
+  name: string
+  shortName: string
   nativeCurrency: {
-    name: string,
-    symbol: string;
-  },
-  maxGasPrice: number,
-  rpcURLs: string[],
-  wssRpcURLs?: string[],
-  explorerURLs: string[],
-  tokenizerConfig: TokenizerConfig,
-  ramp?: RampConfig,
+    name: string
+    symbol: string
+  }
+  maxGasPrice: number
+  rpcURLs: string[]
+  wssRpcURLs?: string[]
+  explorerURLs: string[]
+  tokenizerConfig: TokenizerConfig
+  ramp?: RampConfig
 }
 
 interface TokenizerConfig {
-  apxRegistry: string,
+  apxRegistry: string
   issuerFactory: {
-    basic: string,
-  },
+    basic: string
+  }
   assetFactory: {
-    basic: string,
-    transferable: string,
-    simple: string,
+    basic: string
+    transferable: string
+    simple: string
   }
   cfManagerFactory: {
-    basic: string,
-    vesting: string,
-  },
-  queryService: string,
-  payoutService: string,
-  payoutManager: string,
-  nameRegistry: string,
-  campaignFeeManager: string,
-  defaultWalletApprover: string,
-  defaultStableCoin: string,
+    basic: string
+    vesting: string
+  }
+  queryService: string
+  payoutService: string
+  payoutManager: string
+  nameRegistry: string
+  campaignFeeManager: string
+  defaultWalletApprover: string
+  defaultStableCoin: string
 }
 
 interface RampConfig {
-  swapAsset: string,
+  swapAsset: string
   url?: string // needed only for testing environments
 }
 
@@ -163,7 +166,7 @@ export const GoerliNetwork: Network = {
 export const Networks: { [key in ChainID]: Network } = {
   [ChainID.MATIC_MAINNET]: MaticNetwork,
   [ChainID.MUMBAI_TESTNET]: MumbaiNetwork,
-  [ChainID.GOERLI_TESTNET]: GoerliNetwork
+  [ChainID.GOERLI_TESTNET]: GoerliNetwork,
 }
 
 const getEthersNetwork = (network: Network): providers.Network => ({
@@ -171,13 +174,22 @@ const getEthersNetwork = (network: Network): providers.Network => ({
   chainId: network.chainID,
   _defaultProvider: (_providers: any) => {
     if (network.wssRpcURLs?.[0]) {
-      return new providers.WebSocketProvider(new ReconnectingWebSocket(network.wssRpcURLs![0]) as any, network.chainID)
+      return new providers.WebSocketProvider(
+        new ReconnectingWebSocket(network.wssRpcURLs![0]) as any,
+        network.chainID
+      )
     }
 
-    return new providers.StaticJsonRpcProvider(network.rpcURLs[0], network.chainID)
+    return new providers.StaticJsonRpcProvider(
+      network.rpcURLs[0],
+      network.chainID
+    )
   },
 })
 
-export const EthersNetworks = Object.fromEntries(Object.entries(Networks)
-  .map((entry) => [entry[0], getEthersNetwork(entry[1])]),
+export const EthersNetworks = Object.fromEntries(
+  Object.entries(Networks).map((entry) => [
+    entry[0],
+    getEthersNetwork(entry[1]),
+  ])
 )

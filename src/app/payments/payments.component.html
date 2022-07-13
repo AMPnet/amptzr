@@ -1,20 +1,28 @@
 <div class="bg-white shadow-sm ml-4 mt-2 p-8 rounded-lg">
-    <div class="flex flex-col">
-        <div class="flex flex-row justify-center">
-            <div (click)="changeTab(TabType.Payments)"
-            [class.border-violet-700] = "activeTab === TabType.Payments"
-            [class.text-violet-700] = "activeTab === TabType.Payments" 
-            class="w-48 border-b-4 text-sm uppercase font-semibold text-center pb-2 cursor-pointer">Payment Requests</div>
-            <div (click)="changeTab(TabType.CreateNew)" 
-            [class.border-violet-700] = "activeTab === TabType.CreateNew"
-            [class.text-violet-700] = "activeTab === TabType.CreateNew"
-            class="w-48 border-b-4 text-sm uppercase font-semibold text-center pb-2 cursor-pointer">Create New</div>
-        </div>
+  <div class="flex flex-col">
+    <div class="flex flex-row justify-center">
+      <div
+        (click)="changeTab(TabType.Payments)"
+        [class.border-violet-700]="activeTab === TabType.Payments"
+        [class.text-violet-700]="activeTab === TabType.Payments"
+        class="w-48 border-b-4 text-sm uppercase font-semibold text-center pb-2 cursor-pointer"
+      >
+        Payment Requests
+      </div>
+      <div
+        (click)="changeTab(TabType.CreateNew)"
+        [class.border-violet-700]="activeTab === TabType.CreateNew"
+        [class.text-violet-700]="activeTab === TabType.CreateNew"
+        class="w-48 border-b-4 text-sm uppercase font-semibold text-center pb-2 cursor-pointer"
+      >
+        Create New
+      </div>
     </div>
-    <div *ngIf="activeTab === TabType.CreateNew" class="border rounded-lg p-8">
-        <app-request-send-new></app-request-send-new>
-    </div>
-    <div *ngIf="activeTab === TabType.Payments" class="border rounded-lg">
-        <app-request-send-list></app-request-send-list>
-    </div>
+  </div>
+  <div *ngIf="activeTab === TabType.CreateNew" class="border rounded-lg p-8">
+    <app-request-send-new></app-request-send-new>
+  </div>
+  <div *ngIf="activeTab === TabType.Payments" class="border rounded-lg">
+    <app-request-send-list></app-request-send-list>
+  </div>
 </div>

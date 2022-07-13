@@ -1,4 +1,4 @@
-<div class="inline" *ngIf="(observable$ | async) as result">
+<div class="inline" *ngIf="observable$ | async as result">
   <ng-container *ngIf="result.loading">
     <app-spinner></app-spinner>
   </ng-container>
@@ -6,6 +6,6 @@
     {{ result.value }}
   </ng-container>
   <ng-container *ngIf="result.error">
-    ? <span hidden>{{result.error}}</span>
+    ? <span hidden>{{ result.error }}</span>
   </ng-container>
 </div>

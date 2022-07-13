@@ -1,4 +1,4 @@
-import {Injectable, Pipe, PipeTransform} from '@angular/core'
+import { Injectable, Pipe, PipeTransform } from '@angular/core'
 
 @Injectable({
   providedIn: 'root',
@@ -7,8 +7,7 @@ import {Injectable, Pipe, PipeTransform} from '@angular/core'
   name: 'addrShort',
 })
 export class AddrShortPipe implements PipeTransform {
-  constructor() {
-  }
+  constructor() {}
 
   transform(value: any, startChars = 6, endChars = 4): any {
     if (!value) {
@@ -17,10 +16,13 @@ export class AddrShortPipe implements PipeTransform {
 
     const address = String(value).toLowerCase()
 
-    if ((startChars + endChars) >= address.length) {
+    if (startChars + endChars >= address.length) {
       return address
     }
 
-    return `${address.substring(0, startChars)}...${address.substring(address.length - endChars, address.length)}`
+    return `${address.substring(0, startChars)}...${address.substring(
+      address.length - endChars,
+      address.length
+    )}`
   }
 }

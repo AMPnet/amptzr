@@ -1,43 +1,40 @@
-import { Component, OnInit, ChangeDetectionStrategy, Input } from '@angular/core'
-import { Action } from 'rxjs/internal/scheduler/Action'
+import { Component, ChangeDetectionStrategy, Input } from '@angular/core'
 
 @Component({
   selector: 'app-new-and-manage-holder',
   templateUrl: './new-and-manage-holder.component.html',
   styleUrls: ['./new-and-manage-holder.component.css'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class NewAndManageHolderComponent {
-
   selectedTabIndex = 0
 
   @Input() templateItems: TemplateItemsModel[] = []
   @Input() manageItems: ManageItemsModel[] = []
-  @Input() manageCustomFieldName: string = ""
+  @Input() manageCustomFieldName: string = ''
 
-  constructor() { }
+  constructor() {}
 
   tabClicked(index: number) {
     this.selectedTabIndex = index
   }
-
 }
 
 export interface TemplateItemsModel {
-  type: string,
+  type: string
   description: string
   actions: ActionModel[]
 }
 
 export interface ActionModel {
-  title: string,
-  url: string,
+  title: string
+  url: string
   icon: string
 }
 
 export interface ManageItemsModel {
-  name: string,
-  alias: string,
-  custom: string,
+  name: string
+  alias: string
+  custom: string
   createdDate: string
 }

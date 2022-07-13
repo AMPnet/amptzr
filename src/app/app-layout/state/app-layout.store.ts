@@ -1,8 +1,8 @@
-import {Injectable} from '@angular/core'
-import {Store, StoreConfig} from '@datorama/akita'
+import { Injectable } from '@angular/core'
+import { Store, StoreConfig } from '@datorama/akita'
 
 export interface AppLayoutState {
-  isDropdownMenuOpen: boolean;
+  isDropdownMenuOpen: boolean
 }
 
 export function createInitialState(): AppLayoutState {
@@ -11,22 +11,22 @@ export function createInitialState(): AppLayoutState {
   }
 }
 
-@Injectable({providedIn: 'root'})
-@StoreConfig({name: 'app-layout'})
+@Injectable({ providedIn: 'root' })
+@StoreConfig({ name: 'app-layout' })
 export class AppLayoutStore extends Store<AppLayoutState> {
   constructor() {
     super(createInitialState())
   }
 
   toggleDropdownMenu(): void {
-    return this.update(state => ({
+    return this.update((state) => ({
       ...state,
       isDropdownMenuOpen: !state.isDropdownMenuOpen,
     }))
   }
 
   closeDropdownMenu(): void {
-    return this.update(state => ({
+    return this.update((state) => ({
       ...state,
       isDropdownMenuOpen: false,
     }))

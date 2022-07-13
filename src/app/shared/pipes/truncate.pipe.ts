@@ -1,13 +1,21 @@
-import {Pipe, PipeTransform} from '@angular/core'
+import { Pipe, PipeTransform } from '@angular/core'
 
 @Pipe({
   name: 'truncate',
 })
 export class TruncatePipe implements PipeTransform {
-  transform(value: string, limit = 25, completeWords = false, truncateInside = false, ellipsis = '...') {
+  transform(
+    value: string,
+    limit = 25,
+    completeWords = false,
+    truncateInside = false,
+    ellipsis = '...'
+  ) {
     if (truncateInside) {
       if (value.length > limit) {
-        return `${value.substr(0, limit / 2)}${ellipsis}${value.substr(value.length - limit / 2)}`
+        return `${value.substr(0, limit / 2)}${ellipsis}${value.substr(
+          value.length - limit / 2
+        )}`
       }
 
       return value

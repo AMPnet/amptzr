@@ -1,13 +1,12 @@
-import {Injectable} from '@angular/core'
-import {RouterService} from '../shared/services/router.service'
-import {TransferParams} from './transfer.component'
+import { Injectable } from '@angular/core'
+import { RouterService } from '../shared/services/router.service'
+import { TransferParams } from './transfer.component'
 
 @Injectable({
   providedIn: 'root',
 })
 export class TransferService {
-  constructor(private router: RouterService) {
-  }
+  constructor(private router: RouterService) {}
 
   navigate(tokenAddress: string, opts?: Options) {
     this.router.navigate(['/transfer'], {

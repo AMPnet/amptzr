@@ -1,8 +1,12 @@
 <div class="max-w-sm mx-auto">
-  <ng-container *ngIf="(session$ | async) as session; else spinner">
+  <ng-container *ngIf="session$ | async as session; else spinner">
     <ng-container *ngIf="decisionAvailable$ | async">
       <div class="text-center">
-        <h2 *ngIf="session.decision!.status === decisionStatus.RESUBMISSION_REQUESTED">
+        <h2
+          *ngIf="
+            session.decision!.status === decisionStatus.RESUBMISSION_REQUESTED
+          "
+        >
           Resubmission requested
         </h2>
 
@@ -19,42 +23,45 @@
     <ng-container *ngIf="decisionPending$ | async">
       <div class="flex justify-center mt-4">
         <div class="flex justify-center w-36 h-36">
-          <img class="h-full w-full object-cover"
-               src="/assets/dialog-icons/verification.gif"
-               alt="Verification process">
+          <img
+            class="h-full w-full object-cover"
+            src="/assets/dialog-icons/verification.gif"
+            alt="Verification process"
+          />
         </div>
       </div>
 
-      <h3 class="text-center text-2xl font-medium mt-8">
-        Verifying identity
-      </h3>
+      <h3 class="text-center text-2xl font-medium mt-8">Verifying identity</h3>
 
       <p class="text-center text-sm mt-8 px-4">
-        This is usually a short process, but can last up to few minutes.
-        Please wait.
+        This is usually a short process, but can last up to few minutes. Please
+        wait.
       </p>
     </ng-container>
 
     <ng-container *ngIf="isVerificationStartable$ | async">
       <div class="flex justify-center mt-4">
         <div class="flex justify-center w-36 h-36">
-          <img class="h-full w-full object-cover"
-               src="/assets/dialog-icons/identity-veriff.png"
-               alt="Veriff icon">
+          <img
+            class="h-full w-full object-cover"
+            src="/assets/dialog-icons/identity-veriff.png"
+            alt="Veriff icon"
+          />
         </div>
       </div>
 
       <p class="text-center text-sm mt-8 px-4">
-        You must verify your identity before investing.
-        We use Veriff as a trusted 3rd-party identity service.
+        You must verify your identity before investing. We use Veriff as a
+        trusted 3rd-party identity service.
       </p>
 
       <div class="flex justify-center mt-8">
-        <button app-action-button
-                class="bg-indigo-800 text-white font-medium px-4 py-2 rounded-full disabled:bg-gray-400"
-                text="Start verification"
-                [onClick]="startVerification(session.verification_url)">
-        </button>
+        <button
+          app-action-button
+          class="bg-indigo-800 text-white font-medium px-4 py-2 rounded-full disabled:bg-gray-400"
+          text="Start verification"
+          [onClick]="startVerification(session.verification_url)"
+        ></button>
       </div>
     </ng-container>
   </ng-container>
@@ -63,9 +70,11 @@
 <ng-template #spinner>
   <div class="flex justify-center mt-6">
     <div class="flex justify-center w-36 h-36">
-      <img class="h-full w-full object-cover"
-           src="/assets/dialog-icons/waiting.gif"
-           alt="Waiting gif">
+      <img
+        class="h-full w-full object-cover"
+        src="/assets/dialog-icons/waiting.gif"
+        alt="Waiting gif"
+      />
     </div>
   </div>
 </ng-template>

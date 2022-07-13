@@ -1,78 +1,121 @@
 <div class="px-4 py-2 max-w-3xl mx-auto">
-
   <div class="flex flex-row text-sm">
-    <div routerLink="/" class="text-sm underline text-violet-800 cursor-pointer">
-        My Projects
+    <div
+      routerLink="/"
+      class="text-sm underline text-violet-800 cursor-pointer"
+    >
+      My Projects
     </div>
-    <div class="ml-2 mr-2"> / </div>
-    <div>
-        New Project
-    </div>
-</div>
+    <div class="ml-2 mr-2">/</div>
+    <div>New Project</div>
+  </div>
   <div class="bg-white my-8 p-8 rounded-4xl">
     <form [formGroup]="createForm">
       <div class="flex flex-col lg:flex-row gap-6 mt-4">
         <div class="flex flex-col gap-2">
-          <label class="text-sm font-semibold text-gray-700 uppercase" for="logo">
+          <label
+            class="text-sm font-semibold text-gray-700 uppercase"
+            for="logo"
+          >
             Logo
           </label>
           <div class="relative w-full lg:w-72">
             <div class="flex justify-center w-full absolute top-32 lg:top-40">
-              <label class="flex items-center gap-4 px-8 py-2 rounded-full bg-violet-700 text-white text-lg
-                          cursor-pointer">
-                <input class="hidden" type="file" formControlName="logo" id="logo" multiple>
-                <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M6 1V6M6 6V11M6 6H11M6 6H1" stroke="white" stroke-width="2" stroke-linecap="round"
-                        stroke-linejoin="round"/>
+              <label
+                class="flex items-center gap-4 px-8 py-2 rounded-full bg-violet-700 text-white text-lg cursor-pointer"
+              >
+                <input
+                  class="hidden"
+                  type="file"
+                  formControlName="logo"
+                  id="logo"
+                  multiple
+                />
+                <svg
+                  width="12"
+                  height="12"
+                  viewBox="0 0 12 12"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M6 1V6M6 6V11M6 6H11M6 6H1"
+                    stroke="white"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
                 </svg>
                 <span class="text-sm white">Upload logo</span>
               </label>
             </div>
-            <img *ngIf="createForm.get('logo')?.value?.[0]; else noImage" class="w-full h-48 lg:h-56 object-contain"
-                 [src]="(createForm.get('logo')?.value?.[0] | safe:'fileUrl') | toUrlIPFS"
-                 alt="Issuer logo">
+            <img
+              *ngIf="createForm.get('logo')?.value?.[0]; else noImage"
+              class="w-full h-48 lg:h-56 object-contain"
+              [src]="(createForm.get('logo')?.value?.[0] | safe:'fileUrl') | toUrlIPFS"
+              alt="Issuer logo"
+            />
             <ng-template #noImage>
-              <div class="w-full h-48 lg:h-56 border-gray-200 border rounded-xl"></div>
+              <div
+                class="w-full h-48 lg:h-56 border-gray-200 border rounded-xl"
+              ></div>
             </ng-template>
           </div>
         </div>
 
         <div>
           <div class="flex flex-col gap-2">
-            <label class="text-sm font-semibold text-gray-700 uppercase" for="name">
+            <label
+              class="text-sm font-semibold text-gray-700 uppercase"
+              for="name"
+            >
               Project name
             </label>
-            <input class="border-gray-300 rounded-lg"
-                   type="text" formControlName="name" id="name"
-                   autocomplete="off">
+            <input
+              class="border-gray-300 rounded-lg"
+              type="text"
+              formControlName="name"
+              id="name"
+              autocomplete="off"
+            />
           </div>
 
           <div class="flex flex-col gap-2 mt-4">
-            <label class="text-sm uppercase text-gray-700 font-semibold" for="slug">
+            <label
+              class="text-sm uppercase text-gray-700 font-semibold"
+              for="slug"
+            >
               Project link
             </label>
             <div class="flex items-baseline gap-2">
               <div class="text-sm shrink-0">
-                {{ issuerUrlPrefix | addrShort:12:20 }}
+                {{ issuerUrlPrefix | addrShort: 12:20 }}
               </div>
-              <input class="border-gray-300 text-xs rounded-lg w-full"
-                     type="text" formControlName="slug" id="slug"
-                     placeholder="slug" autocomplete="off">
+              <input
+                class="border-gray-300 text-xs rounded-lg w-full"
+                type="text"
+                formControlName="slug"
+                id="slug"
+                placeholder="slug"
+                autocomplete="off"
+              />
             </div>
-            <div class="text-xs text-red-600" *ngIf="createForm.get('slug')?.errors?.pattern">
+            <div
+              class="text-xs text-red-600"
+              *ngIf="createForm.get('slug')?.errors?.pattern"
+            >
               Incorrect value. Allowed input: a-z, 0-9, -, _.
             </div>
           </div>
           <div class="flex flex-row justify-end w-full h-24 items-end">
-              <button app-action-button
+            <button
+              app-action-button
               class="app-button !px-12"
               text="Create"
               [disabled]="!createForm.valid"
-              [onClick]="create.bind(this)">
-              </button>
+              [onClick]="create.bind(this)"
+            ></button>
           </div>
-          
-          
         </div>
       </div>
     </form>

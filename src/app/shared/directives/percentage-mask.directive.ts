@@ -1,6 +1,10 @@
-import {Directive, forwardRef, OnInit} from '@angular/core'
-import {PercentageMaskConfig, PercentageMaskDirective as NGXDirective, PercentageMaskInputMode} from 'fx-percentage'
-import {NG_VALUE_ACCESSOR} from '@angular/forms'
+import { Directive, forwardRef, OnInit } from '@angular/core'
+import {
+  PercentageMaskConfig,
+  PercentageMaskDirective as NGXDirective,
+  PercentageMaskInputMode,
+} from 'fx-percentage'
+import { NG_VALUE_ACCESSOR } from '@angular/forms'
 
 export const PERCENTAGEMASKDIRECTIVE_VALUE_ACCESSOR: any = {
   provide: NG_VALUE_ACCESSOR,
@@ -17,7 +21,7 @@ export class PercentageMaskDirective extends NGXDirective implements OnInit {
     align: 'right',
     allowNegative: false,
     allowZero: true,
-    decimal: ".",
+    decimal: '.',
     precision: 0,
     prefix: '',
     suffix: '%',

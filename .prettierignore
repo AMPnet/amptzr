@@ -1,0 +1,15 @@
+build
+dist
+coverage
+cache
+node_modules
+abis
+.angular
+.idea/
+.vscode
+bazel-out
+out-tsc
+tmp
+artifacts
+types/ethers-contracts
+tokenizer-prototype

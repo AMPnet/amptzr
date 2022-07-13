@@ -1,59 +1,69 @@
 <div class="h-full">
   <div class="bg-white shadow-sm h-full rounded-xl text-gray-700">
-    <ng-container *ngIf="(snapshots$ | async) as snapshotsRes">
+    <ng-container *ngIf="snapshots$ | async as snapshotsRes">
       <!-- <div class="flex flex-col">
         <div class="flex justify-between items-center mt-2">
           <div class="text-lg font-semibold">
             Manage existing token snapshots
           </div>
-          <button class="h-auto bg-gray-100 rounded-full p-2"
-                  [disabled]="snapshotsRes.loading"
-                  (click)="snapshotsRes?.refresh()">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" viewBox="0 0 20 20" fill="currentColor">
-              <path fill-rule="evenodd"
-                    d="M4 2a1 1 0 011 1v2.101a7.002 7.002 0 0111.601 2.566 1 1 0 11-1.885.666A5.002 5.002 0 005.999 7H9a1 1 0 010 2H4a1 1 0 01-1-1V3a1 1 0 011-1zm.008 9.057a1 1 0 011.276.61A5.002 5.002 0 0014.001 13H11a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 11-2 0v-2.101a7.002 7.002 0 01-11.601-2.566 1 1 0 01.61-1.276z"
-                    clip-rule="evenodd"/>
+          <button
+            class="h-auto bg-gray-100 rounded-full p-2"
+            [disabled]="snapshotsRes.loading"
+            (click)="snapshotsRes?.refresh()"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-3 w-3"
+              viewBox="0 0 20 20"
+              fill="currentColor"
+            >
+              <path
+                fill-rule="evenodd"
+                d="M4 2a1 1 0 011 1v2.101a7.002 7.002 0 0111.601 2.566 1 1 0 11-1.885.666A5.002 5.002 0 005.999 7H9a1 1 0 010 2H4a1 1 0 01-1-1V3a1 1 0 011-1zm.008 9.057a1 1 0 011.276.61A5.002 5.002 0 0014.001 13H11a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 11-2 0v-2.101a7.002 7.002 0 01-11.601-2.566 1 1 0 01.61-1.276z"
+                clip-rule="evenodd"
+              />
             </svg>
           </button>
         </div>
         <small class="pt-4">
-          This is a list of all the token snapshots you have created. Open the snapshot to perform an airdrop.
+          This is a list of all the token snapshots you have created. Open the
+          snapshot to perform an airdrop.
         </small>
       </div> -->
-      
 
       <ng-container *ngIf="snapshotsRes.value as snapshots">
-        <div *ngIf="snapshots.length === 0" class="">
-          No snapshots
-        </div>
+        <div *ngIf="snapshots.length === 0" class="">No snapshots</div>
 
-        <div *ngIf="snapshots.length > 0"
-             class="flex flex-col">
-          <div *ngFor="let snapshot of snapshots; let i = index"
-               [class.border-b] = "i < (snapshots.length - 1)">
-
-            <div *ngIf="i === 0" class="flex bg-gray-100 flex-row px-4 py-4 text-sm uppercase font-semibold">
-                <div class="w-3/12 text-center">
-                  Token name
-                </div>
-                <div class="w-3/12 text-center">
-                  Date created
-                </div>
-                <div class="w-3/12 text-center">
-                  Status
-                </div>
-                <div class="w-3/12 text-center">
-                  Actions
-                </div>
-              </div>
+        <div *ngIf="snapshots.length > 0" class="flex flex-col">
+          <div
+            *ngFor="let snapshot of snapshots; let i = index"
+            [class.border-b]="i < snapshots.length - 1"
+          >
+            <div
+              *ngIf="i === 0"
+              class="flex bg-gray-100 flex-row px-4 py-4 text-sm uppercase font-semibold"
+            >
+              <div class="w-3/12 text-center">Token name</div>
+              <div class="w-3/12 text-center">Date created</div>
+              <div class="w-3/12 text-center">Status</div>
+              <div class="w-3/12 text-center">Actions</div>
+            </div>
             <div class="flex justify-between flex-wrap">
-              
               <div class="flex flex-row w-1/2">
-                <ng-container *ngIf="(snapshot.asset | assetData:'tokenOnly'
-                                     | withStatus | async) as assetRes">
+                <ng-container
+                  *ngIf="
+                    snapshot.asset
+                      | assetData: 'tokenOnly'
+                      | withStatus
+                      | async as assetRes
+                  "
+                >
                   <ng-container *ngIf="assetRes.value as asset">
                     <div class="flex flex-row justify-center py-4 w-1/2">
-                      <span class="text-sm flex flex-row justify-center font-semibold">{{ asset.tokenData.symbol }}</span>
+                      <span
+                        class="text-sm flex flex-row justify-center font-semibold"
+                        >{{ asset.tokenData.symbol }}</span
+                      >
                     </div>
                   </ng-container>
 
@@ -68,9 +78,18 @@
                 </ng-container>
 
                 <ng-container
-                  *ngIf="(snapshot.asset_snapshot_block_number | blockTime | withStatus | async) as blockTimeRes">
+                  *ngIf="
+                    snapshot.asset_snapshot_block_number
+                      | blockTime
+                      | withStatus
+                      | async as blockTimeRes
+                  "
+                >
                   <ng-container *ngIf="blockTimeRes.value as blockTime">
-                    <span class="w-1/2 items-center text-sm font-medium flex flex-col justify-center">{{ blockTime | date:'medium' }}</span>
+                    <span
+                      class="w-1/2 items-center text-sm font-medium flex flex-col justify-center"
+                      >{{ blockTime | date: "medium" }}</span
+                    >
                   </ng-container>
 
                   <ng-container *ngIf="blockTimeRes.error">
@@ -85,34 +104,32 @@
               </div>
 
               <div class="flex flex-row w-1/2 justify-start">
-                <div class="px-4 bg-red-100 text-red-700 flex flex-col justify-center
-                            items-center text-xs font-semibold uppercase m-2 rounded-lg w-1/2"
-                     *ngIf="snapshot.status === snapshotStatus.Failed">
+                <div
+                  class="px-4 bg-red-100 text-red-700 flex flex-col justify-center items-center text-xs font-semibold uppercase m-2 rounded-lg w-1/2"
+                  *ngIf="snapshot.status === snapshotStatus.Failed"
+                >
                   Failed
                 </div>
 
-                <div class="px-4 p-1 bg-orange-100 text-orange-800 flex flex-col justify-center
-                            items-center text-xs font-semibold uppercase m-2 rounded-lg w-1/2"
-                     *ngIf="snapshot.status === snapshotStatus.Pending">
-                  <span class="animate-pulse">
-                    Pending
-                  </span>
+                <div
+                  class="px-4 p-1 bg-orange-100 text-orange-800 flex flex-col justify-center items-center text-xs font-semibold uppercase m-2 rounded-lg w-1/2"
+                  *ngIf="snapshot.status === snapshotStatus.Pending"
+                >
+                  <span class="animate-pulse"> Pending </span>
                 </div>
 
-                <div class="px-4 p-1 bg-emerald-100 text-emerald-800
-                items-center flex flex-col justify-center m-2 rounded-lg
-                          text-xs font-semibold uppercase w-1/2"
-                     *ngIf="snapshot.status === snapshotStatus.Success">
-                  <span class="">
-                    Created
-                  </span>
+                <div
+                  class="px-4 p-1 bg-emerald-100 text-emerald-800 items-center flex flex-col justify-center m-2 rounded-lg text-xs font-semibold uppercase w-1/2"
+                  *ngIf="snapshot.status === snapshotStatus.Success"
+                >
+                  <span class=""> Created </span>
                 </div>
 
-                <a [routerLink]="snapshot.id"
-                   class="px-4 bg-gray-200 text-gray-700
-                          font-semibold uppercase rounded-full text-xs m-2
-                          items-center w-1/2 flex flex-row justify-center"
-                   *ngIf="snapshot.id">
+                <a
+                  [routerLink]="snapshot.id"
+                  class="px-4 bg-gray-200 text-gray-700 font-semibold uppercase rounded-full text-xs m-2 items-center w-1/2 flex flex-row justify-center"
+                  *ngIf="snapshot.id"
+                >
                   Start airdrop ->
                 </a>
               </div>
@@ -129,7 +146,6 @@
       <ng-container *ngIf="snapshotsRes.loading">
         Loading snapshots...
       </ng-container>
-
     </ng-container>
   </div>
 </div>

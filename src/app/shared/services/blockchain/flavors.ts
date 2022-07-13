@@ -1,5 +1,5 @@
 export enum IssuerFlavor {
-  BASIC = 'IssuerV1'
+  BASIC = 'IssuerV1',
 }
 
 export enum AssetFlavor {
@@ -10,9 +10,9 @@ export enum AssetFlavor {
 
 export enum CampaignFlavor {
   BASIC = 'CfManagerSoftcapV1',
-  VESTING = 'CfManagerSoftcapVestingV1'
+  VESTING = 'CfManagerSoftcapVestingV1',
 }
 
 export enum PayoutManagerFlavor {
-  BASIC = 'PayoutManagerV1'
+  BASIC = 'PayoutManagerV1',
 }

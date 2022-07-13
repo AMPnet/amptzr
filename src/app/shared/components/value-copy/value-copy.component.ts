@@ -1,6 +1,11 @@
-import {ChangeDetectionStrategy, Component, Input, OnInit} from '@angular/core'
-import {BehaviorSubject, EMPTY, from, Observable, of} from 'rxjs'
-import {catchError, delay, tap} from 'rxjs/operators'
+import {
+  ChangeDetectionStrategy,
+  Component,
+  Input,
+  OnInit,
+} from '@angular/core'
+import { BehaviorSubject, EMPTY, from, Observable, of } from 'rxjs'
+import { catchError, delay, tap } from 'rxjs/operators'
 
 @Component({
   selector: 'app-value-copy',
@@ -20,8 +25,7 @@ export class ValueCopyComponent implements OnInit {
   stateSub = new BehaviorSubject<State>(State.READY)
   state$ = this.stateSub.asObservable()
 
-  constructor() {
-  }
+  constructor() {}
 
   ngOnInit() {
     this.stateTexts = {
@@ -36,7 +40,7 @@ export class ValueCopyComponent implements OnInit {
       tap(() => this.stateSub.next(State.COPIED)),
       delay(this.delay),
       tap(() => this.stateSub.next(State.READY)),
-      catchError(() => EMPTY),
+      catchError(() => EMPTY)
     )
   }
 
@@ -57,5 +61,5 @@ export class ValueCopyComponent implements OnInit {
 
 enum State {
   READY = 1,
-  COPIED = 2
+  COPIED = 2,
 }

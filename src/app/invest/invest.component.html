@@ -1,48 +1,70 @@
 <div class="w-full h-full flex justify-center my-8 px-2">
   <div class="w-full max-w-5xl">
-    <ng-container *ngIf="(stateWithStatus$ | async) as stateRes">
+    <ng-container *ngIf="stateWithStatus$ | async as stateRes">
       <ng-container *ngIf="stateRes.value as state">
         <form [formGroup]="investmentForm">
           <div class="max-w-md mx-auto bg-white rounded-4xl px-6 py-4">
-            <div class="absolute w-full h-full" *ngIf="investmentForm.errors?.campaignMaxReached">
-            </div>
+            <div
+              class="absolute w-full h-full"
+              *ngIf="investmentForm.errors?.campaignMaxReached"
+            ></div>
 
             <div class="flex justify-center">
               <div class="w-32 h-32 bg-white rounded-full overflow-hidden m-1">
-                <img class="h-full w-full object-cover" src="{{ state.asset.infoData.logo | toUrlIPFS }}"
-                     alt="{{ state.asset.name }} logo">
+                <img
+                  class="h-full w-full object-cover"
+                  src="{{ state.asset.infoData.logo | toUrlIPFS }}"
+                  alt="{{ state.asset.name }} logo"
+                />
               </div>
             </div>
 
-            <h1 class="flex gap-1.5 justify-center items-center mt-4 mx-4 text-3xl">
+            <h1
+              class="flex gap-1.5 justify-center items-center mt-4 mx-4 text-3xl"
+            >
               <span>
                 {{ state.asset.name }}
               </span>
-              <app-explorer-link [value]="state.asset.contractAddress" type="token">
+              <app-explorer-link
+                [value]="state.asset.contractAddress"
+                type="token"
+              >
               </app-explorer-link>
               <app-add-to-metamask [value]="state.asset.contractAddress">
               </app-add-to-metamask>
             </h1>
 
-            <h1 class="flex justify-center mt-4 mx-4 sm:mx-16 text-sm text-center text-gray-500">
+            <h1
+              class="flex justify-center mt-4 mx-4 sm:mx-16 text-sm text-center text-gray-500"
+            >
               Enter the amount of {{ state.stablecoinSymbol }} you want to spend
               or {{ state.asset.symbol }} you want to buy
             </h1>
 
             <form [formGroup]="investmentForm">
               <!-- Stablecoin box -->
-              <div class="mt-5 bg-gray-200/20 border-gray-300/50 border-[1px] rounded-lg px-2 pb-1">
-                <span class="flex justify-end mt-1 text-xxs font-medium text-gray-400">
+              <div
+                class="mt-5 bg-gray-200/20 border-gray-300/50 border-[1px] rounded-lg px-2 pb-1"
+              >
+                <span
+                  class="flex justify-end mt-1 text-xxs font-medium text-gray-400"
+                >
                   Amount of {{ state.stablecoinSymbol }} you will spend
                 </span>
 
                 <div class="flex justify-between">
                   <div class="flex items-center">
                     <div class="flex rounded-full items-center bg-white shadow">
-                      <div class="w-7 h-7 bg-white rounded-full overflow-hidden m-1">
-                        <img class="h-full w-full object-cover"
-                             src="{{ state.stablecoinSymbol | toStablecoinLogoPath }}"
-                             alt="{{ state.stablecoinSymbol}} logo">
+                      <div
+                        class="w-7 h-7 bg-white rounded-full overflow-hidden m-1"
+                      >
+                        <img
+                          class="h-full w-full object-cover"
+                          src="{{
+                            state.stablecoinSymbol | toStablecoinLogoPath
+                          }}"
+                          alt="{{ state.stablecoinSymbol }} logo"
+                        />
                       </div>
 
                       <span class="ml-1 mr-3 font-medium whitespace-nowrap">
@@ -51,46 +73,79 @@
                     </div>
                   </div>
 
-                  <input class="w-full py-0 pr-0 text-right bg-transparent border-none focus:ring-0 text-3xl
-                                text-ellipsis	placeholder:text-gray-400"
-                         appBigNumberInput formControlName="stablecoinAmount"
-                         (input)="onStablecoinAmountChange(state.campaign)">
+                  <input
+                    class="w-full py-0 pr-0 text-right bg-transparent border-none focus:ring-0 text-3xl text-ellipsis placeholder:text-gray-400"
+                    appBigNumberInput
+                    formControlName="stablecoinAmount"
+                    (input)="onStablecoinAmountChange(state.campaign)"
+                  />
                 </div>
 
                 <div class="flex">
                   <div class="flex items-center min-h-[1rem] mt-2 flex-1">
-                    <ng-container *ngIf="investmentForm.dirty && investmentForm.invalid">
+                    <ng-container
+                      *ngIf="investmentForm.dirty && investmentForm.invalid"
+                    >
                       <span class="text-red-600 text-xs font-semibold">
-                        <ng-container *ngIf="investmentForm.errors?.stablecoinAmountBelowMin">
-                          The amount is below minimum investment of {{ state.preInvestData.min
-                          | formatUnit:'stablecoin' | currencyDefault:'stablecoin':'implicit' }}.
+                        <ng-container
+                          *ngIf="
+                            investmentForm.errors?.stablecoinAmountBelowMin
+                          "
+                        >
+                          The amount is below minimum investment of
+                          {{
+                            state.preInvestData.min
+                              | formatUnit: "stablecoin"
+                              | currencyDefault: "stablecoin":"implicit"
+                          }}.
                         </ng-container>
 
-                        <ng-container *ngIf="investmentForm.errors?.stablecoinAmountAboveMax">
-                          The amount is above maximum investment of {{ state.preInvestData.max
-                          | formatUnit:'stablecoin' | currencyDefault:'stablecoin':'implicit' }}.
+                        <ng-container
+                          *ngIf="
+                            investmentForm.errors?.stablecoinAmountAboveMax
+                          "
+                        >
+                          The amount is above maximum investment of
+                          {{
+                            state.preInvestData.max
+                              | formatUnit: "stablecoin"
+                              | currencyDefault: "stablecoin":"implicit"
+                          }}.
                         </ng-container>
                       </span>
                     </ng-container>
 
-                    <span *ngIf="investmentForm.errors?.campaignMaxReached"
-                          class="text-amber-600 text-xs font-semibold">
+                    <span
+                      *ngIf="investmentForm.errors?.campaignMaxReached"
+                      class="text-amber-600 text-xs font-semibold"
+                    >
                       The campaign has reached its maximum target value.
                     </span>
                   </div>
                 </div>
 
-                <div class="flex justify-between items-center mt-5 text-xxs font-medium">
+                <div
+                  class="flex justify-between items-center mt-5 text-xxs font-medium"
+                >
                   <div>
                     <span class="text-gray-400" *ngIf="state.stablecoinBalance">
-                      Balance: {{ state.stablecoinBalance | formatUnit:'stablecoin' | currencyDefault }}
+                      Balance:
+                      {{
+                        state.stablecoinBalance
+                          | formatUnit: "stablecoin"
+                          | currencyDefault
+                      }}
                     </span>
                   </div>
                   <div class="flex gap-1" *ngIf="state.stablecoinBalance">
-                    <button class="app-button text-xxs !px-2 !py-0.5 mb-1"
-                            *ngIf="state.preInvestData.max.gt(bigNumberConstants.Zero)
-                            && state.stablecoinBalance.gt(state.preInvestData.min)"
-                            (click)="setStablecoin(state, 'maxAvailable')">
+                    <button
+                      class="app-button text-xxs !px-2 !py-0.5 mb-1"
+                      *ngIf="
+                        state.preInvestData.max.gt(bigNumberConstants.Zero) &&
+                        state.stablecoinBalance.gt(state.preInvestData.min)
+                      "
+                      (click)="setStablecoin(state, 'maxAvailable')"
+                    >
                       Max
                     </button>
                   </div>
@@ -99,27 +154,45 @@
 
               <!-- Arrow down -->
               <div class="-mt-2 flex justify-center">
-                <div class="flex justify-center rounded-full bg-white p-0.5 z-10 shadow">
-                  <svg class="w-5 h-5" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="m13 11-3 3m0 0-3-3m3 3V6m0 13a9 9 0 1 1 0-18 9 9 0 0 1 0 18Z" stroke="#1D4ED8"
-                          stroke-linecap="round" stroke-linejoin="round"/>
+                <div
+                  class="flex justify-center rounded-full bg-white p-0.5 z-10 shadow"
+                >
+                  <svg
+                    class="w-5 h-5"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="m13 11-3 3m0 0-3-3m3 3V6m0 13a9 9 0 1 1 0-18 9 9 0 0 1 0 18Z"
+                      stroke="#1D4ED8"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    />
                   </svg>
                 </div>
               </div>
 
               <!-- Token box -->
-              <div class="-mt-1 bg-gray-200/20 border-gray-300/50 border-[1px] rounded-lg px-2 pb-1">
-                <span class="flex justify-end mt-1 text-xxs font-medium text-gray-400">
+              <div
+                class="-mt-1 bg-gray-200/20 border-gray-300/50 border-[1px] rounded-lg px-2 pb-1"
+              >
+                <span
+                  class="flex justify-end mt-1 text-xxs font-medium text-gray-400"
+                >
                   Amount of {{ state.asset.symbol }} you will get
                 </span>
 
                 <div class="flex justify-between">
                   <div class="flex items-center">
                     <div class="flex rounded-full items-center bg-white shadow">
-                      <div class="w-7 h-7 bg-white rounded-full overflow-hidden m-1">
-                        <img class="h-full w-full object-cover"
-                             src="{{ state.asset.infoData.logo | toUrlIPFS }}"
-                             alt="{{ state.asset.symbol }} logo">
+                      <div
+                        class="w-7 h-7 bg-white rounded-full overflow-hidden m-1"
+                      >
+                        <img
+                          class="h-full w-full object-cover"
+                          src="{{ state.asset.infoData.logo | toUrlIPFS }}"
+                          alt="{{ state.asset.symbol }} logo"
+                        />
                       </div>
 
                       <span class="ml-1 mr-3 font-medium whitespace-nowrap">
@@ -128,10 +201,13 @@
                     </div>
                   </div>
 
-                  <input class="w-full py-0 pr-0 text-right bg-transparent border-none focus:ring-0 text-3xl
-                                text-ellipsis	placeholder:text-gray-400"
-                         appBigNumberInput bigNumberType="token" formControlName="tokenAmount"
-                         (input)="onTokenAmountChange(state.campaign)">
+                  <input
+                    class="w-full py-0 pr-0 text-right bg-transparent border-none focus:ring-0 text-3xl text-ellipsis placeholder:text-gray-400"
+                    appBigNumberInput
+                    bigNumberType="token"
+                    formControlName="tokenAmount"
+                    (input)="onTokenAmountChange(state.campaign)"
+                  />
                 </div>
 
                 <div class="flex justify-between mt-10 text-xxs">
@@ -141,7 +217,11 @@
                     </span>
                     <span class="font-semibold">
                       Token price:
-                      {{ state.campaign.pricePerToken | formatUnit:'tokenPrice' | currencyDefault:'tokenPrice':'implicit' }}
+                      {{
+                        state.campaign.pricePerToken
+                          | formatUnit: "tokenPrice"
+                          | currencyDefault: "tokenPrice":"implicit"
+                      }}
                     </span>
                   </div>
 
@@ -153,76 +233,107 @@
 
               <div class="flex justify-between text-xxs text-gray-400 mt-1">
                 <div>
-                  <div *ngIf="state.preInvestData.min.gt(bigNumberConstants.Zero)">
-                    <a routerLink="." (click)="setStablecoin(state, 'min')"
-                       class="flex gap-1">
+                  <div
+                    *ngIf="state.preInvestData.min.gt(bigNumberConstants.Zero)"
+                  >
+                    <a
+                      routerLink="."
+                      (click)="setStablecoin(state, 'min')"
+                      class="flex gap-1"
+                    >
                       <span class="font-bold">
-                        {{ state.preInvestData.min | formatUnit:'stablecoin' | currencyDefault:'stablecoin':'implicit' }}
+                        {{
+                          state.preInvestData.min
+                            | formatUnit: "stablecoin"
+                            | currencyDefault: "stablecoin":"implicit"
+                        }}
                       </span>
-                      <span class="font-medium">
-                        Min
-                      </span>
+                      <span class="font-medium"> Min </span>
                     </a>
                   </div>
                 </div>
                 <div>
-                  <div *ngIf="state.preInvestData.max.gt(bigNumberConstants.Zero)">
-                    <a routerLink="." (click)="setStablecoin(state, 'max')"
-                       class="flex gap-1">
+                  <div
+                    *ngIf="state.preInvestData.max.gt(bigNumberConstants.Zero)"
+                  >
+                    <a
+                      routerLink="."
+                      (click)="setStablecoin(state, 'max')"
+                      class="flex gap-1"
+                    >
                       <span class="font-bold">
-                        {{ state.preInvestData.max | formatUnit:'stablecoin' | currencyDefault:'stablecoin':'implicit' }}
+                        {{
+                          state.preInvestData.max
+                            | formatUnit: "stablecoin"
+                            | currencyDefault: "stablecoin":"implicit"
+                        }}
                       </span>
-                      <span class="font-medium">
-                        Max
-                      </span>
+                      <span class="font-medium"> Max </span>
                     </a>
                   </div>
                 </div>
               </div>
 
-              <div class="mt-4" *ngIf="!investmentForm.errors?.campaignMaxReached">
-                <button app-action-button
-                        class="w-full app-button"
-                        [hidden]="(isUserLoggedIn$ | async) === true"
-                        [onClick]="login.bind(this)"
-                        text="Log in"></button>
+              <div
+                class="mt-4"
+                *ngIf="!investmentForm.errors?.campaignMaxReached"
+              >
+                <button
+                  app-action-button
+                  class="w-full app-button"
+                  [hidden]="(isUserLoggedIn$ | async) === true"
+                  [onClick]="login.bind(this)"
+                  text="Log in"
+                ></button>
 
-                <button app-action-button
-                        class="w-full app-button"
-                        [hidden]="(shouldOnlyPassKyc$ | async) !== true"
-                        [disabled]="investmentForm.invalid"
-                        [onClick]="passKyc(state).bind(this)"
-                        text="Next 📝"></button>
+                <button
+                  app-action-button
+                  class="w-full app-button"
+                  [hidden]="(shouldOnlyPassKyc$ | async) !== true"
+                  [disabled]="investmentForm.invalid"
+                  [onClick]="passKyc(state).bind(this)"
+                  text="Next 📝"
+                ></button>
 
-                <button app-action-button
-                        class="w-full app-button"
-                        [hidden]="(shouldOnlyGetFunds$ | async) !== true"
-                        [disabled]="!investmentForm.errors?.stablecoinAmountAboveBalance"
-                        [onClick]="getFunds(state).bind(this)"
-                        text="Next 💰"></button>
+                <button
+                  app-action-button
+                  class="w-full app-button"
+                  [hidden]="(shouldOnlyGetFunds$ | async) !== true"
+                  [disabled]="
+                    !investmentForm.errors?.stablecoinAmountAboveBalance
+                  "
+                  [onClick]="getFunds(state).bind(this)"
+                  text="Next 💰"
+                ></button>
 
-                <button app-action-button
-                        class="w-full app-button"
-                        [hidden]="(shouldPassKycAndGetFunds$ | async) !== true"
-                        [disabled]="!investmentForm.errors?.stablecoinAmountAboveBalance"
-                        [onClick]="passKycAndGetFunds(state).bind(this)"
-                        text="Next 📝💰"></button>
+                <button
+                  app-action-button
+                  class="w-full app-button"
+                  [hidden]="(shouldPassKycAndGetFunds$ | async) !== true"
+                  [disabled]="
+                    !investmentForm.errors?.stablecoinAmountAboveBalance
+                  "
+                  [onClick]="passKycAndGetFunds(state).bind(this)"
+                  text="Next 📝💰"
+                ></button>
 
-                <button app-action-button
-                        class="w-full app-button"
-                        [hidden]="(shouldApprove$ | async) !== true"
-                        [onClick]="approveAmount(state.campaign).bind(this)"
-                        [disabled]="investmentForm.invalid"
-                        text="Approve">
-                </button>
+                <button
+                  app-action-button
+                  class="w-full app-button"
+                  [hidden]="(shouldApprove$ | async) !== true"
+                  [onClick]="approveAmount(state.campaign).bind(this)"
+                  [disabled]="investmentForm.invalid"
+                  text="Approve"
+                ></button>
 
-                <button app-action-button
-                        class="w-full app-button"
-                        [hidden]="(shouldBuy$ | async) !== true"
-                        [disabled]="investmentForm.invalid"
-                        [onClick]="invest(state.campaign).bind(this)"
-                        text="Buy">
-                </button>
+                <button
+                  app-action-button
+                  class="w-full app-button"
+                  [hidden]="(shouldBuy$ | async) !== true"
+                  [disabled]="investmentForm.invalid"
+                  [onClick]="invest(state.campaign).bind(this)"
+                  text="Buy"
+                ></button>
               </div>
             </form>
           </div>
@@ -230,9 +341,7 @@
       </ng-container>
 
       <ng-container *ngIf="stateRes.error">
-        <div class="flex justify-center py-8">
-          Cannot fetch data.
-        </div>
+        <div class="flex justify-center py-8">Cannot fetch data.</div>
         <div hidden>{{ stateRes.error | json }}</div>
       </ng-container>
 

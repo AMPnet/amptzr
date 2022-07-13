@@ -1,4 +1,11 @@
-import {Directive, ElementRef, forwardRef, HostListener, Input, Renderer2} from '@angular/core'
+import {
+  Directive,
+  ElementRef,
+  forwardRef,
+  HostListener,
+  Input,
+  Renderer2,
+} from '@angular/core'
 import {
   AbstractControl,
   AsyncValidator,
@@ -9,12 +16,13 @@ import {
   ValidationErrors,
 } from '@angular/forms'
 
-import {forkJoin, fromEventPattern, Observable, of, ReplaySubject} from 'rxjs'
-import {first, map, shareReplay, take} from 'rxjs/operators'
+import { forkJoin, fromEventPattern, Observable, of, ReplaySubject } from 'rxjs'
+import { first, map, shareReplay, take } from 'rxjs/operators'
 
 @Directive({
-  // eslint-disable-next-line @angular-eslint/directive-selector
-  selector: 'input[type=file][formControl],input[type=file][formControlName],input[type=file][ngModel]',
+  selector:
+    // eslint-disable-next-line @angular-eslint/directive-selector
+    'input[type=file][formControl],input[type=file][formControlName],input[type=file][ngModel]',
   providers: [
     {
       provide: NG_VALUE_ACCESSOR,
@@ -28,7 +36,9 @@ import {first, map, shareReplay, take} from 'rxjs/operators'
     },
   ],
 })
-export class FileInputAccessorDirective implements ControlValueAccessor, AsyncValidator {
+export class FileInputAccessorDirective
+  implements ControlValueAccessor, AsyncValidator
+{
   @Input() allowedTypes: RegExp | string | string[] = ''
   @Input() size: number = 0
   @Input() withMeta: boolean = false
@@ -56,10 +66,8 @@ export class FileInputAccessorDirective implements ControlValueAccessor, AsyncVa
 
   private _allowedExt: RegExp | string | string[] = ''
 
-  @HostListener('change', ['$event.target.files']) onChange = (_: any) => {
-  }
-  @HostListener('blur') onTouched = () => {
-  }
+  @HostListener('change', ['$event.target.files']) onChange = (_: any) => {}
+  @HostListener('blur') onTouched = () => {}
 
   constructor(private _renderer: Renderer2, private _elementRef: ElementRef) {
     this.validator = this.generateAsyncValidator()
@@ -73,14 +81,19 @@ export class FileInputAccessorDirective implements ControlValueAccessor, AsyncVa
     this.onChange = this.onChangeGenerator(fn)
   }
 
-  registerOnTouched(fn: () => {}): void {
-  }
+  registerOnTouched(fn: () => {}): void {}
 
   setDisabledState(isDisabled: boolean): void {
-    this._renderer.setProperty(this._elementRef.nativeElement, 'disabled', isDisabled)
+    this._renderer.setProperty(
+      this._elementRef.nativeElement,
+      'disabled',
+      isDisabled
+    )
   }
 
-  validate(c: AbstractControl): Observable<ValidationErrors | null> | Promise<ValidationErrors | null> {
+  validate(
+    c: AbstractControl
+  ): Observable<ValidationErrors | null> | Promise<ValidationErrors | null> {
     return this.validator(c)
   }
 
@@ -101,51 +114,58 @@ export class FileInputAccessorDirective implements ControlValueAccessor, AsyncVa
           errors.fileSize = true
         }
 
-        if (f.isImg && (this.maxWidth || this.maxHeight || this.minWidth || this.minHeight)) {
+        if (
+          f.isImg &&
+          (this.maxWidth || this.maxHeight || this.minWidth || this.minHeight)
+        ) {
           loaders.push(
-            f.imgLoadReplay
-              .pipe(
-                take(1),
-                map((e: ProgressEvent) => {
-                  const minWidthError = this.minWidth && f.imgWidth < this.minWidth
-                  const minHeightError = this.minHeight && f.imgHeight < this.minHeight
-                  const maxWidthError = this.maxWidth && f.imgWidth > this.maxWidth
-                  const maxHeightError = this.maxHeight && f.imgHeight > this.maxHeight
+            f.imgLoadReplay.pipe(
+              take(1),
+              map((e: ProgressEvent) => {
+                const minWidthError =
+                  this.minWidth && f.imgWidth < this.minWidth
+                const minHeightError =
+                  this.minHeight && f.imgHeight < this.minHeight
+                const maxWidthError =
+                  this.maxWidth && f.imgWidth > this.maxWidth
+                const maxHeightError =
+                  this.maxHeight && f.imgHeight > this.maxHeight
 
-                  if (minWidthError) {
-                    f.errors.minWidth = true
-                    errors.minWidth = true
-                  }
+                if (minWidthError) {
+                  f.errors.minWidth = true
+                  errors.minWidth = true
+                }
 
-                  if (minHeightError) {
-                    f.errors.minHeight = true
-                    errors.minHeight = true
-                  }
+                if (minHeightError) {
+                  f.errors.minHeight = true
+                  errors.minHeight = true
+                }
 
-                  if (maxWidthError) {
-                    f.errors.maxWidth = true
-                    errors.maxWidth = true
-                  }
+                if (maxWidthError) {
+                  f.errors.maxWidth = true
+                  errors.maxWidth = true
+                }
 
-                  if (maxHeightError) {
-                    f.errors.maxHeight = true
-                    errors.maxHeight = true
-                  }
+                if (maxHeightError) {
+                  f.errors.maxHeight = true
+                  errors.maxHeight = true
+                }
 
-                  /** will be @deprecated **/
-                  if (minWidthError || maxWidthError) {
-                    f.errors.imageWidth = true
-                    errors.imageWidth = true
-                  }
+                /** will be @deprecated **/
+                if (minWidthError || maxWidthError) {
+                  f.errors.imageWidth = true
+                  errors.imageWidth = true
+                }
 
-                  /** will be @deprecated **/
-                  if (minHeightError || maxHeightError) {
-                    f.errors.imageHeight = true
-                    errors.imageHeight = true
-                  }
+                /** will be @deprecated **/
+                if (minHeightError || maxHeightError) {
+                  f.errors.imageHeight = true
+                  errors.imageHeight = true
+                }
 
-                  return e
-                })),
+                return e
+              })
+            )
           )
         }
 
@@ -214,26 +234,23 @@ export class FileInputAccessorDirective implements ControlValueAccessor, AsyncVa
     }
   }
 
-  private setImage(f: ICustomFile, fr: FileReader): ReplaySubject<[Event, ProgressEvent]> {
+  private setImage(
+    f: ICustomFile,
+    fr: FileReader
+  ): ReplaySubject<[Event, ProgressEvent]> {
     f.isImg = true
 
     const img = new Image()
 
     const imgLoadObs = fromEventPattern<Event>(
-      ((handler: any) => img.addEventListener('load', handler)),
-      ((handler: any) => img.removeEventListener('load', handler)),
-    ).pipe(
-      take(1),
-      shareReplay(),
-    )
+      (handler: any) => img.addEventListener('load', handler),
+      (handler: any) => img.removeEventListener('load', handler)
+    ).pipe(take(1), shareReplay())
 
     const frLoadObs = fromEventPattern<ProgressEvent>(
-      ((handler: any) => fr.addEventListener('load', handler)),
-      ((handler: any) => fr.removeEventListener('load', handler)),
-    ).pipe(
-      take(1),
-      shareReplay(),
-    )
+      (handler: any) => fr.addEventListener('load', handler),
+      (handler: any) => fr.removeEventListener('load', handler)
+    ).pipe(take(1), shareReplay())
 
     const onloadReplay = new ReplaySubject<[Event, ProgressEvent]>(1)
     forkJoin([imgLoadObs, frLoadObs]).pipe(first()).subscribe(onloadReplay)
@@ -253,14 +270,14 @@ export class FileInputAccessorDirective implements ControlValueAccessor, AsyncVa
     return onloadReplay
   }
 
-  private setText(f: ICustomFile, fr: FileReader): ReplaySubject<ProgressEvent> {
+  private setText(
+    f: ICustomFile,
+    fr: FileReader
+  ): ReplaySubject<ProgressEvent> {
     const frLoadObs = fromEventPattern<ProgressEvent>(
-      ((handler: any) => fr.addEventListener('load', handler)),
-      ((handler: any) => fr.removeEventListener('load', handler)),
-    ).pipe(
-      take(1),
-      shareReplay(),
-    )
+      (handler: any) => fr.addEventListener('load', handler),
+      (handler: any) => fr.removeEventListener('load', handler)
+    ).pipe(take(1), shareReplay())
 
     const onloadReplay = new ReplaySubject<ProgressEvent>(1)
     frLoadObs.subscribe(onloadReplay)
@@ -277,21 +294,21 @@ export class FileInputAccessorDirective implements ControlValueAccessor, AsyncVa
 
 export interface ICustomFile extends File {
   errors?: {
-    imageWidth?: boolean,
-    imageHeight?: boolean,
-    maxWidth?: boolean,
-    maxHeight?: boolean,
-    minWidth?: boolean,
-    minHeight?: boolean,
-    fileSize?: boolean,
-    fileType?: boolean,
+    imageWidth?: boolean
+    imageHeight?: boolean
+    maxWidth?: boolean
+    maxHeight?: boolean
+    minWidth?: boolean
+    minHeight?: boolean
+    fileSize?: boolean
+    fileType?: boolean
     fileExt?: boolean
-  };
-  imgSrc?: string;
-  imgHeight?: number;
-  imgWidth?: number;
-  isImg?: boolean;
-  imgLoadReplay?: ReplaySubject<[Event, ProgressEvent]>;
-  textContent?: string;
-  textLoadReplay?: ReplaySubject<ProgressEvent>;
+  }
+  imgSrc?: string
+  imgHeight?: number
+  imgWidth?: number
+  isImg?: boolean
+  imgLoadReplay?: ReplaySubject<[Event, ProgressEvent]>
+  textContent?: string
+  textLoadReplay?: ReplaySubject<ProgressEvent>
 }

@@ -1,34 +1,38 @@
 <div class="flex gap-4 w-56 text-lg">
-  <button class="flex-grow px-4 py-1 font-semibold border-2 rounded-full"
-          [ngClass]="{
-            'border-gray-400': disabled,
-            'border-indigo-800': !disabled,
+  <button
+    class="flex-grow px-4 py-1 font-semibold border-2 rounded-full"
+    [ngClass]="{
+      'border-gray-400': disabled,
+      'border-indigo-800': !disabled,
 
-            'text-indigo-800': !disabled && value !== true,
-            'text-gray-400': disabled && value !== true,
-            'text-white': value === true,
+      'text-indigo-800': !disabled && value !== true,
+      'text-gray-400': disabled && value !== true,
+      'text-white': value === true,
 
-            'bg-white': value !== true,
-            'bg-indigo-800': !disabled && value === true,
-            'bg-gray-400': disabled && value === true
-          }"
-          (click)="setValue(true)">
+      'bg-white': value !== true,
+      'bg-indigo-800': !disabled && value === true,
+      'bg-gray-400': disabled && value === true
+    }"
+    (click)="setValue(true)"
+  >
     Yes
   </button>
-  <button class="flex-grow px-4 py-1 font-semibold border-indigo-800 border-2 rounded-full"
-          [ngClass]="{
-            'border-gray-400': disabled,
-            'border-indigo-800': !disabled,
+  <button
+    class="flex-grow px-4 py-1 font-semibold border-indigo-800 border-2 rounded-full"
+    [ngClass]="{
+      'border-gray-400': disabled,
+      'border-indigo-800': !disabled,
 
-            'text-indigo-800': !disabled && value !== false,
-            'text-gray-400': disabled && value !== false,
-            'text-white': value === false,
+      'text-indigo-800': !disabled && value !== false,
+      'text-gray-400': disabled && value !== false,
+      'text-white': value === false,
 
-            'bg-white': value !== false,
-            'bg-indigo-800': !disabled && value === false,
-            'bg-gray-400': disabled && value === false
-          }"
-          (click)="setValue(false)">
+      'bg-white': value !== false,
+      'bg-indigo-800': !disabled && value === false,
+      'bg-gray-400': disabled && value === false
+    }"
+    (click)="setValue(false)"
+  >
     No
   </button>
 </div>

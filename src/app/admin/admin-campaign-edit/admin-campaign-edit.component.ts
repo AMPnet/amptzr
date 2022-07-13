@@ -1,19 +1,29 @@
-import {ChangeDetectionStrategy, Component} from '@angular/core'
-import {Observable} from 'rxjs'
-import {withStatus, WithStatus} from '../../shared/utils/observables'
-import {ActivatedRoute} from '@angular/router'
-import {switchMap, tap} from 'rxjs/operators'
-import {FormArray, FormBuilder, FormControl, FormGroup, ValidationErrors, Validators} from '@angular/forms'
-import {quillMods} from 'src/app/shared/utils/quill'
-import {DialogService} from '../../shared/services/dialog.service'
-import {RouterService} from '../../shared/services/router.service'
-import {CampaignService, CampaignWithInfo} from '../../shared/services/blockchain/campaign/campaign.service'
-import {NameService} from '../../shared/services/blockchain/name.service'
-import {dateToIsoString} from '../../shared/utils/date'
-import {ReturnFrequency} from '../../../../types/ipfs/campaign'
-import {AdminIssuerEditComponent} from '../admin-issuer-edit/admin-issuer-edit.component'
-import {CampaignFlavor} from '../../shared/services/blockchain/flavors'
-import {PhysicalInputService} from '../../shared/services/physical-input.service'
+import { ChangeDetectionStrategy, Component } from '@angular/core'
+import { Observable } from 'rxjs'
+import { withStatus, WithStatus } from '../../shared/utils/observables'
+import { ActivatedRoute } from '@angular/router'
+import { switchMap, tap } from 'rxjs/operators'
+import {
+  FormArray,
+  FormBuilder,
+  FormControl,
+  FormGroup,
+  ValidationErrors,
+  Validators,
+} from '@angular/forms'
+import { quillMods } from 'src/app/shared/utils/quill'
+import { DialogService } from '../../shared/services/dialog.service'
+import { RouterService } from '../../shared/services/router.service'
+import {
+  CampaignService,
+  CampaignWithInfo,
+} from '../../shared/services/blockchain/campaign/campaign.service'
+import { NameService } from '../../shared/services/blockchain/name.service'
+import { dateToIsoString } from '../../shared/utils/date'
+import { ReturnFrequency } from '../../../../types/ipfs/campaign'
+import { AdminIssuerEditComponent } from '../admin-issuer-edit/admin-issuer-edit.component'
+import { CampaignFlavor } from '../../shared/services/blockchain/flavors'
+import { PhysicalInputService } from '../../shared/services/physical-input.service'
 
 @Component({
   selector: 'app-admin-campaign-edit',
@@ -39,54 +49,76 @@ export class AdminCampaignEditComponent {
     [ReturnFrequency.ANNUALLY]: 'Annualy',
   }
 
-  constructor(private campaignService: CampaignService,
-              private nameService: NameService,
-              private route: ActivatedRoute,
-              private routerService: RouterService,
-              private dialogService: DialogService,
-              private physicalInputService: PhysicalInputService,
-              private fb: FormBuilder) {
-    this.updateForm = this.fb.group({
-      name: ['', Validators.required],
-      logo: [undefined],
-      about: ['', Validators.required],
-      description: ['', Validators.required],
-      startDate: [undefined],
-      endDate: [undefined],
-      documentUpload: [undefined],
-      newDocuments: [[]],
-      oldDocuments: [[]],
-      newsUrls: this.fb.array([]),
-      isReturningProfitsToInvestors: [false, Validators.required],
-      returnFrequency: [{value: '', disabled: true}, Validators.required],
-      isReturnValueFixed: [false, Validators.required],
-      returnFrom: [{value: undefined, disabled: true}, [Validators.required, Validators.min(0.01), Validators.max(1)]],
-      returnTo: [{value: undefined, disabled: true}, [Validators.required, Validators.min(0.01), Validators.max(1)]],
-    }, {
-      validators: [
-        AdminCampaignEditComponent.validReturnFromTo,
-        AdminCampaignEditComponent.validDateRange,
-      ],
-    })
+  constructor(
+    private campaignService: CampaignService,
+    private nameService: NameService,
+    private route: ActivatedRoute,
+    private routerService: RouterService,
+    private dialogService: DialogService,
+    private physicalInputService: PhysicalInputService,
+    private fb: FormBuilder
+  ) {
+    this.updateForm = this.fb.group(
+      {
+        name: ['', Validators.required],
+        logo: [undefined],
+        about: ['', Validators.required],
+        description: ['', Validators.required],
+        startDate: [undefined],
+        endDate: [undefined],
+        documentUpload: [undefined],
+        newDocuments: [[]],
+        oldDocuments: [[]],
+        newsUrls: this.fb.array([]),
+        isReturningProfitsToInvestors: [false, Validators.required],
+        returnFrequency: [{ value: '', disabled: true }, Validators.required],
+        isReturnValueFixed: [false, Validators.required],
+        returnFrom: [
+          { value: undefined, disabled: true },
+          [Validators.required, Validators.min(0.01), Validators.max(1)],
+        ],
+        returnTo: [
+          { value: undefined, disabled: true },
+          [Validators.required, Validators.min(0.01), Validators.max(1)],
+        ],
+      },
+      {
+        validators: [
+          AdminCampaignEditComponent.validReturnFromTo,
+          AdminCampaignEditComponent.validDateRange,
+        ],
+      }
+    )
     this.newsUrls = this.updateForm.get('newsUrls') as FormArray
 
     this.updateInfoForm = this.fb.group({
       info: ['', Validators.required],
     })
     this.updateOwnerAddressForm = this.fb.group({
-      ownerAddress: ['', [Validators.required, AdminIssuerEditComponent.validAddress]],
+      ownerAddress: [
+        '',
+        [Validators.required, AdminIssuerEditComponent.validAddress],
+      ],
     })
 
     const campaignId = this.route.snapshot.params.campaignId
     this.campaign$ = this.nameService.getCampaign(campaignId).pipe(
-      switchMap(campaign => withStatus(this.campaignService.getCampaignInfo(campaign.campaign, true))),
-      tap(campaign => {
+      switchMap((campaign) =>
+        withStatus(
+          this.campaignService.getCampaignInfo(campaign.campaign, true)
+        )
+      ),
+      tap((campaign) => {
         if (campaign.value) {
-          const sameReturnRange = campaign.value.infoData.return.from === campaign.value.infoData.return.to
+          const sameReturnRange =
+            campaign.value.infoData.return.from ===
+            campaign.value.infoData.return.to
           const noReturnToValue = !campaign.value.infoData.return.to
           const noReturnFromValue = !campaign.value.infoData.return.from
-          const isReturningProfitsToInvestors = !!campaign.value.infoData.return.frequency
-          const isReturnValueFixed = sameReturnRange || noReturnToValue || noReturnFromValue
+          const isReturningProfitsToInvestors =
+            !!campaign.value.infoData.return.frequency
+          const isReturnValueFixed =
+            sameReturnRange || noReturnToValue || noReturnFromValue
 
           this.updateForm.reset()
           this.updateForm.setValue({
@@ -123,8 +155,8 @@ export class AdminCampaignEditComponent {
           }
 
           this.newsUrls.clear()
-          campaign.value.infoData.newsURLs.forEach(url =>
-            this.newsUrls.push(this.createNewsUrlControl(url)),
+          campaign.value.infoData.newsURLs.forEach((url) =>
+            this.newsUrls.push(this.createNewsUrlControl(url))
           )
 
           this.toggleReturnFrequencyControls(isReturningProfitsToInvestors)
@@ -133,7 +165,7 @@ export class AdminCampaignEditComponent {
           this.newsUrls.markAsPristine()
           this.updateForm.markAsPristine()
         }
-      }),
+      })
     )
   }
 
@@ -194,59 +226,94 @@ export class AdminCampaignEditComponent {
 
   update(campaign: CampaignWithInfo) {
     return () => {
-      return this.campaignService.uploadInfo(
-        {
-          name: this.updateForm.value.name,
-          photo: this.updateForm.value.logo?.[0],
-          about: this.updateForm.value.about,
-          description: this.updateForm.value.description,
-          startDate: dateToIsoString(this.updateForm.value.startDate),
-          endDate: dateToIsoString(this.updateForm.value.endDate),
-          documents: this.updateForm.value.oldDocuments,
-          newDocuments: this.updateForm.value.newDocuments,
-          return: this.createCampaignReturnObject(),
-          newsURLs: this.newsUrls.value,
-        },
-        campaign.infoData,
-      ).pipe(
-        switchMap(uploadRes => this.campaignService.updateInfo(campaign.contractAddress, uploadRes.path)),
-        switchMap(() => this.dialogService.success({
-          message: 'Campaign has been updated.',
-        })),
-        switchMap(() => this.routerService.navigate(['..'], {relativeTo: this.route})),
-      )
+      return this.campaignService
+        .uploadInfo(
+          {
+            name: this.updateForm.value.name,
+            photo: this.updateForm.value.logo?.[0],
+            about: this.updateForm.value.about,
+            description: this.updateForm.value.description,
+            startDate: dateToIsoString(this.updateForm.value.startDate),
+            endDate: dateToIsoString(this.updateForm.value.endDate),
+            documents: this.updateForm.value.oldDocuments,
+            newDocuments: this.updateForm.value.newDocuments,
+            return: this.createCampaignReturnObject(),
+            newsURLs: this.newsUrls.value,
+          },
+          campaign.infoData
+        )
+        .pipe(
+          switchMap((uploadRes) =>
+            this.campaignService.updateInfo(
+              campaign.contractAddress,
+              uploadRes.path
+            )
+          ),
+          switchMap(() =>
+            this.dialogService.success({
+              message: 'Campaign has been updated.',
+            })
+          ),
+          switchMap(() =>
+            this.routerService.navigate(['..'], { relativeTo: this.route })
+          )
+        )
     }
   }
 
   updateInfo(campaign: CampaignWithInfo) {
     return () => {
-      return this.campaignService.updateInfo(campaign.contractAddress, this.updateInfoForm.value.info).pipe(
-        switchMap(() => this.dialogService.success({
-          message: 'Campaign info has been updated.',
-        })),
-        switchMap(() => this.routerService.navigate(['..'], {relativeTo: this.route})),
-      )
+      return this.campaignService
+        .updateInfo(campaign.contractAddress, this.updateInfoForm.value.info)
+        .pipe(
+          switchMap(() =>
+            this.dialogService.success({
+              message: 'Campaign info has been updated.',
+            })
+          ),
+          switchMap(() =>
+            this.routerService.navigate(['..'], { relativeTo: this.route })
+          )
+        )
     }
   }
 
-  updateOwnerAddress(campaign: CampaignWithInfo, flavor: CampaignFlavor | string) {
+  updateOwnerAddress(
+    campaign: CampaignWithInfo,
+    flavor: CampaignFlavor | string
+  ) {
     return () => {
-      return this.campaignService.changeOwner(
-        campaign.contractAddress, this.updateOwnerAddressForm.value.ownerAddress, flavor as CampaignFlavor,
-      ).pipe(
-        switchMap(() => this.dialogService.success({
-          message: 'The owner has been changed.',
-        })),
-        tap(() => this.routerService.navigate([`/admin/assets/${campaign.asset}`])),
-      )
+      return this.campaignService
+        .changeOwner(
+          campaign.contractAddress,
+          this.updateOwnerAddressForm.value.ownerAddress,
+          flavor as CampaignFlavor
+        )
+        .pipe(
+          switchMap(() =>
+            this.dialogService.success({
+              message: 'The owner has been changed.',
+            })
+          ),
+          tap(() =>
+            this.routerService.navigate([`/admin/assets/${campaign.asset}`])
+          )
+        )
     }
   }
 
   private createNewsUrlControl(value: string) {
-    return this.fb.control(value, [Validators.required, Validators.pattern('[^\\s]*')])
+    return this.fb.control(value, [
+      Validators.required,
+      Validators.pattern('[^\\s]*'),
+    ])
   }
 
-  private createCampaignReturnObject(): { frequency?: ReturnFrequency, from?: number, to?: number } {
+  private createCampaignReturnObject(): {
+    frequency?: ReturnFrequency
+    from?: number
+    to?: number
+  } {
     if (this.updateForm.value.isReturningProfitsToInvestors) {
       if (this.updateForm.value.isReturnValueFixed) {
         return {
@@ -265,21 +332,23 @@ export class AdminCampaignEditComponent {
     return {}
   }
 
-  private static validReturnFromTo(formGroup: FormGroup): ValidationErrors | null {
+  private static validReturnFromTo(
+    formGroup: FormGroup
+  ): ValidationErrors | null {
     if (formGroup.value.isReturningProfitsToInvestors) {
       const returnFrom = formGroup.value.returnFrom
       if (returnFrom <= 0 || returnFrom > 1) {
-        return {invalidReturnFrom: true}
+        return { invalidReturnFrom: true }
       }
 
       if (!formGroup.value.isReturnValueFixed) {
         const returnTo = formGroup.value.returnTo
         if (returnTo <= 0 || returnTo > 1) {
-          return {invalidReturnTo: true}
+          return { invalidReturnTo: true }
         }
 
         if (returnFrom >= returnTo) {
-          return {invalidReturnFromToRange: true}
+          return { invalidReturnFromToRange: true }
         }
       }
     }
@@ -291,7 +360,7 @@ export class AdminCampaignEditComponent {
     const startDate = formGroup.value.startDate
     const endDate = formGroup.value.endDate
     if (!!startDate && !!endDate && startDate > endDate) {
-      return {invalidDateRange: true}
+      return { invalidDateRange: true }
     }
 
     return null

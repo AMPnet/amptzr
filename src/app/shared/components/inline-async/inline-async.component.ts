@@ -1,6 +1,6 @@
-import {ChangeDetectionStrategy, Component, Input} from '@angular/core'
-import {Observable} from 'rxjs'
-import {WithStatus} from '../../utils/observables'
+import { ChangeDetectionStrategy, Component, Input } from '@angular/core'
+import { Observable } from 'rxjs'
+import { WithStatus } from '../../utils/observables'
 
 @Component({
   selector: 'app-inline-async',

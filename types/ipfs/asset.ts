@@ -1,5 +1,5 @@
-import {cid, version} from './common'
-import {url} from '../common'
+import { cid, version } from './common'
+import { url } from '../common'
 
 /**
  * Asset interface is the agreed format of the content behind an IPFS hash
@@ -11,7 +11,7 @@ export interface IPFSAsset {
   logo: url | cid
   description: string | cid
   documents: {
-    name: string,
+    name: string
     location: string | cid
   }[]
 }

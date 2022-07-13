@@ -1,7 +1,13 @@
-import {ChangeDetectionStrategy, Component, Inject, OnInit, Optional} from '@angular/core'
-import {BehaviorSubject} from 'rxjs'
-import {LoadingDialogData} from '../loading-dialog.component'
-import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog'
+import {
+  ChangeDetectionStrategy,
+  Component,
+  Inject,
+  OnInit,
+  Optional,
+} from '@angular/core'
+import { BehaviorSubject } from 'rxjs'
+import { LoadingDialogData } from '../loading-dialog.component'
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog'
 
 @Component({
   selector: 'app-loading-dialog-transaction',
@@ -16,9 +22,10 @@ export class LoadingDialogTransactionComponent implements OnInit {
   })
   data$ = this.dataSub.asObservable()
 
-  constructor(@Inject(MAT_DIALOG_DATA) @Optional() public data: LoadingDialogData,
-              @Optional() private dialogRef: MatDialogRef<LoadingDialogTransactionData>) {
-  }
+  constructor(
+    @Inject(MAT_DIALOG_DATA) @Optional() public data: LoadingDialogData,
+    @Optional() private dialogRef: MatDialogRef<LoadingDialogTransactionData>
+  ) {}
 
   ngOnInit(): void {
     if (!this.data) {
@@ -33,6 +40,6 @@ export class LoadingDialogTransactionComponent implements OnInit {
 }
 
 export interface LoadingDialogTransactionData {
-  title: string;
-  message: string;
+  title: string
+  message: string
 }

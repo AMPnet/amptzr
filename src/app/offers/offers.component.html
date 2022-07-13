@@ -1,27 +1,33 @@
 <div class="max-w-6xl mx-auto px-2 lg:px-4 pb-12">
-  <ng-container *ngIf="(offers$ | async) as offersRes">
+  <ng-container *ngIf="offers$ | async as offersRes">
     <ng-container *ngIf="offersRes.value as offers">
       <div class="flex flex-col justify-center items-center">
         <div class="w-full mx-4 grid grid-cols-2">
-          <div class="lg:mx-4 mt-8" *ngFor="let offer of offers; let i = index"
-               [class]="{ 'col-span-2': true, 'lg:col-span-1': i % 3 !== 0 }">
-            <app-offers-card [campaign]="offer" *ngIf="i % 3 === 0"></app-offers-card>
-            <app-offers-card [campaign]="offer" *ngIf="i % 3 !== 0" size="small"></app-offers-card>
+          <div
+            class="lg:mx-4 mt-8"
+            *ngFor="let offer of offers; let i = index"
+            [class]="{ 'col-span-2': true, 'lg:col-span-1': i % 3 !== 0 }"
+          >
+            <app-offers-card
+              [campaign]="offer"
+              *ngIf="i % 3 === 0"
+            ></app-offers-card>
+            <app-offers-card
+              [campaign]="offer"
+              *ngIf="i % 3 !== 0"
+              size="small"
+            ></app-offers-card>
           </div>
         </div>
       </div>
 
       <ng-container *ngIf="offers.length === 0">
-        <div class="flex justify-center py-4">
-          No offers available.
-        </div>
+        <div class="flex justify-center py-4">No offers available.</div>
       </ng-container>
     </ng-container>
 
     <ng-container *ngIf="offersRes.error">
-      <div class="flex justify-center py-4">
-        Cannot fetch offers.
-      </div>
+      <div class="flex justify-center py-4">Cannot fetch offers.</div>
       <div hidden>{{ offersRes.error | json }}</div>
     </ng-container>
 
