@@ -39,16 +39,21 @@ export class PayoutService {
 
   getSnapshots(): Observable<Snapshot[]> {
     return this.http
-      .get<GetSnapshotsRes>(`${this.path}/snapshots`, {
-        chainId: this.preferenceQuery.network.chainID,
-        issuer: this.preferenceQuery.issuer.address ?? undefined,
-        owner: this.preferenceQuery.getValue().address ?? undefined,
-        assetFactories: this.preferenceQuery.assetFactories.join(','),
-        payoutService:
-          this.preferenceQuery.network.tokenizerConfig.payoutService,
-        payoutManager:
-          this.preferenceQuery.network.tokenizerConfig.payoutManager,
-      } as GetSnapshotsParams)
+      .get<GetSnapshotsRes>(
+        `${this.path}/snapshots`,
+        {
+          chainId: this.preferenceQuery.network.chainID,
+          issuer: this.preferenceQuery.issuer.address ?? undefined,
+          owner: this.preferenceQuery.getValue().address ?? undefined,
+          assetFactories: this.preferenceQuery.assetFactories.join(','),
+          payoutService:
+            this.preferenceQuery.network.tokenizerConfig.payoutService,
+          payoutManager:
+            this.preferenceQuery.network.tokenizerConfig.payoutManager,
+        } as GetSnapshotsParams,
+        false,
+        false
+      )
       .pipe(map((res) => res.snapshots))
   }
 

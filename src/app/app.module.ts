@@ -130,6 +130,7 @@ import { AddressBookComponent } from './dashboard/address-book/address-book.comp
 import { ApiKeyShortPipe } from './shared/pipes/api-key-short.pipe'
 import { AirdropComponent } from './dashboard/airdrop/airdrop.component'
 import { PaymentsComponent } from './payments/payments.component'
+import { RequestSendListComponent } from './request-send/request-send-list/request-send-list.component'
 
 @NgModule({
   declarations: [
@@ -237,6 +238,7 @@ import { PaymentsComponent } from './payments/payments.component'
     AddressBookComponent,
     AirdropComponent,
     PaymentsComponent,
+    RequestSendListComponent,
   ],
   imports: [
     BrowserModule,

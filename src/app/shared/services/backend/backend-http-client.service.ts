@@ -62,16 +62,16 @@ export class BackendHttpClient {
       )
     )
   }
-
   get<T>(
     path: string,
     params?: object,
     publicRoute = false,
+    apiProtectedRoute = false,
     shouldHandleErrors = true
   ): Observable<T> {
     return (publicRoute ? of(undefined) : this.ensureAuth).pipe(
       switchMap(() => {
-        const httpOptions = this.authHttpOptions(publicRoute)
+        const httpOptions = this.authHttpOptions(publicRoute, apiProtectedRoute)
         if (params) httpOptions.params = params
 
         return this.http.get<T>(path, httpOptions)
@@ -84,11 +84,16 @@ export class BackendHttpClient {
     path: string,
     body: any,
     publicRoute = false,
-    shouldHandleErrors = true
+    shouldHandleErrors = true,
+    apiProtectedRoute = false
   ): Observable<T> {
     return (publicRoute ? of(undefined) : this.ensureAuth).pipe(
       switchMap(() =>
-        this.http.post<T>(path, body, this.authHttpOptions(publicRoute))
+        this.http.post<T>(
+          path,
+          body,
+          this.authHttpOptions(publicRoute, apiProtectedRoute)
+        )
       ),
       this.handleError(shouldHandleErrors)
     )
@@ -129,7 +134,10 @@ export class BackendHttpClient {
     return this.jwtTokenService.logout()
   }
 
-  public authHttpOptions(publicRoute = false): HttpOptions {
+  public authHttpOptions(
+    publicRoute = false,
+    apiProtectedRoute = false
+  ): HttpOptions {
     const httpOptions: HttpOptions = {
       headers: new HttpHeaders(),
     }
@@ -140,6 +148,11 @@ export class BackendHttpClient {
         'Authorization',
         `Bearer ${this.jwtTokenService.accessToken}`
       )
+    }
+
+    const apiKey = this.preferenceQuery.getValue().apiKey
+    if (apiKey !== null && apiProtectedRoute) {
+      httpOptions.headers = httpOptions.headers.append('X-API-Key', apiKey)
     }
 
     return httpOptions

@@ -10,6 +10,7 @@ export interface PreferenceState {
   JWTAccessToken: string
   JWTRefreshToken: string
   chainID: ChainID
+  apiKey: string
   issuer: {
     address: string
     flavor: IssuerFlavor
@@ -23,6 +24,7 @@ export function createInitialState(): PreferenceState {
     authProvider: '',
     JWTAccessToken: '',
     JWTRefreshToken: '',
+    apiKey: '',
     chainID: environment.fixed.chainID || MaticNetwork.chainID,
     issuer: {
       address: environment.fixed.issuer || '',

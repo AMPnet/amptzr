@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core'
-import { Observable, switchMap } from 'rxjs'
+import { Observable, switchMap, tap } from 'rxjs'
 import { PreferenceQuery } from 'src/app/preference/state/preference.query'
+import { PreferenceStore } from 'src/app/preference/state/preference.store'
 import { environment } from '../../../../environments/environment'
 import { BackendHttpClient } from './backend-http-client.service'
 
@@ -10,9 +11,18 @@ import { BackendHttpClient } from './backend-http-client.service'
 export class ProjectService {
   path = `${environment.backendURL}/api/blockchain-api/v1/projects`
 
+  get apiKey() {
+    return this.preferenceQuery.getValue().apiKey || ''
+  }
+
+  set apiKey(value: string) {
+    this.preferenceStore.update({ apiKey: value })
+  }
+
   constructor(
     private http: BackendHttpClient,
-    private preferenceQuery: PreferenceQuery
+    private preferenceQuery: PreferenceQuery,
+    private preferenceStore: PreferenceStore
   ) {}
 
   createNewProject(issuerContractAddress: string): Observable<ProjectModel> {
@@ -37,8 +47,13 @@ export class ProjectService {
     return this.getProjectIdByChainAndAddress().pipe(
       switchMap((project) =>
         this.http.get<ApiKeyModel>(`${this.path}/${project.id}/api-key`)
-      )
+      ),
+      tap((response) => this.saveApiKey(response.api_key))
     )
+  }
+
+  saveApiKey(value: string) {
+    this.apiKey = value
   }
 }
 

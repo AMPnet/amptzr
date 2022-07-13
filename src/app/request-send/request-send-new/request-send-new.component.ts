@@ -5,14 +5,9 @@ import {
   Erc20Service,
   ERC20TokenData,
 } from '../../shared/services/blockchain/erc20.service'
-import { AssetService } from '../../shared/services/blockchain/asset/asset.service'
-import { PayoutManagerService } from '../../shared/services/blockchain/payout-manager.service'
-import { PayoutService as ContractPayoutService } from '../../shared/services/blockchain/payout.service'
 import { PreferenceQuery } from '../../preference/state/preference.query'
 import { ConversionService } from '../../shared/services/conversion.service'
 import { DialogService } from '../../shared/services/dialog.service'
-import { RouterService } from '../../shared/services/router.service'
-import { ActivatedRoute } from '@angular/router'
 import {
   catchError,
   distinctUntilChanged,
@@ -20,8 +15,6 @@ import {
   startWith,
 } from 'rxjs/operators'
 import { RequestSendService } from '../request-send.service'
-import { getWindow } from '../../shared/utils/browser'
-import { IssuerPathPipe } from '../../shared/pipes/issuer-path.pipe'
 
 @Component({
   selector: 'app-request-send-new',
@@ -32,20 +25,15 @@ import { IssuerPathPipe } from '../../shared/pipes/issuer-path.pipe'
 export class RequestSendNewComponent {
   newRequestSendForm: FormGroup
   asset$: Observable<ERC20TokenData | undefined>
+  address$: Observable<string> = this.preferenceQuery.address$
 
   constructor(
     private requestSendService: RequestSendService,
     private fb: FormBuilder,
     private erc20Service: Erc20Service,
-    private assetService: AssetService,
-    private payoutManagerService: PayoutManagerService,
-    private contractPayoutService: ContractPayoutService,
     private preferenceQuery: PreferenceQuery,
     private conversion: ConversionService,
-    private dialogService: DialogService,
-    private router: RouterService,
-    private issuerPathPipe: IssuerPathPipe,
-    private route: ActivatedRoute
+    private dialogService: DialogService
   ) {
     this.newRequestSendForm = this.fb.group({
       assetAddress: [
@@ -57,6 +45,7 @@ export class RequestSendNewComponent {
         '',
         [Validators.required, Validators.pattern(/^0x[a-fA-F0-9]{40}$/)],
       ],
+      paymentNote: [''],
     })
 
     const assetAddressChanged$ = this.newRequestSendForm
@@ -78,7 +67,7 @@ export class RequestSendNewComponent {
     )
   }
 
-  createRequest(asset: ERC20TokenData) {
+  createRequest(asset: ERC20TokenData, recipient: string) {
     return () => {
       const amount = this.conversion.toToken(
         this.newRequestSendForm.value.tokenAmount || 0,
@@ -86,28 +75,17 @@ export class RequestSendNewComponent {
       )
 
       return this.requestSendService
-        .createRequest({
-          chain_id: this.preferenceQuery.network.chainID,
-          token_address: asset.address,
+        .createRequestWithAPI({
           amount: amount.toString(),
-          recipient_address: this.newRequestSendForm.value.recipientAddress,
-          redirect_url:
-            getWindow().location.origin +
-            this.issuerPathPipe.transform('/request-send/${id}/action'),
+          asset_type: 'TOKEN',
+          token_address: asset.address,
+          recipient_address: recipient,
         })
         .pipe(
           switchMap((res) =>
-            this.dialogService
-              .success({
-                message: 'Send request created.',
-              })
-              .pipe(
-                switchMap(() =>
-                  this.router.navigate([`../${res.id}`], {
-                    relativeTo: this.route,
-                  })
-                )
-              )
+            this.dialogService.success({
+              message: 'Send request created.',
+            })
           )
         )
     }

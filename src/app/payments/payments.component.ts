@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy } from '@angular/core'
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core'
 
 @Component({
   selector: 'app-payments',
@@ -7,5 +7,17 @@ import { Component, ChangeDetectionStrategy } from '@angular/core'
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PaymentsComponent {
+  activeTab = Tab.CreateNew
+  TabType = Tab
+
   constructor() {}
+
+  changeTab(tab: Tab) {
+    this.activeTab = tab
+  }
+}
+
+enum Tab {
+  Payments,
+  CreateNew,
 }

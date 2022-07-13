@@ -1,10 +1,4 @@
-import {
-  Component,
-  OnInit,
-  ChangeDetectionStrategy,
-  Input,
-} from '@angular/core'
-import { Action } from 'rxjs/internal/scheduler/Action'
+import { Component, ChangeDetectionStrategy, Input } from '@angular/core'
 
 @Component({
   selector: 'app-new-and-manage-holder',

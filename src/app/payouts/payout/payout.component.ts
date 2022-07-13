@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core'
+import { ChangeDetectionStrategy, Component, Input } from '@angular/core'
 import { BehaviorSubject, Observable, switchMap, tap } from 'rxjs'
 import { withStatus, WithStatus } from '../../shared/utils/observables'
 import {
@@ -19,17 +19,19 @@ export class PayoutComponent {
   payout$: Observable<WithStatus<Payout>>
   refreshPayoutSub = new BehaviorSubject<void>(undefined)
 
+  @Input() payoutID: string = 'a853038c-fd71-44d4-bf92-e6c6a9c86465'
+
   constructor(
     private payoutManagerService: PayoutManagerService,
     private dialogService: DialogService,
     private route: ActivatedRoute
   ) {
-    const payoutID = this.route.snapshot.params.id
-
     this.payout$ = withStatus(
       this.refreshPayoutSub
         .asObservable()
-        .pipe(switchMap(() => this.payoutManagerService.getPayout(payoutID)))
+        .pipe(
+          switchMap(() => this.payoutManagerService.getPayout(this.payoutID))
+        )
     )
   }
 
