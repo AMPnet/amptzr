@@ -1,73 +1,138 @@
 <div class="flex">
-    <div routerLink="../../overview" class="ml-4 mt-2 bg-gray-600 text-white 
-    text-sm font-semibold rounded-full w-48 py-2 flex flex-row justify-center cursor-pointer">
-        < Back
-    </div>
+  <div
+    routerLink="../../overview"
+    class="ml-4 mt-2 bg-gray-600 text-white text-sm font-semibold rounded-full w-48 py-2 flex flex-row justify-center cursor-pointer"
+  >
+    < Back
+  </div>
 </div>
 
-
 <div class="w-full bg-white p-8 m-4 rounded-lg flex flex-row">
-    <div class="w-7/12">
-        <form class="flex flex-col text-gray-700" [formGroup]="createTokenForm">
-            <!-- NAME -->
-            <label class="pb-1 text-lg font-semibold" for="token-name">Token name</label>
-            <small class="pb-2">The name of your token</small>
-            <input class="w-100 rounded-xl border-gray-200" id="token-name" type="text" formControlName="tokenName">
+  <div class="w-7/12">
+    <form class="flex flex-col text-gray-700" [formGroup]="createTokenForm">
+      <!-- NAME -->
+      <label class="pb-1 text-lg font-semibold" for="token-name"
+        >Token name</label
+      >
+      <small class="pb-2">The name of your token</small>
+      <input
+        class="w-100 rounded-xl border-gray-200"
+        id="token-name"
+        type="text"
+        formControlName="tokenName"
+      />
 
-            <!-- SYMBOL -->
-            <label class="pb-1 mt-8 text-lg font-semibold" for="token-name">Token symbol</label>
-            <small class="pb-2">Shorthand symbol for your token, also known as a "ticker" (e.g. ETH, AAPL, ...)</small>
-            <input class="w-100 rounded-xl border-gray-200" id="token-name" type="text" formControlName="tokenName">
+      <!-- SYMBOL -->
+      <label class="pb-1 mt-8 text-lg font-semibold" for="token-name"
+        >Token symbol</label
+      >
+      <small class="pb-2"
+        >Shorthand symbol for your token, also known as a "ticker" (e.g. ETH,
+        AAPL, ...)</small
+      >
+      <input
+        class="w-100 rounded-xl border-gray-200"
+        id="token-name"
+        type="text"
+        formControlName="tokenName"
+      />
 
-            <!-- ALIAS -->
-            <label class="pb-1 mt-8 text-lg font-semibold" for="token-name">Token alias</label>
-            <small class="pb-2">This is the alias you will use to access the token through the Dev3 SDK and API</small>
-            <input class="w-100 rounded-xl border-gray-200" id="token-name" type="text" formControlName="tokenName">
+      <!-- ALIAS -->
+      <label class="pb-1 mt-8 text-lg font-semibold" for="token-name"
+        >Token alias</label
+      >
+      <small class="pb-2"
+        >This is the alias you will use to access the token through the Dev3 SDK
+        and API</small
+      >
+      <input
+        class="w-100 rounded-xl border-gray-200"
+        id="token-name"
+        type="text"
+        formControlName="tokenName"
+      />
 
-            <!-- SUPPLY -->
-            <label class="pb-1 mt-8 text-lg font-semibold" for="token-name">Token supply</label>
-            <small class="pb-2">How many tokens will be created initially. If your token is burnable or mintable, this number can change. If not, this number is fixed.</small>
-            <input class="w-100 rounded-xl border-gray-200" id="token-name" type="number" formControlName="tokenName">
+      <!-- SUPPLY -->
+      <label class="pb-1 mt-8 text-lg font-semibold" for="token-name"
+        >Token supply</label
+      >
+      <small class="pb-2"
+        >How many tokens will be created initially. If your token is burnable or
+        mintable, this number can change. If not, this number is fixed.</small
+      >
+      <input
+        class="w-100 rounded-xl border-gray-200"
+        id="token-name"
+        type="number"
+        formControlName="tokenName"
+      />
 
-            <div class="p-4 border border-gray-200 rounded-xl mt-8 flex flex-col transition-all">
-                <div class="flex flex-row justify-between items-center mb-2">
-                    <label class="text-lg font-semibold" for="can-mint">Is the token mintable?</label>
-                    <label class="switch">
-                        <input type="checkbox" [value]="checkSelected$ | async" (change)="onCheckChange($event)">
-                        <span class="slider round"></span>
-                    </label>
-                </div>
-                <small class="pb-2 text-justify">If your token is mintable, you will need to assign an entity (addess, wallet or smart contract) which can 
-                    freely create new tokens. <a class=" text-violet-800 underline" href="">Learn more</a>
-                </small>
-                <hr class="mt-4 mb-4" [hidden]="(checkSelected$ | async) === false">
-                <div class="invisibleComp" [class.visibleComp]="checkSelected$ | async">
-                    <div class="flex flex-col">
-                        <label class="pb-1 text-lg font-semibold" for="allowed-to-mint">Who is allowed to mint the tokens?</label>
-                        <small class="pb-2 text-justify">Tokens can be minted either by yourself, somebody else <i>or</i> by a smart contract representing a group of people 
-                        or a protocol. <br><br>Once you set the entity allowed to mint, only that entity will be able to change the minter permission. </small>
-                        <input class="w-100 rounded-xl border-gray-200" id="allowed-to-ming" type="text" formControlName="tokenName">
-                    </div>
-                </div>
-                
-            </div>
-            
+      <div
+        class="p-4 border border-gray-200 rounded-xl mt-8 flex flex-col transition-all"
+      >
+        <div class="flex flex-row justify-between items-center mb-2">
+          <label class="text-lg font-semibold" for="can-mint"
+            >Is the token mintable?</label
+          >
+          <label class="switch">
+            <input
+              type="checkbox"
+              [value]="checkSelected$ | async"
+              (change)="onCheckChange($event)"
+            />
+            <span class="slider round"></span>
+          </label>
+        </div>
+        <small class="pb-2 text-justify"
+          >If your token is mintable, you will need to assign an entity (addess,
+          wallet or smart contract) which can freely create new tokens.
+          <a class="text-violet-800 underline" href="">Learn more</a>
+        </small>
+        <hr class="mt-4 mb-4" [hidden]="(checkSelected$ | async) === false" />
+        <div class="invisibleComp" [class.visibleComp]="checkSelected$ | async">
+          <div class="flex flex-col">
+            <label class="pb-1 text-lg font-semibold" for="allowed-to-mint"
+              >Who is allowed to mint the tokens?</label
+            >
+            <small class="pb-2 text-justify"
+              >Tokens can be minted either by yourself, somebody else
+              <i>or</i> by a smart contract representing a group of people or a
+              protocol. <br /><br />Once you set the entity allowed to mint,
+              only that entity will be able to change the minter permission.
+            </small>
+            <input
+              class="w-100 rounded-xl border-gray-200"
+              id="allowed-to-ming"
+              type="text"
+              formControlName="tokenName"
+            />
+          </div>
+        </div>
+      </div>
 
-            <div class="flex flex-row justify-end">
-                <button type="submit" class="py-2 px-10 bg-violet-700 text-white rounded-full mt-8">Create token</button>
-            </div>
-
-        </form>
-    </div>
-    <div class="w-5/12 pl-8">
-        <div class="text-2xl font-semibold text-gray-700">ERC-20 Token</div>
-        <p class="mt-4 text-sm text-gray-700">
-            Lorem Ipsum is simply dummy text of the printing and typesetting industry. 
-            <br>
-            Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. 
-            It has survived not only five centuries, but also the leap into electronic typesetting, 
-            remaining essentially unchanged. <br><br> It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.
-
-        </p>
-    </div>
+      <div class="flex flex-row justify-end">
+        <button
+          type="submit"
+          class="py-2 px-10 bg-violet-700 text-white rounded-full mt-8"
+        >
+          Create token
+        </button>
+      </div>
+    </form>
+  </div>
+  <div class="w-5/12 pl-8">
+    <div class="text-2xl font-semibold text-gray-700">ERC-20 Token</div>
+    <p class="mt-4 text-sm text-gray-700">
+      Lorem Ipsum is simply dummy text of the printing and typesetting industry.
+      <br />
+      Lorem Ipsum has been the industry's standard dummy text ever since the
+      1500s, when an unknown printer took a galley of type and scrambled it to
+      make a type specimen book. It has survived not only five centuries, but
+      also the leap into electronic typesetting, remaining essentially
+      unchanged. <br /><br />
+      It was popularised in the 1960s with the release of Letraset sheets
+      containing Lorem Ipsum passages, and more recently with desktop publishing
+      software like Aldus PageMaker including versions of Lorem Ipsum.
+    </p>
+  </div>
 </div>

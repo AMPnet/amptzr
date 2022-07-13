@@ -1,11 +1,11 @@
-import {Injectable} from '@angular/core'
-import {BackendHttpClient} from '../../shared/services/backend/backend-http-client.service'
-import {environment} from '../../../environments/environment'
-import {Observable, of, throwError} from 'rxjs'
-import {switchMap} from 'rxjs/operators'
-import {MatDialog} from '@angular/material/dialog'
-import {VeriffComponent} from './veriff.component'
-import {DialogService} from '../../shared/services/dialog.service'
+import { Injectable } from '@angular/core'
+import { BackendHttpClient } from '../../shared/services/backend/backend-http-client.service'
+import { environment } from '../../../environments/environment'
+import { Observable, of, throwError } from 'rxjs'
+import { switchMap } from 'rxjs/operators'
+import { MatDialog } from '@angular/material/dialog'
+import { VeriffComponent } from './veriff.component'
+import { DialogService } from '../../shared/services/dialog.service'
 
 @Injectable({
   providedIn: 'root',
@@ -13,18 +13,23 @@ import {DialogService} from '../../shared/services/dialog.service'
 export class VeriffService {
   path = `${environment.backendURL}/api/identity`
 
-  constructor(private http: BackendHttpClient,
-              private dialog: DialogService,
-              private matDialog: MatDialog) {
-  }
+  constructor(
+    private http: BackendHttpClient,
+    private dialog: DialogService,
+    private matDialog: MatDialog
+  ) {}
 
   openVeriffDialog(): Observable<void> {
-    return this.matDialog.open(VeriffComponent, {
-      ...this.dialog.configDefaults,
-    }).afterClosed().pipe(
-      switchMap(isSuccess => !!isSuccess ? of(undefined) :
-        throwError(() => 'VERIFF_DISMISSED')),
-    )
+    return this.matDialog
+      .open(VeriffComponent, {
+        ...this.dialog.configDefaults,
+      })
+      .afterClosed()
+      .pipe(
+        switchMap((isSuccess) =>
+          !!isSuccess ? of(undefined) : throwError(() => 'VERIFF_DISMISSED')
+        )
+      )
   }
 
   getSession() {
@@ -37,9 +42,9 @@ export class VeriffService {
  * equal to `null`, the decision has not been made yet.
  */
 export interface VeriffSession {
-  state: State;
-  decision?: Decision;
-  verification_url: string;
+  state: State
+  decision?: Decision
+  verification_url: string
 }
 
 export enum State {
@@ -57,17 +62,17 @@ export enum State {
    * The user has successfully finished verification process and is waiting for
    * a decision.
    */
-  SUBMITTED = 'submitted'
+  SUBMITTED = 'submitted',
 }
 
 interface Decision {
-  session_id: string;
-  status: DecisionStatus;
-  code: number;
-  reason: string;
-  reason_code: DeclineDecisionCode | ResubmitDecisionCode;
-  decision_time: Date;
-  acceptance_time: Date;
+  session_id: string
+  status: DecisionStatus
+  code: number
+  reason: string
+  reason_code: DeclineDecisionCode | ResubmitDecisionCode
+  decision_time: Date
+  acceptance_time: Date
 }
 
 export enum DecisionStatus {
@@ -76,7 +81,7 @@ export enum DecisionStatus {
   DECLINED = 'declined',
   REVIEW = 'review',
   ABANDONED = 'abandoned',
-  EXPIRED = 'expired'
+  EXPIRED = 'expired',
 }
 
 enum DeclineDecisionCode {
@@ -98,5 +103,5 @@ enum ResubmitDecisionCode {
   POOR_IMAGE_QUALITY = 204,
   DOCUMENT_DAMAGED = 205,
   DOC_TYPE_NOT_SUPPORTED = 206,
-  DOCUMENT_EXPIRED = 207
+  DOCUMENT_EXPIRED = 207,
 }

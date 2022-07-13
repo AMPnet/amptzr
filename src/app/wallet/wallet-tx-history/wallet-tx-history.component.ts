@@ -1,10 +1,10 @@
-import {ChangeDetectionStrategy, Component} from '@angular/core'
-import {ReportService} from '../../shared/services/backend/report.service'
-import {withStatus} from '../../shared/utils/observables'
-import {BackendHttpClient} from '../../shared/services/backend/backend-http-client.service'
-import {PreferenceQuery} from '../../preference/state/preference.query'
-import {switchMap} from 'rxjs/operators'
-import {of} from 'rxjs'
+import { ChangeDetectionStrategy, Component } from '@angular/core'
+import { ReportService } from '../../shared/services/backend/report.service'
+import { withStatus } from '../../shared/utils/observables'
+import { BackendHttpClient } from '../../shared/services/backend/backend-http-client.service'
+import { PreferenceQuery } from '../../preference/state/preference.query'
+import { switchMap } from 'rxjs/operators'
+import { of } from 'rxjs'
 
 @Component({
   selector: 'app-wallet-tx-history',
@@ -16,16 +16,20 @@ export class WalletTxHistoryComponent {
   isBackendAuthorized$ = this.preferenceQuery.isBackendAuthorized$
 
   transactionHistory$ = this.isBackendAuthorized$.pipe(
-    switchMap(isAuth => withStatus(isAuth ?
-      this.reportService.transactionHistory() :
-      of({transactions: []})),
-    ),
+    switchMap((isAuth) =>
+      withStatus(
+        isAuth
+          ? this.reportService.transactionHistory()
+          : of({ transactions: [] })
+      )
+    )
   )
 
-  constructor(private reportService: ReportService,
-              private http: BackendHttpClient,
-              private preferenceQuery: PreferenceQuery) {
-  }
+  constructor(
+    private reportService: ReportService,
+    private http: BackendHttpClient,
+    private preferenceQuery: PreferenceQuery
+  ) {}
 
   backendAuthorize() {
     return this.http.ensureAuth

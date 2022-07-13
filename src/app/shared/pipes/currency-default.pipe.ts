@@ -1,6 +1,6 @@
-import {CurrencyPipe, DecimalPipe} from '@angular/common'
-import {Injectable, Pipe, PipeTransform} from '@angular/core'
-import {StablecoinService} from '../services/blockchain/stablecoin.service'
+import { CurrencyPipe, DecimalPipe } from '@angular/common'
+import { Injectable, Pipe, PipeTransform } from '@angular/core'
+import { StablecoinService } from '../services/blockchain/stablecoin.service'
 
 @Injectable({
   providedIn: 'root',
@@ -9,16 +9,17 @@ import {StablecoinService} from '../services/blockchain/stablecoin.service'
   name: 'currencyDefault',
 })
 export class CurrencyDefaultPipe implements PipeTransform {
-  constructor(private currencyPipe: CurrencyPipe,
-              private decimalPipe: DecimalPipe,
-              private stablecoin: StablecoinService) {
-  }
+  constructor(
+    private currencyPipe: CurrencyPipe,
+    private decimalPipe: DecimalPipe,
+    private stablecoin: StablecoinService
+  ) {}
 
   transform(
     value: number | string,
     type: Type = 'stablecoin',
     display: Display = 'real',
-    currencySymbol?: string,
+    currencySymbol?: string
   ) {
     const symbol = currencySymbol ?? this.stablecoin.config.symbol
     switch (type) {
@@ -36,7 +37,7 @@ export class CurrencyDefaultPipe implements PipeTransform {
     format: string,
     symbol: string,
     type: Type,
-    display: Display,
+    display: Display
   ): string | null {
     switch (type) {
       case 'stablecoin':
@@ -47,7 +48,12 @@ export class CurrencyDefaultPipe implements PipeTransform {
               case 'USDC':
               case 'USDT':
               case 'DAI':
-                return this.currencyPipe.transform(value, 'USD', 'symbol', format)
+                return this.currencyPipe.transform(
+                  value,
+                  'USD',
+                  'symbol',
+                  format
+                )
             }
         }
     }

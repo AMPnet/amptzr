@@ -1,7 +1,7 @@
 <div class="w-full h-full flex justify-center mt-8 px-2 pb-8">
   <div class="w-full max-w-6xl">
     <div class="flex flex-col w-full bg-white rounded-4xl p-4 pt-8">
-      <ng-container *ngIf="(campaignDataWithStatus$ | async) as campaignDataRes">
+      <ng-container *ngIf="campaignDataWithStatus$ | async as campaignDataRes">
         <ng-container *ngIf="campaignDataRes.value as campaignData">
           <span class="text-2xl text-indigo-900">
             Funding {{ campaignData.campaign.infoData.name | uppercase }}
@@ -12,25 +12,50 @@
               <div class="flex flex-row gap-2 items-center">
                 <span class="text-sm">To raise</span>
                 <form [formGroup]="fundingForm">
-                  <input appCurrencyMask class="border-gray-400 rounded-lg" type="text" formControlName="amount">
+                  <input
+                    appCurrencyMask
+                    class="border-gray-400 rounded-lg"
+                    type="text"
+                    formControlName="amount"
+                  />
                 </form>
               </div>
 
               <b class="text-sm mt-2 lg:mt-0">
-                (min {{ minAmountToReachSoftCap(campaignData.stats) | formatUnit:'stablecoin' | currencyDefault }},
-                max {{ maxFundingAmount(campaignData) | formatUnit:'stablecoin' | currencyDefault }})
+                (min
+                {{
+                  minAmountToReachSoftCap(campaignData.stats)
+                    | formatUnit: "stablecoin"
+                    | currencyDefault
+                }}, max
+                {{
+                  maxFundingAmount(campaignData)
+                    | formatUnit: "stablecoin"
+                    | currencyDefault
+                }})
               </b>
 
-              <div class="flex flex-row gap-2 items-center mt-2 lg:mt-0 lg:justify-around">
+              <div
+                class="flex flex-row gap-2 items-center mt-2 lg:mt-0 lg:justify-around"
+              >
                 <span class="text-sm">I will sell</span>
-                <b class="lg:text-center">{{ tokensPercentage(campaignData) | percent:'1.0-2' }}</b>
-                <span class="text-sm">of my {{ campaignData.asset.name | uppercase }} tokens</span>
+                <b class="lg:text-center">{{
+                  tokensPercentage(campaignData) | percent: "1.0-2"
+                }}</b>
+                <span class="text-sm"
+                  >of my {{ campaignData.asset.name | uppercase }} tokens</span
+                >
               </div>
 
-              <div class="flex flex-row gap-2 items-center mt-2 lg:mt-0 lg:justify-around">
+              <div
+                class="flex flex-row gap-2 items-center mt-2 lg:mt-0 lg:justify-around"
+              >
                 <span class="text-sm">with price per token:</span>
-                <b
-                  class="lg:text-center">{{ campaignData.stats.tokenPrice | formatUnit:'tokenPrice' | currencyDefault:'tokenPrice' }}</b>
+                <b class="lg:text-center">{{
+                  campaignData.stats.tokenPrice
+                    | formatUnit: "tokenPrice"
+                    | currencyDefault: "tokenPrice"
+                }}</b>
               </div>
             </div>
           </div>
@@ -53,14 +78,16 @@
             </ng-container>
           </div>
 
-          <div class="flex flex-col lg:flex-row justify-center lg:justify-end mt-8">
-            <button app-action-button
-                    class="flex items-center justify-center gap-4 bg-indigo-800 disabled:bg-gray-400 text-white
-                       px-24 py-2 rounded-full"
-                    text="Fund campaign"
-                    [disabled]="!fundingForm.valid"
-                    [onClick]="addTokens(campaignData).bind(this)">
-            </button>
+          <div
+            class="flex flex-col lg:flex-row justify-center lg:justify-end mt-8"
+          >
+            <button
+              app-action-button
+              class="flex items-center justify-center gap-4 bg-indigo-800 disabled:bg-gray-400 text-white px-24 py-2 rounded-full"
+              text="Fund campaign"
+              [disabled]="!fundingForm.valid"
+              [onClick]="addTokens(campaignData).bind(this)"
+            ></button>
           </div>
         </ng-container>
 

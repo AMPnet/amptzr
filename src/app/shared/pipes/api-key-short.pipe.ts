@@ -1,4 +1,4 @@
-import {Injectable, Pipe, PipeTransform} from '@angular/core'
+import { Injectable, Pipe, PipeTransform } from '@angular/core'
 
 @Injectable({
   providedIn: 'root',
@@ -7,15 +7,13 @@ import {Injectable, Pipe, PipeTransform} from '@angular/core'
   name: 'apiKeyShort',
 })
 export class ApiKeyShortPipe implements PipeTransform {
-  constructor() {
-  }
+  constructor() {}
 
-    transform(value: any): any {
-     if (!value) {
-       return ''
-     }
-
-     return value.split('.')[0]  
+  transform(value: any): any {
+    if (!value) {
+      return ''
     }
 
+    return value.split('.')[0]
+  }
 }

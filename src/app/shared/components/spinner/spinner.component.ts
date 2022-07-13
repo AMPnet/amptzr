@@ -1,4 +1,4 @@
-import {ChangeDetectionStrategy, Component, Input} from '@angular/core'
+import { ChangeDetectionStrategy, Component, Input } from '@angular/core'
 
 @Component({
   selector: 'app-spinner',
@@ -9,6 +9,5 @@ import {ChangeDetectionStrategy, Component, Input} from '@angular/core'
 export class SpinnerComponent {
   @Input() type: 'inline-xs' | 'inline-base' | 'overlay' = 'inline-base'
 
-  constructor() {
-  }
+  constructor() {}
 }

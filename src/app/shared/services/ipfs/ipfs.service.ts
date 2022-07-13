@@ -1,13 +1,13 @@
-import {Injectable} from '@angular/core'
-import {Observable, of} from 'rxjs'
-import {HttpClient} from '@angular/common/http'
-import {environment} from '../../../../environments/environment'
-import {IPFSAddResult, IPFSApi} from './ipfs.service.types'
-import {IpfsPinataApiService} from './ipfs-pinata-api.service'
-import {IPFSCampaign} from '../../../../../types/ipfs/campaign'
-import {IPFSIssuer} from '../../../../../types/ipfs/issuer'
-import {IPFSAsset} from '../../../../../types/ipfs/asset'
-import {CID} from 'ipfs-http-client'
+import { Injectable } from '@angular/core'
+import { Observable, of } from 'rxjs'
+import { HttpClient } from '@angular/common/http'
+import { environment } from '../../../../environments/environment'
+import { IPFSAddResult, IPFSApi } from './ipfs.service.types'
+import { IpfsPinataApiService } from './ipfs-pinata-api.service'
+import { IPFSCampaign } from '../../../../../types/ipfs/campaign'
+import { IPFSIssuer } from '../../../../../types/ipfs/issuer'
+import { IPFSAsset } from '../../../../../types/ipfs/asset'
+import { CID } from 'ipfs-http-client'
 
 @Injectable({
   providedIn: 'root',
@@ -49,7 +49,7 @@ export class IpfsService {
   }
 
   addText(content: string): Observable<IPFSAddResult> {
-    return this.addObject<IPFSText>({content})
+    return this.addObject<IPFSText>({ content })
   }
 
   addObject<ipfsObject>(data: ipfsObject): Observable<IPFSAddResult> {

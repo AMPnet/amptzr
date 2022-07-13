@@ -1,69 +1,121 @@
-<ng-container *ngIf="(campaign$ | async) as campaignRes">
+<ng-container *ngIf="campaign$ | async as campaignRes">
   <div class="flex flex-row justify-center gap-6">
-    <div class="flex flex-col lg:flex-row w-full justify-center rounded-4xl bg-white
-                transition-all ease-in-out duration-300"
-         [class.bg-opacity-50]="isHidden">
+    <div
+      class="flex flex-col lg:flex-row w-full justify-center rounded-4xl bg-white transition-all ease-in-out duration-300"
+      [class.bg-opacity-50]="isHidden"
+    >
       <ng-container *ngIf="campaignRes.value as campaign">
-        <div class="relative w-full lg:w-1/3 transition-all ease-in-out duration-300"
-             [class.opacity-50]="isHidden">
-          <img *ngIf="campaign.infoData.photo; else noImage"
-               class="w-full h-64 lg:h-full object-cover rounded-t-4xl lg:rounded-none lg:rounded-l-4xl"
-               src="{{ campaign.infoData.photo | toUrlIPFS }}" alt="Issuer logo">
+        <div
+          class="relative w-full lg:w-1/3 transition-all ease-in-out duration-300"
+          [class.opacity-50]="isHidden"
+        >
+          <img
+            *ngIf="campaign.infoData.photo; else noImage"
+            class="w-full h-64 lg:h-full object-cover rounded-t-4xl lg:rounded-none lg:rounded-l-4xl"
+            src="{{ campaign.infoData.photo | toUrlIPFS }}"
+            alt="Issuer logo"
+          />
           <ng-template #noImage>
-            <div class="w-full h-64 lg:h-full bg-gray-200 rounded-t-4xl lg:rounded-none lg:rounded-l-4xl"></div>
+            <div
+              class="w-full h-64 lg:h-full bg-gray-200 rounded-t-4xl lg:rounded-none lg:rounded-l-4xl"
+            ></div>
           </ng-template>
         </div>
 
-        <div class="flex flex-col lg:flex-row gap-8 w-full h-full rounded-b-4xl lg:rounded-none lg:rounded-r-4xl
-                    p-4 justify-between">
-          <div class="flex flex-col gap-4 flex-1 text-sm transition-all ease-in-out duration-300"
-               [class.opacity-50]="isHidden">
-            <span class="text-4xl mb-8">{{ campaign.infoData.name ?? 'Unknown' }}</span>
+        <div
+          class="flex flex-col lg:flex-row gap-8 w-full h-full rounded-b-4xl lg:rounded-none lg:rounded-r-4xl p-4 justify-between"
+        >
+          <div
+            class="flex flex-col gap-4 flex-1 text-sm transition-all ease-in-out duration-300"
+            [class.opacity-50]="isHidden"
+          >
+            <span class="text-4xl mb-8">{{
+              campaign.infoData.name ?? "Unknown"
+            }}</span>
 
-            <app-funding-progress class="lg:w-3/4" [campaign]="campaign"></app-funding-progress>
+            <app-funding-progress
+              class="lg:w-3/4"
+              [campaign]="campaign"
+            ></app-funding-progress>
           </div>
 
           <div class="flex flex-col justify-end lg:w-1/3">
             <div class="flex flex-col gap-4 justify-center lg:justify-end">
-              <div class="flex items-center justify-start lg:justify-center gap-2 text-red-500 text-sm
-                          transition-all ease-in-out duration-300"
-                   [class.opacity-0]="!isHidden">
-                <svg width="26" height="26" viewBox="0 0 26 26" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M14.3333 18.3333H13V13H11.6667M13 7.66667H13.0133M25 13C25 14.5759 24.6896 16.1363 24.0866
+              <div
+                class="flex items-center justify-start lg:justify-center gap-2 text-red-500 text-sm transition-all ease-in-out duration-300"
+                [class.opacity-0]="!isHidden"
+              >
+                <svg
+                  width="26"
+                  height="26"
+                  viewBox="0 0 26 26"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M14.3333 18.3333H13V13H11.6667M13 7.66667H13.0133M25 13C25 14.5759 24.6896 16.1363 24.0866
                            17.5922C23.4835 19.0481 22.5996 20.371 21.4853 21.4853C20.371 22.5996 19.0481 23.4835
                            17.5922 24.0866C16.1363 24.6896 14.5759 25 13 25C11.4241 25 9.86371 24.6896 8.4078
                            24.0866C6.95189 23.4835 5.62902 22.5996 4.51472 21.4853C3.40042 20.371 2.5165 19.0481
                            1.91345 17.5922C1.31039 16.1363 1 14.5759 1 13C1 9.8174 2.26428 6.76516 4.51472
                            4.51472C6.76516 2.26428 9.8174 1 13 1C16.1826 1 19.2348 2.26428 21.4853 4.51472C23.7357
                            6.76516 25 9.8174 25 13Z"
-                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
                 </svg>
                 <span>Campaign is hidden</span>
               </div>
 
-              <button class="flex shrink-0 justify-center items-center gap-4 px-4 py-1 border-2 border-indigo-800
-                             lg:px-8 rounded-full text-lg transition-all ease-in-out duration-300"
-                      [ngClass]="{
-                        'bg-indigo-800': !isHidden,
-                        'text-white': !isHidden,
-                        'text-indigo-800': isHidden
-                      }"
-                      (click)="toggleCampaignVisibility()">
-                <svg [class.hidden]="!isHidden" width="20" height="20" viewBox="0 0 20 20" fill="none"
-                     xmlns="http://www.w3.org/2000/svg">
-                  <path d="M11.7678 11.7678C12.2366 11.2989 12.5 10.663 12.5 10C12.5 9.33696 12.2366 8.70107 11.7678
+              <button
+                class="flex shrink-0 justify-center items-center gap-4 px-4 py-1 border-2 border-indigo-800 lg:px-8 rounded-full text-lg transition-all ease-in-out duration-300"
+                [ngClass]="{
+                  'bg-indigo-800': !isHidden,
+                  'text-white': !isHidden,
+                  'text-indigo-800': isHidden
+                }"
+                (click)="toggleCampaignVisibility()"
+              >
+                <svg
+                  [class.hidden]="!isHidden"
+                  width="20"
+                  height="20"
+                  viewBox="0 0 20 20"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M11.7678 11.7678C12.2366 11.2989 12.5 10.663 12.5 10C12.5 9.33696 12.2366 8.70107 11.7678
                            8.23223C11.2989 7.76339 10.663 7.5 10 7.5C9.33696 7.5 8.70107 7.76339 8.23223
                            8.23223C7.76339 8.70107 7.5 9.33696 7.5 10C7.5 10.663 7.76339 11.2989 8.23223
                            11.7678C8.70107 12.2366 9.33696 12.5 10 12.5C10.663 12.5 11.2989 12.2366 11.7678 11.7678Z"
-                        stroke="#3730A3" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                  <path d="M2.04883 9.99935C3.11049 6.61852 6.26966 4.16602 10.0005 4.16602C13.7322 4.16602 16.8905
+                    stroke="#3730A3"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
+                  <path
+                    d="M2.04883 9.99935C3.11049 6.61852 6.26966 4.16602 10.0005 4.16602C13.7322 4.16602 16.8905
                           6.61852 17.9522 9.99935C16.8905 13.3802 13.7322 15.8327 10.0005 15.8327C6.26966 15.8327
                           3.11049 13.3802 2.04883 9.99935Z"
-                        stroke="#3730A3" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    stroke="#3730A3"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
                 </svg>
-                <svg [class.hidden]="isHidden" width="21" height="20" viewBox="0 0 21 20" fill="none"
-                     xmlns="http://www.w3.org/2000/svg">
-                  <path d="M12.0619 15.6875C11.5468 15.7849 11.0236 15.8337 10.4994 15.8333C6.76771 15.8333 3.60937
+                <svg
+                  [class.hidden]="isHidden"
+                  width="21"
+                  height="20"
+                  viewBox="0 0 21 20"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M12.0619 15.6875C11.5468 15.7849 11.0236 15.8337 10.4994 15.8333C6.76771 15.8333 3.60937
                            13.3808 2.54688 10C2.83293 9.09008 3.27354 8.23622 3.84937 7.47583M8.73104 8.2325C9.19992
                            7.76362 9.83586 7.5002 10.499 7.5002C11.1621 7.5002 11.798 7.76362 12.2669 8.2325C12.7358
                            8.70138 12.9992 9.33732 12.9992 10.0004C12.9992 10.6635 12.7358 11.2995 12.2669
@@ -72,7 +124,11 @@
                            5.49167C7.33467 4.62464 8.90029 4.1645 10.4994 4.16667C14.231 4.16667 17.3894 6.61917
                            18.4519 10C17.8652 11.8587 16.6472 13.4538 15.0085 14.5092M5.99104 5.49167L15.0085
                            14.5092M15.0085 14.5092L17.9994 17.5"
-                        stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    stroke="white"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
                 </svg>
                 <span [class.hidden]="!isHidden">Show campaign</span>
                 <span [class.hidden]="isHidden">Hide campaign</span>
@@ -83,13 +139,16 @@
       </ng-container>
 
       <ng-container *ngIf="campaignRes.error">
-        <div class="flex justify-center items-center">Cannot fetch campaign.</div>
+        <div class="flex justify-center items-center">
+          Cannot fetch campaign.
+        </div>
         <div hidden>{{ campaignRes.error | json }}</div>
       </ng-container>
 
       <ng-container *ngIf="campaignRes.loading">
-        <div class="w-full h-96 lg:h-64 bg-gray-200 animate-pulse rounded-4xl">
-        </div>
+        <div
+          class="w-full h-96 lg:h-64 bg-gray-200 animate-pulse rounded-4xl"
+        ></div>
       </ng-container>
     </div>
   </div>

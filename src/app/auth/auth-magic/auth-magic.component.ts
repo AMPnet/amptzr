@@ -1,7 +1,7 @@
-import {ChangeDetectionStrategy, Component, Optional} from '@angular/core'
-import {FormBuilder, FormGroup, Validators} from '@angular/forms'
-import {MatDialogRef} from '@angular/material/dialog'
-import {BackendUserService} from '../../shared/services/backend/backend-user.service'
+import { ChangeDetectionStrategy, Component, Optional } from '@angular/core'
+import { FormBuilder, FormGroup, Validators } from '@angular/forms'
+import { MatDialogRef } from '@angular/material/dialog'
+import { BackendUserService } from '../../shared/services/backend/backend-user.service'
 
 @Component({
   selector: 'app-auth-magic',
@@ -12,9 +12,11 @@ import {BackendUserService} from '../../shared/services/backend/backend-user.ser
 export class AuthMagicComponent {
   emailForm: FormGroup
 
-  constructor(private fb: FormBuilder,
-              private userService: BackendUserService,
-              @Optional() private dialogRef: MatDialogRef<AuthMagicComponent>) {
+  constructor(
+    private fb: FormBuilder,
+    private userService: BackendUserService,
+    @Optional() private dialogRef: MatDialogRef<AuthMagicComponent>
+  ) {
     this.emailForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
     })

@@ -1,5 +1,5 @@
-import {cid, IPFSDocument, version} from './common'
-import {iso8601, url} from '../common'
+import { cid, IPFSDocument, version } from './common'
+import { iso8601, url } from '../common'
 
 /**
  * Campaign interface is the agreed format of the content behind an IPFS hash
@@ -23,9 +23,9 @@ export interface IPFSCampaign {
   startDate: iso8601
   endDate: iso8601
   return: {
-    frequency?: ReturnFrequency,
-    from?: number,
-    to?: number,
+    frequency?: ReturnFrequency
+    from?: number
+    to?: number
   }
   documents: IPFSDocument[]
   newsURLs: url[]

@@ -1,6 +1,11 @@
 import { DOCUMENT } from '@angular/common'
-import {ChangeDetectionStrategy, Component, HostListener, Inject} from '@angular/core'
-import {CrispService} from '../shared/services/crisp.service'
+import {
+  ChangeDetectionStrategy,
+  Component,
+  HostListener,
+  Inject,
+} from '@angular/core'
+import { CrispService } from '../shared/services/crisp.service'
 
 @Component({
   selector: 'app-app-layout',
@@ -9,23 +14,20 @@ import {CrispService} from '../shared/services/crisp.service'
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AppLayoutComponent {
-  
-  constructor(@Inject(DOCUMENT) public crispService: CrispService) {
-  }
+  constructor(@Inject(DOCUMENT) public crispService: CrispService) {}
 
   @HostListener('window:scroll', [])
   onWindowScroll() {
     const cssClassName = 'bg-scrolled'
     const classList = document.getElementById('navbarHolder')?.classList
-    if(document.documentElement.scrollTop > 1) {
-      if(!classList?.contains(cssClassName)) {
+    if (document.documentElement.scrollTop > 1) {
+      if (!classList?.contains(cssClassName)) {
         classList?.add(cssClassName)
       }
     } else {
-      if(classList?.contains(cssClassName)) {
+      if (classList?.contains(cssClassName)) {
         classList.remove(cssClassName)
       }
     }
   }
-
 }

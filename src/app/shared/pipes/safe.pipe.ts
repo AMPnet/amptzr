@@ -1,14 +1,23 @@
-import {Pipe, PipeTransform} from '@angular/core'
-import {DomSanitizer, SafeHtml, SafeResourceUrl, SafeScript, SafeStyle, SafeUrl} from '@angular/platform-browser'
+import { Pipe, PipeTransform } from '@angular/core'
+import {
+  DomSanitizer,
+  SafeHtml,
+  SafeResourceUrl,
+  SafeScript,
+  SafeStyle,
+  SafeUrl,
+} from '@angular/platform-browser'
 
 @Pipe({
   name: 'safe',
 })
 export class SafePipe implements PipeTransform {
-  constructor(protected sanitizer: DomSanitizer) {
-  }
+  constructor(protected sanitizer: DomSanitizer) {}
 
-  public transform(value: any, type: string): SafeHtml | SafeStyle | SafeScript | SafeUrl | SafeResourceUrl {
+  public transform(
+    value: any,
+    type: string
+  ): SafeHtml | SafeStyle | SafeScript | SafeUrl | SafeResourceUrl {
     switch (type) {
       case 'html':
         return this.sanitizer.bypassSecurityTrustHtml(value)
@@ -24,7 +33,9 @@ export class SafePipe implements PipeTransform {
         if (!value) {
           return ''
         }
-        const objectUrl = (window.URL || window.webkitURL).createObjectURL(value)
+        const objectUrl = (window.URL || window.webkitURL).createObjectURL(
+          value
+        )
         return this.sanitizer.bypassSecurityTrustResourceUrl(objectUrl)
       default:
         throw new Error(`Invalid safe type specified: ${type}`)

@@ -1,12 +1,10 @@
-import {Directive, ElementRef, HostListener} from '@angular/core'
+import { Directive, ElementRef, HostListener } from '@angular/core'
 
 @Directive({
   selector: 'input[appDateMask]',
 })
 export class DateMaskDirective {
-
-  constructor(private element: ElementRef) {
-  }
+  constructor(private element: ElementRef) {}
 
   @HostListener('focus')
   handleFocus() {

@@ -1,5 +1,5 @@
-import {Injectable, Pipe, PipeTransform} from '@angular/core'
-import {WithStatus} from '../utils/observables'
+import { Injectable, Pipe, PipeTransform } from '@angular/core'
+import { WithStatus } from '../utils/observables'
 
 @Injectable({
   providedIn: 'root',

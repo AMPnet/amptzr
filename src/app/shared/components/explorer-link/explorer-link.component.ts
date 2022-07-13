@@ -1,5 +1,5 @@
-import {ChangeDetectionStrategy, Component, Input} from '@angular/core'
-import {PreferenceQuery} from '../../../preference/state/preference.query'
+import { ChangeDetectionStrategy, Component, Input } from '@angular/core'
+import { PreferenceQuery } from '../../../preference/state/preference.query'
 
 @Component({
   selector: 'app-explorer-link',
@@ -11,8 +11,7 @@ export class ExplorerLinkComponent {
   @Input() value = ''
   @Input() type: ExplorerLinkType = 'address'
 
-  constructor(private preferenceQuery: PreferenceQuery) {
-  }
+  constructor(private preferenceQuery: PreferenceQuery) {}
 
   get link(): string {
     const explorerURL = this.preferenceQuery.network.explorerURLs?.[0]

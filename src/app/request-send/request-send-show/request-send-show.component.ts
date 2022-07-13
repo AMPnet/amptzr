@@ -1,9 +1,13 @@
-import {ChangeDetectionStrategy, Component} from '@angular/core'
-import {BehaviorSubject, Observable, switchMap} from 'rxjs'
-import {withStatus, WithStatus} from '../../shared/utils/observables'
-import {DialogService} from '../../shared/services/dialog.service'
-import {ActivatedRoute} from '@angular/router'
-import {RequestSend, RequestSendService, SendRequestStatus} from '../request-send.service'
+import { ChangeDetectionStrategy, Component } from '@angular/core'
+import { BehaviorSubject, Observable, switchMap } from 'rxjs'
+import { withStatus, WithStatus } from '../../shared/utils/observables'
+import { DialogService } from '../../shared/services/dialog.service'
+import { ActivatedRoute } from '@angular/router'
+import {
+  RequestSend,
+  RequestSendService,
+  SendRequestStatus,
+} from '../request-send.service'
 
 @Component({
   selector: 'app-request-send-show',
@@ -17,15 +21,17 @@ export class RequestSendShowComponent {
 
   sendRequestStatus = SendRequestStatus
 
-  constructor(private requestSendService: RequestSendService,
-              private dialogService: DialogService,
-              private route: ActivatedRoute) {
+  constructor(
+    private requestSendService: RequestSendService,
+    private dialogService: DialogService,
+    private route: ActivatedRoute
+  ) {
     const requestID = this.route.snapshot.params.id
 
     this.requestSend$ = withStatus(
-      this.refreshRequestSendSub.asObservable().pipe(
-        switchMap(() => this.requestSendService.getRequest(requestID)),
-      ),
+      this.refreshRequestSendSub
+        .asObservable()
+        .pipe(switchMap(() => this.requestSendService.getRequest(requestID)))
     )
   }
 }

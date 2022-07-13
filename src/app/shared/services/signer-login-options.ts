@@ -1,14 +1,14 @@
-import {Observable} from 'rxjs'
-import {providers} from 'ethers'
+import { Observable } from 'rxjs'
+import { providers } from 'ethers'
 
 export interface SignerLoginOpts {
-  force?: boolean;
+  force?: boolean
 }
 
-export type GetSignerOptions<S> = S extends Subsigner<infer Opts> ? Opts : never;
+export type GetSignerOptions<S> = S extends Subsigner<infer Opts> ? Opts : never
 
 export interface Subsigner<O extends Record<any, any>> {
-  login(opts: SignerLoginOpts | O): Observable<providers.JsonRpcSigner>;
+  login(opts: SignerLoginOpts | O): Observable<providers.JsonRpcSigner>
 
-  logout(): Observable<unknown>;
+  logout(): Observable<unknown>
 }

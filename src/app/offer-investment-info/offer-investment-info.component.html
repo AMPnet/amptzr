@@ -7,17 +7,27 @@
       </span>
     </div>
 
-    <ng-container *ngIf="(stats$ | async) as stats">
+    <ng-container *ngIf="stats$ | async as stats">
       <div class="mt-1 lg:mt-auto" *ngIf="shouldShowMin(stats)">
         <span class="font-bold lg:text-lg">
-          {{ stats.userMin | formatUnit:'stablecoin' | currencyDefault:'stablecoin':'implicit' }}
+          {{
+            stats.userMin
+              | formatUnit: "stablecoin"
+              | currencyDefault: "stablecoin":"implicit"
+          }}
         </span>
-        <span class="ml-2 font-light" [class.text-sm]="display === 'wide'">Minimum investment</span>
+        <span class="ml-2 font-light" [class.text-sm]="display === 'wide'"
+          >Minimum investment</span
+        >
       </div>
 
       <div class="mt-1 lg:mt-auto" *ngIf="shouldShowMax(stats)">
         <span class="font-bold lg:text-lg">
-          {{ stats.userMax | formatUnit:'stablecoin' | currencyDefault:'stablecoin':'implicit' }}
+          {{
+            stats.userMax
+              | formatUnit: "stablecoin"
+              | currencyDefault: "stablecoin":"implicit"
+          }}
         </span>
         <span class="ml-2 font-light text-sm">Max investment</span>
       </div>
@@ -26,7 +36,10 @@
 </ng-container>
 
 <ng-container *ngIf="display === 'return-only'">
-  <div *ngIf="hasReturnRate" class="mt-4 rounded-full px-4 py-2 bg-gray-100 flex items-center">
+  <div
+    *ngIf="hasReturnRate"
+    class="mt-4 rounded-full px-4 py-2 bg-gray-100 flex items-center"
+  >
     <span class="font-semibold whitespace-nowrap">{{ returnRateRange }}</span>
     <span class="text-sm ml-2">Expected annual return on investment</span>
   </div>

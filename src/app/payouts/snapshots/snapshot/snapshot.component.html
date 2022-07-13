@@ -1,23 +1,28 @@
 <div class="px-4 py-2 max-w-screen-lg mx-auto">
   <div class="bg-white my-8 p-6 rounded-4xl">
-    <h1 class="mt-2 text-2xl uppercase">
-      Snapshot Details
-    </h1>
+    <h1 class="mt-2 text-2xl uppercase">Snapshot Details</h1>
 
-    <ng-container *ngIf="(snapshot$ | async) as snapshotRes">
+    <ng-container *ngIf="snapshot$ | async as snapshotRes">
       <ng-container *ngIf="snapshotRes.value as snapshot">
-        <ng-container *ngIf="(snapshot.asset | assetData:'tokenOnly' | withStatus | async) as assetRes">
+        <ng-container
+          *ngIf="
+            snapshot.asset
+              | assetData: 'tokenOnly'
+              | withStatus
+              | async as assetRes
+          "
+        >
           <ng-container *ngIf="assetRes.value as asset">
-            <h2 class="font-semibold mt-4">
-              Base asset
-            </h2>
+            <h2 class="font-semibold mt-4">Base asset</h2>
 
             <div class="flex gap-1 items-baseline mt-2">
               <span>{{ asset.tokenData.symbol }}</span>
               <span class="text-sm">
                 {{ asset.tokenData.address | addrShort }}
               </span>
-              <app-value-copy [value]="asset.tokenData.address"></app-value-copy>
+              <app-value-copy
+                [value]="asset.tokenData.address"
+              ></app-value-copy>
               <app-explorer-link [value]="asset.tokenData.address" type="token">
               </app-explorer-link>
               <app-add-to-metamask [value]="asset.tokenData.address">
@@ -31,12 +36,16 @@
               </span>
               <app-value-copy [value]="snapshot.owner" [delay]="800">
               </app-value-copy>
-              <app-explorer-link [value]="snapshot.owner">
-              </app-explorer-link>
+              <app-explorer-link [value]="snapshot.owner"> </app-explorer-link>
             </div>
 
-            <div class="flex items-baseline gap-1.5 flex-wrap mt-2"
-                 *ngIf="snapshot.asset_snapshot_block_number | formatUnit:'toNumber' as blockNumber">
+            <div
+              class="flex items-baseline gap-1.5 flex-wrap mt-2"
+              *ngIf="
+                snapshot.asset_snapshot_block_number
+                  | formatUnit: 'toNumber' as blockNumber
+              "
+            >
               <span>Snapshot block number:</span>
               <span class="text-sm font-mono">
                 {{ blockNumber }}
@@ -49,9 +58,15 @@
               <span>Snapshot time:</span>
               <span class="text-sm">
                 <ng-container
-                  *ngIf="(snapshot.asset_snapshot_block_number | blockTime | withStatus | async) as blockTimeRes">
+                  *ngIf="
+                    snapshot.asset_snapshot_block_number
+                      | blockTime
+                      | withStatus
+                      | async as blockTimeRes
+                  "
+                >
                   <ng-container *ngIf="blockTimeRes.value as blockTime">
-                    <span>{{ blockTime | date:'medium' }}</span>
+                    <span>{{ blockTime | date: "medium" }}</span>
                   </ng-container>
 
                   <ng-container *ngIf="blockTimeRes.error">
@@ -66,14 +81,15 @@
               </span>
             </div>
 
-
             <div class="mt-4 lg:max-w-md">
-              <h2 class="font-semibold">
-                Ignored asset holders
-              </h2>
+              <h2 class="font-semibold">Ignored asset holders</h2>
 
               <div class="flex flex-col gap-2 mt-2">
-                <div *ngFor="let holderAddress of snapshot.ignored_holder_addresses">
+                <div
+                  *ngFor="
+                    let holderAddress of snapshot.ignored_holder_addresses
+                  "
+                >
                   <div class="flex items-baseline gap-1.5 flex-wrap">
                     <span class="text-sm">
                       {{ holderAddress | addrShort }}
@@ -88,8 +104,14 @@
             </div>
 
             <div class="mt-2">
-              <a class="text-sky-600" href="{{ snapshot.asset_snapshot_merkle_ipfs_hash | toUrlIPFS }}"
-                 target="_blank" rel="noopener noreferrer">
+              <a
+                class="text-sky-600"
+                href="{{
+                  snapshot.asset_snapshot_merkle_ipfs_hash | toUrlIPFS
+                }}"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
                 Open raw snapshot data
               </a>
             </div>
@@ -109,7 +131,10 @@
 
             <ng-container *ngIf="snapshot.status === snapshotStatus.Success">
               <div class="mt-2">
-                <button class="app-button" routerLink="../../new/{{ snapshot.id }}">
+                <button
+                  class="app-button"
+                  routerLink="../../new/{{ snapshot.id }}"
+                >
                   New Payout
                 </button>
               </div>

@@ -1,4 +1,4 @@
-import {Injectable, Pipe, PipeTransform} from '@angular/core'
+import { Injectable, Pipe, PipeTransform } from '@angular/core'
 
 @Injectable({
   providedIn: 'root',
@@ -7,8 +7,7 @@ import {Injectable, Pipe, PipeTransform} from '@angular/core'
   name: 'toStablecoinLogoPath',
 })
 export class ToStablecoinLogoPathPipe implements PipeTransform {
-  constructor() {
-  }
+  constructor() {}
 
   transform(value: any): any {
     switch (value) {

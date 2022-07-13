@@ -1,9 +1,13 @@
 .layout-bg {
-    background: linear-gradient(0deg, rgba(243,244,254,1) 0%, rgba(255,247,255,1) 100%);
+  background: linear-gradient(
+    0deg,
+    rgba(243, 244, 254, 1) 0%,
+    rgba(255, 247, 255, 1) 100%
+  );
 }
 
 .bg-scrolled {
-    background-color: white;
-    box-shadow: 0 1px 2px 0 rgba(243,244,254,1);
-    transition: all 0.1s;
+  background-color: white;
+  box-shadow: 0 1px 2px 0 rgba(243, 244, 254, 1);
+  transition: all 0.1s;
 }

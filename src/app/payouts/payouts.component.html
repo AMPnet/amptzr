@@ -1,28 +1,34 @@
 <div class="px-4 py-2 max-w-screen-lg mx-auto">
   <div class="bg-white my-8 p-6 rounded-4xl">
-
-    <ng-container *ngIf="(payouts$ | async) as payoutsRes">
+    <ng-container *ngIf="payouts$ | async as payoutsRes">
       <ng-container *ngIf="payoutsRes.value as payouts">
-        <div *ngIf="payouts.length === 0" class="mt-4">
-          No payouts
-        </div>
+        <div *ngIf="payouts.length === 0" class="mt-4">No payouts</div>
 
-        <div *ngIf="payouts.length > 0"
-             class="flex flex-col gap-1 mt-4">
-          <div *ngFor="let payout of payouts"
-               class="bg-gray-100 rounded p-2">
+        <div *ngIf="payouts.length > 0" class="flex flex-col gap-1 mt-4">
+          <div *ngFor="let payout of payouts" class="bg-gray-100 rounded p-2">
             <div class="flex justify-between flex-wrap">
               <div class="flex gap-1 flex-wrap">
-                <ng-container *ngIf="(payout.asset | assetData:'tokenOnly'
-                                     | withStatus | async) as assetRes">
+                <ng-container
+                  *ngIf="
+                    payout.asset
+                      | assetData: 'tokenOnly'
+                      | withStatus
+                      | async as assetRes
+                  "
+                >
                   <ng-container *ngIf="assetRes.value as asset">
                     <div class="flex gap-0.5 items-baseline">
                       <span>{{ asset.tokenData.symbol }}</span>
                       <span class="text-sm">
                         {{ asset.tokenData.address | addrShort }}
                       </span>
-                      <app-value-copy [value]="asset.tokenData.address"></app-value-copy>
-                      <app-explorer-link [value]="asset.tokenData.address" type="token">
+                      <app-value-copy
+                        [value]="asset.tokenData.address"
+                      ></app-value-copy>
+                      <app-explorer-link
+                        [value]="asset.tokenData.address"
+                        type="token"
+                      >
                       </app-explorer-link>
                       <app-add-to-metamask [value]="asset.tokenData.address">
                       </app-add-to-metamask>
@@ -40,9 +46,15 @@
                 </ng-container>
 
                 <ng-container
-                  *ngIf="(payout.assetSnapshotBlockNumber | blockTime | withStatus | async) as blockTimeRes">
+                  *ngIf="
+                    payout.assetSnapshotBlockNumber
+                      | blockTime
+                      | withStatus
+                      | async as blockTimeRes
+                  "
+                >
                   <ng-container *ngIf="blockTimeRes.value as blockTime">
-                    <span>{{ blockTime | date:'short' }}</span>
+                    <span>{{ blockTime | date: "short" }}</span>
                   </ng-container>
 
                   <ng-container *ngIf="blockTimeRes.error">
@@ -57,37 +69,50 @@
               </div>
 
               <div class="flex gap-1 flex-wrap w-full justify-end md:w-auto">
-                <div class="rounded p-1 bg-red-600 text-white
-                            text-xs font-semibold uppercase"
-                     *ngIf="payout.isCanceled">
+                <div
+                  class="rounded p-1 bg-red-600 text-white text-xs font-semibold uppercase"
+                  *ngIf="payout.isCanceled"
+                >
                   Canceled
                 </div>
 
-                <div class="rounded p-1 bg-cyan-500 text-white
-                            text-xs font-semibold uppercase"
-                     *ngIf="payout.remainingRewardAmount.gt(bigNumberConstants.Zero)">
-                  <span class="">
-                    In progress
-                  </span>
+                <div
+                  class="rounded p-1 bg-cyan-500 text-white text-xs font-semibold uppercase"
+                  *ngIf="
+                    payout.remainingRewardAmount.gt(bigNumberConstants.Zero)
+                  "
+                >
+                  <span class=""> In progress </span>
                 </div>
 
-                <div class="rounded p-1 bg-emerald-600 text-white
-                          text-xs font-semibold uppercase"
-                     *ngIf="!payout.isCanceled && payout.remainingRewardAmount.isZero()">
-                  <span class="">
-                    Finished
-                  </span>
+                <div
+                  class="rounded p-1 bg-emerald-600 text-white text-xs font-semibold uppercase"
+                  *ngIf="
+                    !payout.isCanceled && payout.remainingRewardAmount.isZero()
+                  "
+                >
+                  <span class=""> Finished </span>
                 </div>
 
-                <a routerLink="{{ payout.payoutId }}"
-                   class="rounded-full p-2 bg-cyan-500 text-white
-                          text-sm font-semibold uppercase
-                          flex items-center">
-                  <svg width="8" height="14" viewBox="0 0 8 14" fill="none" xmlns="http://www.w3.org/2000/svg"
-                       class="w-2 h-2">
-                    <path d="M1 1.16602L6.83333 6.99935L1 12.8327" stroke="white" stroke-width="2"
-                          stroke-linecap="round"
-                          stroke-linejoin="round"/>
+                <a
+                  routerLink="{{ payout.payoutId }}"
+                  class="rounded-full p-2 bg-cyan-500 text-white text-sm font-semibold uppercase flex items-center"
+                >
+                  <svg
+                    width="8"
+                    height="14"
+                    viewBox="0 0 8 14"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                    class="w-2 h-2"
+                  >
+                    <path
+                      d="M1 1.16602L6.83333 6.99935L1 12.8327"
+                      stroke="white"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    />
                   </svg>
                 </a>
               </div>
@@ -106,9 +131,7 @@
       </ng-container>
 
       <div class="mt-4 flex gap-2">
-        <button class="app-button" routerLink="snapshots">
-          Snapshots
-        </button>
+        <button class="app-button" routerLink="snapshots">Snapshots</button>
 
         <button class="app-button" routerLink="claims">
           Claimable Payouts

@@ -4,22 +4,20 @@ import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core'
   selector: 'app-payments',
   templateUrl: './payments.component.html',
   styleUrls: ['./payments.component.css'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PaymentsComponent {
-
   activeTab = Tab.CreateNew
   TabType = Tab
 
-  constructor() { }
+  constructor() {}
 
   changeTab(tab: Tab) {
     this.activeTab = tab
   }
-
 }
 
 enum Tab {
   Payments,
-  CreateNew
+  CreateNew,
 }

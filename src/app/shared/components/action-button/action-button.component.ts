@@ -10,7 +10,7 @@ import {
   TemplateRef,
   ɵmarkDirty,
 } from '@angular/core'
-import {EMPTY, Observable, Subscription} from 'rxjs'
+import { EMPTY, Observable, Subscription } from 'rxjs'
 
 @Component({
   // eslint-disable-next-line @angular-eslint/component-selector
@@ -34,8 +34,7 @@ export class ActionButtonComponent implements OnInit, OnDestroy {
 
   @Input() onClick: () => Observable<unknown> = () => EMPTY
 
-  constructor() {
-  }
+  constructor() {}
 
   @HostBinding('class') get buttonClass(): string {
     return this.class || ''

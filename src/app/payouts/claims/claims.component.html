@@ -1,35 +1,54 @@
 <div class="px-4 py-2 max-w-screen-lg mx-auto">
   <div class="bg-white my-8 p-6 rounded-4xl">
-    <h1 class="mt-2 text-2xl uppercase">
-      Claimable payouts
-    </h1>
+    <h1 class="mt-2 text-2xl uppercase">Claimable payouts</h1>
 
-    <ng-container *ngIf="(claimablePayouts$ | async) as claimablePayoutsRes">
+    <ng-container *ngIf="claimablePayouts$ | async as claimablePayoutsRes">
       <ng-container *ngIf="claimablePayoutsRes.value as claimablePayouts">
         <div *ngIf="claimablePayouts.length === 0" class="mt-4">
           No claimable payouts
         </div>
 
-        <div *ngIf="claimablePayouts.length > 0"
-             class="flex flex-col gap-1 mt-4">
-          <div *ngFor="let claimablePayout of claimablePayouts"
-               class="bg-gray-100 rounded p-2">
+        <div
+          *ngIf="claimablePayouts.length > 0"
+          class="flex flex-col gap-1 mt-4"
+        >
+          <div
+            *ngFor="let claimablePayout of claimablePayouts"
+            class="bg-gray-100 rounded p-2"
+          >
             <div class="flex justify-between flex-wrap">
               <div class="flex flex-col gap-2">
-                <ng-container *ngIf="(claimablePayout.payout.reward_asset | assetData:'tokenOnly'
-                                     | withStatus | async) as rewardAssetRes">
+                <ng-container
+                  *ngIf="
+                    claimablePayout.payout.reward_asset
+                      | assetData: 'tokenOnly'
+                      | withStatus
+                      | async as rewardAssetRes
+                  "
+                >
                   <ng-container *ngIf="rewardAssetRes.value as asset">
                     <div class="flex gap-0.5 items-baseline">
                       <span>
-                        Claimable: {{ claimablePayout.amount_claimable
-                        | formatUnit:'token':asset.tokenData.decimals
-                        | currencyDefault:'token':'real':asset.tokenData.symbol }}
+                        Claimable:
+                        {{
+                          claimablePayout.amount_claimable
+                            | formatUnit: "token":asset.tokenData.decimals
+                            | currencyDefault
+                              : "token"
+                              : "real"
+                              : asset.tokenData.symbol
+                        }}
                       </span>
                       <span class="text-sm">
                         {{ asset.tokenData.address | addrShort }}
                       </span>
-                      <app-value-copy [value]="asset.tokenData.address"></app-value-copy>
-                      <app-explorer-link [value]="asset.tokenData.address" type="token">
+                      <app-value-copy
+                        [value]="asset.tokenData.address"
+                      ></app-value-copy>
+                      <app-explorer-link
+                        [value]="asset.tokenData.address"
+                        type="token"
+                      >
                       </app-explorer-link>
                       <app-add-to-metamask [value]="asset.tokenData.address">
                       </app-add-to-metamask>
@@ -47,16 +66,27 @@
                 </ng-container>
 
                 <div class="flex gap-1 flex-wrap">
-                  <ng-container *ngIf="(claimablePayout.payout.asset | assetData:'tokenOnly'
-                                     | withStatus | async) as assetRes">
+                  <ng-container
+                    *ngIf="
+                      claimablePayout.payout.asset
+                        | assetData: 'tokenOnly'
+                        | withStatus
+                        | async as assetRes
+                    "
+                  >
                     <ng-container *ngIf="assetRes.value as asset">
                       <div class="flex gap-0.5 items-baseline">
                         <span>From snapshot: {{ asset.tokenData.symbol }}</span>
                         <span class="text-sm">
                           {{ asset.tokenData.address | addrShort }}
                         </span>
-                        <app-value-copy [value]="asset.tokenData.address"></app-value-copy>
-                        <app-explorer-link [value]="asset.tokenData.address" type="token">
+                        <app-value-copy
+                          [value]="asset.tokenData.address"
+                        ></app-value-copy>
+                        <app-explorer-link
+                          [value]="asset.tokenData.address"
+                          type="token"
+                        >
                         </app-explorer-link>
                         <app-add-to-metamask [value]="asset.tokenData.address">
                         </app-add-to-metamask>
@@ -73,10 +103,16 @@
                     </ng-container>
                   </ng-container>
 
-                  <ng-container *ngIf="(claimablePayout.payout.asset_snapshot_block_number
-                                        | blockTime | withStatus | async) as blockTimeRes">
+                  <ng-container
+                    *ngIf="
+                      claimablePayout.payout.asset_snapshot_block_number
+                        | blockTime
+                        | withStatus
+                        | async as blockTimeRes
+                    "
+                  >
                     <ng-container *ngIf="blockTimeRes.value as blockTime">
-                      <span>{{ blockTime | date:'short' }}</span>
+                      <span>{{ blockTime | date: "short" }}</span>
                     </ng-container>
 
                     <ng-container *ngIf="blockTimeRes.error">
@@ -91,10 +127,15 @@
                 </div>
               </div>
 
-              <div class="flex gap-1 flex-wrap w-full justify-end items-end md:w-auto">
-                <button app-action-button class="app-button !text-sm !p-2"
-                        text="Claim" [onClick]="claim(claimablePayout).bind(this)">
-                </button>
+              <div
+                class="flex gap-1 flex-wrap w-full justify-end items-end md:w-auto"
+              >
+                <button
+                  app-action-button
+                  class="app-button !text-sm !p-2"
+                  text="Claim"
+                  [onClick]="claim(claimablePayout).bind(this)"
+                ></button>
               </div>
             </div>
           </div>

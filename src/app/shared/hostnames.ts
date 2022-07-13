@@ -1,5 +1,5 @@
-import {MaticNetwork, MumbaiNetwork, Network} from './networks'
-import {getWindow} from './utils/browser'
+import { MaticNetwork, MumbaiNetwork, Network } from './networks'
+import { getWindow } from './utils/browser'
 
 export const Hostnames: { [host in string]: Host } = {
   'tokenapp.biznisport.com': {

@@ -1,4 +1,4 @@
-<div class="ml-4 mt-2 flex flex-col bg-white shadow-sm rounded-lg px-8 py-4">
+<div class="ml-4 mt-2 flex flex-col bg-white shadow-sm rounded-t-lg px-8 py-4">
     <div class="mt-2 text-sm text-gray-700">
         <div class="flex flex-row pt-2 gap-4">
             <div class="w-1/2">
@@ -21,7 +21,7 @@
     </div>
 </div>
 
-<div class="ml-4 mt-2 flex flex-col bg-white shadow-sm rounded-lg">
+<div class="ml-4 mt-2 flex flex-col bg-white shadow-sm rounded-t-lg">
     <div class="flex flex-row justify-center w-full mt-8">
         <div (click)="changeTab(TabType.ManageExisting)" 
         [class.!text-violet-700] = "activeTab === TabType.ManageExisting"
@@ -42,15 +42,18 @@
             
         </div>
     </div>
-    <div class="flex flex-row rounded-lg">
-        <div *ngIf="activeTab === TabType.CreateNew" 
-        class="w-full h-full border rounded-lg mx-8 mb-8">
-            <app-snapshot-new></app-snapshot-new>
-        </div>
-        <div *ngIf="activeTab === TabType.ManageExisting"
-        class="w-full h-full mx-8 mb-8 border rounded-lg">
-            <app-snapshots></app-snapshots>
-        </div>
+  </div>
+  <div class="flex flex-row rounded-b-lg ml-4 bg-white">
+    <div
+      *ngIf="activeTab === TabType.CreateNew"
+      class="w-full h-full border rounded-lg mx-8 mb-8"
+    >
+      <app-snapshot-new></app-snapshot-new>
     </div>
-    
-</div>
+    <div
+      *ngIf="activeTab === TabType.ManageExisting"
+      class="w-full h-full mx-8 mb-8 border rounded-lg"
+    >
+      <app-snapshots></app-snapshots>
+    </div>
+  </div>

@@ -1,5 +1,5 @@
-import {Injectable, Pipe, PipeTransform} from '@angular/core'
-import {AuthProvider} from "../../preference/state/preference.store"
+import { Injectable, Pipe, PipeTransform } from '@angular/core'
+import { AuthProvider } from '../../preference/state/preference.store'
 
 @Injectable({
   providedIn: 'root',
@@ -8,8 +8,7 @@ import {AuthProvider} from "../../preference/state/preference.store"
   name: 'authProviderName',
 })
 export class AuthProviderNamePipe implements PipeTransform {
-  constructor() {
-  }
+  constructor() {}
 
   transform(value: '' | AuthProvider | null | undefined): string {
     if (!value) {

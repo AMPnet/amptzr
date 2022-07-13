@@ -8,6 +8,6 @@ export type cid = string
 export type version = number
 
 export interface IPFSDocument {
-  name: string,
+  name: string
   location: string | cid
 }
