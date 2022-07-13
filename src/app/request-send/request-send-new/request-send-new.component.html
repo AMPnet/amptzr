@@ -88,10 +88,21 @@
       </ng-container>
     </form>
     <div class="w-5/12 pl-8">
-      <div class="text-lg mt-4 font-semibold text-gray-700">Creating invoices</div>
-      <div class="mt-4 text-gray-700">
+        <app-info-snippet
+          [type]="'INFO'"
+          [content]="{ title: 'Payments are shareable', sections: [
+            'When you create a payment request, you will receive a public link - which you can send to the person you want to do the payment'
+          ]}">
+        </app-info-snippet>
 
-      </div>
+        <div class="my-2"></div>
+
+        <app-info-snippet
+          [type]="'INFO'"
+          [content]="{ title: 'Smart payment requests', sections: [
+            'Smart contracts can be the recipients of payment requests.',
+            'For example - a PaymentSplitter contract can receive the payment and distribute it to multiple people'
+          ]}"></app-info-snippet>
     </div>
   </div>
 </div>

@@ -39,10 +39,10 @@
                 <div class="w-3/12 text-center">
                   Date created
                 </div>
-                <div class="w-3/12 text-center">
+                <div class="w-2/12 text-center">
                   Status
                 </div>
-                <div class="w-3/12 text-center">
+                <div class="w-4/12 text-center">
                   Actions
                 </div>
               </div>
@@ -52,8 +52,8 @@
                 <ng-container *ngIf="(snapshot.asset | assetData:'tokenOnly'
                                      | withStatus | async) as assetRes">
                   <ng-container *ngIf="assetRes.value as asset">
-                    <div class="flex flex-row justify-center py-4 w-1/2">
-                      <span class="text-sm flex flex-row justify-center font-semibold">{{ asset.tokenData.symbol }}</span>
+                    <div class="flex flex-row justify-center py-3 w-1/2">
+                      <span class="text-sm flex flex-row justify-center font-semibold">{{ asset.tokenData.name }}</span>
                     </div>
                   </ng-container>
 
@@ -70,7 +70,7 @@
                 <ng-container
                   *ngIf="(snapshot.asset_snapshot_block_number | blockTime | withStatus | async) as blockTimeRes">
                   <ng-container *ngIf="blockTimeRes.value as blockTime">
-                    <span class="w-1/2 items-center text-sm font-medium flex flex-col justify-center">{{ blockTime | date:'medium' }}</span>
+                    <span class="w-1/2 items-center text-sm font-medium flex flex-col justify-center">{{ blockTime | date:'short' }}</span>
                   </ng-container>
 
                   <ng-container *ngIf="blockTimeRes.error">
@@ -86,13 +86,13 @@
 
               <div class="flex flex-row w-1/2 justify-start">
                 <div class="px-4 bg-red-100 text-red-700 flex flex-col justify-center
-                            items-center text-xs font-semibold uppercase m-2 rounded-lg w-1/2"
+                            items-center text-xs font-semibold uppercase m-2 rounded-lg w-1/3"
                      *ngIf="snapshot.status === snapshotStatus.Failed">
                   Failed
                 </div>
 
                 <div class="px-4 p-1 bg-orange-100 text-orange-800 flex flex-col justify-center
-                            items-center text-xs font-semibold uppercase m-2 rounded-lg w-1/2"
+                            items-center text-xs font-semibold uppercase m-2 rounded-lg w-1/3"
                      *ngIf="snapshot.status === snapshotStatus.Pending">
                   <span class="animate-pulse">
                     Pending
@@ -101,7 +101,7 @@
 
                 <div class="px-4 p-1 bg-emerald-100 text-emerald-800
                 items-center flex flex-col justify-center m-2 rounded-lg
-                          text-xs font-semibold uppercase w-1/2"
+                          text-xs font-semibold uppercase w-1/3"
                      *ngIf="snapshot.status === snapshotStatus.Success">
                   <span class="">
                     Created
@@ -109,11 +109,23 @@
                 </div>
 
                 <a [routerLink]="snapshot.id"
-                   class="px-4 bg-gray-200 text-gray-700
-                          font-semibold uppercase rounded-full text-xs m-2
-                          items-center w-1/2 flex flex-row justify-center"
+                   class="px-2 bg-gray-200 text-gray-700 hover:bg-gray-300 transition-colors
+                          font-semibold rounded-full text-xs my-2 mx-1
+                          items-center w-1/3 flex flex-row justify-center"
                    *ngIf="snapshot.id">
-                  Start airdrop ->
+                   <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                  </svg>
+                  <div class="ml-2">
+                    Get holders
+                  </div>
+                </a>
+                <a [routerLink]="snapshot.id"
+                   class="px-2 bg-gray-200 text-gray-700 hover:bg-gray-300 transition-colors
+                          font-semibold rounded-full text-xs my-2 mx-1
+                          items-center w-1/3 flex flex-row justify-center"
+                   *ngIf="snapshot.id">
+                  Airdrop ->
                 </a>
               </div>
             </div>
@@ -127,7 +139,9 @@
       </ng-container>
 
       <ng-container *ngIf="snapshotsRes.loading">
-        Loading snapshots...
+        <div class="flex flex-row justify-center items-center py-16 w-full">
+          <app-spinner></app-spinner>
+        </div>
       </ng-container>
 
     </ng-container>
