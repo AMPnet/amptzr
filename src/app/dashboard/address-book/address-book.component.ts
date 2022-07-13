@@ -11,19 +11,24 @@ export class AddressBookComponent {
   addresses: AddressModel[] = [
     {
       address: "0x40dbE1593C62808BCf9C5FbaefA0AD5De827416f",
-      alias: "Mislav Ledger"
+      alias: "Mislav Ledger",
+      phone: "+385 95 354 6106",
+      email: "mislav@ampnet.io"
     },
     {
       address: "0x40dbE1593C62808BCf9C5FbaefA0AD5De827416f",
-      alias: "Filip MetaMask"
+      alias: "Filip MetaMask",
+      phone: "",
+      email: "filip@ampnet.io"
     }
   ]
-  selectedTabIndex = 0
+  activeTab = TabType.AddressBook
+  Tab = TabType
 
   constructor() { }
 
-  tabClicked(index: number) {
-    this.selectedTabIndex = index
+  tabClicked(tab: TabType) {
+    this.activeTab = tab
   }
 
 }
@@ -31,4 +36,11 @@ export class AddressBookComponent {
 interface AddressModel {
   address: string,
   alias: string
+  phone: string,
+  email: string
+}
+
+enum TabType {
+  AddressBook,
+  Add
 }

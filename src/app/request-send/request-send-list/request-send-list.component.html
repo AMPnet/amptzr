@@ -1,0 +1,44 @@
+<div class="text-gray-700" *ngIf="sendRequests$ | async as sendRequests">
+    <div class="flex flex-row justify-center bg-gray-100 text-sm">
+        <div class="w-1/5 text-center pt-4 pb-4 font-semibold">Amount</div>
+        <div class="w-1/5 text-center pt-4 pb-4 font-semibold">Created at</div>
+        <div class="w-1/5 text-center pt-4 pb-4 font-semibold">Token</div>
+        <div class="w-1/5 text-center pt-4 pb-4 font-semibold">Status</div>
+        <div class="w-1/5 text-center pt-4 pb-4 font-semibold">URL</div>
+    </div>
+    <div *ngIf="assets$ | async as assets" class="text-sm font-medium">
+        <div class="flex flex-row justify-center" *ngFor="let request of sendRequests.requests; let i = index">
+            <div *ngIf="assets[i] | async as asset" class="w-1/5 text-center pt-2 pb-2 border-t flex flex-col justify-center">
+                {{ request.amount
+                    | formatUnit:'token':asset.decimals
+                    | currencyDefault:'token':'real':asset.symbol }}
+            </div>
+            <div class="w-1/5 text-center pt-2 pb-2 border-t flex flex-col justify-center">
+                {{request.created_at | date:'medium'}}
+            </div>
+            <div class="w-1/5 text-center border-t flex flex-col justify-center" >
+                <div *ngIf="assets[i] | async as asset; else loading">
+                    {{asset.name}}
+                </div>
+                <ng-template #loading>
+                    Loading...
+                </ng-template>
+            </div>
+            <div class="w-1/5 flex flex-col justify-center text-center border-t">
+                <div class="m-2 px-4 py-2 bg-orange-100 rounded-lg text-sm font-medium text-orange-600" 
+                    *ngIf="request.status === 'PENDING'">
+                    Pending
+                </div>
+            </div>
+            <div class="w-1/5 flex flex-col justify-center text-center border-t">
+                <div routerLink="../../../{{request.redirect_url}}" class="m-2 cursor-pointer px-4 py-2 bg-violet-700 rounded-full text-xs uppercase font-medium text-white">
+                    Open public link ->
+                </div>
+            </div>  
+        </div>
+    </div>
+</div>
+
+<div *ngIf="(sendRequests$ | async) === null">
+    <app-loading-overlay></app-loading-overlay>
+</div>

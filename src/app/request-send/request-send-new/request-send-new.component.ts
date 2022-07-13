@@ -14,6 +14,7 @@ import {catchError, distinctUntilChanged, shareReplay, startWith} from 'rxjs/ope
 import {RequestSendService} from '../request-send.service'
 import {getWindow} from '../../shared/utils/browser'
 import {IssuerPathPipe} from '../../shared/pipes/issuer-path.pipe'
+import { UserService } from 'src/app/shared/services/user.service'
 
 @Component({
   selector: 'app-request-send-new',
@@ -24,6 +25,7 @@ import {IssuerPathPipe} from '../../shared/pipes/issuer-path.pipe'
 export class RequestSendNewComponent {
   newRequestSendForm: FormGroup
   asset$: Observable<ERC20TokenData | undefined>
+  address$: Observable<string> = this.preferenceQuery.address$
 
   constructor(private requestSendService: RequestSendService,
               private fb: FormBuilder,
@@ -47,6 +49,7 @@ export class RequestSendNewComponent {
         '',
         [Validators.required, Validators.pattern(/^0x[a-fA-F0-9]{40}$/)],
       ],
+      paymentNote: ['']
     })
 
     const assetAddressChanged$ = this.newRequestSendForm.get('assetAddress')!.valueChanges.pipe(
@@ -64,25 +67,21 @@ export class RequestSendNewComponent {
     )
   }
 
-  createRequest(asset: ERC20TokenData) {
+  createRequest(asset: ERC20TokenData, recipient: string) {
     return () => {
       const amount = this.conversion.toToken(
         this.newRequestSendForm.value.tokenAmount || 0, asset.decimals,
       )
 
-      return this.requestSendService.createRequest({
-          chain_id: this.preferenceQuery.network.chainID,
-          token_address: asset.address,
-          amount: amount.toString(),
-          recipient_address: this.newRequestSendForm.value.recipientAddress,
-          redirect_url: getWindow().location.origin + this.issuerPathPipe.transform('/request-send/${id}/action'),
-        },
-      ).pipe(
+      return this.requestSendService.createRequestWithAPI({
+        amount: amount.toString(),
+        asset_type: 'TOKEN',
+        token_address: asset.address,
+        recipient_address: recipient
+      }).pipe(
         switchMap(res => this.dialogService.success({
           message: 'Send request created.',
-        }).pipe(
-          switchMap(() => this.router.navigate([`../${res.id}`], {relativeTo: this.route})),
-        )),
+        })),
       )
     }
   }

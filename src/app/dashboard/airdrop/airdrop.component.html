@@ -1,3 +1,14 @@
+<div class="ml-4 mt-2 flex flex-col bg-white shadow-sm rounded-lg p-8">
+    <div class="text-base font-medium text-gray-700">Airdropping tokens & distributing dividends</div>
+    <div class="mt-2 text-sm text-gray-700">
+        <b>Aidropper</b> -> This module enables you to create gas-efficient airdrops of any ERC-20 token to holders 
+        of any other ERC-20 token. <br><br>
+        The airdrops work by creating <i>snapshots</i>, which are lists of holders of some ERC-20 token at a specific moment in time.
+        Once you have a snapshot, you can use it as many times as you want to airdrop tokens to wallets contained in the snapshot.
+
+    </div>
+</div>
+
 <div class="ml-4 mt-2 flex flex-col bg-white shadow-sm rounded-lg">
     <div class="flex flex-row justify-center w-full mt-8">
         <div (click)="changeTab(TabType.ManageExisting)" 
@@ -5,7 +16,7 @@
         [class.!border-violet-700] = "activeTab === TabType.ManageExisting"
         class="w-40 border-b-4 text-center 
         pb-2 text-gray-700 font-semibold text-sm cursor-pointer uppercase">
-            Manage existing
+            Existing Snapshots
         </div>
         <div (click)="changeTab(TabType.CreateNew)"
         [class.!text-violet-700] = "activeTab === TabType.CreateNew"
@@ -14,13 +25,13 @@
             Create new
         </div>
     </div>
-    <div class="flex flex-row border mx-8 mb-8 rounded-lg">
+    <div class="flex flex-row rounded-lg">
         <div *ngIf="activeTab === TabType.CreateNew" 
-        class="w-full h-full">
+        class="w-full h-full border rounded-lg mx-8 mb-8">
             <app-snapshot-new></app-snapshot-new>
         </div>
         <div *ngIf="activeTab === TabType.ManageExisting"
-        class="w-full h-full">
+        class="w-full h-full mx-8 mb-8 border rounded-lg">
             <app-snapshots></app-snapshots>
         </div>
     </div>

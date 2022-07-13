@@ -25,13 +25,12 @@
                 <a class="mt-2" href="">Learn More</a></div>
             <div class="w-4/12 flex flex-row">
 
-                <div
-                routerLink="{{item.actions[0].url}}" 
+                <div routerLink="{{item.actions[0].url}}" 
                 class="w-50 h-10 bg-gray-200 mr-2 rounded-full 
                 px-6 py-2 text-gray-800 text-sm flex flex-row
                 cursor-pointer">
                     <div class="flex justify-center flex-col">
-                        {{item.actions[0].icon | unescape}}
+                        {{item.actions[0].icon}}
                     </div>
                     <button class="ml-2 flex flex-col justify-center">{{item.actions[0].title}}</button>                        
                 </div>
@@ -41,7 +40,7 @@
                 px-6 py-2 text-gray-800 text-sm flex flex-row
                 cursor-pointer">
                     <div class="flex justify-center flex-col">
-                        {{item.actions[1].icon | unescape}}           
+                        {{item.actions[1].icon}}           
                     </div>
                     <div class="ml-2 flex flex-col justify-center">{{item.actions[1].title}}</div>     
 

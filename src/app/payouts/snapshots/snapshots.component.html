@@ -1,7 +1,7 @@
-<div class="h-full mx-4">
-  <div class="bg-white shadow-sm h-full p-8 rounded-xl text-gray-700">
+<div class="h-full">
+  <div class="bg-white shadow-sm h-full rounded-xl text-gray-700">
     <ng-container *ngIf="(snapshots$ | async) as snapshotsRes">
-      <div class="flex flex-col">
+      <!-- <div class="flex flex-col">
         <div class="flex justify-between items-center mt-2">
           <div class="text-lg font-semibold">
             Manage existing token snapshots
@@ -19,28 +19,41 @@
         <small class="pt-4">
           This is a list of all the token snapshots you have created. Open the snapshot to perform an airdrop.
         </small>
-      </div>
+      </div> -->
       
 
       <ng-container *ngIf="snapshotsRes.value as snapshots">
-        <div *ngIf="snapshots.length === 0" class="mt-8">
+        <div *ngIf="snapshots.length === 0" class="">
           No snapshots
         </div>
 
         <div *ngIf="snapshots.length > 0"
-             class="flex flex-col mt-4">
+             class="flex flex-col">
           <div *ngFor="let snapshot of snapshots; let i = index"
-               class="border-gray-200 border-x border-b"
-               [class.border-t] = "i === 0"
-               [class.rounded-t-lg] = "i === 0"
-               [class.rounded-b-lg] = "i === (snapshots.length - 1)" >
+               [class.border-b] = "i < (snapshots.length - 1)">
+
+            <div *ngIf="i === 0" class="flex bg-gray-100 flex-row px-4 py-4 text-sm uppercase font-semibold">
+                <div class="w-3/12 text-center">
+                  Token name
+                </div>
+                <div class="w-3/12 text-center">
+                  Date created
+                </div>
+                <div class="w-3/12 text-center">
+                  Status
+                </div>
+                <div class="w-3/12 text-center">
+                  Actions
+                </div>
+              </div>
             <div class="flex justify-between flex-wrap">
-              <div class="flex flex-row">
+              
+              <div class="flex flex-row w-1/2">
                 <ng-container *ngIf="(snapshot.asset | assetData:'tokenOnly'
                                      | withStatus | async) as assetRes">
                   <ng-container *ngIf="assetRes.value as asset">
-                    <div class="flex items-baseline w-20 pl-4 py-4">
-                      <span class="text-sm mr-2 font-semibold">{{ asset.tokenData.symbol }}</span>
+                    <div class="flex flex-row justify-center py-4 w-1/2">
+                      <span class="text-sm flex flex-row justify-center font-semibold">{{ asset.tokenData.symbol }}</span>
                     </div>
                   </ng-container>
 
@@ -57,7 +70,7 @@
                 <ng-container
                   *ngIf="(snapshot.asset_snapshot_block_number | blockTime | withStatus | async) as blockTimeRes">
                   <ng-container *ngIf="blockTimeRes.value as blockTime">
-                    <span class="pl-4 border-l text-sm flex flex-col justify-center">{{ blockTime | date:'medium' }}</span>
+                    <span class="w-1/2 items-center text-sm font-medium flex flex-col justify-center">{{ blockTime | date:'medium' }}</span>
                   </ng-container>
 
                   <ng-container *ngIf="blockTimeRes.error">
@@ -71,24 +84,24 @@
                 </ng-container>
               </div>
 
-              <div class="flex flex-wrap w-full justify-end md:w-auto">
-                <div class="px-4 w-20 bg-red-100 text-red-700 flex flex-col justify-center
-                            items-center text-xs font-semibold uppercase m-2 rounded-lg"
+              <div class="flex flex-row w-1/2 justify-start">
+                <div class="px-4 bg-red-100 text-red-700 flex flex-col justify-center
+                            items-center text-xs font-semibold uppercase m-2 rounded-lg w-1/2"
                      *ngIf="snapshot.status === snapshotStatus.Failed">
                   Failed
                 </div>
 
-                <div class="px-4 w-20 p-1 bg-orange-100 text-orange-800 flex flex-col justify-center
-                            items-center text-xs font-semibold uppercase m-2 rounded-lg"
+                <div class="px-4 p-1 bg-orange-100 text-orange-800 flex flex-col justify-center
+                            items-center text-xs font-semibold uppercase m-2 rounded-lg w-1/2"
                      *ngIf="snapshot.status === snapshotStatus.Pending">
                   <span class="animate-pulse">
                     Pending
                   </span>
                 </div>
 
-                <div class="px-4 p-1 w-20 bg-emerald-100 text-emerald-800
+                <div class="px-4 p-1 bg-emerald-100 text-emerald-800
                 items-center flex flex-col justify-center m-2 rounded-lg
-                          text-xs font-semibold uppercase"
+                          text-xs font-semibold uppercase w-1/2"
                      *ngIf="snapshot.status === snapshotStatus.Success">
                   <span class="">
                     Created
@@ -96,11 +109,11 @@
                 </div>
 
                 <a [routerLink]="snapshot.id"
-                   class="px-4 bg-violet-700 text-white
+                   class="px-4 bg-gray-200 text-gray-700
                           font-semibold uppercase rounded-full text-xs m-2
-                          flex items-center"
+                          items-center w-1/2 flex flex-row justify-center"
                    *ngIf="snapshot.id">
-                  Start airdrop
+                  Start airdrop ->
                 </a>
               </div>
             </div>

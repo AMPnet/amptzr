@@ -118,6 +118,7 @@ const appRoutes: Routes = [
         {path: 'third-party-integrations', component: ThirdPartyIntegrationsOverviewComponent },
         {path: 'contracts', component: ContractsComponent},
         {path: 'airdrops', component: AirdropComponent },
+        {path: 'airdrops/:snapshotID', component: PayoutNewComponent },
         {path: 'payments', component: PaymentsComponent },
         {path: 'address-book', component: AddressBookComponent}
       ] }
