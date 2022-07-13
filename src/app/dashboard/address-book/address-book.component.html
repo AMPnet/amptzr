@@ -1,0 +1,101 @@
+<div class="w-full bg-white p-8 m-4 rounded-lg flex flex-col">
+
+    <div class="flex flex-row justify-center">
+        <div (click)="tabClicked(Tab.AddressBook)" [class.active-content-item]="activeTab === Tab.AddressBook" 
+        class=" w-44 text-center text-sm uppercase pb-2 border-b-4 font-semibold text-gray-500 cursor-pointer">
+            Address Book
+        </div>
+        <div (click)="tabClicked(Tab.Add)" [class.active-content-item]="activeTab === Tab.Add" 
+        class=" w-44 text-center text-sm font-semibold text-gray-500 uppercase border-b-4 cursor-pointer">
+            Add
+        </div>
+    </div>
+
+    <ng-container *ngIf="activeTab === Tab.Add">
+        <div class="border p-8 rounded-xl flex flex-col text-gray-700">
+            <form class="flex flex-col" action="">
+                <label for="wallet-address" class="font-semibold">Wallet address</label>
+                <small>Paste the wallet address you want to add to your address book</small>
+                <input id="wallet-address" placeholder="0xaDd" 
+                class="border-gray-200 rounded-lg w-full mt-2 text-sm" type="text">
+
+                <label for="alias" class="font-semibold mt-4">Alias</label>
+                <small>Enter the alias for the account. Alias is a human readable description, through which you will be able to get the address.</small>
+                <input id="alias" class="border-gray-200 rounded-lg w-full mt-2 text-sm"
+                placeholder="(e.g. franks-wallet)" type="text">
+
+                <hr class="mt-8 mb-8">
+
+                <div class="flex flex-row">
+                    <div class="flex flex-col w-6/12 pr-4">
+                        <label for="phone" class="font-semibold ">Phone (optional)</label>
+                        <small>If you wish, you can add the phone number of the user.</small>
+                        <input id="phone" class="border-gray-200 rounded-lg w-full mt-2 text-sm"
+                        placeholder="Phone number" type="text">
+                    </div>
+                    <div class="flex flex-col w-6/12 pl-4">
+                        <label for="email" class="font-semibold ">Email (optional)</label>
+                        <small>If you wish, you can add the email of the user.</small>
+                        <input id="email" class="border-gray-200 rounded-lg w-full mt-2 text-sm"
+                        placeholder="Email" type="text">
+                    </div>
+                </div>
+                <div class="w-full flex flex-row justify-end mt-8">
+                    <div class=" px-12 bg-violet-700 rounded-full py-2 text-white text-sm uppercase font-semibold">+ Add</div>
+                </div>
+                
+            </form>
+        </div>
+    </ng-container>
+
+    <ng-container *ngIf="activeTab === Tab.AddressBook">
+        <div class=" border-gray-100 border-2 p-4 flex flex-row bg-gray-100 rounded-t-lg">
+            <div class="w-3/12 text-sm uppercase font-semibold">Alias</div>
+            <div class="w-3/12 text-sm uppercase font-semibold">Address</div>
+            <div class="w-3/12 text-sm uppercase font-semibold">Phone</div>
+            <div class="w-3/12 text-sm uppercase font-semibold">Email</div>
+        </div>
+    
+        <div *ngFor="let item of addresses" class=" border-gray-100
+        border-x border-b p-4 flex flex-row cursor-pointer">
+            <div class="w-3/12 text-sm flex flex-row items-center">
+                <div class="mr-2">{{item.alias}}</div>
+                <app-value-copy [value]="item.alias"></app-value-copy>
+            </div>
+            <div class="w-3/12 text-sm flex flex-row items-center">
+                <div class="mr-2">
+                    {{item.address | addrShort}}
+                </div>
+                <app-value-copy [value]="item.address"></app-value-copy>
+                <app-explorer-link class="ml-2" [value]="item.address"></app-explorer-link>
+            </div>
+            <div class="w-3/12 text-sm">
+                <div *ngIf="item.phone.length > 0; else noData" class="flex flex-row items-center">
+                    <div class="mr-2">{{item.phone}}</div>
+                    <app-value-copy [value]="item.phone"></app-value-copy>
+                </div>
+                <ng-template #noData>
+                    <div class="px-2 py-1 w-32 text-orange-400 bg-orange-100 rounded-full flex flex-row justify-center text-xs font-semibold">
+                        Not available
+                    </div>
+                </ng-template>
+            </div>
+            <div class="w-3/12 text-sm">
+                <div *ngIf="item.phone.length > 0; else noData">
+                    {{item.email}}
+                    <app-value-copy class="ml-2" [value]="item.email"></app-value-copy>
+                </div>
+                <ng-template #noData>
+                    <div class="px-2 py-1 w-32 text-orange-400 bg-orange-100 rounded-full flex flex-row justify-center text-xs font-semibold">
+                        Not available
+                    </div>
+                </ng-template>
+            </div>
+        </div>
+       
+    </ng-container>
+    
+
+    
+
+</div>

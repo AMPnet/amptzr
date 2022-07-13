@@ -1,11 +1,12 @@
-<div class="w-full max-w-6xl">
-  <div class="w-full flex flex-col rounded-3xl justify-between bg-white p-4 lg:p-8">
-    <div class="w-full max-w-md mr-16">
+<div class="w-full flex flex-row justify-center">
+  <div class="w-full max-w-xl flex flex-col rounded-3xl justify-between bg-white p-4 lg:p-8">
+    <div class="w-full">
       <form [formGroup]="depositForm">
-        <label for="depositAmount" class="text-lg">
-          <b>I want to get</b>
+        <label for="depositAmount" class="text-sm uppercase text-gray-700">
+          <b>I want to buy</b>
         </label>
-        <input class="w-full mt-2 p-3 border outline-none rounded-xl disabled:bg-gray-100"
+        <input class="w-full mt-2 p-3 border outline-none
+         border-gray-200 text-sm rounded-xl disabled:bg-gray-100"
                type="text" appCurrencyMask
                id="depositAmount"
                formControlName="amount"/>
@@ -14,7 +15,7 @@
         </p>
       </form>
       <div class="flex items-center gap-2 mt-4">
-        <p class="text-sm">powered by:</p>
+        <p class="text-sm text-gray-700">powered by:</p>
         <svg width="88" height="32" viewBox="0 0 138 32" fill="none" xmlns="http://www.w3.org/2000/svg">
           <path
             d="M34.4433 18.8309L28.3845 24.912C27.8712 25.4272 27.8717 26.2647 28.3855 26.7792L33.0155 31.4158C33.8046

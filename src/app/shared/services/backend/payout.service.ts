@@ -42,7 +42,7 @@ export class PayoutService {
         assetFactories: this.preferenceQuery.assetFactories.join(','),
         payoutService: this.preferenceQuery.network.tokenizerConfig.payoutService,
         payoutManager: this.preferenceQuery.network.tokenizerConfig.payoutManager,
-      } as GetSnapshotsParams,
+      } as GetSnapshotsParams, false, false
     ).pipe(
       map(res => res.snapshots),
     )

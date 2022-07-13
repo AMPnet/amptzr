@@ -1,8 +1,5 @@
 <div class="px-4 py-2 max-w-screen-lg mx-auto">
   <div class="bg-white my-8 p-6 rounded-4xl">
-    <h1 class="mt-2 text-2xl uppercase">
-      Payouts
-    </h1>
 
     <ng-container *ngIf="(payouts$ | async) as payoutsRes">
       <ng-container *ngIf="payoutsRes.value as payouts">

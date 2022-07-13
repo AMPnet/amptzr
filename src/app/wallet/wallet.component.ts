@@ -38,7 +38,7 @@ export class WalletComponent {
   )
 
   address$ = this.preferenceQuery.address$
-  balance$ = withStatus(this.stablecoin.balance$)
+  balance$ = withStatus(this.userService.nativeTokenBalance$)
 
   assets$: Observable<WithStatus<AssetWithInfoWithBalance[]>> = this.address$.pipe(
     switchMap(address => withStatus(

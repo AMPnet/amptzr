@@ -1,36 +1,22 @@
-<div class="px-4 py-2 max-w-screen-lg mx-auto">
-  <div class="bg-white my-8 p-6 rounded-4xl">
-    <h1 class="mt-2 text-2xl uppercase">
-      New Send Request
-    </h1>
-
-    <form [formGroup]="newRequestSendForm">
-      <div class="flex flex-col gap-2 mt-4 max-w-md">
-        <label class="font-semibold" for="asset-address">
-          Token address
+<div class="">
+  <div class="flex flex-row">
+    <form class="w-7/12 pr-8 border-r" [formGroup]="newRequestSendForm">
+      <div class="flex flex-col gap-2 mt-4">
+        <label class="font-semibold text-gray-700" for="asset-address">
+          Token
         </label>
-        <input class="border-gray-400 rounded-lg" type="text"
+        <small class="my-1 text-gray-700">Choose the token which you are requesting the payments in</small>
+        <input class="border-gray-200 text-sm rounded-lg" type="text"
                formControlName="assetAddress" id="asset-address"
                autocomplete="off">
       </div>
 
       <ng-container *ngIf="(asset$ | async) as asset">
         <div class="flex items-baseline gap-1.5 flex-wrap mt-4">
-          <span>{{ asset.symbol }}</span>
-          <span class="text-sm">
-            {{ asset.address | addrShort }}
-          </span>
-          <app-value-copy [value]="asset.address" [delay]="800">
-          </app-value-copy>
-          <app-explorer-link [value]="asset.address">
-          </app-explorer-link>
-          <app-add-to-metamask [value]="asset.address">
-          </app-add-to-metamask>
         </div>
 
         <!-- Token box -->
-        <div class="mt-5 bg-gray-200/20 border-gray-300/50 border-[1px] rounded-lg px-2 pb-1
-                              max-w-md">
+        <div class="mt-5 bg-gray-100/20 border-gray-300/50 border-[1px] rounded-lg px-2 pb-1">
           <span class="flex justify-end mt-2 text-xxs font-medium text-gray-400">
             Amount of {{ asset.symbol }} you want to request
           </span>
@@ -50,7 +36,7 @@
               </div>
             </div>
 
-            <input class="w-full py-0 pr-0 text-right bg-transparent border-none focus:ring-0 text-3xl
+            <input class="w-full py-0 pr-0 text-right bg-transparent border-none focus:ring-0 text-xl
                                 text-ellipsis	placeholder:text-gray-400"
                    formControlName="tokenAmount"
                    appBigNumberInput bigNumberType="token"
@@ -70,24 +56,42 @@
           </div>
         </div>
 
-        <div class="flex flex-col gap-2 mt-4 max-w-md">
-          <label class="font-semibold" for="recipient-address">
+        <div class="flex flex-col gap-2 mt-4">
+          <label class="font-semibold text-gray-700" for="recipient-address">
             Receiver address
           </label>
-          <input class="border-gray-400 rounded-lg" type="text"
+          <small class="text-gray-700">The address to which the funds will be received</small>
+          <input class="border-gray-200 text-sm rounded-lg" type="text"
                  formControlName="recipientAddress" id="recipient-address"
                  autocomplete="off">
         </div>
 
-        <div class="mt-4">
+        <div class="flex flex-col gap-2 mt-4">
+          <label class="font-semibold text-gray-700" for="payment-note">
+            Payment note (Optional)
+          </label>
+          <small class="text-gray-700">The note which will be shown to the person paying. This is a good place to put a link to an invoice.</small>
+          <input class="border-gray-200 text-sm rounded-lg" type="text"
+                 formControlName="paymentNote" id="payment-note"
+                 autocomplete="off">
+        </div>
+
+        <div *ngIf="address$ | async as address" class="mt-4 flex flex-row justify-end">
           <button app-action-button
-                  class="app-button"
+                  class="bg-violet-700 font-semibold px-12 py-2 text-sm uppercase text-white rounded-full"
+                  [class.!bg-gray-700]="newRequestSendForm.invalid"
                   [disabled]="newRequestSendForm.invalid"
-                  [onClick]="createRequest(asset).bind(this)"
-                  text="Create Send Request">
+                  [onClick]="createRequest(asset, address).bind(this)"
+                  text="Create Payment Request">
           </button>
         </div>
       </ng-container>
     </form>
+    <div class="w-5/12 pl-8">
+      <div class="text-lg mt-4 font-semibold text-gray-700">Creating invoices</div>
+      <div class="mt-4 text-gray-700">
+
+      </div>
+    </div>
   </div>
 </div>

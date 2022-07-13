@@ -25,9 +25,7 @@ import {AdminCampaignEditComponent} from './admin/admin-campaign-edit/admin-camp
 import {AdminCampaignDetailComponent} from './admin/admin-campaign-detail/admin-campaign-detail.component'
 import {AdminCampaignAddTokensComponent} from './admin/admin-campaign-add-tokens/admin-campaign-add-tokens.component'
 import {AdminIssuerNewComponent} from './admin/admin-issuer-new/admin-issuer-new.component'
-import {
-  AdminIssuerEditCampaignVisibilityComponent,
-} from './admin/admin-issuer-edit-campaign-visibility/admin-issuer-edit-campaign-visibility.component'
+import {AdminIssuerEditCampaignVisibilityComponent} from './admin/admin-issuer-edit-campaign-visibility/admin-issuer-edit-campaign-visibility.component'
 import {AuthMagicOauthComponent} from './auth/auth-magic-oauth/auth-magic-oauth.component'
 import {TransferComponent} from './transfer/transfer.component'
 import {SwapComponent} from './swap/swap.component'
@@ -43,11 +41,21 @@ import {RequestSendShowComponent} from './request-send/request-send-show/request
 import {RequestSendActionComponent} from './request-send/request-send-action/request-send-action.component'
 import {RequestBalanceActionComponent} from './request-balance/request-balance-action/request-balance-action.component'
 import {RequestWalletActionComponent} from './request-wallet/request-wallet-action/request-wallet-action.component'
+import { DashboardHolderComponent } from './dashboard/dashboard-holder/dashboard-holder.component'
+import { CreateErc20Component } from './dashboard/token/erc20/create-erc20.component'
+import { NewAndManageHolderComponent } from './dashboard/new-and-manage-holder/new-and-manage-holder.component'
+import { ThirdPartyIntegrationsOverviewComponent } from './dashboard/utils/third-party-integrations-overview/third-party-integrations-overview.component'
+import { TokensHolderComponent } from './dashboard/token/tokens-holder/tokens-holder.component'
+import { ContractsComponent } from './dashboard/contracts/contracts.component'
+import { FundraisingComponent } from './dashboard/fundraising/fundraising.component'
+import { AddressBookComponent } from './dashboard/address-book/address-book.component'
+import { AirdropComponent } from './dashboard/airdrop/airdrop.component'
+import { PaymentsComponent } from './payments/payments.component'
 
 const appRoutes: Routes = [
   {path: 'callback', component: AuthMagicOauthComponent},
 
-  {path: '', pathMatch: 'full', redirectTo: 'offers'},
+  {path: '', pathMatch: 'full', redirectTo: 'admin/dashboard/tokens'},
   {path: 'offers', component: OffersComponent},
   {path: 'offers/:id', component: OfferComponent},
   {path: 'offers/:id/invest', component: InvestComponent},
@@ -58,6 +66,7 @@ const appRoutes: Routes = [
       {path: 'wallet', component: WalletComponent},
       {path: 'deposit', component: DepositComponent},
       {path: 'orders', component: OrdersComponent},
+      
     ],
   },
   {
@@ -101,6 +110,18 @@ const appRoutes: Routes = [
       {path: 'campaigns/:campaignId', component: AdminCampaignDetailComponent},
       {path: 'campaigns/:campaignId/edit', component: AdminCampaignEditComponent},
       {path: 'campaigns/:campaignId/add-tokens', component: AdminCampaignAddTokensComponent},
+      {path: 'dashboard', component: DashboardHolderComponent, children: [
+        {path: 'tokens', component: TokensHolderComponent},
+        {path: 'tokens/create/erc20', component: CreateErc20Component},
+        {path: 'fundraising', component: FundraisingComponent},
+        {path: 'fundraising/:id/campaigns/new', component: AdminAssetCampaignNewComponent},
+        {path: 'third-party-integrations', component: ThirdPartyIntegrationsOverviewComponent },
+        {path: 'contracts', component: ContractsComponent},
+        {path: 'airdrops', component: AirdropComponent },
+        {path: 'airdrops/:snapshotID', component: PayoutNewComponent },
+        {path: 'payments', component: PaymentsComponent },
+        {path: 'address-book', component: AddressBookComponent}
+      ] }
     ],
   },
   {path: 'dev_playground', component: DevPlaygroundComponent},

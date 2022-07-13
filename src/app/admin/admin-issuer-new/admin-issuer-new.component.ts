@@ -14,6 +14,7 @@ import {IssuerPathPipe} from '../../shared/pipes/issuer-path.pipe'
 import {Observable, of} from 'rxjs'
 import {Erc20Service, ERC20TokenData} from '../../shared/services/blockchain/erc20.service'
 import {PhysicalInputService} from '../../shared/services/physical-input.service'
+import { ProjectService } from 'src/app/shared/services/backend/project.service'
 
 @Component({
   selector: 'app-admin-issuer-new',
@@ -36,6 +37,7 @@ export class AdminIssuerNewComponent {
               private dialogService: DialogService,
               private userService: UserService,
               private erc20Service: Erc20Service,
+              private projectService: ProjectService,
               private issuerPathPipe: IssuerPathPipe,
               private physicalInputService: PhysicalInputService,
               private fb: FormBuilder) {
@@ -87,9 +89,12 @@ export class AdminIssuerNewComponent {
         stablecoinAddress: this.createForm.value.stablecoinAddress,
         info: uploadRes.path,
       }, IssuerFlavor.BASIC)),
+      switchMap((issuerAddress) => 
+        this.projectService.createNewProject(issuerAddress ?? '')
+      ),
       switchMap(() => this.dialogService.info({
         title: 'Success',
-        message: 'Issuer has been created.',
+        message: `Issuer has been created.`,
         cancelable: false,
       }).pipe(
         switchMap(() => this.router.router.navigate(['/'])),

@@ -63,12 +63,13 @@ export const MaticNetwork: Network = {
   },
   maxGasPrice: 1500,
   rpcURLs: [
+    'https://nd-159-625-174.p2pify.com/db285116493a92ba6e91417f43a942bd',
     'https://polygon-rpc.com',
   ],
   wssRpcURLs: [
     'wss://ws-nd-159-625-174.p2pify.com/db285116493a92ba6e91417f43a942bd',
-    'wss://polygon-mainnet.g.alchemy.com/v2/A8PZz3PJWwX_yQAW5q0JjqaNPPshI9Qg',
     'wss://ws-matic-mainnet.chainstacklabs.com',
+    'wss://polygon-mainnet.g.alchemy.com/v2/A8PZz3PJWwX_yQAW5q0JjqaNPPshI9Qg',
   ],
   explorerURLs: ['https://polygonscan.com/'],
   tokenizerConfig: {
@@ -162,7 +163,7 @@ export const GoerliNetwork: Network = {
 export const Networks: { [key in ChainID]: Network } = {
   [ChainID.MATIC_MAINNET]: MaticNetwork,
   [ChainID.MUMBAI_TESTNET]: MumbaiNetwork,
-  [ChainID.GOERLI_TESTNET]: GoerliNetwork,
+  [ChainID.GOERLI_TESTNET]: GoerliNetwork
 }
 
 const getEthersNetwork = (network: Network): providers.Network => ({

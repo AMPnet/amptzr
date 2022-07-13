@@ -10,6 +10,7 @@ import {IssuerService, IssuerWithInfo} from '../../shared/services/blockchain/is
 import {IssuerBasicService, IssuerBasicState} from '../../shared/services/blockchain/issuer/issuer-basic.service'
 import {WithStatus, withStatus} from '../../shared/utils/observables'
 import {PhysicalInputService} from '../../shared/services/physical-input.service'
+import { Location } from '@angular/common'
 
 @Component({
   selector: 'app-admin-issuer-edit',
@@ -32,6 +33,7 @@ export class AdminIssuerEditComponent {
               private stablecoin: StablecoinService,
               private preferenceStore: PreferenceStore,
               private dialogService: DialogService,
+              private location: Location,
               private physicalInputService: PhysicalInputService,
               private fb: FormBuilder) {
     this.updateForm = this.fb.group({
@@ -131,6 +133,10 @@ export class AdminIssuerEditComponent {
         ...this.preferenceStore.getValue().issuer,
       },
     })
+  }
+
+  goBack() {
+    this.location.back()
   }
 
   static validAddress(control: AbstractControl): ValidationErrors | null {
