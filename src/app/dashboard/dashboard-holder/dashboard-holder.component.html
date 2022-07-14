@@ -1,6 +1,6 @@
 <div
   *ngIf="issuer$ | async as myIssuer"
-  class="w-full h-full flex justify-center mt-8 px-2 pb-8"
+  class="w-full h-full flex flex-row justify-center mt-8 px-2 pb-8"
 >
   <div class="w-full max-w-6xl flex-col">
     <div class="flex flex-row text-sm">
@@ -16,16 +16,16 @@
       </div>
     </div>
 
-    <div class="py-8 bg-white shadow-sm p-8 my-4 rounded-xl flex flex-row">
+    <div class="py-1 bg-white w-full shadow-sm px-8 my-4 rounded-xl flex flex-row justify-end">
       <div class="flex justify-center flex-col">
         <img
-          class="h-10"
+          class="h-10 object-contain"
           src="{{ myIssuer.infoData.logo | toUrlIPFS }}"
           alt=""
           srcset=""
         />
       </div>
-      <div class="px-4 py-4 flex flex-col ml-4 w-full">
+      <div class="px-4 py-4 flex flex-row ml-4 w-full">
         <div class="flex flex-row justify-between">
           <div class="text-xl font-semibold text-gray-700 flex flex-row">
             <div class="flex flex-col justify-center">
@@ -64,29 +64,22 @@
               </div>
             </div>
           </div>
-          <div class="flex flex-col justify-center">
-            <a
-              href="https://docs.ampnet.io"
-              class="flex flex-col justify-center bg-gray-200 font-semibold underline cursor-pointer text-gray-700 text-xs px-8 py-2 mx-4 rounded-full"
-            >
-              Read the docs
-            </a>
-          </div>
-        </div>
-
-        <div
-          class="text-sm text-gray-700 mt-8 w-full"
+          <div
+          class="text-sm text-gray-700 flex flex-row items-center"
           *ngIf="apiKey$ | async as apiKey; else createApiKeyButton"
         >
-          <span>Your API Key</span>
-          <span class="ml-2 px-4 py-2 rounded-full bg-gray-100"
-            >{{ apiKey.api_key | apiKeyShort }}...
+          <span class="ml-2 px-8 py-2 rounded-full border-gray-200 border"
+            >           <span class="mr-2 text-sm font-semibold">Your API Key:</span>
+             {{ apiKey.api_key | apiKeyShort }}...
             <app-value-copy
               class="ml-2"
               [value]="apiKey.api_key"
             ></app-value-copy>
           </span>
         </div>
+        </div>
+
+        
 
         <ng-template #createApiKeyButton>
           <div class="flex flex-col justify-center w-52 cursor-pointer">
@@ -103,7 +96,7 @@
     </div>
     <div class="w-full flex flex-row">
       <div
-        class="sidebar-width shadow-sm h-full flex flex-col bg-dash-l my-2 rounded-xl dash-side-holder"
+        class="sidebar-width sticky top-28 shadow-sm h-full flex flex-col bg-dash-l my-2 rounded-xl dash-side-holder"
       >
         <div
           routerLinkActive="active-dash-sidebar-item"

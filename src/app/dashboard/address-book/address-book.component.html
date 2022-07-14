@@ -3,16 +3,20 @@
     <div
       (click)="tabClicked(Tab.AddressBook)"
       [class.active-content-item]="activeTab === Tab.AddressBook"
-      class="w-44 text-center text-sm uppercase pb-2 border-b-4 font-semibold text-gray-500 cursor-pointer"
+      class="w-44 text-center flex flex-row items-center justify-center text-sm uppercase pb-2 border-b-4 font-semibold text-gray-500 cursor-pointer"
     >
       Address Book
     </div>
     <div
       (click)="tabClicked(Tab.Add)"
       [class.active-content-item]="activeTab === Tab.Add"
-      class="w-44 text-center text-sm font-semibold text-gray-500 uppercase border-b-4 cursor-pointer"
+      class="w-44 text-center text-sm flex flex-row items-center justify-center pb-2 font-semibold text-gray-500 uppercase border-b-4 cursor-pointer"
     >
-      Add
+    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+      <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+    </svg>
+    <div class="ml-2">Add</div>
+      
     </div>
   </div>
 
@@ -70,9 +74,12 @@
         </div>
         <div class="w-full flex flex-row justify-end mt-8">
           <div
-            class="px-12 bg-violet-700 rounded-full py-2 text-white text-sm uppercase font-semibold"
+            class="px-12 flex flex-row items-center bg-violet-700 rounded-full py-2 text-white text-sm uppercase font-semibold"
           >
-            + Add
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+            <div class="ml-2">Add</div> 
           </div>
         </div>
       </form>
@@ -115,27 +122,22 @@
           <div class="mr-2">{{ item.phone }}</div>
           <app-value-copy [value]="item.phone"></app-value-copy>
         </div>
-        <ng-template #noData>
-          <div
-            class="px-2 py-1 w-32 text-orange-400 bg-orange-100 rounded-full flex flex-row justify-center text-xs font-semibold"
-          >
-            Not available
-          </div>
-        </ng-template>
+
       </div>
       <div class="w-3/12 text-sm">
         <div *ngIf="item.phone.length > 0; else noData">
           {{ item.email }}
           <app-value-copy class="ml-2" [value]="item.email"></app-value-copy>
         </div>
-        <ng-template #noData>
-          <div
-            class="px-2 py-1 w-32 text-orange-400 bg-orange-100 rounded-full flex flex-row justify-center text-xs font-semibold"
-          >
-            Not available
-          </div>
-        </ng-template>
       </div>
     </div>
   </ng-container>
 </div>
+
+<ng-template #noData>
+  <div
+    class="px-2 py-2 w-32 text-amber-600 border-amber-100 border bg-amber-50 rounded-lg flex flex-row justify-center text-xs font-semibold"
+  >
+    Not available
+  </div>
+</ng-template>
