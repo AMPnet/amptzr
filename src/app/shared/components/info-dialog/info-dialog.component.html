@@ -1,5 +1,5 @@
 <ng-container *ngIf="data$ | async as data">
-  <div class="max-w-sm">
+  <div class="max-w-sm text-gray-700">
     <div class="flex justify-center mt-2">
       <img
         *ngIf="data.icon === iconType.INFO"
@@ -30,7 +30,8 @@
       />
     </div>
 
-    <div *ngIf="data.title" class="mt-4 px-4">
+    <div *ngIf="data.title" clas
+    s="mt-4 px-4">
       <h1 class="text-2xl text-center">
         {{ data.title }}
       </h1>
@@ -41,7 +42,7 @@
     </div>
 
     <div
-      class="flex flex-col space-y-2 sm:flex-row sm:space-x-4 sm:space-y-0 justify-center"
+      class="flex flex-col space-y-2 sm:space-x-4 sm:space-y-0 justify-center"
     >
       <button
         *ngIf="data.cancelable"
@@ -55,8 +56,16 @@
         app-action-button
         [text]="data.confirm_text"
         [onClick]="confirm(data.onConfirm).bind(this)"
-        class="app-button !p-2 !text-sm flex-1"
+        class="app-button !py-2 !text-sm flex-1"
       ></button>
+
+      <div *ngIf="data.secondaryAction" 
+      class="pt-4 !ml-0 cursor-pointer flex flex-row justify-center text-center text-sm font-semibold text-gray-500">
+        <div class="text-center" routerLink="{{data.secondaryAction.url}}">
+          {{ data.secondaryAction.text }}
+        </div>
+      </div>
+      
     </div>
   </div>
 </ng-container>

@@ -1,0 +1,41 @@
+<div class="p-4">
+    <div class="flex flex-row">
+        <div class="w-2/3 px-4 border-r border-gray-200">
+            <form (ngSubmit)="onSubmit()" id="wallet-address" [formGroup]="newAuthRequestForm">
+                <label for="wallet-address"
+                class="text-sm font-semibold text-gray-700">Address that needs to be authorized</label>
+    
+                <input class="rounded-lg border-gray-300 mt-1 mb-2 text-sm w-full" 
+                formControlName="walletAddress" type="text">
+
+                <label for="wallet-address"
+                class="text-sm font-semibold text-gray-700">Welcome message</label>
+
+                <input class="rounded-lg border-gray-300 mt-1 mb-2 text-sm w-full" 
+                formControlName="beforeMessage" type="text">
+
+                <label for="wallet-address"
+                class="text-sm font-semibold text-gray-700">Thank you message</label>
+
+                <input class="rounded-lg border-gray-300 mt-1 text-sm w-full" 
+                formControlName="afterMessage" type="text">
+
+                <button type="submit"
+                class="px-8 uppercase py-2 text-sm mt-4 
+                flex flex-row items-center rounded-full bg-violet-700 text-white font-semibold">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
+                      </svg>
+                    <div class="ml-2">Create</div>
+                </button>
+            </form>
+        </div>
+        <div class="w-1/3 px-4">
+            <app-info-snippet
+                [content]="{ title: 'Specific or general auth', sections: [
+                    'You can request a specific wallet to authorize themselves or request a general authorization',
+                    'To request a specific authorization - enter the address you wish to get authorized in the address field.'
+                ]}"></app-info-snippet>
+        </div>
+    </div>
+</div>

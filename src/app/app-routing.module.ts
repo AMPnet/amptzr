@@ -50,6 +50,8 @@ import { FundraisingComponent } from './dashboard/fundraising/fundraising.compon
 import { AddressBookComponent } from './dashboard/address-book/address-book.component'
 import { AirdropComponent } from './dashboard/airdrop/airdrop.component'
 import { PaymentsComponent } from './payments/payments.component'
+import { AuthorizationsComponent } from './dashboard/authorizations/authorizations.component'
+import { AuthorizationNewComponent } from './dashboard/authorizations/authorization-new/authorization-new.component'
 
 const appRoutes: Routes = [
   { path: 'callback', component: AuthMagicOauthComponent },
@@ -156,6 +158,10 @@ const appRoutes: Routes = [
           { path: 'airdrops/:snapshotID', component: PayoutNewComponent },
           { path: 'payments', component: PaymentsComponent },
           { path: 'address-book', component: AddressBookComponent },
+          { path: 'authorizations', component: AuthorizationsComponent },
+          { path: 'authorizations/:id', component: AuthorizationNewComponent },
+          { path: 'authorizations/connect/:id', component: RequestWalletActionComponent },
+          { path: 'settings', component: AdminIssuerEditComponent }
         ],
       },
     ],

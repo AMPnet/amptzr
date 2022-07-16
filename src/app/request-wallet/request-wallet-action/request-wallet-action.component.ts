@@ -43,6 +43,8 @@ export class RequestWalletActionComponent {
   bigNumberConstants = constants
   issuer$ = this.issuerService.issuer$
 
+  address$ = this.preferenceQuery.address$
+
   constructor(
     private requestBalanceService: RequestBalanceService,
     private sessionQuery: SessionQuery,

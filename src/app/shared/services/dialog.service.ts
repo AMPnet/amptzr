@@ -33,7 +33,7 @@ export class DialogService {
 
   constructor(public dialog: MatDialog) {}
 
-  info(data: DialogData): Observable<boolean> {
+  info(data: DialogData, confirmText: string = 'OK'): Observable<boolean> {
     return this.dialog
       .open(InfoDialogComponent, {
         ...this.configDefaults,
@@ -42,6 +42,8 @@ export class DialogService {
           title: data.title ?? 'Info',
           message: data.message,
           cancelable: data.cancelable ?? true,
+          secondaryAction: data.secondaryAction,
+          confirm_text: confirmText
         } as InfoDialogData<unknown>,
         disableClose: !(data.cancelable ?? true),
       })
@@ -177,6 +179,10 @@ interface DialogData {
   title?: string
   message?: string
   cancelable?: boolean
+  secondaryAction? : {
+    text: string,
+    url: string
+  }
 }
 
 interface DialogPermissionData<A> {

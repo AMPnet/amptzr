@@ -16,14 +16,14 @@
         My projects
       </h2>
 
-      <div *ngIf="myIssuers$ | async as myIssuersRes">
+      <div *ngIf="myIssuers$ | async as myIssuersRes" class="p-4 mt-4 border border-gray-200 rounded-lg">
         <ng-container *ngIf="myIssuersRes.value as myIssuers">
           <div
             class="flex flex-col lg:flex-row lg:flex-wrap gap-4 mt-4"
             *ngIf="myIssuers.length > 0"
           >
             <div
-              class="flex flex-col w-full lg:w-56 lg:min-h-64 justify-start bg-white shadow-sm rounded-4xl"
+              class="flex flex-col w-full lg:w-56 lg:min-h-64 justify-start bg-white shadow-sm rounded-lg"
               *ngFor="let issuer of myIssuers"
             >
               <div class="relative w-full">
@@ -45,7 +45,7 @@
                 </div>
                 <div class="flex">
                   <button
-                    class="app-button flex gap-2 justify-center items-center w-full"
+                    class="app-button !rounded-lg flex gap-2 justify-center items-center w-full"
                     routerLink="."
                     (click)="openIssuer(issuer)"
                   >

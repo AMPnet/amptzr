@@ -1,317 +1,330 @@
-<div
-  *ngIf="issuer$ | async as myIssuer"
-  class="w-full h-full flex flex-row justify-center mt-8 px-2 pb-8"
->
-  <div class="w-full max-w-6xl flex-col">
-    <div class="flex flex-row text-sm">
-      <div
-        routerLink="/"
-        class="text-sm underline text-violet-800 cursor-pointer"
-      >
-        My Projects
+<ng-container *ngIf="screenSize$ | async as screenSize">
+  <div *ngIf="screenSize === 'xl' || screenSize === 'lg'; else smallerScreenMsg">
+    <div
+    *ngIf="issuer$ | async as myIssuer"
+    class="w-full h-full flex flex-row justify-center px-2 pb-8"
+  >
+    <div class="w-full max-w-6xl flex-col">
+      <div class="flex flex-row text-sm">
+        <div
+          routerLink="/"
+          class="text-sm underline text-violet-800 cursor-pointer"
+        >
+          My Projects
+        </div>
+        <div class="ml-2 mr-2">/</div>
+        <div>
+          {{ myIssuer.infoData.name }}
+        </div>
       </div>
-      <div class="ml-2 mr-2">/</div>
-      <div>
-        {{ myIssuer.infoData.name }}
-      </div>
-    </div>
-
-    <div class="py-1 bg-white w-full shadow-sm px-8 my-4 rounded-xl flex flex-row justify-end">
-      <div class="flex justify-center flex-col">
-        <img
-          class="h-10 object-contain"
-          src="{{ myIssuer.infoData.logo | toUrlIPFS }}"
-          alt=""
-          srcset=""
-        />
-      </div>
-      <div class="px-4 py-4 flex flex-row ml-4 w-full">
-        <div class="flex flex-row justify-between">
-          <div class="text-xl font-semibold text-gray-700 flex flex-row">
-            <div class="flex flex-col justify-center">
-              {{ myIssuer.infoData.name }}
-            </div>
-            <div class="flex flex-col justify-center">
+  
+      <div class="py-1 bg-white w-full shadow-sm px-8 my-4 rounded-xl flex flex-row justify-end">
+        <div class="flex justify-center flex-col">
+          <img
+            class="h-10 object-contain"
+            src="{{ myIssuer.infoData.logo | toUrlIPFS }}"
+            alt=""
+            srcset=""
+          />
+        </div>
+        <div class="px-4 py-4 flex flex-row ml-4 w-full">
+          <div class="flex flex-row justify-between">
+            <div class="text-xl font-semibold text-gray-700 flex flex-row">
+              <div class="flex flex-col justify-center">
+                {{ myIssuer.infoData.name }}
+              </div>
               <div
-                (click)="editIssuer()"
-                class="flex cursor-pointer flex-row justify-center justify-items-center bg-gray-300 rounded-full ml-2 w-6 h-6"
+                *ngIf="network$ | async as currentNetwork"
+                class="flex flex-col justify-center bg-gray-200 text-xs px-8 mx-4 rounded-full"
               >
-                <div class="flex flex-col justify-center">
-                  <svg
-                    class="w-3 h-3"
-                    viewBox="0 0 14 14"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      d="M9.15467 2.48822L11.512 4.84555M10.1547 1.48822C10.4673 1.17562 10.8912 1 11.3333 1C11.7754 1 12.1994 1.17562 12.512 1.48822C12.8246 1.80082 13.0002 2.2248 13.0002 2.66689C13.0002 3.10897 12.8246 3.53295 12.512 3.84555L3.33333 13.0242H1V10.6429L10.1547 1.48822Z"
-                      stroke="#3F3F46"
-                      stroke-width="1.5"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                    />
-                  </svg>
+                <div class="flex flex-row">
+                  <span class="font-normal mr-1">Deployed on </span>
+                  {{ currentNetwork.name }}
                 </div>
               </div>
             </div>
             <div
-              *ngIf="network$ | async as currentNetwork"
-              class="flex flex-col justify-center bg-gray-200 text-xs px-8 mx-4 rounded-full"
-            >
-              <div class="flex flex-row">
-                <span class="font-normal mr-1">Deployed on </span>
-                {{ currentNetwork.name }}
-              </div>
+            class="text-sm text-gray-700 flex flex-row items-center"
+            *ngIf="apiKey$ | async as apiKey; else createApiKeyButton"
+          >
+            <span class="ml-2 px-8 py-2 rounded-full border-gray-200 border"
+              >           <span class="mr-2 text-sm font-semibold">Your API Key:</span>
+               {{ apiKey.api_key | apiKeyShort }}...
+              <app-value-copy
+                class="ml-2"
+                [value]="apiKey.api_key"
+              ></app-value-copy>
+            </span>
+          </div>
+          </div>
+  
+          
+  
+          <ng-template #createApiKeyButton>
+            <div class="flex flex-col justify-center w-52 cursor-pointer">
+              <button
+                app-action-button
+                class="app-button !px-4 mt-4"
+                text="Create API Key"
+                loadingText="Creating API Key"
+                [onClick]="createApiKey.bind(this)"
+              ></button>
             </div>
-          </div>
+          </ng-template>
+        </div>
+      </div>
+      <div class="w-full flex flex-row">
+        <div
+          class="sidebar-width sticky top-28 shadow-md h-full flex flex-col bg-dash-l my-2 rounded-lg dash-side-holder"
+        >
           <div
-          class="text-sm text-gray-700 flex flex-row items-center"
-          *ngIf="apiKey$ | async as apiKey; else createApiKeyButton"
-        >
-          <span class="ml-2 px-8 py-2 rounded-full border-gray-200 border"
-            >           <span class="mr-2 text-sm font-semibold">Your API Key:</span>
-             {{ apiKey.api_key | apiKeyShort }}...
-            <app-value-copy
-              class="ml-2"
-              [value]="apiKey.api_key"
-            ></app-value-copy>
-          </span>
-        </div>
-        </div>
-
-        
-
-        <ng-template #createApiKeyButton>
-          <div class="flex flex-col justify-center w-52 cursor-pointer">
-            <button
-              app-action-button
-              class="app-button !px-4 mt-4"
-              text="Create API Key"
-              loadingText="Creating API Key"
-              [onClick]="createApiKey.bind(this)"
-            ></button>
+            routerLinkActive="active-dash-sidebar-item"
+            routerLink="tokens"
+            class="py-3 mx-2 mt-2 my-1 text-white rounded-lg text-xs text-center flex flex-row items-center pl-4"
+          >
+            <div class="flex justify-center mr-4">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M14 10l-2 1m0 0l-2-1m2 1v2.5M20 7l-2 1m2-1l-2-1m2 1v2.5M14 4l-2-1-2 1M4 7l2-1M4 7l2 1M4 7v2.5M12 21l-2-1m2 1l2-1m-2 1v-2.5M6 18l-2-1v-2.5M18 18l2-1v-2.5" />
+              </svg>
+            </div>
+            <div class="font-medium">Tokens</div>
           </div>
-        </ng-template>
-      </div>
-    </div>
-    <div class="w-full flex flex-row">
-      <div
-        class="sidebar-width sticky top-28 shadow-sm h-full flex flex-col bg-dash-l my-2 rounded-xl dash-side-holder"
-      >
-        <div
-          routerLinkActive="active-dash-sidebar-item"
-          routerLink="tokens"
-          class="py-2 m-2 text-white rounded-lg text-xs text-center flex flex-col"
-        >
-          <div class="flex justify-center mb-2">
-            <svg
-              width="24"
-              height="26"
-              viewBox="0 0 24 26"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                d="M14.6673 10.3333L12.0007 11.6667M12.0007 11.6667L9.33398 10.3333M12.0007 11.6667V15M22.6673 6.33333L20.0006 7.66667M22.6673 6.33333L20.0006 5M22.6673 6.33333V9.66667M14.6673 2.33333L12.0007 1L9.33398 2.33333M1.33398 6.33333L4.00065 5M1.33398 6.33333L4.00065 7.66667M1.33398 6.33333V9.66667M12.0007 25L9.33398 23.6667M12.0007 25L14.6673 23.6667M12.0007 25V21.6667M4.00065 21L1.33398 19.6667V16.3333M20.0006 21L22.6673 19.6667V16.3333"
-                stroke="white"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-              />
-            </svg>
+  
+          <div
+            routerLinkActive="active-dash-sidebar-item"
+            routerLink="fundraising"
+            class="mx-2 my-1 text-white py-3 rounded-lg text-xs text-center flex flex-row items-center pl-4"
+          >
+            <div class="flex justify-center mr-4">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M11 3.055A9.001 9.001 0 1020.945 13H11V3.055z" />
+                <path stroke-linecap="round" stroke-linejoin="round" d="M20.488 9H15V3.512A9.025 9.025 0 0120.488 9z" />
+              </svg>
+            </div>
+            <div class="font-medium">Fundraising</div>
           </div>
-          <div class="font-medium">Tokens</div>
-        </div>
+  
+          <div
+            routerLinkActive="active-dash-sidebar-item"
+            routerLink="contracts"
+            class="mx-2 my-1 py-3 text-white rounded-lg text-xs text-center flex flex-row items-center pl-4"
+          >
+            <div class="flex justify-center mr-4">
+              <svg
+                class="h-4 w-4"
+                viewBox="0 0 32 32"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M11.9993 16H19.9993M11.9993 21.3333H19.9993M22.666 28H9.33268C8.62544 28 7.94716 27.719 7.44706 27.219C6.94697 26.7189 6.66602 26.0406 6.66602 25.3333V6.66667C6.66602 5.95942 6.94697 5.28115 7.44706 4.78105C7.94716 4.28095 8.62544 4 9.33268 4H16.7807C17.1343 4.00008 17.4734 4.1406 17.7233 4.39067L24.942 11.6093C25.1921 11.8593 25.3326 12.1984 25.3327 12.552V25.3333C25.3327 26.0406 25.0517 26.7189 24.5516 27.219C24.0515 27.719 23.3733 28 22.666 28Z"
+                  stroke="white"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+              </svg>
+            </div>
+            <div class="font-medium">Contracts</div>
+          </div>
+  
+          <div style="height: 1px" class="mt-1 mb-1 mx-4 bg-violet-500"></div>
+  
+          <div
+            routerLinkActive="active-dash-sidebar-item"
+            routerLink="airdrops"
+            class="mx-2 my-1 py-3 text-white rounded-lg text-xs text-center flex flex-row items-center pl-4"
+          >
+            <div class="flex justify-center mr-4">
+              <svg
+                class="h-4 w-4"
+                viewBox="0 0 32 32"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M27.3504 12.8913C26.6776 11.701 25.4527 10.8557 23.995 10.7177C22.3992 10.571 20.8984 11.2093 20.0358 12.4514C19.2595 11.3301 17.9225 10.4848 16.4561 10.4848C14.8517 10.4848 13.3595 11.2956 12.6177 12.5981C11.8413 11.4595 10.4526 10.6659 8.98624 10.6659C7.38185 10.6659 5.97586 11.563 5.23405 12.8568H5.2168C5.22542 6.76709 10.1766 1.94531 16.2922 1.94531C22.4079 1.94531 27.359 6.9051 27.359 13.0121"
+                  stroke="white"
+                  stroke-width="1.5"
+                  stroke-miterlimit="10"
+                />
+                <path
+                  d="M5.22461 12.8711L14.4973 25.111"
+                  stroke="white"
+                  stroke-width="1.5"
+                  stroke-miterlimit="10"
+                />
+                <path
+                  d="M27.4191 12.8711L18.1465 25.111"
+                  stroke="white"
+                  stroke-width="1.5"
+                  stroke-miterlimit="10"
+                />
+                <path
+                  d="M20.0369 12.457L16.8281 25.111"
+                  stroke="white"
+                  stroke-width="1.5"
+                  stroke-miterlimit="10"
+                />
+                <path
+                  d="M12.5156 12.457L15.7244 25.111"
+                  stroke="white"
+                  stroke-width="1.5"
+                  stroke-miterlimit="10"
+                />
+                <path
+                  d="M18.4917 25.1133H14.2306C13.7494 25.1133 13.3594 25.5033 13.3594 25.9845V29.1156C13.3594 29.5968 13.7494 29.9868 14.2306 29.9868H18.4917C18.9728 29.9868 19.3629 29.5968 19.3629 29.1156V25.9845C19.3629 25.5033 18.9728 25.1133 18.4917 25.1133Z"
+                  stroke="white"
+                  stroke-width="1.5"
+                  stroke-miterlimit="10"
+                />
+              </svg>
+            </div>
+            <div class="font-medium">Airdrops</div>
+          </div>
+  
+          <div
+            routerLinkActive="active-dash-sidebar-item"
+            routerLink="payments"
+            class="py-3 mx-2 my-1 text-white rounded-lg text-xs text-center flex flex-row items-center pl-4"
+          >
+            <div class="flex justify-center mr-4">
+              <svg
+               class="h-4 w-4"
+                viewBox="0 0 24 26"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M1.33398 19.6667L6.66732 14.3333M6.66732 6.33333H22.6673H6.66732ZM22.6673 6.33333L17.334 1L22.6673 6.33333ZM22.6673 6.33333L17.334 11.6667L22.6673 6.33333ZM17.334 19.6667H1.33398H17.334ZM1.33398 19.6667L6.66732 25L1.33398 19.6667Z"
+                  stroke="white"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+              </svg>
+            </div>
+            <div class="font-medium">Payments</div>
+          </div>
+  
+          <div
+            routerLinkActive="active-dash-sidebar-item"
+            routerLink="address-book"
+            class="py-3 mx-2 my-1 text-white rounded-lg text-xs text-center flex flex-row items-center pl-4"
+          >
+            <div class="flex justify-center mr-4">
+              <svg
+                class="h-4 w-4"
+                viewBox="0 0 32 32"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M16 8.33864V25.672M16 8.33864C14.4427 7.30397 12.328 6.66797 10 6.66797C7.672 6.66797 5.55733 7.30397 4 8.33864V25.672C5.55733 24.6373 7.672 24.0013 10 24.0013C12.328 24.0013 14.4427 24.6373 16 25.672M16 8.33864C17.5573 7.30397 19.672 6.66797 22 6.66797C24.3293 6.66797 26.4427 7.30397 28 8.33864V25.672C26.4427 24.6373 24.3293 24.0013 22 24.0013C19.672 24.0013 17.5573 24.6373 16 25.672"
+                  stroke="white"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+              </svg>
+            </div>
+            <div class="font-medium">Address Book</div>
+          </div>
+  
+          <div
+            routerLinkActive="active-dash-sidebar-item"
+            routerLink="authorizations"
+            class="py-3 mx-2 my-1 text-white rounded-lg text-xs text-center flex flex-row items-center pl-4"
+          >
+            <div class="flex justify-center mr-4">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+              </svg>
+            </div>
+            <div class="font-medium">Authorizations</div>
+          </div>
 
-        <div
-          routerLinkActive="active-dash-sidebar-item"
-          routerLink="fundraising"
-          class="py-2 m-2 text-white rounded-lg text-xs text-center flex flex-col"
-        >
-          <div class="flex justify-center mb-2">
-            <svg
-              width="32"
-              height="32"
-              viewBox="0 0 32 32"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                d="M8.52305 6.6132C10.2909 5.20531 12.4204 4.32522 14.6665 4.07422V17.3342H27.9265C27.6755 19.5802 26.7954 21.7097 25.3875 23.4776C23.9796 25.2455 22.1011 26.58 19.9683 27.3274C17.8355 28.0748 15.5349 28.2047 13.3315 27.7023C11.128 27.1999 9.11122 26.0856 7.51316 24.4875C5.9151 22.8895 4.80074 20.8727 4.29834 18.6692C3.79594 16.4657 3.92592 14.1652 4.67332 12.0324C5.42072 9.89954 6.75516 8.02109 8.52305 6.6132Z"
-                stroke="white"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-              />
-              <path
-                d="M20 12.0009H27.3173C26.7188 10.3137 25.7513 8.78138 24.4854 7.51551C23.2195 6.24964 21.6872 5.28216 20 4.68359V12.0009Z"
-                stroke="white"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-              />
-            </svg>
+          <div
+            routerLinkActive="active-dash-sidebar-item"
+            routerLink="kycaml"
+            class="py-3 mx-2 my-1 text-white rounded-lg text-xs text-center flex flex-row items-center pl-4"
+          >
+            <div class="flex justify-center mr-4">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0zm6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+            </div>
+            <div class="font-medium">KYC / AML</div>
           </div>
-          <div class="font-medium">Fundraising</div>
-        </div>
 
-        <div
-          routerLinkActive="active-dash-sidebar-item"
-          routerLink="contracts"
-          class="py-2 m-2 text-white rounded-lg text-xs text-center flex flex-col"
-        >
-          <div class="flex justify-center mb-2">
-            <svg
-              width="32"
-              height="32"
-              viewBox="0 0 32 32"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                d="M11.9993 16H19.9993M11.9993 21.3333H19.9993M22.666 28H9.33268C8.62544 28 7.94716 27.719 7.44706 27.219C6.94697 26.7189 6.66602 26.0406 6.66602 25.3333V6.66667C6.66602 5.95942 6.94697 5.28115 7.44706 4.78105C7.94716 4.28095 8.62544 4 9.33268 4H16.7807C17.1343 4.00008 17.4734 4.1406 17.7233 4.39067L24.942 11.6093C25.1921 11.8593 25.3326 12.1984 25.3327 12.552V25.3333C25.3327 26.0406 25.0517 26.7189 24.5516 27.219C24.0515 27.719 23.3733 28 22.666 28Z"
-                stroke="white"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-              />
-            </svg>
+          <div
+            routerLinkActive="active-dash-sidebar-item"
+            routerLink="onramp"
+            class="py-3 mx-2 my-1 text-white rounded-lg text-xs text-center flex flex-row items-center pl-4"
+          >
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
+          </svg>
+            <div class="font-medium ml-4">Fiat onramp</div>
           </div>
-          <div class="font-medium">Contracts</div>
-        </div>
-
-        <div
-          routerLinkActive="active-dash-sidebar-item"
-          routerLink="airdrops"
-          class="py-2 m-2 text-white rounded-lg text-xs text-center flex flex-col"
-        >
-          <div class="flex justify-center mb-2">
-            <svg
-              width="32"
-              height="32"
-              viewBox="0 0 32 32"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                d="M27.3504 12.8913C26.6776 11.701 25.4527 10.8557 23.995 10.7177C22.3992 10.571 20.8984 11.2093 20.0358 12.4514C19.2595 11.3301 17.9225 10.4848 16.4561 10.4848C14.8517 10.4848 13.3595 11.2956 12.6177 12.5981C11.8413 11.4595 10.4526 10.6659 8.98624 10.6659C7.38185 10.6659 5.97586 11.563 5.23405 12.8568H5.2168C5.22542 6.76709 10.1766 1.94531 16.2922 1.94531C22.4079 1.94531 27.359 6.9051 27.359 13.0121"
-                stroke="white"
-                stroke-width="1.5"
-                stroke-miterlimit="10"
-              />
-              <path
-                d="M5.22461 12.8711L14.4973 25.111"
-                stroke="white"
-                stroke-width="1.5"
-                stroke-miterlimit="10"
-              />
-              <path
-                d="M27.4191 12.8711L18.1465 25.111"
-                stroke="white"
-                stroke-width="1.5"
-                stroke-miterlimit="10"
-              />
-              <path
-                d="M20.0369 12.457L16.8281 25.111"
-                stroke="white"
-                stroke-width="1.5"
-                stroke-miterlimit="10"
-              />
-              <path
-                d="M12.5156 12.457L15.7244 25.111"
-                stroke="white"
-                stroke-width="1.5"
-                stroke-miterlimit="10"
-              />
-              <path
-                d="M18.4917 25.1133H14.2306C13.7494 25.1133 13.3594 25.5033 13.3594 25.9845V29.1156C13.3594 29.5968 13.7494 29.9868 14.2306 29.9868H18.4917C18.9728 29.9868 19.3629 29.5968 19.3629 29.1156V25.9845C19.3629 25.5033 18.9728 25.1133 18.4917 25.1133Z"
-                stroke="white"
-                stroke-width="1.5"
-                stroke-miterlimit="10"
-              />
-            </svg>
+  
+          <div
+            routerLinkActive="active-dash-sidebar-item"
+            routerLink="third-party-integrations"
+            class="py-3 mx-2 mt-1 mb-2 text-white rounded-lg text-xs text-center flex flex-row items-center pl-4"
+          >
+            <div class="flex justify-center mr-4">
+              <svg
+                class="h-4 w-4"
+                viewBox="0 0 24 26"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M6.66732 11.6667V6.33333C6.66732 4.91885 7.22922 3.56229 8.22941 2.5621C9.22961 1.5619 10.5862 1 12.0007 1C13.4151 1 14.7717 1.5619 15.7719 2.5621C16.7721 3.56229 17.334 4.91885 17.334 6.33333M12.0007 17V19.6667M4.00065 25H20.0006C20.7079 25 21.3862 24.719 21.8863 24.219C22.3864 23.7189 22.6673 23.0406 22.6673 22.3333V14.3333C22.6673 13.6261 22.3864 12.9478 21.8863 12.4477C21.3862 11.9476 20.7079 11.6667 20.0006 11.6667H4.00065C3.29341 11.6667 2.61513 11.9476 2.11503 12.4477C1.61494 12.9478 1.33398 13.6261 1.33398 14.3333V22.3333C1.33398 23.0406 1.61494 23.7189 2.11503 24.219C2.61513 24.719 3.29341 25 4.00065 25Z"
+                  stroke="white"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+              </svg>
+            </div>
+            <div class="font-medium">Integrations</div>
           </div>
-          <div class="font-medium">Airdrops</div>
-        </div>
-
-        <div
-          routerLinkActive="active-dash-sidebar-item"
-          routerLink="payments"
-          class="py-2 m-2 text-white rounded-lg text-xs text-center flex flex-col"
-        >
-          <div class="flex justify-center mb-2">
-            <svg
-              width="24"
-              height="26"
-              viewBox="0 0 24 26"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                d="M1.33398 19.6667L6.66732 14.3333M6.66732 6.33333H22.6673H6.66732ZM22.6673 6.33333L17.334 1L22.6673 6.33333ZM22.6673 6.33333L17.334 11.6667L22.6673 6.33333ZM17.334 19.6667H1.33398H17.334ZM1.33398 19.6667L6.66732 25L1.33398 19.6667Z"
-                stroke="white"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-              />
-            </svg>
+  
+          <div style="height: 1px" class="mt-1 mb-1 mx-4 bg-violet-500"></div>
+  
+          <div
+            routerLinkActive="active-dash-sidebar-item"
+            routerLink="settings"
+            class="py-3 mx-2 mt-1 mb-2 text-white rounded-lg text-xs text-center flex flex-row items-center pl-4"
+          >
+            <div class="flex justify-center mr-4">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+              </svg>
+            </div>
+            <div class="font-medium">Settings</div>
           </div>
-          <div class="font-medium">Payments</div>
+  
         </div>
-
-        <div
-          routerLinkActive="active-dash-sidebar-item"
-          routerLink="address-book"
-          class="py-2 m-2 text-white rounded-lg text-xs text-center flex flex-col"
-        >
-          <div class="flex justify-center mb-2">
-            <svg
-              width="32"
-              height="32"
-              viewBox="0 0 32 32"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                d="M16 8.33864V25.672M16 8.33864C14.4427 7.30397 12.328 6.66797 10 6.66797C7.672 6.66797 5.55733 7.30397 4 8.33864V25.672C5.55733 24.6373 7.672 24.0013 10 24.0013C12.328 24.0013 14.4427 24.6373 16 25.672M16 8.33864C17.5573 7.30397 19.672 6.66797 22 6.66797C24.3293 6.66797 26.4427 7.30397 28 8.33864V25.672C26.4427 24.6373 24.3293 24.0013 22 24.0013C19.672 24.0013 17.5573 24.6373 16 25.672"
-                stroke="white"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-              />
-            </svg>
-          </div>
-          <div class="font-medium">Address Book</div>
+        <div class="content-width">
+          <router-outlet></router-outlet>
         </div>
-
-        <div
-          routerLinkActive="active-dash-sidebar-item"
-          routerLink="third-party-integrations"
-          class="py-2 m-2 text-white rounded-lg text-xs text-center flex flex-col"
-        >
-          <div class="flex justify-center mb-2">
-            <svg
-              width="24"
-              height="26"
-              viewBox="0 0 24 26"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                d="M6.66732 11.6667V6.33333C6.66732 4.91885 7.22922 3.56229 8.22941 2.5621C9.22961 1.5619 10.5862 1 12.0007 1C13.4151 1 14.7717 1.5619 15.7719 2.5621C16.7721 3.56229 17.334 4.91885 17.334 6.33333M12.0007 17V19.6667M4.00065 25H20.0006C20.7079 25 21.3862 24.719 21.8863 24.219C22.3864 23.7189 22.6673 23.0406 22.6673 22.3333V14.3333C22.6673 13.6261 22.3864 12.9478 21.8863 12.4477C21.3862 11.9476 20.7079 11.6667 20.0006 11.6667H4.00065C3.29341 11.6667 2.61513 11.9476 2.11503 12.4477C1.61494 12.9478 1.33398 13.6261 1.33398 14.3333V22.3333C1.33398 23.0406 1.61494 23.7189 2.11503 24.219C2.61513 24.719 3.29341 25 4.00065 25Z"
-                stroke="white"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-              />
-            </svg>
-          </div>
-          <div class="font-medium">Integrations</div>
-        </div>
-      </div>
-      <div class="content-width">
-        <router-outlet></router-outlet>
       </div>
     </div>
   </div>
-</div>
+  
+  </div>
+  <ng-template #smallerScreenMsg>
+    <div class="w-full h-screen flex justify-center items-center">
+      <div class="m-4">
+        <app-info-snippet
+        [content]="{ title: 'Screen size incompatibility!', sections: [
+          'Smaller screen sizes (e.g. mobile) are not yet supported by the Dev3 dashboard!'
+        ]}"></app-info-snippet>
+      </div> 
+    </div>
+  </ng-template>
+</ng-container>

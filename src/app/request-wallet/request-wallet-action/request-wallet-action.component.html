@@ -5,7 +5,7 @@
   <div class="w-full max-w-5xl">
     <ng-container *ngIf="stateWithStatus$ | async as stateRes">
       <ng-container *ngIf="stateRes.value as state">
-        <div class="max-w-md mx-auto bg-white rounded-4xl p-6 lg:px-10">
+        <div class="max-w-md mx-auto bg-white shadow-sm rounded-4xl p-6 lg:px-10">
           <div class="flex justify-center">
             <img
               class="h-20"
@@ -15,7 +15,20 @@
           </div>
 
           <div class="flex flex-col gap-4 mt-6" *ngIf="!state.signed_message">
-            <div class="text-center">
+            <div *ngIf="address$ | async as address" class="text-gray-700 flex flex-col text-center text-sm">
+              <div class=" leading-relaxed">
+                The application <b>{{myIssuer.infoData.name}}</b> is requesting you to prove 
+                you are the owner of the wallet with address
+              </div> 
+              <div class="text-xs border py-2 rounded-lg mt-2 bg-gray-50 border-gray-100">{{address}}</div>
+            </div>
+
+            <div *ngIf="address$ | async as address" 
+            class="text-gray-700 font-medium flex flex-col text-center text-sm">
+              Request details
+            </div>
+            <div class="text-center text-gray-700 border rounded-lg p-2 border-gray-100
+            bg-gray-50">
               <ng-container
                 *ngIf="
                   state.screen_config

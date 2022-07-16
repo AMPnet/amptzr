@@ -1,7 +1,7 @@
 <div class="max-w-6xl mx-auto px-4 text-gray-700">
   <div class="mt-6 rounded-3xl bg-white shadow-sm p-4 lg:p-6">
     <div class="flex flex-col">
-      <b class="text-sm font-semibold uppercase">Your balance</b>
+      <b class="text-sm font-medium uppercase">Your balance</b>
       <div class="mt-2 lg:flex lg:w-full lg:items-center lg:justify-between">
         <span
           class="flex gap-1.5 items-center flex-wrap text-xl mr-8 font-semibold"
@@ -219,13 +219,18 @@
   </div>
 
   <div class="mt-6">
-    <h2 class="font-semibold text-gray-700">Assets</h2>
+    <h2 class="font-semibold text-gray-700 text-sm uppercase">Assets</h2>
 
-    <div class="flex justify-center mt-2">
+    <div class="flex justify-center mt-2 border border-gray-200 rounded-lg">
       <ng-container *ngIf="assets$ | async as assetsRes">
         <ng-container *ngIf="assetsRes.value as assets">
-          <span class="py-8" *ngIf="assets.length === 0">
-            No assets in your wallet
+          <span class="py-16 flex flex-row justify-center items-center" *ngIf="assets.length === 0">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <div class="ml-2 text-sm">
+              No known assets in your wallet
+            </div>
           </span>
           <div class="flex flex-col gap-1 w-full" *ngIf="assets.length > 0">
             <div

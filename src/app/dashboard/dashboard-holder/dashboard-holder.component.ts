@@ -19,6 +19,7 @@ import {
 } from 'src/app/shared/services/blockchain/issuer/issuer.service'
 import { DialogService } from 'src/app/shared/services/dialog.service'
 import { RouterService } from 'src/app/shared/services/router.service'
+import { TailwindService } from 'src/app/shared/services/tailwind.service'
 import { withStatus } from 'src/app/shared/utils/observables'
 
 @Component({
@@ -32,6 +33,8 @@ export class DashboardHolderComponent {
   issuer$ = this.issuerService.issuer$
   network$ = this.preferenceQuery.network$
   isBackendAuthorized$ = this.preferenceQuery.isBackendAuthorized$
+  
+  screenSize$ = this.tailwindService.screenResize$
 
   refreshAPIKeySub = new BehaviorSubject<void>(undefined)
 
@@ -48,8 +51,11 @@ export class DashboardHolderComponent {
     private projectService: ProjectService,
     private dialogService: DialogService,
     private http: BackendHttpClient,
-    private preferenceQuery: PreferenceQuery
-  ) {}
+    private preferenceQuery: PreferenceQuery,
+    private tailwindService: TailwindService
+  ) {
+    this.screenSize$.subscribe((x) => console.log(x))
+  }
 
   sidebarItemClicked(index: number) {
     this.navbarSelectedIndex = index

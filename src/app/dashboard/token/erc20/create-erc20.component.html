@@ -25,7 +25,7 @@
 
       <!-- ALIAS -->
 
-      <div class="p-4 rounded-lg bg-gray-100 flex flex-col">
+      <div class="p-4 rounded-lg bg-gray-100 border border-gray-200 flex flex-col">
         <label class="pb-1 font-semibold" for="token-name"
         >Token alias</label
       >
@@ -34,15 +34,16 @@
         and API</small
       >
       <input
-        class="w-100 rounded-xl border-gray-200"
+        class="w-100 rounded-xl border-gray-200 text-sm px-4"
         id="token-name"
         type="text"
+        autocomplete="off"
         formControlName="tokenName"
       />
       </div>
       
 
-      <hr class="mt-8 mb-8">
+      <hr class="mt-6 mb-6">
 
       <!-- NAME -->
       <label class="pb-1 font-semibold" for="token-name"
@@ -50,9 +51,10 @@
       >
       <small class="pb-2">The name of your token</small>
       <input
-        class="w-100 rounded-xl border-gray-200"
+        class="w-100 rounded-xl border-gray-200 text-sm px-4"
         id="token-name"
         type="text"
+        autocomplete="off"
         formControlName="tokenName"
       />
 
@@ -65,9 +67,10 @@
         AAPL, ...)</small
       >
       <input
-        class="w-100 rounded-xl border-gray-200"
+        class="w-100 rounded-xl border-gray-200 text-sm px-4"
         id="token-name"
         type="text"
+        autocomplete="off"
         formControlName="tokenName"
       />
 
@@ -80,13 +83,14 @@
         mintable, this number can change. If not, this number is fixed.</small
       >
       <input
-        class="w-100 rounded-xl border-gray-200"
+        class="w-100 rounded-xl border-gray-200 text-sm px-4"
         id="token-name"
         type="number"
+        autocomplete="off"
         formControlName="tokenName"
       />
 
-      <div
+      <!-- <div
         class="p-4 border border-gray-200 rounded-xl mt-8 flex flex-col transition-all"
       >
         <div class="flex flex-row justify-between items-center mb-2">
@@ -127,20 +131,20 @@
             />
           </div>
         </div>
-      </div>
+      </div> -->
 
       <div class="flex flex-row justify-end">
-        <button
-          type="submit"
-          class="py-2 px-10 bg-violet-700 text-white rounded-full mt-8"
+        <button app-action-button
+          [onClick]="deployContract().bind(this)"
+          text="Create token"
+          class="py-2 px-10 flex flex-row items-center justify-center bg-violet-700 text-sm uppercase text-white rounded-full mt-8"
         >
-          Create token
         </button>
       </div>
     </form>
   </div>
   <div class="w-5/12 border-l pl-4">
-    <div class="mt-4">
+    <div>
       <app-info-snippet
         [content]="{ title: 'ERC-20 Token Standard', sections: [
           'ERC-20 is the technical standard for fungible tokens created using the Ethereum blockchain. A fungible token is one that is interchangeable with another token—where the well-known non-fungible tokens (NFTs) are not interchangeable.',
