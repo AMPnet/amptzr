@@ -1,4 +1,8 @@
 import { Component, ChangeDetectionStrategy, Input } from '@angular/core'
+import { switchMap } from 'rxjs'
+import { PreferenceQuery } from 'src/app/preference/state/preference.query'
+import { ProjectService } from 'src/app/shared/services/backend/project.service'
+import { ContractDeploymentService } from 'src/app/shared/services/blockchain/contract-deployment.service'
 
 @Component({
   selector: 'app-new-and-manage-holder',
@@ -7,17 +11,32 @@ import { Component, ChangeDetectionStrategy, Input } from '@angular/core'
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class NewAndManageHolderComponent {
-  selectedTabIndex = 0
 
   @Input() templateItems: TemplateItemsModel[] = []
   @Input() manageItems: ManageItemsModel[] = []
   @Input() manageCustomFieldName: string = ''
+  activeTab: Tab = Tab.Manage
+  tabType = Tab
 
-  constructor() {}
+  pendingContractDeploymentRequests$ = this.projectService
+  .getProjectIdByChainAndAddress().pipe(
+    switchMap(project => this.contractService.getContractDeploymentRequests(project.id))
+  )
 
-  tabClicked(index: number) {
-    this.selectedTabIndex = index
+  constructor(private contractService: ContractDeploymentService,
+    private preferenceQuery: PreferenceQuery,
+    private projectService: ProjectService) {}
+
+  changeTab(tab: Tab) {
+    this.activeTab = tab
   }
+}
+
+enum Tab {
+  Manage,
+  Pending,
+  Add,
+  Import
 }
 
 export interface TemplateItemsModel {
@@ -37,4 +56,10 @@ export interface ManageItemsModel {
   alias: string
   custom: string
   createdDate: string
+}
+
+export interface RequestsItemsModel {
+  id: string,
+  type: string,
+  publicUrl: string
 }

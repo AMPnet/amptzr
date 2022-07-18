@@ -33,13 +33,17 @@ export class DashboardHolderComponent {
   issuer$ = this.issuerService.issuer$
   network$ = this.preferenceQuery.network$
   isBackendAuthorized$ = this.preferenceQuery.isBackendAuthorized$
+
   
   screenSize$ = this.tailwindService.screenResize$
 
   refreshAPIKeySub = new BehaviorSubject<void>(undefined)
+  projectInfoHolderStateSub = new BehaviorSubject<ProjectInfoHolderState>('open')
+  projectInfoHolderState$ = this.projectInfoHolderStateSub.asObservable()
 
   apiKey$ = this.refreshAPIKeySub.asObservable().pipe(
-    switchMap(() => this.isBackendAuthorized$),
+    switchMap(() => this.http.ensureAuth),
+    switchMap(() => this.isBackendAuthorized$ ),
     switchMap((isAuthorized) =>
       isAuthorized ? this.fetchApiKey() : of(undefined)
     )
@@ -60,6 +64,14 @@ export class DashboardHolderComponent {
   sidebarItemClicked(index: number) {
     this.navbarSelectedIndex = index
     this.changeRoute()
+  }
+  
+  toggleProjectInfoHolderState() {
+    if(this.projectInfoHolderStateSub.getValue() === 'closed') {
+      this.projectInfoHolderStateSub.next('open')
+    } else {
+      this.projectInfoHolderStateSub.next('closed')
+    }
   }
 
   authorize() {
@@ -97,3 +109,5 @@ export class DashboardHolderComponent {
     this.router.router.navigate([`/`])
   }
 }
+
+type ProjectInfoHolderState = 'open' | 'closed'

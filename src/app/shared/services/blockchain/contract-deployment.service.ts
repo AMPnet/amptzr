@@ -1,9 +1,9 @@
-import { HttpClient } from "@angular/common/http";
-import { Injectable } from "@angular/core";
-import { Observable } from "rxjs";
-import { PreferenceQuery } from "src/app/preference/state/preference.query";
-import { environment } from "src/environments/environment";
-import { BackendHttpClient } from "../backend/backend-http-client.service";
+import { HttpClient } from "@angular/common/http"
+import { Injectable } from "@angular/core"
+import { Observable } from "rxjs"
+import { PreferenceQuery } from "src/app/preference/state/preference.query"
+import { environment } from "src/environments/environment"
+import { BackendHttpClient } from "../backend/backend-http-client.service"
 
 @Injectable({
   providedIn: 'root',
@@ -36,6 +36,15 @@ export class ContractDeploymentService {
             redirect_url: queryValue.issuer.slug ?? ''
         })
     }
+
+    getContractDeploymentRequests(projectID: string): Observable<ContractDeploymentRequests> {
+        return this.http
+            .get<ContractDeploymentRequests>(`${this.path}/deploy/by-project/${projectID}`, { }, true, true, true)
+    }
+}
+
+export interface ContractDeploymentRequests {
+    requests: ContractDeploymentResponse[]
 }
 
 export interface ContractDeploymentResponse {

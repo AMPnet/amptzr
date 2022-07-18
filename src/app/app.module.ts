@@ -131,8 +131,8 @@ import { ApiKeyShortPipe } from './shared/pipes/api-key-short.pipe'
 import { AirdropComponent } from './dashboard/airdrop/airdrop.component'
 import { PaymentsComponent } from './payments/payments.component'
 import { RequestSendListComponent } from './request-send/request-send-list/request-send-list.component'
-import { InfoSnippetComponent } from './shared/components/info-snippet/info-snippet.component';
-import { AuthorizationsComponent } from './dashboard/authorizations/authorizations.component';
+import { InfoSnippetComponent } from './shared/components/info-snippet/info-snippet.component'
+import { AuthorizationsComponent } from './dashboard/authorizations/authorizations.component'
 import { AuthorizationNewComponent } from './dashboard/authorizations/authorization-new/authorization-new.component'
 
 @NgModule({

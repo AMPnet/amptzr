@@ -40,8 +40,8 @@ export class CreateErc20Component {
       ).pipe(
         switchMap(() => {
           return this.dialogService.info({
-            title: "Success",
-            message: "Created a token deployment request",
+            title: "Token deployment request created",
+            message: "You will not be able to interact with the token, until you deploy it on blockchain.",
             cancelable: false,
             secondaryAction: {
               text: "Deploy later",

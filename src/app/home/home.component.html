@@ -16,20 +16,20 @@
         My projects
       </h2>
 
-      <div *ngIf="myIssuers$ | async as myIssuersRes" class="p-4 mt-4 border border-gray-200 rounded-lg">
+      <div *ngIf="myIssuers$ | async as myIssuersRes" class="mt-4 border border-gray-200 rounded-lg">
         <ng-container *ngIf="myIssuersRes.value as myIssuers">
           <div
-            class="flex flex-col lg:flex-row lg:flex-wrap gap-4 mt-4"
+            class="flex flex-col"
             *ngIf="myIssuers.length > 0"
           >
             <div
-              class="flex flex-col w-full lg:w-56 lg:min-h-64 justify-start bg-white shadow-sm rounded-lg"
+              class="flex flex-row w-full justify-start items-center bg-white shadow-sm border-b"
               *ngFor="let issuer of myIssuers"
             >
-              <div class="relative w-full">
+              <div class="relative w-40 pr-4 border-r">
                 <img
                   *ngIf="issuer.issuer.infoData.logo; else noImage"
-                  class="w-full h-32 object-contain p-8 rounded-t-4xl"
+                  class="h-12 object-contain pl-8 py-2"
                   src="{{ issuer.issuer.infoData.logo | toUrlIPFS }}"
                   alt="Issuer logo"
                 />
@@ -37,15 +37,14 @@
                   <div class="w-full h-32 bg-gray-200 rounded-t-4xl"></div>
                 </ng-template>
               </div>
+              <span class="mr-4 pl-4 w-64 text-gray-700">{{ issuer.issuer.infoData.name ?? "Unknown" }}</span>
+
               <div
                 class="flex flex-col gap-8 w-full h-full rounded-b-4xl p-4 justify-between"
               >
-                <div class="flex flex-wrap text-2xl">
-                  <span>{{ issuer.issuer.infoData.name ?? "Unknown" }}</span>
-                </div>
-                <div class="flex">
+                <div class="flex flex-row items-center justify-end text-lg">
                   <button
-                    class="app-button !rounded-lg flex gap-2 justify-center items-center w-full"
+                    class="app-button !rounded-lg flex gap-2 justify-center items-center"
                     routerLink="."
                     (click)="openIssuer(issuer)"
                   >
@@ -67,6 +66,7 @@
                     </svg>
                   </button>
                 </div>
+
               </div>
             </div>
           </div>

@@ -1,52 +1,88 @@
 <div class="w-full bg-white p-8 mx-4 my-2 rounded-lg flex flex-col">
-  <div class="flex flex-row justify-center">
-    <div
-      (click)="tabClicked(0)"
-      [class.active-content-item]="selectedTabIndex === 0"
-      class="w-44 text-center text-sm uppercase pb-2 border-b-4 font-semibold text-gray-500 cursor-pointer"
-    >
-      Manage Existing
+  <div class="flex flex-row justify-between">
+
+    <div class="flex flex-row justify-start items-end">
+      <!-- TOKENS -->
+      <div (click)="changeTab(tabType.Manage)" [class.active-content-item]="activeTab === tabType.Manage"
+        class="w-44 text-center border-gray-200 flex flex-row items-center justify-center text-sm uppercase pb-4 border-b-4 font-semibold text-gray-500 cursor-pointer">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"
+          stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round"
+            d="M14 10l-2 1m0 0l-2-1m2 1v2.5M20 7l-2 1m2-1l-2-1m2 1v2.5M14 4l-2-1-2 1M4 7l2-1M4 7l2 1M4 7v2.5M12 21l-2-1m2 1l2-1m-2 1v-2.5M6 18l-2-1v-2.5M18 18l2-1v-2.5" />
+        </svg>
+        <div class="ml-2">
+          Tokens
+        </div>
+      </div>
+
+      <!-- PENDING -->
+      <div (click)="changeTab(tabType.Pending)" [class.active-content-item]="activeTab === tabType.Pending"
+        class="w-64 text-center border-gray-200 flex flex-row items-center justify-center text-sm uppercase pb-4 border-b-4 font-semibold text-gray-500 cursor-pointer">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"
+          stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+        <div class="ml-2">Deployment requests</div>
+      </div>
     </div>
-    <div
-      (click)="tabClicked(1)"
-      [class.active-content-item]="selectedTabIndex === 1"
-      class="w-44 flex flex-row justify-center items-center pb-2 text-center text-sm font-semibold text-gray-500 uppercase border-b-4 cursor-pointer"
-    >
-    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-      <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" />
-    </svg>
-    <div class="ml-2">Add / Import</div>
-      
+
+
+    <div class="flex flex-row justify-end items-end">
+      <!-- NEW -->
+      <div (click)="changeTab(tabType.Add)" class="w-44 flex flex-row justify-center 
+items-center pb-2 text-center text-sm font-semibold 
+border-b-4 border-transparent text-gray-700 uppercase cursor-pointer">
+
+        <div [class.text-white]="activeTab === tabType.Add" [class.bg-violet-700]="activeTab === tabType.Add"
+          class="px-4 py-2 w-full mx-2 bg-gray-100 border border-gray-200 rounded-lg flex flex-row items-center justify-center">
+
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"
+            stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round"
+              d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+          <div class="ml-2">New</div>
+        </div>
+      </div>
+
+      <!-- IMPORT -->
+      <div (click)="changeTab(tabType.Import)" class="w-44 flex flex-row justify-center 
+items-center pb-2 text-center text-sm font-semibold 
+text-gray-700 uppercase border-b-4 border-transparent cursor-pointer">
+
+        <div [class.text-white]="activeTab === tabType.Import" [class.bg-violet-700]="activeTab === tabType.Import"
+          class="px-4 py-2 mx-2 w-full bg-gray-100 border border-gray-200 rounded-lg flex flex-row items-center justify-center">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"
+            stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round"
+              d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
+          </svg>
+          <div class="ml-2">Import</div>
+        </div>
+      </div>
     </div>
+
+
   </div>
 
-  <ng-container *ngIf="selectedTabIndex === 1">
-    <div
-      class="border-gray-100 border-2 p-4 flex flex-row bg-gray-100 rounded-t-lg"
-    >
+  <ng-container *ngIf="activeTab === tabType.Add">
+    <div class="border-gray-100 border-2 p-4 flex flex-row bg-gray-100 rounded-tr-lg">
       <div class="w-3/12 text-sm uppercase font-semibold">Type</div>
       <div class="w-7/12 text-sm uppercase font-semibold">Description</div>
       <div class="w-4/12 text-sm uppercase font-semibold">Actions</div>
     </div>
 
-    <div
-      *ngFor="let item of templateItems"
-      class="border-gray-100 border-2 p-4 flex flex-row"
-    >
+    <div *ngFor="let item of templateItems" class="border-gray-100 border-2 p-4 flex flex-row">
       <div class="w-3/12 text-sm flex flex-col justify-center">
         {{ item.type }}
       </div>
-      <div
-        class="w-7/12 text-sm flex flex-col justify-center pr-4 text-gray-500"
-      >
+      <div class="w-7/12 text-sm flex flex-col justify-center pr-4 text-gray-500">
         {{ item.description }}
         <a class="mt-2" href="">Learn More</a>
       </div>
       <div class="w-4/12 flex flex-row">
-        <div
-          routerLink="{{ item.actions[0].url }}"
-          class="w-50 h-10 bg-gray-200 mr-2 rounded-full px-6 py-2 text-gray-800 text-sm flex flex-row cursor-pointer"
-        >
+        <div routerLink="{{ item.actions[0].url }}"
+          class="w-50 h-10 bg-gray-200 mr-2 rounded-full px-6 py-2 text-gray-800 text-sm flex flex-row cursor-pointer">
           <div class="flex justify-center flex-col">
             {{ item.actions[0].icon }}
           </div>
@@ -55,10 +91,8 @@
           </button>
         </div>
 
-        <div
-          routerLink="{{ item.actions[1].url }}"
-          class="w-50 h-10 bg-gray-200 mr-2 rounded-full px-6 py-2 text-gray-800 text-sm flex flex-row cursor-pointer"
-        >
+        <div routerLink="{{ item.actions[1].url }}"
+          class="w-50 h-10 bg-gray-200 mr-2 rounded-full px-6 py-2 text-gray-800 text-sm flex flex-row cursor-pointer">
           <div class="flex justify-center flex-col">
             {{ item.actions[1].icon }}
           </div>
@@ -70,10 +104,52 @@
     </div>
   </ng-container>
 
-  <ng-container *ngIf="selectedTabIndex === 0">
-    <div
-      class="border-gray-100 border-2 p-4 flex flex-row bg-gray-100 rounded-t-lg"
-    >
+  <ng-container *ngIf="activeTab === tabType.Pending">
+    <div class="border-gray-100 text-gray-700 border-2 p-4 flex flex-row bg-gray-100 rounded-tr-lg">
+      <div class="w-2/12 text-sm uppercase text-center font-semibold">ID</div>
+      <div class="w-3/12 text-sm uppercase text-center font-semibold">Contract type</div>
+      <div class="w-2/12 text-sm uppercase text-center font-semibold">Created at</div>
+      <div class="w-2/12 text-sm uppercase text-center font-semibold">Status</div>
+      <div class="w-3/12 text-sm uppercase text-center font-semibold">Public link</div>
+    </div>
+    <div *ngIf="pendingContractDeploymentRequests$ | async as requests; else loading">
+      <div *ngFor="let request of requests.requests">
+        <div class="py-2 border-b text-center font-medium flex flex-row items-center text-sm text-gray-700 border-x">
+          <div class="w-2/12">
+            {{request.id | addrShort:3:3}}
+          </div>
+          <div class="w-3/12 text-center">
+            {{request.contract_id}}
+          </div>
+          <div class="w-2/12">
+            {{request.created_at | date:'short'}}
+          </div>
+          <div class="w-2/12 px-2">
+            <div *ngIf="request.status === 'PENDING'">
+              <div class="bg-amber-100 border text-amber-700 border-amber-200 py-2 text-xs font-semibold rounded-lg w-full">
+                PENDING
+              </div>
+            </div>
+          </div>
+          <div class="w-3/12 px-2 cursor-pointer">
+            <div class="w-full py-2 bg-gray-200 rounded-lg uppercase text-xs font-semibold">
+              Execute transaction
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+    <ng-template #loading>
+      <div class="border border-gray-200 rounded-lg py-16 flex flex-row justify-center">
+        <app-spinner></app-spinner>
+      </div>
+    </ng-template>
+  </ng-container>
+
+  <ng-container *ngIf="activeTab === tabType.Manage">
+    <div class="border-gray-100 border-2 p-4 flex flex-row bg-gray-100 rounded-tr-lg">
       <div class="w-4/12 text-sm uppercase font-semibold">Name</div>
       <div class="w-3/12 text-sm uppercase font-semibold">Alias</div>
       <div class="w-3/12 text-sm uppercase font-semibold">
@@ -82,13 +158,30 @@
       <div class="w-2/12 text-sm uppercase font-semibold">Created Date</div>
     </div>
 
-    <div
-      *ngFor="let item of manageItems"
-      class="border-gray-100 hover:bg-violet-100 border-2 p-4 flex flex-row cursor-pointer"
-    >
+    <div *ngFor="let item of manageItems"
+      class="border-gray-100 hover:bg-violet-100 border-2 p-4 flex flex-row cursor-pointer">
       <div class="w-4/12 text-sm">{{ item.name }}</div>
       <div class="w-3/12 text-sm">{{ item.alias }}</div>
       <div class="w-3/12 text-sm">{{ item.custom }}</div>
+      <div class="w-2/12 text-sm">{{ item.createdDate }}</div>
+    </div>
+  </ng-container>
+
+  <ng-container *ngIf="activeTab === tabType.Import">
+    <div class="border-gray-100 border-2 p-4 flex flex-row bg-gray-100 rounded-tr-lg">
+      <div class="w-4/12 text-sm uppercase font-semibold">Developer name</div>
+      <div class="w-3/12 text-sm uppercase font-semibold">Contract name</div>
+      <div class="w-3/12 text-sm uppercase font-semibold">
+        {{ manageCustomFieldName }}
+      </div>
+      <div class="w-2/12 text-sm uppercase font-semibold">Action</div>
+    </div>
+
+    <div *ngFor="let item of manageItems"
+      class="border-gray-100 hover:bg-violet-100 border-2 p-4 flex flex-row cursor-pointer">
+      <div class="w-4/12 text-sm">AAVE</div>
+      <div class="w-3/12 text-sm">LendingPoolProvider</div>
+      <div class="w-3/12 text-sm">Developed</div>
       <div class="w-2/12 text-sm">{{ item.createdDate }}</div>
     </div>
   </ng-container>
