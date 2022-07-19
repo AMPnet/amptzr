@@ -1,12 +1,10 @@
 <div class="flex content-center items-center flex-wrap" *ngIf="!isNetworkFixed">
-  <label for="network" class="text-lg text-indigo-900 font-bold">
-    NETWORK:
-  </label>
+
   <select
     name="network"
     id="network"
     (change)="networkChanged($event)"
-    class="m-2 border-none bg-transparent text-indigo-900 text-lg font-semibold"
+    class="m-2 border rounded-lg border-gray-200 px-4 bg-transparent text-gray-700 font-semibold"
   >
     <option
       *ngFor="let network of networks"
