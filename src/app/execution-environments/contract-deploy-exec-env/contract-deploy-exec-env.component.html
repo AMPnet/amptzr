@@ -1,0 +1,32 @@
+<div *ngIf="contractDeploymentRequest$ | async as deploymentRequest; else loadingScreen" 
+    class="h-full flex flex-row justify-center items-center">
+    <ng-container *ngIf="issuer$ | async as issuer">
+        <div class="max-w-md bg-white p-8 rounded-2xl shadow-sm flex flex-col">
+            <img class="w-full h-16 object-contain" src="{{issuer.infoData.logo | toUrlIPFS}}" alt="">
+            <div class="mt-8 text-gray-700 flex flex-row">
+                <div class="text-center mt-2">
+                    <b class="mr-1">{{issuer.infoData.name}}</b> 
+                    is requesting the deployment of the following contract</div>
+            </div>
+            <div class="mt-8 bg-indigo-50 shadow-sm px-4 py-8 rounded-lg text-center text-gray-700 font-medium">
+                {{deploymentRequest.contract_id}}
+            </div>
+            <button class="app-button w-full transition-all px-4 py-3 mt-8 text-center
+            font-medium rounded-full text-white flex flex-row items-center justify-center">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
+              </svg>
+              <div class="ml-2 uppercase">
+                Deploy
+              </div>
+                
+            </button>
+        </div>
+    </ng-container>
+</div>
+
+<ng-template #loadingScreen>
+    <div class="py-16 border border-gray-200 rounded-lg flex flex-row justify-center">
+        <app-spinner></app-spinner>
+    </div>
+</ng-template>

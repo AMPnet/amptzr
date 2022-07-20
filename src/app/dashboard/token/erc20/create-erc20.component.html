@@ -7,7 +7,7 @@
   </div>
 </div>
 
-<div class="w-full flex flex-row bg-white p-8 m-4 rounded-lg">
+<div class="w-full flex flex-row bg-white shadow-sm p-8 m-4 rounded-lg">
   <div class="">
     <app-info-snippet
       [hasBorderAndBackground]="false"
@@ -19,7 +19,7 @@
 
 </div>
 
-<div class="w-full bg-white p-8 m-4 rounded-lg flex flex-row">
+<div class="w-full bg-white shadow-sm p-8 m-4 rounded-lg flex flex-row">
   <div class="w-7/12 pr-4">
     <form class="flex flex-col text-gray-700" [formGroup]="createTokenForm">
 
@@ -34,12 +34,15 @@
         and API</small
       >
       <input
-        class="w-100 rounded-xl border-gray-200 text-sm px-4"
+        [class.!border-red-600]="isDirtyAndInvalid('tokenAlias')"
+        [class.!border-green-400]="isDirtyAndValid('tokenAlias')"
+        class="w-100 rounded-lg border-gray-200 shadow-sm transition-all lowercase border-x-8 text-sm px-4"
         id="token-name"
         type="text"
         autocomplete="off"
-        formControlName="tokenName"
+        formControlName="tokenAlias"
       />
+      <small class="mt-2 text-gray-400">The alias can contain only letters, numbers and dashes</small>
       </div>
       
 
@@ -51,7 +54,9 @@
       >
       <small class="pb-2">The name of your token</small>
       <input
-        class="w-100 rounded-xl border-gray-200 text-sm px-4"
+        [class.!border-red-600]="isDirtyAndInvalid('tokenName')"
+        [class.!border-green-400]="isDirtyAndValid('tokenName')"
+        class="w-100 rounded-lg border-gray-200 shadow-sm transition-all border-x-8 text-sm px-4"
         id="token-name"
         type="text"
         autocomplete="off"
@@ -67,11 +72,13 @@
         AAPL, ...)</small
       >
       <input
-        class="w-100 rounded-xl border-gray-200 text-sm px-4"
+        [class.!border-red-600]="isDirtyAndInvalid('tokenSymbol')"
+        [class.!border-green-400]="isDirtyAndValid('tokenSymbol')"
+        class="w-100 rounded-lg uppercase shadow-sm border-gray-200 transition-all border-x-8 text-sm px-4"
         id="token-name"
         type="text"
         autocomplete="off"
-        formControlName="tokenName"
+        formControlName="tokenSymbol"
       />
 
       <!-- SUPPLY -->
@@ -83,11 +90,13 @@
         mintable, this number can change. If not, this number is fixed.</small
       >
       <input
-        class="w-100 rounded-xl border-gray-200 text-sm px-4"
+        [class.!border-red-600]="isDirtyAndInvalid('tokenSupply')"
+        [class.!border-green-400]="isDirtyAndValid('tokenSupply')"
+        class="w-100 rounded-lg border-gray-200 border-x-8 transition-all text-sm px-4"
         id="token-name"
         type="number"
         autocomplete="off"
-        formControlName="tokenName"
+        formControlName="tokenSupply"
       />
 
       <!-- <div
@@ -135,9 +144,11 @@
 
       <div class="flex flex-row justify-end">
         <button app-action-button
+          [disabled]="!createTokenForm.valid"
           [onClick]="deployContract().bind(this)"
           text="Create token"
-          class="py-2 px-10 flex flex-row items-center justify-center bg-violet-700 text-sm uppercase text-white rounded-full mt-8"
+          class="py-2 px-10 flex flex-row text-sm font-semibold disabled:bg-gray-300 disabled:text-gray-700 items-center 
+          justify-center bg-violet-700 uppercase text-white rounded-full mt-8"
         >
         </button>
       </div>

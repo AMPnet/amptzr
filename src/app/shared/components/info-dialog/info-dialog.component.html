@@ -59,12 +59,13 @@
         class="app-button !py-2 !text-sm flex-1"
       ></button>
 
-      <div *ngIf="data.secondaryAction" 
+      <button *ngIf="data.secondaryAction" 
+      (click)="secondaryAction(data.onSecondaryAction)"
       class="pt-4 !ml-0 cursor-pointer flex flex-row justify-center text-center text-sm font-semibold text-gray-500">
         <div class="text-center" routerLink="{{data.secondaryAction.url}}">
           {{ data.secondaryAction.text }}
         </div>
-      </div>
+      </button>
       
     </div>
   </div>

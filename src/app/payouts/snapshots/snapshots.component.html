@@ -23,8 +23,8 @@
       
 
       <ng-container *ngIf="snapshotsRes.value as snapshots">
-        <div *ngIf="snapshots.length === 0" class="">
-          No snapshots
+        <div *ngIf="snapshots.length === 0" class="flex text-sm text-center flex-row w-full justify-center items-center py-16">
+          You don't have any token snapshots! <br/> <br/> Create a new snapshot to get started with airdrops and dividend distributions.
         </div>
 
         <div *ngIf="snapshots.length > 0"

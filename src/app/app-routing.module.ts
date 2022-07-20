@@ -53,6 +53,7 @@ import { PaymentsComponent } from './payments/payments.component'
 import { AuthorizationsComponent } from './dashboard/authorizations/authorizations.component'
 import { AuthorizationNewComponent } from './dashboard/authorizations/authorization-new/authorization-new.component'
 import { VeriffComponent } from './identity/veriff/veriff.component'
+import { ContractDeployExecEnvComponent } from './execution-environments/contract-deploy-exec-env/contract-deploy-exec-env.component'
 
 const appRoutes: Routes = [
   { path: 'callback', component: AuthMagicOauthComponent },
@@ -63,6 +64,7 @@ const appRoutes: Routes = [
   { path: 'offers/:id/invest', component: InvestComponent },
   { path: 'transfer', component: TransferComponent },
   { path: 'swap', component: SwapComponent },
+  { path: 'deploy-contract/:id', component: ContractDeployExecEnvComponent }, 
   { path: 'connect/:id', component: RequestWalletActionComponent },
   {
     path: '',

@@ -1,5 +1,5 @@
 <div class="w-full bg-white p-8 m-4 shadow-sm rounded-lg flex flex-col">
-  <div class="flex flex-row justify-center">
+  <div class="flex flex-row justify-between">
     <div
       (click)="tabClicked(Tab.AddressBook)"
       [class.active-content-item]="activeTab === Tab.AddressBook"
@@ -9,8 +9,11 @@
     </div>
     <div
       (click)="tabClicked(Tab.Add)"
-      [class.active-content-item]="activeTab === Tab.Add"
-      class="w-44 text-center text-sm flex flex-row items-center justify-center pb-2 font-semibold text-gray-500 uppercase border-b-4 cursor-pointer"
+      [class.bg-violet-700]="activeTab === Tab.Add"
+      [class.!text-white]="activeTab === Tab.Add"
+      class="w-44 text-center text-sm flex flex-row items-center m-2
+      bg-gray-100 border-gray-300 border rounded-lg 
+      justify-center pb-2 font-semibold text-gray-700 uppercase py-2 cursor-pointer"
     >
     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
       <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -21,7 +24,7 @@
   </div>
 
   <ng-container *ngIf="activeTab === Tab.Add">
-    <div class="border p-8 rounded-xl flex flex-col text-gray-700">
+    <div class="border p-8 rounded-tr-lg rounded-b-lg flex flex-col text-gray-700">
       <form class="flex flex-col" action="">
         <label for="wallet-address" class="font-semibold">Wallet address</label>
         <small
@@ -88,7 +91,7 @@
 
   <ng-container *ngIf="activeTab === Tab.AddressBook">
     <div
-      class="border-gray-100 border-2 p-4 flex flex-row bg-gray-100 rounded-t-lg"
+      class="border-gray-100 border-2 p-4 flex flex-row bg-gray-100 rounded-tr-lg"
     >
       <div class="w-3/12 text-sm uppercase font-semibold">Alias</div>
       <div class="w-3/12 text-sm uppercase font-semibold">Address</div>

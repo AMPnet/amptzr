@@ -1,5 +1,5 @@
 import { Component, ChangeDetectionStrategy, Input } from '@angular/core'
-import { switchMap } from 'rxjs'
+import { filter, map, switchMap } from 'rxjs'
 import { PreferenceQuery } from 'src/app/preference/state/preference.query'
 import { ProjectService } from 'src/app/shared/services/backend/project.service'
 import { ContractDeploymentService } from 'src/app/shared/services/blockchain/contract-deployment.service'
@@ -15,12 +15,21 @@ export class NewAndManageHolderComponent {
   @Input() templateItems: TemplateItemsModel[] = []
   @Input() manageItems: ManageItemsModel[] = []
   @Input() manageCustomFieldName: string = ''
+  @Input() contractsListEmptyMessage: string = 'No contracts deployed'
+  @Input() pendingContractsEmptyMessage: string = 'No pending contracts'
   activeTab: Tab = Tab.Manage
   tabType = Tab
 
   pendingContractDeploymentRequests$ = this.projectService
   .getProjectIdByChainAndAddress().pipe(
-    switchMap(project => this.contractService.getContractDeploymentRequests(project.id))
+    switchMap(project => this.contractService.getContractDeploymentRequests(project.id)),
+    map(result => result.requests.filter(x => x.status === 'PENDING')),
+  )
+
+  deployedContracts$ = this.projectService
+  .getProjectIdByChainAndAddress().pipe(
+    switchMap(project => this.contractService.getContractDeploymentRequests(project.id)),
+    map(result => result.requests.filter(x => x.status === 'FINALIZED')),
   )
 
   constructor(private contractService: ContractDeploymentService,

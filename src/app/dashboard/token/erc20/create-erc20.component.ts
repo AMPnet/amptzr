@@ -1,8 +1,9 @@
 import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core'
-import { FormControl, FormGroup } from '@angular/forms'
-import { BehaviorSubject, switchMap } from 'rxjs'
+import { FormControl, FormGroup, Validators } from '@angular/forms'
+import { BehaviorSubject, of, switchMap, tap } from 'rxjs'
 import { ContractDeploymentService } from 'src/app/shared/services/blockchain/contract-deployment.service'
 import { DialogService } from 'src/app/shared/services/dialog.service'
+import { RouterService } from 'src/app/shared/services/router.service'
 
 @Component({
   selector: 'app-erc20',
@@ -12,34 +13,56 @@ import { DialogService } from 'src/app/shared/services/dialog.service'
 })
 export class CreateErc20Component {
   createTokenForm = new FormGroup({
-    tokenName: new FormControl(''),
-    tokenSupply: new FormControl(''),
-    tokenSymbol: new FormControl(''),
-    tokenAlias: new FormControl(''),
+    tokenName: new FormControl('', [Validators.required]),
+
+    tokenSupply: new FormControl('', [Validators.required, Validators.min(1)]),
+
+    tokenSymbol: new FormControl('', [Validators.required, 
+      Validators.pattern('^[a-zA-Z0-9]*$')]),
+
+    tokenAlias: new FormControl('', [Validators.required, 
+      Validators.pattern('^[A-Za-z_-][A-Za-z0-9_-]*$')]),
   })
 
   checkSelected$ = new BehaviorSubject<boolean>(false)
+  onSecondaryAction$ = of('').pipe(tap(() => { alert("Here")} ))
+  onConfirm$ = of(undefined).pipe(tap(() => { 
+    this.routerService.navigate(['/admin/dashboard/tokens'])
+  }))
 
   constructor(private contractDeploymentService: ContractDeploymentService,
+    private routerService: RouterService,
     private dialogService: DialogService) {}
 
   onCheckChange(event: any) {
     this.checkSelected$.next(!this.checkSelected$.value)
   }
 
+  isDirtyAndInvalid(formControlName: string): boolean {
+    const control = this.createTokenForm.controls[formControlName]
+    return control.invalid && control.dirty
+  }
+
+  isDirtyAndValid(formControlName: string): boolean {
+    const control = this.createTokenForm.controls[formControlName]
+    return control.valid && control.dirty
+  }
+
   deployContract() {
+    const controls = this.createTokenForm.controls
+
     return () => {
       return this.contractDeploymentService.createDeploymentRequest(
-        'openzeppelin.erc20', [ 
-          { type: 'string', value: 'My Token' }, 
-          { type: 'string', value: 'MYTOK'} ],
+        'openzeppelin.erc20', controls.tokenAlias.value, [ 
+          { type: 'string', value: controls.tokenName.value }, 
+          { type: 'string', value: controls.tokenSymbol.value } ],
         {
           after_action_message: '',
           before_action_message: ''
         }
       ).pipe(
         switchMap(() => {
-          return this.dialogService.info({
+          return this.dialogService.infoWithOnConfirmAndSecondary({
             title: "Token deployment request created",
             message: "You will not be able to interact with the token, until you deploy it on blockchain.",
             cancelable: false,
@@ -47,7 +70,7 @@ export class CreateErc20Component {
               text: "Deploy later",
               url: "https://google.com"
             }
-          }, 'Deploy contract now')
+          }, 'Deploy contract now', this.onConfirm$, this.onSecondaryAction$)
         })
       )
     }

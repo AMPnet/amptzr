@@ -22,11 +22,13 @@ export class ContractDeploymentService {
     }
 
     createDeploymentRequest(contractId: string, 
+        alias: string,
         constructorParams: ConstructorParam[],
         screenConfig: ScreenConfig): Observable<ContractDeploymentResponse> {
             
         const queryValue = this.preferenceQuery.getValue()
         return this.createDeploymentRequestBase({
+            alias: alias,
             contract_id: contractId,
             constructor_params: constructorParams,
             deployer_address: queryValue.address,
@@ -35,6 +37,11 @@ export class ContractDeploymentService {
             screen_config: screenConfig,
             redirect_url: queryValue.issuer.slug ?? ''
         })
+    }
+
+    getContractDeploymentRequest(deploymentRequestID: string): Observable<ContractDeploymentResponse> {
+        return this.http
+            .get<ContractDeploymentResponse>(`${this.path}/deploy/${deploymentRequestID}`, { }, true, true, true)
     }
 
     getContractDeploymentRequests(projectID: string): Observable<ContractDeploymentRequests> {
@@ -50,6 +57,7 @@ export interface ContractDeploymentRequests {
 export interface ContractDeploymentResponse {
     id: string,
     status: string,
+    alias: string,
     contract_id: string,
     contract_deployment_data: string,
     contract_tags: string[],
@@ -78,6 +86,7 @@ export interface ContractDeploymentResponse {
 }
 
 export interface ContractDeploymentParams {
+    alias: string,
     contract_id: string,
     redirect_url: string,
     constructor_params: ConstructorParam[],

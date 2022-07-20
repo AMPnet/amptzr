@@ -63,6 +63,28 @@ export class DialogService {
       .pipe(map((res) => res ?? { confirmed: false }))
   }
 
+  infoWithOnConfirmAndSecondary<T>(
+    data: DialogData, confirmText: string = 'OK', 
+    onConfirm?: Observable<any>,
+    onSecondaryAction?: Observable<any>
+  ): Observable<boolean> {
+    return this.dialog
+      .open(InfoDialogComponent, {
+        ...this.configDefaults,
+        data: {
+          icon: data.icon ?? DialogIcon.INFO,
+          title: data.title ?? 'Info',
+          message: data.message,
+          cancelable: data.cancelable ?? true,
+          secondary_action: data.secondaryAction,
+          confirm_text: confirmText,
+          onConfirm: onConfirm,
+          onSecondaryAction: onSecondaryAction
+        }
+      }).afterClosed()
+      .pipe(map((res) => !!(res as InfoDialogResponse<unknown>)?.confirmed))
+  }
+
   success(data: DialogData): Observable<void> {
     return this.dialog
       .open(InfoDialogComponent, {
@@ -192,4 +214,5 @@ interface DialogPermissionData<A> {
   confirmText?: string
   cancelText?: string
   onConfirmAction$?: Observable<A>
+  onSecondaryAction$?: Observable<A>
 }

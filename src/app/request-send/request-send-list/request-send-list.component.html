@@ -7,6 +7,7 @@
         <div class="w-1/5 text-center pt-4 pb-4 font-semibold">URL</div>
     </div>
     <div *ngIf="assets$ | async as assets" class="text-sm font-medium">
+        <div *ngIf="sendRequests.requests.length > 0; else noRequests">
             <div class="flex flex-row justify-center" 
             *ngFor="let request of sendRequests.requests; let i = index">
                 <div *ngIf="assets[i] | async as asset" class="w-1/5 text-center pt-2 pb-2 border-t flex flex-col justify-center">
@@ -42,6 +43,9 @@
                     </div>
                 </div>  
             </div>
+        </div>
+            
+           
         <ng-template #noRequests>
             <div class="flex flex-row justify-center items-center py-16">
                 You don't have any active payment requests.

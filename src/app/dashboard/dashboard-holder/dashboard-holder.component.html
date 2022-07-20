@@ -75,7 +75,7 @@
             </div>
             <div
             class="text-sm text-gray-700 flex flex-row items-center"
-            *ngIf="apiKey$ | async as apiKey; else loadingApiKey"
+            *ngIf="apiKey$ | async as apiKey; else createApiKeyButton"
           >
           <div *ngIf="apiKey.api_key.length > 0; else createApiKeyButton">
             <span class="ml-2 px-8 py-2 rounded-full border-gray-200 border"
@@ -96,7 +96,7 @@
             <div class="flex flex-col h-full justify-center w-52 cursor-pointer">
               <button
                 app-action-button
-                class="bg-violet-700 text-white rounded-full !px-4 !h-full"
+                class="bg-violet-700 text-white rounded-full py-2 !px-4 !h-full"
                 text="Create API Key"
                 loadingText="Creating API Key"
                 [onClick]="createApiKey.bind(this)"

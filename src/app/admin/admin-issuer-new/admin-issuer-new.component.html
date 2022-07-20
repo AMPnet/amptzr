@@ -9,9 +9,9 @@
     <div class="ml-2 mr-2">/</div>
     <div>New Project</div>
   </div>
-  <div class="bg-white my-8 p-8 rounded-4xl">
+  <div class="bg-white shadow-sm my-8 p-8 rounded-4xl">
     <form [formGroup]="createForm">
-      <div class="flex flex-col lg:flex-row gap-6 mt-4">
+      <div class="flex flex-col lg:flex-row gap-6">
         <div class="flex flex-col gap-2">
           <label
             class="text-sm font-semibold text-gray-700 uppercase"
@@ -72,12 +72,22 @@
               Project name
             </label>
             <input
-              class="border-gray-300 rounded-lg"
+              class="border-gray-200 rounded-lg"
               type="text"
               formControlName="name"
               id="name"
               autocomplete="off"
             />
+          </div>
+
+          <div class="flex flex-col mt-2">
+            <label
+              class="text-sm mb-2 mt-2 font-semibold text-gray-700 uppercase"
+              for="name"
+            >
+              Project network
+            </label>
+            <app-select-network></app-select-network>
           </div>
 
           <div class="flex flex-col gap-2 mt-4">
@@ -107,10 +117,10 @@
               Incorrect value. Allowed input: a-z, 0-9, -, _.
             </div>
           </div>
-          <div class="flex flex-row justify-end w-full h-24 items-end">
+          <div class="flex flex-row justify-end w-full mt-12 items-end">
             <button
               app-action-button
-              class="app-button !px-12"
+              class="app-button !rounded-lg !w-full"
               text="Create"
               [disabled]="!createForm.valid"
               [onClick]="create.bind(this)"
