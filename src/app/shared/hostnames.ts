@@ -1,4 +1,4 @@
-import {MaticNetwork, MumbaiNetwork, Network} from './networks'
+import {GoerliNetwork, MaticNetwork, MumbaiNetwork, Network} from './networks'
 import {getWindow} from './utils/browser'
 
 export const Hostnames: { [host in string]: Host } = {

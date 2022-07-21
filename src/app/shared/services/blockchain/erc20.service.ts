@@ -78,9 +78,8 @@ export class Erc20Service {
     ]).pipe(
       switchMap(([signer]) => this.dialogService.waitingApproval(
         of(ERC20__factory.connect(token, signer)).pipe(
-          switchMap(contract => combineLatest([of(contract), this.gasService.overrides])),
-          switchMap(([contract, overrides]) =>
-            contract.populateTransaction.approve(spender, amount, overrides),
+          switchMap(contract => this.gasService.withOverrides(overrides =>
+            contract.populateTransaction.approve(spender, amount, overrides)),
           ),
           switchMap(tx => this.signerService.sendTransaction(tx)),
         ))),

@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core'
 import {EMPTY, from, Observable, of, throwError} from 'rxjs'
 import {providers} from 'ethers'
-import {ChainID, MaticNetwork, MumbaiNetwork} from '../../networks'
+import {Networks} from '../../networks'
 import {concatMap, map, tap} from 'rxjs/operators'
 import {AuthProvider, PreferenceStore} from '../../../preference/state/preference.store'
 import {SignerLoginOpts, Subsigner} from '../signer-login-options'
@@ -24,10 +24,9 @@ export class WalletConnectSubsignerService implements Subsigner<WalletConnectLog
       map((lib) => {
         this.wcProvider = new lib.default({
           chainId: this.preferenceStore.getValue().chainID,
-          rpc: {
-            [ChainID.MATIC_MAINNET]: MaticNetwork.rpcURLs[0],
-            [ChainID.MUMBAI_TESTNET]: MumbaiNetwork.rpcURLs[0],
-          },
+          rpc: Object.fromEntries(Object.entries(Networks)
+            .map((entry) => [entry[0], entry[1].rpcURLs[0]]),
+          ),
         }) as WalletConnectProvider
 
         // TODO: using this for debugging purposes. remove after finished with investigation.

@@ -39,6 +39,7 @@ interface CreateRequestSendData {
 
 interface UpdateRequestSendData {
   tx_hash: string,
+  caller_address: string,
 }
 
 export interface RequestSend {

@@ -57,7 +57,7 @@ export class GnosisSubsignerService implements Subsigner<GnosisLoginOpts> {
           // Official source: https://github.com/gnosis/safe-apps-sdk/blob/4966a34e1d2bcc6f6caac5e25251510bd7c170cc/packages/safe-apps-web3modal/src/modal.ts#L18-L21
           timeout(200),
         ).pipe(
-          map(safeInfo => new safeProviderLib.SafeAppProvider(safeInfo, sdk)),
+          map(safeInfo => new safeProviderLib.SafeAppProvider(safeInfo, sdk as any)),
           tap(subprovider => this.subprovider = subprovider),
         )
       }),
