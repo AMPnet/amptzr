@@ -1,11 +1,11 @@
 <ng-container *ngIf="data$ | async as data">
   <div class="px-8 py-8 max-w-sm mx-auto">
-    <h3 class="text-center text-2xl font-medium">
+    <h3 class="text-center text-gray-700 font-medium">
       {{ data.title }}
     </h3>
 
     <div class="flex justify-center mt-6">
-      <div class="flex justify-center w-36 h-36">
+      <div class="flex justify-center w-24 h-24">
         <img
           class="h-full w-full object-cover"
           src="/assets/dialog-icons/waiting.gif"

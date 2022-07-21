@@ -1,6 +1,6 @@
 import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core'
 import { ActivatedRoute } from '@angular/router'
-import { from, merge, of, switchMap, tap } from 'rxjs'
+import { delay, from, merge, of, switchMap, tap } from 'rxjs'
 import { PreferenceQuery } from 'src/app/preference/state/preference.query'
 import { SessionQuery } from 'src/app/session/state/session.query'
 import { ContractDeploymentRequests, ContractDeploymentRequestResponse, ContractDeploymentService } from 'src/app/shared/services/blockchain/contract-deployment.service'
@@ -45,6 +45,7 @@ export class ContractDeployExecEnvComponent {
         switchMap(() => this.dialogService.success({
           message: "You have successfully deployed a smart contract"
         })),
+        delay(1000),
         tap(() => {
           this.contractDeploymentRequest$ = this.contractDeploymentService
             .getContractDeploymentRequest(this.route.snapshot.params.id)
