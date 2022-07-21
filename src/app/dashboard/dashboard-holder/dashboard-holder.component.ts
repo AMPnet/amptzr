@@ -19,6 +19,7 @@ import {
 } from 'src/app/shared/services/blockchain/issuer/issuer.service'
 import { DialogService } from 'src/app/shared/services/dialog.service'
 import { RouterService } from 'src/app/shared/services/router.service'
+import { TailwindService } from 'src/app/shared/services/tailwind.service'
 import { withStatus } from 'src/app/shared/utils/observables'
 
 @Component({
@@ -33,10 +34,16 @@ export class DashboardHolderComponent {
   network$ = this.preferenceQuery.network$
   isBackendAuthorized$ = this.preferenceQuery.isBackendAuthorized$
 
+  
+  screenSize$ = this.tailwindService.screenResize$
+
   refreshAPIKeySub = new BehaviorSubject<void>(undefined)
+  projectInfoHolderStateSub = new BehaviorSubject<ProjectInfoHolderState>('open')
+  projectInfoHolderState$ = this.projectInfoHolderStateSub.asObservable()
 
   apiKey$ = this.refreshAPIKeySub.asObservable().pipe(
-    switchMap(() => this.isBackendAuthorized$),
+    switchMap(() => this.http.ensureAuth),
+    switchMap(() => this.isBackendAuthorized$ ),
     switchMap((isAuthorized) =>
       isAuthorized ? this.fetchApiKey() : of(undefined)
     )
@@ -48,12 +55,23 @@ export class DashboardHolderComponent {
     private projectService: ProjectService,
     private dialogService: DialogService,
     private http: BackendHttpClient,
-    private preferenceQuery: PreferenceQuery
-  ) {}
+    private preferenceQuery: PreferenceQuery,
+    private tailwindService: TailwindService
+  ) {
+    this.screenSize$.subscribe((x) => console.log(x))
+  }
 
   sidebarItemClicked(index: number) {
     this.navbarSelectedIndex = index
     this.changeRoute()
+  }
+  
+  toggleProjectInfoHolderState() {
+    if(this.projectInfoHolderStateSub.getValue() === 'closed') {
+      this.projectInfoHolderStateSub.next('open')
+    } else {
+      this.projectInfoHolderStateSub.next('closed')
+    }
   }
 
   authorize() {
@@ -91,3 +109,5 @@ export class DashboardHolderComponent {
     this.router.router.navigate([`/`])
   }
 }
+
+type ProjectInfoHolderState = 'open' | 'closed'

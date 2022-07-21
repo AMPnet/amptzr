@@ -26,7 +26,7 @@
               <div class="text-sm text-gray-700 font-medium">
                 Snapshot
                 <span
-                  class="ml-2 text-sm font-semibold text-violet-700 py-1 rounded-full border px-8 bg-violet-50"
+                  class="ml-2 text-sm font-semibold text-violet-700 py-1 rounded-xl border px-8 bg-violet-50"
                   >{{ snapshot.id }}</span
                 >
               </div>
@@ -34,10 +34,10 @@
               <div
                 class="mt-4 text-gray-700 flex flex-row items-center text-sm font-medium"
               >
-                You will be airdropping to accounts that were holding <br />
+                Airdropping to holders of <br />
                 <div class="flex flex-row">
                   <div
-                    class="py-1 px-8 font-semibold border bg-violet-100 text-violet-700 text-sm rounded-full shadow-sm flex ml-2"
+                    class="py-1 px-8 font-semibold border bg-violet-100 text-violet-700 text-sm rounded-xl shadow-sm flex ml-2"
                   >
                     {{ asset.tokenData.symbol }}
                   </div>
@@ -59,7 +59,7 @@
                     "
                   >
                     <div
-                      class="px-8 py-1 bg-violet-100 text-sm rounded-full shadow-sm border font-semibold text-violet-700"
+                      class="px-8 py-1 bg-violet-100 text-sm rounded-xl shadow-sm border font-semibold text-violet-700"
                       *ngIf="blockTimeRes.value as blockTime"
                     >
                       <span>{{ blockTime | date: "medium" }}</span>
@@ -157,7 +157,7 @@
                     <div class="mt-4 mb-4 text-sm font-semibold text-gray-700">
                       Enter the amount of
                       <span
-                        class="py-1 px-4 bg-violet-100 text-violet-700 border rounded-full mx-1"
+                        class="py-1 px-4 bg-violet-100 text-violet-700 border rounded-xl mx-1"
                         >{{ payoutState.tokenData.symbol }}</span
                       >
                       you want to airdrop

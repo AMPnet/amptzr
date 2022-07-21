@@ -6,7 +6,7 @@ import {
   map,
   startWith,
 } from 'rxjs/operators'
-import resolveConfig from 'tailwindcss/resolveConfig'
+const resolveConfig = require('tailwindcss/resolveConfig')
 // @ts-ignore
 import tailwindConfig from '../../../../tailwind.config.js'
 

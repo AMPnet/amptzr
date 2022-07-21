@@ -59,6 +59,33 @@ export class InfoDialogComponent implements OnInit {
     }
   }
 
+  secondaryAction(onSecondaryAction$?: Observable<any>) {
+    return () => {
+      return onSecondaryAction$
+        ? onSecondaryAction$.pipe(
+          tap((res) => this.close(true, res)),
+          catchError((err) => {
+            this.close(false)
+            return err
+          })
+        ) : of(this.close(true))
+    }
+  }
+
+  secondaryActionClicked(onSecondaryAction$?: Observable<any>) {
+    return () => {
+      return onSecondaryAction$
+        ? onSecondaryAction$.pipe(
+          tap(res => this.close(true, res)),
+          catchError(err => {
+            this.close(false)
+            return err
+          })
+        )
+        : of(this.close(true))
+    }
+  }
+
   cancel(): void {
     this.close(false)
   }
@@ -74,11 +101,13 @@ export class InfoDialogComponent implements OnInit {
 export interface InfoDialogData<T> {
   icon: DialogIcon | string
   title: string
+  secondary_title?: string
   message: string
   confirm_text: string
   cancel_text: string
   cancelable: boolean
   onConfirm?: Observable<T>
+  onSecondaryAction?: Observable<T>
 }
 
 export enum DialogIcon {

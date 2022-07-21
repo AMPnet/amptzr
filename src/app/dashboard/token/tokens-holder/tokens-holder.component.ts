@@ -28,56 +28,11 @@ export class TokensHolderComponent {
           icon: ``,
         },
       ],
-    },
-    {
-      type: 'ERC-721 (NFT)',
-      description:
-        'This is an NFT token, used by major NFT projects such as BAYC, CryptoPunks, ...',
-      actions: [
-        {
-          title: 'Create',
-          url: 'create/erc721',
-          icon: ``,
-        },
-        {
-          title: 'Import',
-          url: 'import/erc721',
-          icon: ``,
-        },
-      ],
-    },
-    {
-      type: 'ERC-1400 (Security)',
-      description:
-        'This is the Security Token standard, providing a way to tokenize assets easily',
-      actions: [
-        {
-          title: 'Create',
-          url: 'create/erc1400',
-          icon: ``,
-        },
-        {
-          title: 'Import',
-          url: 'import/erc1400',
-          icon: ``,
-        },
-      ],
-    },
+    }
   ]
 
   manageItems: ManageItemsModel[] = [
-    {
-      name: 'Loyalty Token -> Senegal FC',
-      alias: 'SENEGAL_LOYAL',
-      custom: 'SFC',
-      createdDate: '22.6.2022',
-    },
-    {
-      name: 'Cry NFT #1',
-      alias: 'NFT1',
-      custom: 'NFT1',
-      createdDate: '8.6.2022',
-    },
+   
   ]
 
   constructor() {}

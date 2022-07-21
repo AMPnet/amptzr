@@ -132,6 +132,9 @@ import { AirdropComponent } from './dashboard/airdrop/airdrop.component'
 import { PaymentsComponent } from './payments/payments.component'
 import { RequestSendListComponent } from './request-send/request-send-list/request-send-list.component'
 import { InfoSnippetComponent } from './shared/components/info-snippet/info-snippet.component'
+import { AuthorizationsComponent } from './dashboard/authorizations/authorizations.component'
+import { AuthorizationNewComponent } from './dashboard/authorizations/authorization-new/authorization-new.component'
+import { ContractDeployExecEnvComponent } from './execution-environments/contract-deploy-exec-env/contract-deploy-exec-env.component'
 
 @NgModule({
   declarations: [
@@ -241,6 +244,9 @@ import { InfoSnippetComponent } from './shared/components/info-snippet/info-snip
     PaymentsComponent,
     RequestSendListComponent,
     InfoSnippetComponent,
+    AuthorizationsComponent,
+    AuthorizationNewComponent,
+    ContractDeployExecEnvComponent,
   ],
   imports: [
     BrowserModule,

@@ -1,4 +1,9 @@
-import { Component, ChangeDetectionStrategy, Input } from '@angular/core'
+import { Component, ChangeDetectionStrategy, Input, OnInit } from '@angular/core'
+import { ActivatedRoute } from '@angular/router'
+import { filter, map, switchMap } from 'rxjs'
+import { PreferenceQuery } from 'src/app/preference/state/preference.query'
+import { ProjectService } from 'src/app/shared/services/backend/project.service'
+import { ContractDeploymentService } from 'src/app/shared/services/blockchain/contract-deployment.service'
 
 @Component({
   selector: 'app-new-and-manage-holder',
@@ -6,18 +11,51 @@ import { Component, ChangeDetectionStrategy, Input } from '@angular/core'
   styleUrls: ['./new-and-manage-holder.component.css'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class NewAndManageHolderComponent {
-  selectedTabIndex = 0
+export class NewAndManageHolderComponent implements OnInit {
 
   @Input() templateItems: TemplateItemsModel[] = []
   @Input() manageItems: ManageItemsModel[] = []
   @Input() manageCustomFieldName: string = ''
+  @Input() contractsListEmptyMessage: string = 'No contracts deployed'
+  @Input() pendingContractsEmptyMessage: string = 'No pending contracts'
+  activeTab: Tab = Tab.Manage
+  tabType = Tab
 
-  constructor() {}
+  allContracts$ = this.projectService
+    .getProjectIdByChainAndAddress().pipe(
+      switchMap(project => this.contractService.getContractDeploymentRequests(project.id)),
+    )
 
-  tabClicked(index: number) {
-    this.selectedTabIndex = index
+  pendingContractDeploymentRequests$ = this.allContracts$
+      .pipe(map(result => result.requests.filter(x => x.status === 'PENDING')))
+
+  deployedContracts$ = this.allContracts$
+        .pipe(map(result => result.requests.filter(x => x.status === 'SUCCESS')))
+
+
+  constructor(private contractService: ContractDeploymentService,
+    private preferenceQuery: PreferenceQuery,
+    private route: ActivatedRoute,
+    private projectService: ProjectService) {}
+
+  changeTab(tab: Tab) {
+    this.activeTab = tab
   }
+
+ngOnInit() {
+    this.route.queryParams.subscribe(res => {
+      if(res.screenConfig === 'requests') {
+        this.changeTab(Tab.Pending)
+      }
+    })
+  }
+}
+
+enum Tab {
+  Manage,
+  Pending,
+  Add,
+  Import
 }
 
 export interface TemplateItemsModel {
@@ -37,4 +75,10 @@ export interface ManageItemsModel {
   alias: string
   custom: string
   createdDate: string
+}
+
+export interface RequestsItemsModel {
+  id: string,
+  type: string,
+  publicUrl: string
 }

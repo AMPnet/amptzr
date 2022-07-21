@@ -1,44 +1,32 @@
 <div class="flex">
   <div
-    routerLink="../../overview"
+    routerLink="../.."
     class="ml-4 mt-2 bg-gray-600 text-white text-sm font-semibold rounded-full w-48 py-2 flex flex-row justify-center cursor-pointer"
   >
     < Back
   </div>
 </div>
 
-<div class="w-full bg-white p-8 m-4 rounded-lg flex flex-row">
-  <div class="w-7/12">
-    <form class="flex flex-col text-gray-700" [formGroup]="createTokenForm">
-      <!-- NAME -->
-      <label class="pb-1 text-lg font-semibold" for="token-name"
-        >Token name</label
-      >
-      <small class="pb-2">The name of your token</small>
-      <input
-        class="w-100 rounded-xl border-gray-200"
-        id="token-name"
-        type="text"
-        formControlName="tokenName"
-      />
+<div class="w-full flex flex-row bg-white shadow-sm p-8 m-4 rounded-lg">
+  <div class="">
+    <app-info-snippet
+      [hasBorderAndBackground]="false"
+      [content]="{ title: 'Deploying a smart contract', sections: [
+        'Use this screen to deploy a new smart contract.', 'Once you are done, the contract will be available in the Manage tab and you will be able to interact with it through the Dev3 SDK/API or through any other blockchain frontend tools.'
+      ]}"
+    ></app-info-snippet>
+  </div>
 
-      <!-- SYMBOL -->
-      <label class="pb-1 mt-8 text-lg font-semibold" for="token-name"
-        >Token symbol</label
-      >
-      <small class="pb-2"
-        >Shorthand symbol for your token, also known as a "ticker" (e.g. ETH,
-        AAPL, ...)</small
-      >
-      <input
-        class="w-100 rounded-xl border-gray-200"
-        id="token-name"
-        type="text"
-        formControlName="tokenName"
-      />
+</div>
+
+<div class="w-full bg-white shadow-sm p-8 m-4 rounded-lg flex flex-row">
+  <div class="w-7/12 pr-4">
+    <form class="flex flex-col text-gray-700" [formGroup]="createTokenForm">
 
       <!-- ALIAS -->
-      <label class="pb-1 mt-8 text-lg font-semibold" for="token-name"
+
+      <div class="p-4 rounded-lg bg-gray-100 border border-gray-200 flex flex-col">
+        <label class="pb-1 font-semibold" for="token-name"
         >Token alias</label
       >
       <small class="pb-2"
@@ -46,14 +34,55 @@
         and API</small
       >
       <input
-        class="w-100 rounded-xl border-gray-200"
+        [class.!border-red-600]="isDirtyAndInvalid('tokenAlias')"
+        [class.!border-green-400]="isDirtyAndValid('tokenAlias')"
+        class="w-100 rounded-lg border-gray-200 shadow-sm transition-all lowercase border-x-8 text-sm px-4"
         id="token-name"
         type="text"
+        autocomplete="off"
+        formControlName="tokenAlias"
+      />
+      <small class="mt-2 text-gray-400">The alias can contain only letters, numbers and dashes</small>
+      </div>
+      
+
+      <hr class="mt-6 mb-6">
+
+      <!-- NAME -->
+      <label class="pb-1 font-semibold" for="token-name"
+        >Token name</label
+      >
+      <small class="pb-2">The name of your token</small>
+      <input
+        [class.!border-red-600]="isDirtyAndInvalid('tokenName')"
+        [class.!border-green-400]="isDirtyAndValid('tokenName')"
+        class="w-100 rounded-lg border-gray-200 shadow-sm transition-all border-x-8 text-sm px-4"
+        id="token-name"
+        type="text"
+        autocomplete="off"
         formControlName="tokenName"
       />
 
+      <!-- SYMBOL -->
+      <label class="pb-1 mt-8 font-semibold" for="token-name"
+        >Token symbol</label
+      >
+      <small class="pb-2"
+        >Shorthand symbol for your token, also known as a "ticker" (e.g. ETH,
+        AAPL, ...)</small
+      >
+      <input
+        [class.!border-red-600]="isDirtyAndInvalid('tokenSymbol')"
+        [class.!border-green-400]="isDirtyAndValid('tokenSymbol')"
+        class="w-100 rounded-lg uppercase shadow-sm border-gray-200 transition-all border-x-8 text-sm px-4"
+        id="token-name"
+        type="text"
+        autocomplete="off"
+        formControlName="tokenSymbol"
+      />
+
       <!-- SUPPLY -->
-      <label class="pb-1 mt-8 text-lg font-semibold" for="token-name"
+      <label class="pb-1 mt-8 font-semibold" for="token-name"
         >Token supply</label
       >
       <small class="pb-2"
@@ -61,13 +90,16 @@
         mintable, this number can change. If not, this number is fixed.</small
       >
       <input
-        class="w-100 rounded-xl border-gray-200"
+        [class.!border-red-600]="isDirtyAndInvalid('tokenSupply')"
+        [class.!border-green-400]="isDirtyAndValid('tokenSupply')"
+        class="w-100 rounded-lg border-gray-200 border-x-8 transition-all text-sm px-4"
         id="token-name"
         type="number"
-        formControlName="tokenName"
+        autocomplete="off"
+        formControlName="tokenSupply"
       />
 
-      <div
+      <!-- <div
         class="p-4 border border-gray-200 rounded-xl mt-8 flex flex-col transition-all"
       >
         <div class="flex flex-row justify-between items-center mb-2">
@@ -91,7 +123,7 @@
         <hr class="mt-4 mb-4" [hidden]="(checkSelected$ | async) === false" />
         <div class="invisibleComp" [class.visibleComp]="checkSelected$ | async">
           <div class="flex flex-col">
-            <label class="pb-1 text-lg font-semibold" for="allowed-to-mint"
+            <label class="pb-1 font-semibold" for="allowed-to-mint"
               >Who is allowed to mint the tokens?</label
             >
             <small class="pb-2 text-justify"
@@ -108,31 +140,44 @@
             />
           </div>
         </div>
-      </div>
+      </div> -->
 
       <div class="flex flex-row justify-end">
-        <button
-          type="submit"
-          class="py-2 px-10 bg-violet-700 text-white rounded-full mt-8"
+        <button app-action-button
+          [disabled]="!createTokenForm.valid"
+          [onClick]="deployContract().bind(this)"
+          text="Create token"
+          class="py-2 px-10 flex flex-row text-sm font-semibold disabled:bg-gray-300 disabled:text-gray-700 items-center 
+          justify-center bg-violet-700 uppercase text-white rounded-full mt-8"
         >
-          Create token
         </button>
       </div>
     </form>
   </div>
-  <div class="w-5/12 pl-8">
-    <div class="text-2xl font-semibold text-gray-700">ERC-20 Token</div>
-    <p class="mt-4 text-sm text-gray-700">
-      Lorem Ipsum is simply dummy text of the printing and typesetting industry.
-      <br />
-      Lorem Ipsum has been the industry's standard dummy text ever since the
-      1500s, when an unknown printer took a galley of type and scrambled it to
-      make a type specimen book. It has survived not only five centuries, but
-      also the leap into electronic typesetting, remaining essentially
-      unchanged. <br /><br />
-      It was popularised in the 1960s with the release of Letraset sheets
-      containing Lorem Ipsum passages, and more recently with desktop publishing
-      software like Aldus PageMaker including versions of Lorem Ipsum.
-    </p>
+  <div class="w-5/12 border-l pl-4">
+    <div>
+      <app-info-snippet
+        [content]="{ title: 'ERC-20 Token Standard', sections: [
+          'ERC-20 is the technical standard for fungible tokens created using the Ethereum blockchain. A fungible token is one that is interchangeable with another token—where the well-known non-fungible tokens (NFTs) are not interchangeable.',
+          'ERC-20 allows different smart-contract enabled tokens a way to be exchanged. Tokens, in this regard, are a representation of an asset, right, ownership, access, cryptocurrency, or anything else that is not unique in and of itself but can be transferred.', 
+        ] }"></app-info-snippet>
+
+        <div class="mt-2 mb-2"></div>
+
+        <app-info-snippet
+        [type]="'WARNING'"
+        [content]="{ title: 'Fixed parameters!', sections: [
+          'Some fields cannot be changed, once they are set.',
+        ] }"></app-info-snippet>
+
+        <div class="mt-2 mb-2"></div>
+
+        <app-info-snippet
+      [type]="'DANGER'"
+      [content]="{ title: 'This contract is not verified', sections: [
+        'This contract was uploaded by an unverified developer. Please exercise caution if using it in your apps.',
+        ]}"
+    ></app-info-snippet>
+    </div>
   </div>
 </div>

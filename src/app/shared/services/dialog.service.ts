@@ -33,7 +33,7 @@ export class DialogService {
 
   constructor(public dialog: MatDialog) {}
 
-  info(data: DialogData): Observable<boolean> {
+  info(data: DialogData, confirmText: string = 'OK'): Observable<boolean> {
     return this.dialog
       .open(InfoDialogComponent, {
         ...this.configDefaults,
@@ -42,6 +42,7 @@ export class DialogService {
           title: data.title ?? 'Info',
           message: data.message,
           cancelable: data.cancelable ?? true,
+          confirm_text: confirmText
         } as InfoDialogData<unknown>,
         disableClose: !(data.cancelable ?? true),
       })
@@ -59,6 +60,30 @@ export class DialogService {
       })
       .afterClosed()
       .pipe(map((res) => res ?? { confirmed: false }))
+  }
+
+  infoWithOnConfirmAndSecondary<T>(
+    data: DialogData, 
+    confirmText: string = 'OK',
+    secondaryString: string = 'Cancel',
+    onConfirm?: Observable<any>,
+    onSecondaryAction?: Observable<any>
+  ): Observable<boolean> {
+    return this.dialog
+      .open(InfoDialogComponent, {
+        ...this.configDefaults,
+        data: {
+          icon: data.icon ?? DialogIcon.INFO,
+          title: data.title ?? 'Info',
+          message: data.message,
+          cancelable: data.cancelable ?? true,
+          secondary_title: secondaryString,
+          confirm_text: confirmText,
+          onConfirm: onConfirm,
+          onSecondaryAction: onSecondaryAction
+        }
+      }).afterClosed()
+      .pipe(map((res) => !!(res as InfoDialogResponse<unknown>)?.confirmed))
   }
 
   success(data: DialogData): Observable<void> {
@@ -177,6 +202,7 @@ interface DialogData {
   title?: string
   message?: string
   cancelable?: boolean
+  secondary_title?: string
 }
 
 interface DialogPermissionData<A> {
@@ -186,4 +212,5 @@ interface DialogPermissionData<A> {
   confirmText?: string
   cancelText?: string
   onConfirmAction$?: Observable<A>
+  onSecondaryAction$?: Observable<A>
 }

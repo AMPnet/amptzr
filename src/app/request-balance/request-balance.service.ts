@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core'
 import { environment } from '../../environments/environment'
 import { BackendHttpClient } from '../shared/services/backend/backend-http-client.service'
-import { Observable } from 'rxjs'
+import { Observable, switchMap } from 'rxjs'
+import { AssetType } from '../request-send/request-send.service'
 
 @Injectable({
   providedIn: 'root',
@@ -16,7 +17,15 @@ export class RequestBalanceService {
   }
 
   createRequest(data: CreateRequestBalanceData): Observable<RequestBalance> {
-    return this.http.post<RequestBalance>(`${this.path}/balance`, data, true)
+    return this.http.post<RequestBalance>(`${this.path}/balance`, data, true, true, true)
+  }
+
+  getRequestsForProject(id: string): Observable<RequestBalancesData> {
+    const req = this.http.get<RequestBalancesData>(`${this.path}/balance/by-project/${id}`, { })
+    req.subscribe(res => {
+      console.log(res)
+    })
+    return req
   }
 
   updateRequest(
@@ -31,6 +40,10 @@ export class RequestBalanceService {
   }
 }
 
+interface RequestBalancesData {
+  requests: RequestBalance[]
+}
+
 interface CreateRequestBalanceData {
   client_id?: string
   block_number?: string
@@ -39,6 +52,7 @@ interface CreateRequestBalanceData {
   wallet_address?: string
   redirect_url?: string
   arbitrary_data?: ArbitraryData
+  asset_type: AssetType
   screen_config?: ScreenConfig
 }
 
