@@ -1,4 +1,4 @@
-import {AfterViewInit, ChangeDetectionStrategy, Component, ElementRef, ViewChild} from '@angular/core'
+import {AfterViewInit, ChangeDetectionStrategy, Component, ElementRef, ViewChild, ɵmarkDirty} from '@angular/core'
 import {PreferenceQuery} from '../preference/state/preference.query'
 import {SessionQuery} from '../session/state/session.query'
 import {concatMap, EMPTY, fromEvent, merge, Observable, of, switchMap, tap} from 'rxjs'
@@ -84,6 +84,7 @@ export class SwapComponent implements AfterViewInit {
   signerChange$ = merge(
     this.preferenceQuery.address$,
     this.signerService.provider$,
+    this.signerService.chainChanged$,
   ).pipe(
     tap(_ => {
       this.iframe?.nativeElement?.contentWindow?.postMessage(
@@ -91,6 +92,9 @@ export class SwapComponent implements AfterViewInit {
       )
     }),
   )
+
+  ensureNetwork$ = this.signerService.ensureNetwork$
+  setConfig$!: Observable<unknown>
 
   constructor(private preferenceQuery: PreferenceQuery,
               private sessionQuery: SessionQuery,
@@ -103,7 +107,10 @@ export class SwapComponent implements AfterViewInit {
   ngAfterViewInit() {
     const iframe = this.iframe.nativeElement
 
-    fromEvent<Event>(iframe, 'load').pipe(
+    this.setConfig$ = merge(
+      fromEvent<Event>(iframe, 'load'),
+      this.signerChange$,
+    ).pipe(
       switchMap(() => this.tokenListService.fetchListsWithAssets([
         'https://tokens.uniswap.org',
       ])),
@@ -115,7 +122,8 @@ export class SwapComponent implements AfterViewInit {
           }), this.url,
         )
       }),
-    ).subscribe()
+      tap(() => ɵmarkDirty(this)),
+    )
 
     iframe.setAttribute('src', this.url)
   }

@@ -1,5 +1,5 @@
 import {providers} from 'ethers'
-import {Matic as TPMatic, Mumbai as TPMumbai, Private as TPPrivate} from '../../../tokenizer-prototype/deployments'
+import {Matic as TPMatic, Mumbai as TPMumbai} from '../../../tokenizer-prototype/deployments'
 import ReconnectingWebSocket from 'reconnecting-websocket'
 
 export enum ChainID {
@@ -7,7 +7,6 @@ export enum ChainID {
   MUMBAI_TESTNET = 80001, // Polygon
   // ETHEREUM_MAINNET = 1,
   GOERLI_TESTNET = 5,
-  PRIVATE_NETWORK = 1984
 }
 
 export interface Network {
@@ -99,7 +98,7 @@ export const MumbaiNetwork: Network = {
     symbol: 'MATIC',
   },
   maxGasPrice: 20,
-  rpcURLs: ['https://rpc-mumbai.maticvigil.com'],
+  rpcURLs: ['https://matic-mumbai.chainstacklabs.com'],
   wssRpcURLs: [
     'wss://ws-nd-673-584-255.p2pify.com/6eba79da2c02fb3ca5985cc6e95ebd53',
     'wss://polygon-mumbai.g.alchemy.com/v2/w8tKRA88CQYBQEwGO2HlKKHtSD_qHOoU',
@@ -122,35 +121,6 @@ export const MumbaiNetwork: Network = {
   ramp: {
     swapAsset: 'MATIC_USDC2',
     url: 'https://ri-widget-staging.firebaseapp.com/',
-  },
-}
-
-export const PrivateNetwork: Network = {
-  chainID: ChainID.PRIVATE_NETWORK,
-  name: 'AMPnet PoA',
-  shortName: 'ampnet-poa',
-  nativeCurrency: {
-    name: 'AMP',
-    symbol: 'AMP',
-  },
-  maxGasPrice: 0,
-  rpcURLs: ['https://poa.ampnet.io/rpc'],
-  wssRpcURLs: [
-    'wss://poa.ampnet.io/ws',
-  ],
-  explorerURLs: ['https://poa.ampnet.io/'],
-  tokenizerConfig: {
-    apxRegistry: TPPrivate.apxRegistry.address,
-    issuerFactory: TPPrivate.issuerFactory,
-    assetFactory: TPPrivate.assetFactory,
-    cfManagerFactory: TPPrivate.cfManagerFactory,
-    queryService: TPPrivate.queryService,
-    payoutService: TPPrivate.payoutService,
-    payoutManager: TPPrivate.payoutManager,
-    nameRegistry: TPPrivate.nameRegistry.address,
-    campaignFeeManager: TPPrivate.campaignFeeManager.address,
-    defaultWalletApprover: TPPrivate.walletApproverService.address,
-    defaultStableCoin: '0xC5C69f646E94abD4D169a0b8a4F4A493360BF7F9',
   },
 }
 
@@ -193,7 +163,6 @@ export const Networks: { [key in ChainID]: Network } = {
   [ChainID.MATIC_MAINNET]: MaticNetwork,
   [ChainID.MUMBAI_TESTNET]: MumbaiNetwork,
   [ChainID.GOERLI_TESTNET]: GoerliNetwork,
-  [ChainID.PRIVATE_NETWORK]: PrivateNetwork,
 }
 
 const getEthersNetwork = (network: Network): providers.Network => ({

@@ -7,7 +7,7 @@ import {Observable} from 'rxjs'
   providedIn: 'root',
 })
 export class RequestSendService {
-  path = `${environment.backendURL}/api/blockchain-api`
+  path = `${environment.backendURL}/api/blockchain-api/v1`
 
   constructor(private http: BackendHttpClient) {
   }
@@ -39,12 +39,14 @@ interface CreateRequestSendData {
 
 interface UpdateRequestSendData {
   tx_hash: string,
+  caller_address: string,
 }
 
 export interface RequestSend {
   id: string;
   status: SendRequestStatus;
   chain_id: number;
+  asset_type: AssetType;
   token_address: string;
   amount: string;
   sender_address?: string;
@@ -70,6 +72,11 @@ interface SendTx {
   to: string;
   data: string;
   block_confirmations?: string;
+}
+
+export enum AssetType {
+  Native = 'NATIVE',
+  Token = 'TOKEN',
 }
 
 export enum SendRequestStatus {

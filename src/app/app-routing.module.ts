@@ -42,6 +42,7 @@ import {RequestSendNewComponent} from './request-send/request-send-new/request-s
 import {RequestSendShowComponent} from './request-send/request-send-show/request-send-show.component'
 import {RequestSendActionComponent} from './request-send/request-send-action/request-send-action.component'
 import {RequestBalanceActionComponent} from './request-balance/request-balance-action/request-balance-action.component'
+import {RequestWalletActionComponent} from './request-wallet/request-wallet-action/request-wallet-action.component'
 
 const appRoutes: Routes = [
   {path: 'callback', component: AuthMagicOauthComponent},
@@ -125,6 +126,7 @@ const routes: Routes = [
   {
     path: '', component: AppLayoutComponent, children: [
       {path: 'home', component: HomeComponent},
+      {path: 'connect/:id', component: RequestWalletActionComponent},
       ...networkRoutes,
     ],
   },

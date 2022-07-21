@@ -7,7 +7,7 @@ import {Observable} from 'rxjs'
   providedIn: 'root',
 })
 export class RequestBalanceService {
-  path = `${environment.backendURL}/api/blockchain-api`
+  path = `${environment.backendURL}/api/blockchain-api/v1`
 
   constructor(private http: BackendHttpClient) {
   }

@@ -1,0 +1,69 @@
+<div class="w-full h-full flex justify-center my-8 px-2">
+  <div class="w-full max-w-5xl">
+    <ng-container *ngIf="(stateWithStatus$ | async) as stateRes">
+      <ng-container *ngIf="stateRes.value as state">
+        <div class="max-w-md mx-auto bg-white rounded-4xl px-6 py-4">
+          <h1 class="flex justify-center mt-4 mx-8 text-3xl">
+            Wallet Connect
+          </h1>
+
+          <div class="flex flex-col gap-4 mt-8" *ngIf="!state.signed_message">
+            <div class="text-center">
+              <ng-container
+                *ngIf="state.screen_config?.before_action_message as beforeActionMessage; else noBeforeActionMessage">
+                {{ beforeActionMessage }}
+              </ng-container>
+              <ng-template #noBeforeActionMessage>
+                We are requesting you to sign a message to confirm a wallet connect action.
+              </ng-template>
+            </div>
+
+            <button app-action-button
+                    class="w-full app-button"
+                    [hidden]="(isUserLoggedIn$ | async) === true"
+                    [onClick]="login.bind(this)"
+                    text="Log in"></button>
+
+            <button app-action-button
+                    class="w-full app-button"
+                    [hidden]="(shouldSign$ | async) !== true"
+                    [onClick]="confirmOwnership(state).bind(this)"
+                    text="Confirm ownership">
+            </button>
+          </div>
+
+          <div class="mt-4 text-center"
+               *ngIf="state.signed_message">
+            <ng-container
+              *ngIf="state.screen_config?.after_action_message as afterActionMessage; else noAfterActionMessage">
+              {{ afterActionMessage }}
+            </ng-container>
+            <ng-template #noAfterActionMessage>
+              Action complete. You can close this screen now.
+            </ng-template>
+
+            <button class="w-full app-button mt-4"
+                    (click)="closeWindow()">
+              Go back
+            </button>
+          </div>
+        </div>
+      </ng-container>
+
+      <ng-container *ngIf="stateRes.error">
+        <div class="flex justify-center py-8">
+          Cannot fetch data.
+        </div>
+        <div hidden>{{ stateRes.error | json }}</div>
+      </ng-container>
+
+      <ng-container *ngIf="stateRes.loading">
+        <div class="flex justify-center py-8">
+          <app-spinner type="overlay">
+            Loading...
+          </app-spinner>
+        </div>
+      </ng-container>
+    </ng-container>
+  </div>
+</div>
