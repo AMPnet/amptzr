@@ -59,15 +59,15 @@
         </div>
         <div class="px-4 py-4 flex flex-row ml-4 w-full">
           <div class="flex flex-row justify-between">
-            <div class="text-xl font-semibold text-gray-700 flex flex-row">
+            <div class="text-xl font-semibold text-gray-700 h-full flex flex-row">
               <div class="flex flex-col justify-center">
                 {{ myIssuer.infoData.name }}
               </div>
               <div
                 *ngIf="network$ | async as currentNetwork"
-                class="flex flex-col justify-center bg-gray-200 text-xs px-8 mx-4 rounded-full"
+                class="flex flex-col justify-center h-full bg-gray-200 text-sm px-8 mx-4 rounded-full"
               >
-                <div class="flex flex-row">
+                <div class="flex flex-row py-2">
                   <span class="font-normal mr-1">Deployed on </span>
                   {{ currentNetwork.name }}
                 </div>
@@ -127,7 +127,7 @@
                 <path stroke-linecap="round" stroke-linejoin="round" d="M14 10l-2 1m0 0l-2-1m2 1v2.5M20 7l-2 1m2-1l-2-1m2 1v2.5M14 4l-2-1-2 1M4 7l2-1M4 7l2 1M4 7v2.5M12 21l-2-1m2 1l2-1m-2 1v-2.5M6 18l-2-1v-2.5M18 18l2-1v-2.5" />
               </svg>
             </div>
-            <div class="font-medium">Tokens</div>
+            <div class="font-medium">Contracts</div>
           </div>
   
           <div

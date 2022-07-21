@@ -9,7 +9,14 @@
     <div class="ml-2 mr-2">/</div>
     <div>New Project</div>
   </div>
-  <div class="bg-white shadow-sm my-8 p-8 rounded-4xl">
+  <div class="shadow-sm rounded-2xl mt-8">
+    <app-info-snippet
+      [content]="{ title: 'Getting started with Dev3', sections: [
+        'A Dev3 project is an abstraction over a single Web3 application. It is the first step in building your app with Dev3.',
+        'If your Web3 app is multi-chain, every chain implementation must have its own project'
+      ]}"></app-info-snippet>
+  </div>
+  <div class="bg-white shadow-sm mb-8 mt-4 p-8 rounded-2xl">
     <form [formGroup]="createForm">
       <div class="flex flex-col lg:flex-row gap-6">
         <div class="flex flex-col gap-2">

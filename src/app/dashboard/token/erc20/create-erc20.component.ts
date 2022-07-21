@@ -25,9 +25,13 @@ export class CreateErc20Component {
   })
 
   checkSelected$ = new BehaviorSubject<boolean>(false)
+
   onSecondaryAction$ = of('').pipe(tap(() => { alert("Here")} ))
+  
   onConfirm$ = of(undefined).pipe(tap(() => { 
-    this.routerService.navigate(['/admin/dashboard/tokens'])
+    this.routerService.navigate(['/admin/dashboard/tokens'], {
+      queryParams: { screenConfig: 'requests' }
+    })
   }))
 
   constructor(private contractDeploymentService: ContractDeploymentService,
@@ -53,9 +57,9 @@ export class CreateErc20Component {
 
     return () => {
       return this.contractDeploymentService.createDeploymentRequest(
-        'openzeppelin.erc20', controls.tokenAlias.value, [ 
+        'openzeppelin.erc20', String(controls.tokenAlias.value).toLowerCase(), [ 
           { type: 'string', value: controls.tokenName.value }, 
-          { type: 'string', value: controls.tokenSymbol.value } ],
+          { type: 'string', value: String(controls.tokenSymbol.value).toUpperCase() } ],
         {
           after_action_message: '',
           before_action_message: ''
@@ -66,11 +70,7 @@ export class CreateErc20Component {
             title: "Token deployment request created",
             message: "You will not be able to interact with the token, until you deploy it on blockchain.",
             cancelable: false,
-            secondaryAction: {
-              text: "Deploy later",
-              url: "https://google.com"
-            }
-          }, 'Deploy contract now', this.onConfirm$, this.onSecondaryAction$)
+          }, 'Deploy contract now', 'Deploy later', this.onConfirm$, this.onSecondaryAction$)
         })
       )
     }

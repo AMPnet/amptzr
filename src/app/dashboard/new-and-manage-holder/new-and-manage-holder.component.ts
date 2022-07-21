@@ -1,4 +1,5 @@
-import { Component, ChangeDetectionStrategy, Input } from '@angular/core'
+import { Component, ChangeDetectionStrategy, Input, OnInit } from '@angular/core'
+import { ActivatedRoute } from '@angular/router'
 import { filter, map, switchMap } from 'rxjs'
 import { PreferenceQuery } from 'src/app/preference/state/preference.query'
 import { ProjectService } from 'src/app/shared/services/backend/project.service'
@@ -10,7 +11,7 @@ import { ContractDeploymentService } from 'src/app/shared/services/blockchain/co
   styleUrls: ['./new-and-manage-holder.component.css'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class NewAndManageHolderComponent {
+export class NewAndManageHolderComponent implements OnInit {
 
   @Input() templateItems: TemplateItemsModel[] = []
   @Input() manageItems: ManageItemsModel[] = []
@@ -20,24 +21,33 @@ export class NewAndManageHolderComponent {
   activeTab: Tab = Tab.Manage
   tabType = Tab
 
-  pendingContractDeploymentRequests$ = this.projectService
-  .getProjectIdByChainAndAddress().pipe(
-    switchMap(project => this.contractService.getContractDeploymentRequests(project.id)),
-    map(result => result.requests.filter(x => x.status === 'PENDING')),
-  )
+  allContracts$ = this.projectService
+    .getProjectIdByChainAndAddress().pipe(
+      switchMap(project => this.contractService.getContractDeploymentRequests(project.id)),
+    )
 
-  deployedContracts$ = this.projectService
-  .getProjectIdByChainAndAddress().pipe(
-    switchMap(project => this.contractService.getContractDeploymentRequests(project.id)),
-    map(result => result.requests.filter(x => x.status === 'FINALIZED')),
-  )
+  pendingContractDeploymentRequests$ = this.allContracts$
+      .pipe(map(result => result.requests.filter(x => x.status === 'PENDING')))
+
+  deployedContracts$ = this.allContracts$
+        .pipe(map(result => result.requests.filter(x => x.status === 'SUCCESS')))
+
 
   constructor(private contractService: ContractDeploymentService,
     private preferenceQuery: PreferenceQuery,
+    private route: ActivatedRoute,
     private projectService: ProjectService) {}
 
   changeTab(tab: Tab) {
     this.activeTab = tab
+  }
+
+ngOnInit() {
+    this.route.queryParams.subscribe(res => {
+      if(res.screenConfig === 'requests') {
+        this.changeTab(Tab.Pending)
+      }
+    })
   }
 }
 

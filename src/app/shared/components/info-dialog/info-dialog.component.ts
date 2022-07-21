@@ -101,10 +101,7 @@ export class InfoDialogComponent implements OnInit {
 export interface InfoDialogData<T> {
   icon: DialogIcon | string
   title: string
-  secondaryAction?: {
-    text: string,
-    url: string
-  }
+  secondary_title?: string
   message: string
   confirm_text: string
   cancel_text: string

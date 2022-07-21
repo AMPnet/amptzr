@@ -17,7 +17,7 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog'
 })
 export class LoadingDialogTransactionComponent implements OnInit {
   private dataSub = new BehaviorSubject<LoadingDialogData>({
-    title: 'Processing...',
+    title: 'Transaction processing. This may take a while.',
     message: '',
   })
   data$ = this.dataSub.asObservable()

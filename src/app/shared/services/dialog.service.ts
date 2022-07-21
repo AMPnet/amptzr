@@ -42,7 +42,6 @@ export class DialogService {
           title: data.title ?? 'Info',
           message: data.message,
           cancelable: data.cancelable ?? true,
-          secondaryAction: data.secondaryAction,
           confirm_text: confirmText
         } as InfoDialogData<unknown>,
         disableClose: !(data.cancelable ?? true),
@@ -64,7 +63,9 @@ export class DialogService {
   }
 
   infoWithOnConfirmAndSecondary<T>(
-    data: DialogData, confirmText: string = 'OK', 
+    data: DialogData, 
+    confirmText: string = 'OK',
+    secondaryString: string = 'Cancel',
     onConfirm?: Observable<any>,
     onSecondaryAction?: Observable<any>
   ): Observable<boolean> {
@@ -76,7 +77,7 @@ export class DialogService {
           title: data.title ?? 'Info',
           message: data.message,
           cancelable: data.cancelable ?? true,
-          secondary_action: data.secondaryAction,
+          secondary_title: secondaryString,
           confirm_text: confirmText,
           onConfirm: onConfirm,
           onSecondaryAction: onSecondaryAction
@@ -201,10 +202,7 @@ interface DialogData {
   title?: string
   message?: string
   cancelable?: boolean
-  secondaryAction? : {
-    text: string,
-    url: string
-  }
+  secondary_title?: string
 }
 
 interface DialogPermissionData<A> {
