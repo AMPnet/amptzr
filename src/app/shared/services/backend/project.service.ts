@@ -67,7 +67,7 @@ interface ProjectModel {
   created_at: string
 }
 
-interface ApiKeyModel {
+export interface ApiKeyModel {
   id: string
   project_id: string
   api_key: string

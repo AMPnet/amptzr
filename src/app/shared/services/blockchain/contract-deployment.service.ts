@@ -88,11 +88,6 @@ export class ContractDeploymentService {
                 )
               )
             ),
-            switchMap((tx) =>
-              this.dialogService.waitingTransaction(
-                from(this.sessionQuery.provider.waitForTransaction(tx.hash))
-              )
-            ),
             this.errorService.handleError(false, true)
           )
     }

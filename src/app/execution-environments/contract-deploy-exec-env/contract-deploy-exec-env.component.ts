@@ -1,6 +1,6 @@
 import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core'
 import { ActivatedRoute } from '@angular/router'
-import { delay, from, merge, of, switchMap, tap } from 'rxjs'
+import { BehaviorSubject, delay, from, merge, of, switchMap, tap } from 'rxjs'
 import { PreferenceQuery } from 'src/app/preference/state/preference.query'
 import { SessionQuery } from 'src/app/session/state/session.query'
 import { ContractDeploymentRequests, ContractDeploymentRequestResponse, ContractDeploymentService } from 'src/app/shared/services/blockchain/contract-deployment.service'
@@ -24,12 +24,15 @@ export class ContractDeployExecEnvComponent {
     .getContractDeploymentRequest(this.route.snapshot.params.id)
 
   address$ = this.preferenceQuery.address$
+  isWaitingForTxSub = new BehaviorSubject<boolean>(false)
+  isWaitingForTx$ = this.isWaitingForTxSub.asObservable()
   
 
   constructor(
     private preferenceQuery: PreferenceQuery,
     private issuerService: IssuerService,
     private dialogService: DialogService,
+    private sessionQuery: SessionQuery,
     private route: ActivatedRoute,
     private contractDeploymentService: ContractDeploymentService
   ) { }
@@ -37,18 +40,18 @@ export class ContractDeployExecEnvComponent {
   deployContract(contractDeploymentRequest: ContractDeploymentRequestResponse) {
     return () => {
       return this.contractDeploymentService.deployContract(contractDeploymentRequest).pipe(
+        tap(() => { this.isWaitingForTxSub.next(true) }),
+        switchMap(result => this.sessionQuery.provider.waitForTransaction(result.hash)),
         switchMap(result => this.contractDeploymentService.attachTxInfoToRequest(
           contractDeploymentRequest.id,
           result.transactionHash,
           this.preferenceQuery.getValue().address
         )),
-        switchMap(() => this.dialogService.success({
-          message: "You have successfully deployed a smart contract"
-        })),
         delay(1000),
         tap(() => {
           this.contractDeploymentRequest$ = this.contractDeploymentService
             .getContractDeploymentRequest(this.route.snapshot.params.id)
+          this.isWaitingForTxSub.next(false)
         })
       )
     }

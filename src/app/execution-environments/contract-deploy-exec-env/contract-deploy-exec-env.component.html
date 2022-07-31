@@ -4,15 +4,19 @@
         <div class="max-w-lg bg-white p-8 rounded-2xl shadow-sm flex flex-col">
             <img class="w-full h-16 object-contain" src="{{issuer.infoData.logo | toUrlIPFS}}" alt="">
             <div *ngIf="deploymentRequest.status === 'PENDING'" class="mt-8 text-gray-700 flex flex-row">
-                <div class="text-center mt-2">
-                    <b class="mr-1">{{issuer.infoData.name}}</b>
+                <div class="text-center mt-2 leading-loose">
+                    <span class="py-2 font-semibold mr-2 px-4 text-sm bg-indigo-50 border-indigo-200 border rounded-lg">
+                        {{issuer.infoData.name}}
+                    </span>
                     is requesting you to deploy the following smart contract
                 </div>
             </div>
             <div *ngIf="deploymentRequest.status === 'SUCCESS'" class="mt-8 text-gray-700 flex flex-row">
                 <div class="text-center mt-2 leading-loose">
                     You have successfully deployed a smart contract as requested by
-                    <b class="ml-1">{{issuer.infoData.name}}</b>
+                    <span class="ml-[2px] px-3 py-1 font-semibold bg-indigo-100 border-indigo-200 border rounded-lg">
+                        {{issuer.infoData.name}}
+                    </span>
                 </div>
             </div>
             <hr class="mt-4 mb-4">
@@ -84,8 +88,22 @@
 
             <hr class="mt-4 mb-4">
 
-            <button app-action-button *ngIf="deploymentRequest.status === 'PENDING'" class="app-button"
+            <div class="w-full" [hidden]="(isWaitingForTx$ | async) === true">
+                <button app-action-button *ngIf="(deploymentRequest.status === 'PENDING')" class="app-button w-full"
                 [onClick]="deployContract(deploymentRequest).bind(this)" text="Deploy"></button>
+            </div>
+
+            <div *ngIf="isWaitingForTx$ | async as isWaitingForTx">
+                <div *ngIf="isWaitingForTx && (deploymentRequest.status === 'PENDING')" class="flex flex-row items-center justify-center bg-indigo-100 border-indigo-200  py-4 rounded-lg">
+                    <div class="flex flex-row items-center">
+                        <app-spinner type="inline-xs"></app-spinner>
+                    </div>
+                    <div class="ml-4 flex flex-col justify-center font-semibold text-xs text-indigo-800">
+                        Your transaction is being executed. This may take a while
+                    </div>
+                </div>
+            </div>
+            
         </div>
     </ng-container>
 </div>

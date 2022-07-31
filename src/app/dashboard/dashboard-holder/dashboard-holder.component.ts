@@ -12,7 +12,7 @@ import {
 import { PreferenceQuery } from 'src/app/preference/state/preference.query'
 import { BackendHttpClient } from 'src/app/shared/services/backend/backend-http-client.service'
 import { JwtTokenService } from 'src/app/shared/services/backend/jwt-token.service'
-import { ProjectService } from 'src/app/shared/services/backend/project.service'
+import { ApiKeyModel, ProjectService } from 'src/app/shared/services/backend/project.service'
 import {
   IssuerService,
   IssuerWithInfo,
@@ -37,7 +37,7 @@ export class DashboardHolderComponent {
   
   screenSize$ = this.tailwindService.screenResize$
 
-  refreshAPIKeySub = new BehaviorSubject<void>(undefined)
+  refreshAPIKeySub = new BehaviorSubject<ApiKeyModel | null>(null)
   projectInfoHolderStateSub = new BehaviorSubject<ProjectInfoHolderState>('open')
   projectInfoHolderState$ = this.projectInfoHolderStateSub.asObservable()
 
@@ -45,7 +45,7 @@ export class DashboardHolderComponent {
     switchMap(() => this.http.ensureAuth),
     switchMap(() => this.isBackendAuthorized$ ),
     switchMap((isAuthorized) =>
-      isAuthorized ? this.fetchApiKey() : of(undefined)
+      isAuthorized ? this.fetchApiKey() : this.createApiKey()
     )
   )
 
@@ -81,14 +81,14 @@ export class DashboardHolderComponent {
   createApiKey() {
     return this.projectService.getProjectIdByChainAndAddress().pipe(
       switchMap((project) => this.projectService.createApiKey(project.id)),
-      switchMap(() =>
+      tap((api) => { this.apiKey$ = of(api)}),
+      tap(() =>
         this.dialogService.info({
           title: 'Success',
           message: `Your API Key wass successfully created.`,
           cancelable: false,
         })
-      ),
-      tap(() => this.refreshAPIKeySub.next())
+      )
     )
   }
 

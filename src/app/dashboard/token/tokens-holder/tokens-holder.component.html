@@ -1,14 +1,17 @@
-<div class="bg-white shadow-sm p-4 rounded-lg ml-4">
+<div class="bg-white shadow-sm p-8 rounded-lg ml-4 mt-2">
   <app-info-snippet
     [hasBorderAndBackground]="false"
     [content]="{ title: 'Deploying tokens', sections: [
-      'Through Dev3, you can deploy tokens by making token deployment requests.',
-      'The request contains all data necessary to deploy a token, including a public link you can send to anyone - allowing them to execute the transaction.'
+      'Through Dev3, you can deploy contracts by making contract deployment requests.',
+      'The request contains all data necessary to deploy a contract, including a public link you can send to anyone - allowing them to execute the transaction.'
     ] }"></app-info-snippet>
 </div>
 
-<app-new-and-manage-holder
+<div class="mr-4">
+  <app-new-and-manage-holder
   [manageItems]="manageItems"
   [templateItems]="templateItems"
   [manageCustomFieldName]="'Symbol'"
 ></app-new-and-manage-holder>
+</div>
+

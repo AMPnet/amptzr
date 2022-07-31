@@ -163,10 +163,11 @@ export const GoerliNetwork: Network = {
   },
 }
 
+
 export const Networks: { [key in ChainID]: Network } = {
   [ChainID.MATIC_MAINNET]: MaticNetwork,
   [ChainID.MUMBAI_TESTNET]: MumbaiNetwork,
-  [ChainID.GOERLI_TESTNET]: GoerliNetwork,
+  [ChainID.GOERLI_TESTNET]: GoerliNetwork
 }
 
 const getEthersNetwork = (network: Network): providers.Network => ({
