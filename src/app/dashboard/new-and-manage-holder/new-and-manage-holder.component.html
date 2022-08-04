@@ -41,7 +41,7 @@ border-b-4 border-transparent text-gray-700 uppercase cursor-pointer">
             <path stroke-linecap="round" stroke-linejoin="round"
               d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" />
           </svg>
-          <div class="ml-2">New</div>
+          <div class="ml-2">Deploy</div>
         </div>
       </div>
 
@@ -158,13 +158,16 @@ text-gray-700 uppercase border-b-4 border-transparent cursor-pointer">
         <div class="w-2/12 text-sm uppercase font-semibold">Created Date</div>
       </div>
   
-      <div *ngFor="let contract of deployedContracts"
+      <ng-container *ngIf="deployedContracts.length > 0; else emptyList">
+        <div *ngFor="let contract of deployedContracts"
         class="border-gray-100 hover:bg-violet-100 border-2 p-4 flex flex-row cursor-pointer">
         <div class="w-4/12 text-sm">{{ contract.alias }}</div>
         <div class="w-3/12 text-sm">{{ contract.contract_id }}</div>
         <div class="w-3/12 text-sm">{{ contract.id | addrShort }}</div>
         <div class="w-2/12 text-sm">{{ contract.created_at | date:'short' }}</div>
       </div>
+      </ng-container>
+      
     </ng-container>
     
   </ng-container>

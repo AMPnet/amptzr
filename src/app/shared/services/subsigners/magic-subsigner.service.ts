@@ -41,10 +41,18 @@ import { SignerLoginOpts, Subsigner } from '../signer-login-options'
 export class MagicSubsignerService implements Subsigner<MagicLoginOpts> {
   subprovider: (SDKBase & OAuthSDK) | undefined
 
+  DEFAULT_API_KEY = "asd"
+
   apiKey$: Observable<string> = defer(() =>
     combineLatest([this.issuerService.issuer$]).pipe(
       take(1),
-      map(([issuer]) => issuer.infoData.magicLinkApiKey)
+      map(([issuer]) => {
+        if(issuer.infoData.magicLinkApiKey == '') {
+          return this.DEFAULT_API_KEY
+        } else {
+          return issuer.infoData.magicLinkApiKey
+        }
+      })
     )
   )
   isAvailable$: Observable<boolean> = defer(() =>

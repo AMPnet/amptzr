@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core'
-import { BehaviorSubject, combineLatest, Observable } from 'rxjs'
+import { BehaviorSubject, combineLatest, Observable, of } from 'rxjs'
 import {
   switchMapTap,
   withStatus,
@@ -43,7 +43,9 @@ export class RequestWalletActionComponent {
   bigNumberConstants = constants
   issuer$ = this.issuerService.issuer$
 
-  address$ = this.preferenceQuery.address$
+  address$: Observable<string | undefined> = this.requestBalanceService.getRequest(
+    this.route.snapshot.params.id
+  ).pipe(switchMap(res => of(res.wallet_address)))
 
   constructor(
     private requestBalanceService: RequestBalanceService,

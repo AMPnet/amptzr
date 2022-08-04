@@ -70,7 +70,6 @@ export class ContractDeploymentService {
     deployContract(request: ContractDeploymentRequestResponse) {
         return this.signerService.ensureNetwork.pipe(
             switchMap((signer) =>
-              this.dialogService.waitingApproval(
                 of(request.deploy_tx).pipe(
                   switchMap((contract) =>
                     combineLatest([of(contract), this.gasService.overrides])
@@ -86,8 +85,7 @@ export class ContractDeploymentService {
                   ),
                   switchMap((tx) => this.signerService.sendTransaction(tx))
                 )
-              )
-            ),
+              ),
             this.errorService.handleError(false, true)
           )
     }

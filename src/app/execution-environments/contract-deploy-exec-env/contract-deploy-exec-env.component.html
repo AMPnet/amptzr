@@ -1,56 +1,61 @@
 <div *ngIf="contractDeploymentRequest$ | async as deploymentRequest; else loadingScreen"
     class="h-full flex flex-row justify-center items-center">
     <ng-container *ngIf="issuer$ | async as issuer">
-        <div class="max-w-lg bg-white p-8 rounded-2xl shadow-sm flex flex-col">
+        <div class="max-w-md bg-white p-8 rounded-3xl shadow-sm flex flex-col">
             <img class="w-full h-16 object-contain" src="{{issuer.infoData.logo | toUrlIPFS}}" alt="">
             <div *ngIf="deploymentRequest.status === 'PENDING'" class="mt-8 text-gray-700 flex flex-row">
-                <div class="text-center mt-2 leading-loose">
-                    <span class="py-2 font-semibold mr-2 px-4 text-sm bg-indigo-50 border-indigo-200 border rounded-lg">
-                        {{issuer.infoData.name}}
-                    </span>
+                <div class="text-center mt-2 leading-loose text-sm">
+                    <div>
+                        <span>
+                            The application
+                        </span>
+                        <span class="text-indigo-800 font-semibold">
+                            {{issuer.infoData.name}}
+                        </span>
+                    </div>
                     is requesting you to deploy the following smart contract
                 </div>
             </div>
             <div *ngIf="deploymentRequest.status === 'SUCCESS'" class="mt-8 text-gray-700 flex flex-row">
-                <div class="text-center mt-2 leading-loose">
+                <div class="text-center mt-2 leading-loose text-sm">
                     You have successfully deployed a smart contract as requested by
-                    <span class="ml-[2px] px-3 py-1 font-semibold bg-indigo-100 border-indigo-200 border rounded-lg">
+                    <span class="ml-[2px] px-2 py-1 text-xs font-semibold bg-indigo-100 border-indigo-200 border rounded-lg">
                         {{issuer.infoData.name}}
                     </span>
                 </div>
             </div>
             <hr class="mt-4 mb-4">
             <div class="rounded-lg text-center text-gray-700 font-medium">
-                <div class="border border-gray-200 rounded-lg flex flex-col">
+                <div class="border border-gray-100 rounded-lg flex flex-col">
                     <div class="flex flex-row items-center py-1">
-                        <div class="w-3/12 border-r uppercase border-white-200 py-2 font-semibold text-sm">
+                        <div class="w-3/12 border-r uppercase border-white-200 py-2 font-semibold text-xs">
                             Type
                         </div>
-                        <div class="w-9/12 py-2 text-sm">
+                        <div class="w-9/12 py-2 text-xs">
                             {{deploymentRequest.contract_id}}
                         </div>
                     </div>
-                    <div class="flex flex-row items-center border-t py-1 border-gray-200">
-                        <div class="w-3/12 border-r uppercase border-gray-200 py-2 font-semibold text-sm">
+                    <div class="flex flex-row items-center border-t py-1 border-gray-100">
+                        <div class="w-3/12 border-r uppercase border-gray-200 py-2 font-semibold text-xs">
                             Alias
                         </div>
-                        <div class="w-9/12 py-2 text-sm">
+                        <div class="w-9/12 py-2 text-xs">
                             {{deploymentRequest.alias}}
                         </div>
                     </div>
-                    <div class="flex flex-row items-center border-t py-1 border-gray-200">
-                        <div class="w-3/12 border-r uppercase border-gray-200 py-2 font-semibold text-sm">
+                    <div class="flex flex-row items-center border-t py-1 border-gray-100">
+                        <div class="w-3/12 border-r uppercase border-gray-200 py-2 font-semibold text-xs">
                             Tags
                         </div>
-                        <div class="w-9/12 py-2 text-sm">
+                        <div class="w-9/12 py-2 text-xs">
                             {{deploymentRequest.contract_tags}}
                         </div>
                     </div>
-                    <div class="flex flex-row items-center border-t py-1 border-gray-200">
-                        <div class="w-3/12 border-r uppercase border-gray-200 py-2 font-semibold text-sm">
+                    <div class="flex flex-row items-center border-t py-1 border-gray-100">
+                        <div class="w-3/12 border-r uppercase border-gray-200 py-2 font-semibold text-xs">
                             Status
                         </div>
-                        <div class="w-9/12 px-2 py-1 text-sm">
+                        <div class="w-9/12 px-2 py-1 text-xs">
                             <div class="py-2 px-2 text-xs rounded-lg"
                                 [class.bg-amber-100]="deploymentRequest.status === 'PENDING'"
                                 [class.border-amber-300]="deploymentRequest.status === 'PENDING'"
@@ -62,7 +67,7 @@
                             </div>
                         </div>
                     </div>
-                    <div *ngIf="deploymentRequest.status === 'SUCCESS'" class="flex flex-row items-center border-t py-1 border-gray-200">
+                    <div *ngIf="deploymentRequest.status === 'SUCCESS'" class="flex flex-row items-center border-t py-1 border-gray-100">
                         <div class="w-3/12 border-r uppercase border-gray-200 py-2 font-semibold text-sm">
                             Address
                         </div>
@@ -77,8 +82,7 @@
                 </div>
             </div>
             <div *ngIf="address$ | async as address">
-                <div *ngIf="deploymentRequest.deployer_address.toLowerCase() !== address.toLowerCase()">
-                    <hr class="mt-4 mb-4">
+                <div class="mt-2 mb-2" *ngIf="deploymentRequest.deployer_address.toLowerCase() !== address.toLowerCase()">
                     <app-info-snippet type="DANGER" [content]="{ title: 'You cannot deploy this contract', sections: [
                         'This contract must be deployed by the owner of the wallet ' + deploymentRequest.deployer_address,
                         'If you are the owner of this wallet, please connect it now.'
@@ -86,20 +90,20 @@
                 </div>
             </div>
 
-            <hr class="mt-4 mb-4">
 
-            <div class="w-full" [hidden]="(isWaitingForTx$ | async) === true">
-                <button app-action-button *ngIf="(deploymentRequest.status === 'PENDING')" class="app-button w-full"
+            <div class="w-full mt-4" [hidden]="(isWaitingForTx$ | async) === true">
+                <button app-action-button *ngIf="(deploymentRequest.status === 'PENDING')" class="app-button !text-xs w-full"
                 [onClick]="deployContract(deploymentRequest).bind(this)" text="Deploy"></button>
             </div>
 
             <div *ngIf="isWaitingForTx$ | async as isWaitingForTx">
-                <div *ngIf="isWaitingForTx && (deploymentRequest.status === 'PENDING')" class="flex flex-row items-center justify-center bg-indigo-100 border-indigo-200  py-4 rounded-lg">
+                <div *ngIf="isWaitingForTx && (deploymentRequest.status === 'PENDING')" 
+                class="flex px-4 flex-row items-center justify-center bg-indigo-100 border-indigo-200  py-4 rounded-lg">
                     <div class="flex flex-row items-center">
                         <app-spinner type="inline-xs"></app-spinner>
                     </div>
-                    <div class="ml-4 flex flex-col justify-center font-semibold text-xs text-indigo-800">
-                        Your transaction is being executed. This may take a while
+                    <div class="ml-4  flex flex-col justify-center font-semibold text-xs text-indigo-800">
+                        Your transaction is being executed. This may take a while. Don't close this tab until it's finished.
                     </div>
                 </div>
             </div>
