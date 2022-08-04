@@ -45,7 +45,11 @@ export class RequestWalletActionComponent {
 
   address$: Observable<string | undefined> = this.requestBalanceService.getRequest(
     this.route.snapshot.params.id
-  ).pipe(switchMap(res => of(res.wallet_address)))
+  ).pipe(switchMap(res => of(res.wallet_address?.toLowerCase())))
+
+  connectedAddress$ = this.preferenceQuery.address$.pipe(
+    switchMap(res => res.toLowerCase())
+  )
 
   constructor(
     private requestBalanceService: RequestBalanceService,

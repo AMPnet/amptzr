@@ -134,7 +134,7 @@ import { RequestSendListComponent } from './request-send/request-send-list/reque
 import { InfoSnippetComponent } from './shared/components/info-snippet/info-snippet.component'
 import { AuthorizationsComponent } from './dashboard/authorizations/authorizations.component'
 import { AuthorizationNewComponent } from './dashboard/authorizations/authorization-new/authorization-new.component'
-import { ContractDeployExecEnvComponent } from './execution-environments/contract-deploy-exec-env/contract-deploy-exec-env.component';
+import { ContractDeployExecEnvComponent } from './execution-environments/contract-deploy-exec-env/contract-deploy-exec-env.component'
 import { DeployFromManifestComponent } from './dashboard/contracts/deploy-from-manifest/deploy-from-manifest.component'
 
 @NgModule({

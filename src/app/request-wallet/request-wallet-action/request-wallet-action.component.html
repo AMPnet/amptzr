@@ -17,17 +17,17 @@
           <div class="flex flex-col gap-4 mt-6" *ngIf="!state.signed_message">
             <div *ngIf="address$ | async as address" class="text-gray-700 flex flex-col text-center text-sm">
               <div class="leading-loose">
-                The application <span class="bg-indigo-50 border-indigo-200 px-2 py-[0.10rem] text-xs font-semibold rounded-lg mx-[0.10rem] border">
+                The application <span class="bg-indigo-50 border-indigo-200 px-2 py-[0.10rem] text-sm font-semibold rounded-lg mx-[0.10rem] border">
                   {{myIssuer.infoData.name}}</span> is requesting you to prove 
                 you are the owner of the wallet with address
               </div> 
-              <div class="text-xs border py-2 rounded-lg mt-4 bg-gray-50 border-gray-100">{{address}}</div>
+              <div class="text-sm border py-2 rounded-lg mt-4 bg-gray-50 border-gray-100">{{address}}</div>
             </div>
 
-            <div class="text-center text-gray-700 border text-xs rounded-lg p-2 border-gray-100
+            <div class="text-center text-gray-700 border text-sm rounded-lg p-4 border-gray-100
             bg-gray-50">
               <div class="font-semibold">Message from {{myIssuer.infoData.name}}</div>
-              <hr class="my-2">  
+              <hr class="my-3">  
               <ng-container
                 *ngIf="
                   state.screen_config
@@ -58,6 +58,19 @@
               </ng-template>
             </div>
 
+            <ng-container *ngIf="connectedAddress$ | async as connectedAddress">
+              <div *ngIf="address$ | async as address" class="w-full">
+                <div *ngIf="connectedAddress !== address" class="w-full">
+                  <app-info-snippet
+                    type="WARNING"
+                    [content]="{ title: 'Address mismatch!', sections: [
+                      'Your connected / logged-in address does not match the address required for verification.',
+                      'You may be connected with the wrong wallet or this request might not be meant for you!'
+                    ]}"></app-info-snippet>
+                </div>
+              </div>
+            </ng-container>
+
             <div class="mt-6 lg:px-12">
               <button
                 app-action-button
@@ -82,6 +95,7 @@
                 Cancel
               </button>
             </div>
+            
           </div>
 
           <div class="mt-4 text-center" *ngIf="state.signed_message">
@@ -91,7 +105,10 @@
                 else noAfterActionMessage
               "
             >
+            <div class="px-2 py-2 leading-relaxed bg-indigo-50 text-gray-700 text-sm rounded-lg border-indigo-100 border">
               {{ afterActionMessage }}
+            </div>
+              
             </ng-container>
             <ng-template #noAfterActionMessage>
               Wallet successfully connected! You can close this tab now.
