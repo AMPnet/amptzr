@@ -1,6 +1,7 @@
 import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core'
 import { FormControl, FormGroup, Validators } from '@angular/forms'
 import { BehaviorSubject, of, switchMap, tap } from 'rxjs'
+import { ContractManifestService } from 'src/app/shared/services/backend/contract-manifest.service'
 import { ContractDeploymentService } from 'src/app/shared/services/blockchain/contract-deployment.service'
 import { DialogService } from 'src/app/shared/services/dialog.service'
 import { RouterService } from 'src/app/shared/services/router.service'
@@ -11,7 +12,7 @@ import { RouterService } from 'src/app/shared/services/router.service'
   styleUrls: ['./create-erc20.component.css'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class CreateErc20Component {
+export class CreateErc20Component implements OnInit {
   createTokenForm = new FormGroup({
     tokenName: new FormControl('', [Validators.required]),
 
@@ -27,7 +28,7 @@ export class CreateErc20Component {
   checkSelected$ = new BehaviorSubject<boolean>(false)
 
   onSecondaryAction$ = of('').pipe(tap(() => { alert("Here")} ))
-  
+
   onConfirm$ = of(undefined).pipe(tap(() => { 
     this.routerService.navigate(['/admin/dashboard/tokens'], {
       queryParams: { screenConfig: 'requests' }
@@ -36,7 +37,14 @@ export class CreateErc20Component {
 
   constructor(private contractDeploymentService: ContractDeploymentService,
     private routerService: RouterService,
-    private dialogService: DialogService) {}
+    private dialogService: DialogService,
+    private manifestService: ContractManifestService ) {}
+
+  ngOnInit(): void {
+    this.manifestService.getByID('openzeppelin.erc20').subscribe(res => {
+      console.log(res)
+    })
+  }
 
   onCheckChange(event: any) {
     this.checkSelected$.next(!this.checkSelected$.value)

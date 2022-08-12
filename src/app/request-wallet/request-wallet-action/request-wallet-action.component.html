@@ -59,16 +59,17 @@
             </div>
 
             <ng-container *ngIf="connectedAddress$ | async as connectedAddress">
-              <div *ngIf="address$ | async as address" class="w-full">
-                <div *ngIf="connectedAddress !== address" class="w-full">
+              <ng-container *ngIf="address$ | async as address" class="w-full">
+                <div *ngIf="connectedAddress !== address">
                   <app-info-snippet
                     type="WARNING"
+                    [hasBorderAndBackground]="false"
                     [content]="{ title: 'Address mismatch!', sections: [
-                      'Your connected / logged-in address does not match the address required for verification.',
-                      'You may be connected with the wrong wallet or this request might not be meant for you!'
+                      'Your connected / logged-in address does not match the address required for verification. You may be connected with the wrong wallet or this request might not be meant for you!',
                     ]}"></app-info-snippet>
                 </div>
-              </div>
+              </ng-container>
+              
             </ng-container>
 
             <div class="mt-6 lg:px-12">
@@ -95,6 +96,8 @@
                 Cancel
               </button>
             </div>
+
+            
             
           </div>
 

@@ -1,1 +1,42 @@
-<p>deploy-from-manifest works!</p>
+<div class="bg-white rounded-lg text-gray-700 flex flex-row shadow-sm ml-4 mt-2 p-6" *ngIf="contract$ | async as contract">
+    <div class="w-7/12 border-r pr-4">
+        <div class="mb-1 text-xs font-medium uppercase text-gray-500">You are creating a deployment request for contract</div>
+        <div class="mb-4 text-lg font-semibold">{{contract.id}}</div>
+    
+        <div class="p-4 rounded-lg bg-gray-100 border border-gray-200 flex flex-col">
+            <label class="pb-1 font-semibold" for="token-name"
+            >Contract alias</label
+          >
+          <small class="pb-2"
+            >This is the alias you will use to access the contract through Dev3 SDK
+            and API</small
+          >
+          <input
+            class="w-100 rounded-lg border-gray-200 shadow-sm transition-all lowercase border-x-8 text-sm px-4"
+            id="token-name"
+            type="text"
+            autocomplete="off"
+            formControlName="tokenAlias"
+          />
+          <small class="mt-2 text-gray-400">The alias can contain only letters, numbers and dashes</small>
+          </div>
+    
+          <hr class="mb-6 mt-6">
+    
+        <div class="mb-6 flex flex-col" *ngFor="let input of contract.constructors[0].inputs">
+            <div class="font-semibold">{{input.name}}</div>
+            <small>{{input.description}}</small>
+            <small class="mt-1">{{input.recommended_types}}</small>
+            <input class="w-full mt-2 text-sm rounded-lg border-gray-200" type="text">
+        </div>
+    
+        <button class="app-button w-full">Deploy</button>
+    </div>
+    <div class="w-5/12 pl-4">
+        <app-info-snippet
+            [content]="{ title: 'Deploying contracts', sections: [
+                'Dev3 allows you to deploy contracts through the use of DEPLOYMENT REQUESTS'
+            ]}"></app-info-snippet>
+    </div>
+
+</div>

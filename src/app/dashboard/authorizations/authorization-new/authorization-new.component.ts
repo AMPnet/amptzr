@@ -4,6 +4,7 @@ import { BehaviorSubject, switchMap, tap } from 'rxjs'
 import { PreferenceQuery } from 'src/app/preference/state/preference.query'
 import { RequestBalanceService } from 'src/app/request-balance/request-balance.service'
 import { AssetType } from 'src/app/request-send/request-send.service'
+import { IssuerService } from 'src/app/shared/services/blockchain/issuer/issuer.service'
 import { DialogService } from 'src/app/shared/services/dialog.service'
 import { UserService } from 'src/app/shared/services/user.service'
 
@@ -23,6 +24,7 @@ export class AuthorizationNewComponent {
 
   constructor(private balanceService: RequestBalanceService,
     private preferenceQuery: PreferenceQuery,
+    private issuerService: IssuerService,
     private dialogService: DialogService) { }
 
 
@@ -30,10 +32,9 @@ export class AuthorizationNewComponent {
     const chain = this.preferenceQuery.network.chainID
     const formControls = this.newAuthRequestForm.controls
     this.balanceService.createRequest({
-      asset_type: AssetType.Token,
+      asset_type: AssetType.Native,
       wallet_address: formControls.walletAddress.value,
       chain_id: this.preferenceQuery.network.chainID,
-      token_address: "0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174",
       screen_config: {
         before_action_message: formControls.beforeMessage.value,
         after_action_message: formControls.afterMessage.value
@@ -41,7 +42,12 @@ export class AuthorizationNewComponent {
     }).subscribe(res => {
       this.dialogService.success({
         message: "Successfully created a new authorization request"
-      })
+      }).pipe(
+        tap(() => {
+          
+        })
+      )
+
     })
   }
 

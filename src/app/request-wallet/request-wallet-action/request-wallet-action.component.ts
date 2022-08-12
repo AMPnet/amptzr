@@ -48,7 +48,7 @@ export class RequestWalletActionComponent {
   ).pipe(switchMap(res => of(res.wallet_address?.toLowerCase())))
 
   connectedAddress$ = this.preferenceQuery.address$.pipe(
-    switchMap(res => res.toLowerCase())
+    map(res => res.toLowerCase())
   )
 
   constructor(

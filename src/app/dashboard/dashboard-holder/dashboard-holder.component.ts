@@ -44,10 +44,8 @@ export class DashboardHolderComponent {
   apiKey$ = this.refreshAPIKeySub.asObservable().pipe(
     switchMap(() => this.http.ensureAuth),
     switchMap(() => this.isBackendAuthorized$ ),
-    switchMap((isAuthorized) =>
-      isAuthorized ? this.fetchApiKey() : this.createApiKey()
-    )
-  )
+    switchMap(() => this.projectService.fetchApiKey()))
+
 
   constructor(
     private router: RouterService,

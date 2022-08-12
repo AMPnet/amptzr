@@ -27,9 +27,12 @@
                     </ng-template>
                 </div>
                 <div class="w-1/5 flex flex-col justify-center text-center border-t">
-                    <div class="m-2 px-4 py-2 bg-orange-100 rounded-lg text-xs font-medium text-orange-600" 
-                        *ngIf="request.status === 'PENDING'">
-                        Pending
+                    <div [class.bg-amber-200] = "request.status === 'PENDING'"
+                    [class.text-amber-700] = "request.status === 'PENDING'"
+                    [class.bg-green-200] = "request.status === 'FINALIZED'"
+                    [class.text-green-700] = "request.status === 'FINALIZED'"
+                    class="m-2 px-4 py-2 rounded-lg text-xs font-medium">
+                        {{request.status}}
                     </div>
                 </div>
                 <div class="w-1/5 flex flex-col justify-center text-center border-t">

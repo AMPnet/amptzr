@@ -98,11 +98,11 @@
 
             <div *ngIf="isWaitingForTx$ | async as isWaitingForTx">
                 <div *ngIf="isWaitingForTx && (deploymentRequest.status === 'PENDING')" 
-                class="flex px-4 flex-row items-center justify-center bg-indigo-100 border-indigo-200  py-4 rounded-lg">
+                class="flex px-4 mt-2 flex-row items-center justify-center bg-indigo-100 border-indigo-200  py-4 rounded-lg">
                     <div class="flex flex-row items-center">
                         <app-spinner type="inline-xs"></app-spinner>
                     </div>
-                    <div class="ml-4  flex flex-col justify-center font-semibold text-xs text-indigo-800">
+                    <div class="ml-4 flex flex-col justify-center font-semibold text-xs text-indigo-800">
                         Your transaction is being executed. This may take a while. Don't close this tab until it's finished.
                     </div>
                 </div>
