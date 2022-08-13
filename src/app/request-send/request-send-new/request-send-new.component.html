@@ -81,7 +81,7 @@
                   class="bg-violet-700 font-semibold px-12 py-2 text-sm uppercase text-white rounded-full"
                   [class.!bg-gray-700]="newRequestSendForm.invalid"
                   [disabled]="newRequestSendForm.invalid"
-                  [onClick]="createRequest(asset, address).bind(this)"
+                  [onClick]="createRequest(asset, newRequestSendForm.controls.recipientAddress.value).bind(this)"
                   text="+ Create Payment Request">
           </button>
         </div>

@@ -16,6 +16,27 @@
         'If your Web3 app is multi-chain, every chain implementation must have its own project'
       ]}"></app-info-snippet>
   </div>
+  <div *ngIf="balance$ | async as balance" class="rounded-2xl mt-2">
+    <div *ngIf="balance.eq(0)">
+      <div *ngIf="address$ | async as address">
+        <app-info-snippet
+        type="WARNING"
+        [content]="{ title: 'You\'re out of gas!', sections: [
+          'You don\'t have any gas tokens. In order to use Dev3 - you need to have tokens to pay for writing to blockchain!',
+        ]}"></app-info-snippet>
+        <div *ngIf="network$ | async as network">
+          <div class="text-sm text-gray-700 my-4 bg-orange-50 border-orange-100 border
+          shadow-sm p-4 rounded-lg leading-loose" *ngIf="network.shortName === 'mumbai'">
+            You can can get gas tokens for free on <a class="text-violet-700 underline" href="https://faucet.polygon.technology/" target="_blank">this link.</a>
+            <br> Select 'Mumbai' network, 'MATIC' tokens, paste your wallet address 
+            ({{address | addrShort}} <app-value-copy [value]="address"></app-value-copy> ) 
+            and click 'Submit'. <br> You will receive the tokens within 2 - 5 minutes. Refresh this page, until you no longer see this warning.
+          </div>
+        </div>
+      </div>
+    </div>
+    
+  </div>
   <div class="bg-white shadow-sm mb-8 mt-4 p-8 rounded-2xl">
     <form [formGroup]="createForm">
       <div class="flex flex-col lg:flex-row gap-6">

@@ -1,7 +1,12 @@
+import { Location } from '@angular/common'
 import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core'
-import { ActivatedRoute } from '@angular/router'
-import { tap } from 'rxjs'
+import { AbstractControl, FormControl, FormGroup, Validators } from '@angular/forms'
+import { ActivatedRoute, Router } from '@angular/router'
+import { RouterService } from 'src/app/shared/services/router.service'
+import { of, tap } from 'rxjs'
 import { ContractManifestService } from 'src/app/shared/services/backend/contract-manifest.service'
+import { ConstructorParam, ContractDeploymentService } from 'src/app/shared/services/blockchain/contract-deployment.service'
+import { DialogService } from 'src/app/shared/services/dialog.service'
 
 @Component({
   selector: 'app-deploy-from-manifest',
@@ -11,11 +16,73 @@ import { ContractManifestService } from 'src/app/shared/services/backend/contrac
 })
 export class DeployFromManifestComponent {
 
-    contract$ = this.manifestService.getByID(this.route.snapshot.params.contractID)
-        .pipe(tap((res) => console.log(res)))
+    deployContractForm = new FormGroup({
+        alias: new FormControl('', [Validators.required, 
+            Validators.pattern('^[A-Za-z_-][A-Za-z0-9_-]*$')])
+    })
+    contractID = this.route.snapshot.params.contractID
+
+    typesHolder: string[] = []
+
+    onConfirm$ = of(undefined).pipe(tap(() => { 
+        this.routerService.navigate(['/admin/dashboard/tokens'], {
+            queryParams: { screenConfig: 'requests' }
+          })
+     }))
+
+    onSecondaryAction$ = of(undefined).pipe(tap(() => { }))
+
+    contract$ = this.manifestService.getByID(this.contractID).pipe(
+        tap((contract) => {
+            const inputs = contract.constructors.at(0)?.inputs ?? []
+            inputs.forEach(input => { 
+                    this.deployContractForm.addControl(input.solidity_name, 
+                        new FormControl('', [Validators.required]))
+                    this.typesHolder.push(input.solidity_type)
+                })
+        })
+    )
+    infoMD$ = this.manifestService.getInfoMDByID(this.contractID)
 
     constructor(private manifestService: ContractManifestService,
-        private route: ActivatedRoute) {}
+        private route: ActivatedRoute,
+        private routerService: RouterService,
+        private location: Location,
+        private dialogService: DialogService,
+        private contractDeploymentService: ContractDeploymentService) {}
 
+    createDeploymentRequest() {
+        const controls = this.deployContractForm.controls
+        const filteredControls = controls
+        
+        var controlsArray: AbstractControl[] = []
+        for(const field in filteredControls) {
+            if(field != 'alias') { 
+                const control = this.deployContractForm.get(field) 
+                if(control !== null) { controlsArray.push(control) }
+            }
+        }
+
+        const constructorParams: ConstructorParam[] = controlsArray.map((control, index) => {
+            return {
+                type: this.typesHolder[index],
+                value: control.value
+            } as ConstructorParam
+        })
+
+        this.contractDeploymentService.createDeploymentRequest(this.contractID, 
+            controls['alias'].value, constructorParams, { after_action_message: "", before_action_message: ""})
+            .subscribe(result => {
+                return this.dialogService.infoWithOnConfirmAndSecondary({
+                    title: "Token deployment request created",
+                    message: "You will not be able to interact with the token, until you deploy it on blockchain.",
+                    cancelable: false,
+                  }, 'Deploy contract now', 'Deploy later', this.onConfirm$, this.onSecondaryAction$)
+            })
+    }
+
+    goBack() {
+        this.location.back()
+    }
 }
 

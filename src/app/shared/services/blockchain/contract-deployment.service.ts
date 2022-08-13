@@ -137,7 +137,7 @@ export interface ContractDeploymentParams {
     screen_config: ScreenConfig
 }
 
-interface ConstructorParam {
+export interface ConstructorParam {
     type: FunctionArgumentType,
     value: string
 }

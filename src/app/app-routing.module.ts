@@ -146,7 +146,7 @@ const appRoutes: Routes = [
         path: 'dashboard',
         component: DashboardHolderComponent,
         children: [
-          { path: 'tokens', component: TokensHolderComponent },
+          { path: 'contracts', component: TokensHolderComponent },
           { path: 'tokens/create/erc20', component: CreateErc20Component },
           { path: 'contracts/create/from-manifest/:contractID', component: DeployFromManifestComponent },
           { path: 'fundraising', component: FundraisingComponent },

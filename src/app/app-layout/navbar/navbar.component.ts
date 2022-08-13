@@ -26,6 +26,7 @@ export class NavbarComponent {
   isMobileScreen$: Observable<boolean>
   dropdownCloser$: Observable<unknown>
   isAdmin$ = this.userService.isAdmin$
+  address$ = this.preferenceQuery.address$
 
   navbarScreenLinks: NavbarItem[] = [
     { title: 'Offers', routerLink: '/offers', showItem: of(false) },

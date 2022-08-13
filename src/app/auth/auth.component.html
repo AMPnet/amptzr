@@ -3,9 +3,17 @@
   <ng-container *ngIf="magicLinkAvailable$ | async">
     <form [formGroup]="emailForm">
 
-      <div class="h-12 w-full flex flex-row justify-center mb-6" *ngIf="issuer$ | async as issuer">
+      <div class="h-12 w-full flex flex-row justify-center mb-6" *ngIf="issuer$ | async as issuer; else defaultImage">
         <img src="{{issuer.value?.infoData?.logo | toUrlIPFS }}" alt="" srcset="">
       </div>
+
+      <ng-template #defaultImage>
+        <div class="h-12 w-full flex flex-row justify-center mb-6">
+          <img src="../../assets/dev3-logo.png" alt="" srcset="">
+        </div>
+      </ng-template>
+      
+
 
       <label class="text-xs w-full mb-2 flex flex-row justify-center text-gray-400 uppercase" for="email">
         Log in / Sign up

@@ -39,6 +39,10 @@ export class AdminIssuerNewComponent {
   altKeyActive$ = this.physicalInputService.altKeyActive$
   updateSlugFromName$: Observable<unknown>
 
+  balance$ = this.userService.nativeTokenBalance$
+  address$ = this.preferenceQuery.address$
+  network$ = this.preferenceQuery.network$
+
   constructor(
     private issuerService: IssuerService,
     private signerService: SignerService,
