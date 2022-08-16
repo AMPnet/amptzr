@@ -37,7 +37,6 @@ export class NewAndManageHolderComponent implements OnInit {
   deployableContracts$ = this.manifestService.getAll()
       .pipe(
         map((result) => { 
-          console.log(result)
           return result.deployable_contracts.map(contract => {
             return {...contract, splitID: contract.id.split('.'), description:"abc" }
           })

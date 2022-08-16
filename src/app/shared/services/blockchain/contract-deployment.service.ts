@@ -1,6 +1,6 @@
 import { HttpClient } from "@angular/common/http"
 import { Injectable } from "@angular/core"
-import { combineLatest, from, Observable, of, switchMap } from "rxjs"
+import { combineLatest, from, Observable, of, switchMap, tap } from "rxjs"
 import { PreferenceQuery } from "src/app/preference/state/preference.query"
 import { SessionQuery } from "src/app/session/state/session.query"
 import { environment } from "src/environments/environment"
@@ -16,6 +16,8 @@ import { GasService } from "./gas.service"
 export class ContractDeploymentService {
 
     path = `${environment.backendURL}/api/blockchain-api/v1`
+
+    deploymentRequestCache: ContractDeploymentRequests | null = null
  
     constructor(private http: BackendHttpClient,
         private preferenceQuery: PreferenceQuery,
@@ -54,9 +56,12 @@ export class ContractDeploymentService {
             .get<ContractDeploymentRequestResponse>(`${this.path}/deploy/${deploymentRequestID}`, { }, true, true, true)
     }
 
-    getContractDeploymentRequests(projectID: string): Observable<ContractDeploymentRequests> {
+    getContractDeploymentRequests(projectID: string, deployedOnly: boolean = false): Observable<ContractDeploymentRequests> {
+        if(this.deploymentRequestCache !== null) { return of(this.deploymentRequestCache) }
         return this.http
-            .get<ContractDeploymentRequests>(`${this.path}/deploy/by-project/${projectID}`, { }, true, true, true)
+            .get<ContractDeploymentRequests>(`${this.path}/deploy/by-project/${projectID}`, {
+                deployedOnly: deployedOnly 
+            }, true, true, true).pipe(tap(res => { this.deploymentRequestCache = res }))
     }
 
     attachTxInfoToRequest(requestId: string, txHash: string, deployer: string) {
@@ -89,6 +94,77 @@ export class ContractDeploymentService {
             this.errorService.handleError(false, true)
           )
     }
+
+    callReadOnlyFunction(deployedContractID: string, callData: ReadOnlyFunctionCallData) {
+        return this.http.post<ReadOnlyFunctionResponse>(`${this.path}/readonly-function-call`, {
+            ...callData,
+            deployed_contract_id: deployedContractID
+        }, true, true, true)
+    }
+
+    createWriteFunctionCallRequest(deployedContractID: string, functionCallData: FunctionCallData) {
+        return this.http.post<FunctionCallRequestResponse>(`${this.path}/function-call`, {
+            ...functionCallData,
+            deployed_contract_id: deployedContractID
+        }, false, true, true)
+    }
+}
+
+export interface ReadOnlyFunctionCallData {
+    block_number: number,
+    function_name: string,
+    function_params: {
+        type: FunctionArgumentType,
+        value: string
+    }[],
+    output_params: string[],
+    caller_address: string
+}
+
+export interface ReadOnlyFunctionResponse {
+    deployed_contract_id: string,
+    contract_address: string,
+    block_number: number,
+    timestamp: string,
+    return_values: string[]
+}
+
+export interface FunctionCallData {
+    function_name: string,
+    function_params: {
+        type: FunctionArgumentType,
+        value: string
+    }[],
+    eth_amount: number
+}
+
+export interface FunctionCallRequestResponse {
+    id: string,
+    status: string,
+    deployed_contract_id: string,
+    contract_address: string,
+    function_name: string,
+    function_params: {
+        type: FunctionArgumentType,
+        value: string
+    }[],
+    function_call_data: string,
+    eth_amount: string,
+    chain_id: string,
+    redirect_url: string,
+    project_id: string,
+    created_at: string,
+    caller_address: string,
+    function_call_tx: {
+        tx_hash: string,
+        from: string,
+        to: string,
+        data: string,
+        value: number,
+        block_confirmations: string,
+        timestamp: string
+    }
+
 }
 
 export interface ContractDeploymentRequests {

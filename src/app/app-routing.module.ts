@@ -55,6 +55,7 @@ import { AuthorizationNewComponent } from './dashboard/authorizations/authorizat
 import { VeriffComponent } from './identity/veriff/veriff.component'
 import { ContractDeployExecEnvComponent } from './execution-environments/contract-deploy-exec-env/contract-deploy-exec-env.component'
 import { DeployFromManifestComponent } from './dashboard/contracts/deploy-from-manifest/deploy-from-manifest.component'
+import { InteractWithContractsComponent } from './dashboard/contracts/interact-with-contracts/interact-with-contracts.component'
 
 const appRoutes: Routes = [
   { path: 'callback', component: AuthMagicOauthComponent },
@@ -149,6 +150,7 @@ const appRoutes: Routes = [
           { path: 'contracts', component: TokensHolderComponent },
           { path: 'tokens/create/erc20', component: CreateErc20Component },
           { path: 'contracts/create/from-manifest/:contractID', component: DeployFromManifestComponent },
+          { path: 'contracts/interact/:manifestID/:deployedID', component: InteractWithContractsComponent },
           { path: 'fundraising', component: FundraisingComponent },
           {
             path: 'fundraising/:id/campaigns/new',

@@ -18,41 +18,41 @@
             </div>
             <div *ngIf="deploymentRequest.status === 'SUCCESS'" class="mt-8 text-gray-700 flex flex-row">
                 <div class="text-center mt-2 leading-loose text-sm">
+                    <div class="mb-2 text-green-700 font-semibold">Success!</div>
                     You have successfully deployed a smart contract as requested by
                     <span class="ml-[2px] px-2 py-1 text-xs font-semibold bg-indigo-100 border-indigo-200 border rounded-lg">
                         {{issuer.infoData.name}}
                     </span>
                 </div>
             </div>
-            <hr class="mt-4 mb-4">
-            <div class="rounded-lg text-center text-gray-700 font-medium">
-                <div class="border border-gray-100 rounded-lg flex flex-col">
+            <div class="rounded-lg mt-4  text-gray-700 font-medium">
+                <div class="border bg-violet-50 border-gray-100 px-6 py-2 rounded-lg flex flex-col">
                     <div class="flex flex-row items-center py-1">
-                        <div class="w-3/12 border-r uppercase border-white-200 py-2 font-semibold text-xs">
+                        <div class="w-3/12 uppercase border-white-200 py-2 font-semibold text-xs">
                             Type
                         </div>
                         <div class="w-9/12 py-2 text-xs">
                             {{deploymentRequest.contract_id}}
                         </div>
                     </div>
-                    <div class="flex flex-row items-center border-t py-1 border-gray-100">
-                        <div class="w-3/12 border-r uppercase border-gray-200 py-2 font-semibold text-xs">
+                    <div class="flex flex-row items-center py-1 border-gray-100">
+                        <div class="w-3/12 uppercase border-gray-200 py-2 font-semibold text-xs">
                             Alias
                         </div>
                         <div class="w-9/12 py-2 text-xs">
                             {{deploymentRequest.alias}}
                         </div>
                     </div>
-                    <div class="flex flex-row items-center border-t py-1 border-gray-100">
-                        <div class="w-3/12 border-r uppercase border-gray-200 py-2 font-semibold text-xs">
+                    <div class="flex flex-row items-center py-1 border-gray-100">
+                        <div class="w-3/12 uppercase border-gray-200 py-2 font-semibold text-xs">
                             Tags
                         </div>
                         <div class="w-9/12 py-2 text-xs">
                             {{deploymentRequest.contract_tags}}
                         </div>
                     </div>
-                    <div class="flex flex-row items-center border-t py-1 border-gray-100">
-                        <div class="w-3/12 border-r uppercase border-gray-200 py-2 font-semibold text-xs">
+                    <!-- <div class="flex flex-row items-center py-1 border-gray-100">
+                        <div class="w-3/12 uppercase border-gray-200 py-2 font-semibold text-xs">
                             Status
                         </div>
                         <div class="w-9/12 px-2 py-1 text-xs">
@@ -66,12 +66,13 @@
                                 {{deploymentRequest.status}}
                             </div>
                         </div>
-                    </div>
-                    <div *ngIf="deploymentRequest.status === 'SUCCESS'" class="flex flex-row items-center border-t py-1 border-gray-100">
-                        <div class="w-3/12 text-xs border-r uppercase border-gray-200 py-2 font-semibold">
+                    </div> -->
+                    <div *ngIf="deploymentRequest.status === 'SUCCESS'" class="flex flex-row
+                     items-center py-1 border-gray-100">
+                        <div class="w-3/12 text-xs uppercase border-gray-200 font-semibold">
                             Address
                         </div>
-                        <div class="w-9/12 py-2 text-sm">
+                        <div class="w-9/12 text-xs">
                             {{deploymentRequest.contract_address | addrShort}}
                             <app-explorer-link 
                                 type="token"

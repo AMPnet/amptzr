@@ -1,6 +1,6 @@
 import { HttpHeaders } from '@angular/common/http'
 import { Injectable } from '@angular/core'
-import { Observable, switchMap, tap } from 'rxjs'
+import { Observable, of, switchMap, tap } from 'rxjs'
 import { PreferenceQuery } from 'src/app/preference/state/preference.query'
 import { PreferenceStore } from 'src/app/preference/state/preference.store'
 import { environment } from '../../../../environments/environment'
@@ -13,6 +13,8 @@ import { ProjectService } from './project.service'
 export class ContractManifestService {
   path = `${environment.backendURL}/api/blockchain-api/v1/deployable-contracts`
 
+  cache: ContractManifestsData | null = null
+
   constructor(private http: BackendHttpClient,
     private projectService: ProjectService) {}
 
@@ -21,7 +23,9 @@ export class ContractManifestService {
   }
 
   getAll() {
-     return this.http.get<ContractManifestsData>(`${this.path}`, {}, true, false, true)
+    if(this.cache !== null) { return of(this.cache) }
+    return this.http.get<ContractManifestsData>(`${this.path}`, {}, true, false, true)
+                .pipe(tap(res => { this.cache = res }))
   }
   
   getInfoMDByID(id: string) {

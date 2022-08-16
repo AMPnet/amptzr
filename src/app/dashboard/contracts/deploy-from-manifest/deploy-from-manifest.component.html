@@ -34,13 +34,15 @@
     
           <hr class="mb-6 mt-6">
     
-        <div class="mb-6 flex flex-col" *ngFor="let input of contract.constructors[0].inputs">
-            <div class="font-semibold">{{input.name}}</div>
-            <small>{{input.description}}</small>
-            <small class="mt-1">{{input.recommended_types}}</small>
-            <input formControlName="{{input.solidity_name}}" class="w-full mt-2 text-sm rounded-lg border-gray-200" type="text">
+        <div *ngIf="contract.constructors.length > 0">
+            <div class="mb-6 flex flex-col" *ngFor="let input of contract.constructors[0].inputs">
+                <div class="font-semibold">{{input.name}}</div>
+                <small>{{input.description}}</small>
+                <small class="mt-1">{{input.recommended_types}}</small>
+                <input formControlName="{{input.solidity_name}}" class="w-full mt-2 text-sm rounded-lg border-gray-200" type="text">
+            </div>
         </div>
-    
+        
         <button [disabled]="!deployContractForm.valid"
          (click)="createDeploymentRequest()" type="submit" class="app-button w-full">Deploy</button>
     </form>

@@ -136,6 +136,7 @@ import { AuthorizationsComponent } from './dashboard/authorizations/authorizatio
 import { AuthorizationNewComponent } from './dashboard/authorizations/authorization-new/authorization-new.component'
 import { ContractDeployExecEnvComponent } from './execution-environments/contract-deploy-exec-env/contract-deploy-exec-env.component'
 import { DeployFromManifestComponent } from './dashboard/contracts/deploy-from-manifest/deploy-from-manifest.component'
+import { InteractWithContractsComponent } from './dashboard/contracts/interact-with-contracts/interact-with-contracts.component'
 
 @NgModule({
   declarations: [
@@ -249,6 +250,7 @@ import { DeployFromManifestComponent } from './dashboard/contracts/deploy-from-m
     AuthorizationNewComponent,
     ContractDeployExecEnvComponent,
     DeployFromManifestComponent,
+    InteractWithContractsComponent,
   ],
   imports: [
     BrowserModule,

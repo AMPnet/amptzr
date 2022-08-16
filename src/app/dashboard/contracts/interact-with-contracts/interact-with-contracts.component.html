@@ -1,0 +1,135 @@
+<button class="mt-2 ml-4 rounded-full bg-gray-700 text-xs uppercase font-semibold text-white py-3 px-10">
+    < Back
+</button>
+
+<div *ngIf="deployedContract$ | async as deployedContract; else loading" class="p-8 bg-white shadow-sm rounded-lg ml-4 mt-2">
+    <div *ngIf="contract$ | async as contract">
+
+        <div class="rounded-lg flex flex-col text-sm text-gray-700 bg-gray-50 border
+        px-8 py-4 border-gray-100 mr-2">
+            <div class="flex flex-row items-center w-full py-2">
+                <div class="w-1/12 uppercase text-xs font-semibold">Type</div>
+                <div class="w-9/12 pl-4">{{contract.id}}</div>
+            </div>
+            <div class="flex flex-row items-center w-full py-2">
+                <div class="w-1/12 uppercase text-xs font-semibold">Alias</div>
+                <div class="w-9/12 pl-4">{{deployedContract.alias}}</div>
+            </div>
+            <div class="flex flex-row items-center w-full py-2">
+                <div class="w-1/12 uppercase text-xs font-semibold">Tags</div>
+                <div class="w-9/12 pl-4 flex flex-row">
+                    <div class="bg-violet-200 text-violet-700 
+                    mr-2 px-2 py-1 text-xs font-medium rounded-lg" 
+                    *ngFor="let tag of contract.tags">
+                        #{{tag}}
+                    </div>
+                </div>
+            </div>
+            <div class="flex flex-row items-center w-full py-2">
+                <div class="w-1/12 uppercase text-xs font-semibold">Address</div>
+                <div class="w-9/12 pl-4">
+                    <span class="mr-1">{{deployedContract.contract_address}}</span>
+                    <app-explorer-link [value]="deployedContract.contract_address"></app-explorer-link>
+                </div>
+            </div>
+            
+        </div>
+        
+        <div *ngIf="selectedIndex$ | async as selectedIndex" class="rounded-lg mt-4 w-full flex flex-row flex-wrap">
+            <div class="w-1/2 flex flex-col cursor-pointer"
+                *ngFor="let function of contract.functions; let i = index">
+                <div [class.hover:bg-violet-200] = "selectedIndex !== i"
+                class="border mr-2 h-full bg-violet-50 rounded-lg mb-2">
+                    <div class="flex flex-col h-full justify-between">
+                        <div>
+                            <div (click)="setSelectedIndex(i)"
+                            class="text-sm font-medium pb-2 px-4 pt-4
+                            text-gray-700 flex flex-col w-full"
+                            >
+                                <div class="font-semibold flex flex-row justify-between mb-2 text-md text-gray-700">
+                                    <div>
+                                        {{function.name}}
+                                    </div>
+                                    <div *ngIf="!function.read_only" class="flex text-orange-600 flex-row items-center">
+                                        <span class="text-xs mr-1">State changing</span>
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                        </svg>
+                                    </div>
+                                </div>
+                                <div class="font-light text-xs mb-2 mt-2">
+                                    {{function.description}}
+                                </div>
+                            </div>
+                            <div *ngIf="function.inputs.length > 0"
+                            [class.!h-0] = "selectedIndex !== i"
+                            [class.pt-2] = "selectedIndex === i"
+                            [class.border-t] = "selectedIndex === i"
+                            class="flex flex-row border-gray-200 flex-wrap px-4">
+                                    <div [class.hidden] = "selectedIndex !== i"
+                                    class="w-full mb-2" *ngFor="let input of function.inputs">
+                                       <div class="flex flex-col w-full text-gray-700">
+                                           <div class="font-medium text-sm mb-[0.15rem]">{{input.name}}</div>
+                                           <div class="text-xs mb-2 font-light">{{input.description}}</div>
+                                           <input class="text-xs rounded-lg w-full border-gray-200" type="text">
+                                       </div>
+                                   </div>
+                            </div>
+                        </div>
+                        
+                        <div class="w-full flex flex-col">
+                            <div class="flex flex-row justify-end">
+                                <button app-action-button 
+                                [disabled]="function.inputs.length > 0"
+                                [class.hidden]="selectedIndex !== i"
+                                [onClick]="callContractFunction(function).bind(this)" 
+                                class="bg-violet-500 hover:bg-violet-700
+                                 text-white w-1/2 ml-4 mr-1 py-2 !text-xs rounded-lg uppercase font-semibold
+                                 disabled:bg-gray-400"
+                                [text]="function.read_only ? 'Read value' : 'Create tx request'">
+                                </button>
+                                <button app-action-button 
+                                [disabled]="function.inputs.length > 0"
+                                [class.hidden]="selectedIndex !== i"
+                                [onClick]="callContractFunction(function).bind(this)" 
+                                class="bg-violet-500 hover:bg-violet-700 py-2 
+                                 text-white w-1/2 ml-1 mr-4 rounded-lg uppercase font-semibold
+                                 disabled:bg-gray-400"
+                                [text]="'Add to Flow'">
+                                </button>
+                            </div>
+                            
+                            <div [class.hidden]="selectedIndex !== i"
+                             *ngIf="resultsBuffer$ | async as resultsBuffer"
+                                 class="bg-white shadow-sm text-sm
+                                text-gray-700 font-medium m-2 rounded-lg
+                                rounded-br-lg flex flex-col justify-center">
+                                
+                                <div class="px-4 pt-4 pb-4 flex flex-row items-center"
+                                 *ngFor="let resultItem of resultsBuffer.get(function.solidity_name)">
+                                    <div [class.border-r]="function.read_only"
+                                    class="pr-2 flex flex-col justify-center max-w-[180px]">
+                                        <div class="mb-1">{{function.outputs.at(0)?.name}}</div>
+                                        <div class="mb-2 text-gray-500 pb-1 text-xs">
+                                            {{function.outputs.at(0)?.description}}
+                                        </div>
+                                    </div>
+                                    <div class="font-mono h-full pl-4 flex flex-col justify-center">
+                                        {{resultItem}}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<ng-template #loading>
+    <div class="w-full h-full flex flex-row items-center justify-center">
+        <app-spinner></app-spinner>
+    </div>
+</ng-template>
