@@ -23,14 +23,15 @@
         type="WARNING"
         [content]="{ title: 'You\'re out of gas!', sections: [
           'You don\'t have any gas tokens. In order to use Dev3 - you need to have tokens to pay for writing to blockchain!',
+          'Want to try Dev3 for free? You can get free gas tokens if you make your project on the Mumbai Network. Switch the project netowrk (below) to Mumbai!'
         ]}"></app-info-snippet>
         <div *ngIf="network$ | async as network">
-          <div class="text-sm text-gray-700 my-4 bg-orange-50 border-orange-100 border
+          <div class="text-sm text-gray-700 my-4 bg-blue-50 border-blue-100 border
           shadow-sm p-4 rounded-lg leading-loose" *ngIf="network.shortName === 'mumbai'">
             You can can get gas tokens for free on <a class="text-violet-700 underline" href="https://faucet.polygon.technology/" target="_blank">this link.</a>
-            <br> Select 'Mumbai' network, 'MATIC' tokens, paste your wallet address 
+            <br> Open the link, select 'Mumbai' network, 'MATIC' tokens, paste your wallet address 
             ({{address | addrShort}} <app-value-copy [value]="address"></app-value-copy> ) 
-            and click 'Submit'. <br> You will receive the tokens within 2 - 5 minutes. Refresh this page, until you no longer see this warning.
+            and click 'Submit'. <br> You will receive the tokens within 2 - 5 minutes. Refresh this page, until you no longer see this message.
           </div>
         </div>
       </div>

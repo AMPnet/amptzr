@@ -108,6 +108,10 @@ export class ContractDeploymentService {
             deployed_contract_id: deployedContractID
         }, false, true, true)
     }
+
+    getFunctionCallRequest(id: string) {
+        return this.http.get<FunctionCallRequestResponse>(`${this.path}/function-call/${id}`, { }, false, false, true)
+    }
 }
 
 export interface ReadOnlyFunctionCallData {

@@ -1,9 +1,9 @@
 <div *ngIf="contractDeploymentRequest$ | async as deploymentRequest; else loadingScreen"
-    class="h-full flex flex-row justify-center items-center">
+    class="flex flex-row justify-center mt-16">
     <ng-container *ngIf="issuer$ | async as issuer">
         <div class="max-w-md bg-white p-8 rounded-3xl shadow-sm flex flex-col">
             <img class="w-full h-16 object-contain" src="{{issuer.infoData.logo | toUrlIPFS}}" alt="">
-            <div *ngIf="deploymentRequest.status === 'PENDING'" class="mt-8 text-gray-700 flex flex-row">
+            <div *ngIf="deploymentRequest.status === 'PENDING'" class="mt-6 text-gray-700 flex flex-row">
                 <div class="text-center mt-2 leading-loose text-sm">
                     <div>
                         <span>
@@ -28,26 +28,26 @@
             <div class="rounded-lg mt-4  text-gray-700 font-medium">
                 <div class="border bg-violet-50 border-gray-100 px-6 py-2 rounded-lg flex flex-col">
                     <div class="flex flex-row items-center py-1">
-                        <div class="w-3/12 uppercase border-white-200 py-2 font-semibold text-xs">
+                        <div class="w-3/12 uppercase border-white-200 py-2 font-semibold text-sm">
                             Type
                         </div>
-                        <div class="w-9/12 py-2 text-xs">
+                        <div class="w-9/12 py-2 text-sm">
                             {{deploymentRequest.contract_id}}
                         </div>
                     </div>
                     <div class="flex flex-row items-center py-1 border-gray-100">
-                        <div class="w-3/12 uppercase border-gray-200 py-2 font-semibold text-xs">
+                        <div class="w-3/12 uppercase border-gray-200 py-2 font-semibold text-sm">
                             Alias
                         </div>
-                        <div class="w-9/12 py-2 text-xs">
+                        <div class="w-9/12 py-2 text-sm">
                             {{deploymentRequest.alias}}
                         </div>
                     </div>
                     <div class="flex flex-row items-center py-1 border-gray-100">
-                        <div class="w-3/12 uppercase border-gray-200 py-2 font-semibold text-xs">
+                        <div class="w-3/12 uppercase border-gray-200 py-2 font-semibold text-sm">
                             Tags
                         </div>
-                        <div class="w-9/12 py-2 text-xs">
+                        <div class="w-9/12 py-2 text-sm">
                             {{deploymentRequest.contract_tags}}
                         </div>
                     </div>
@@ -93,7 +93,7 @@
 
 
             <div class="w-full mt-4" [hidden]="(isWaitingForTx$ | async) === true">
-                <button app-action-button *ngIf="(deploymentRequest.status === 'PENDING')" class="app-button !text-xs w-full"
+                <button app-action-button *ngIf="(deploymentRequest.status === 'PENDING')" class="app-button uppercase w-full"
                 [onClick]="deployContract(deploymentRequest).bind(this)" text="Deploy"></button>
             </div>
 

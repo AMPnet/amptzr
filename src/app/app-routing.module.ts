@@ -56,6 +56,8 @@ import { VeriffComponent } from './identity/veriff/veriff.component'
 import { ContractDeployExecEnvComponent } from './execution-environments/contract-deploy-exec-env/contract-deploy-exec-env.component'
 import { DeployFromManifestComponent } from './dashboard/contracts/deploy-from-manifest/deploy-from-manifest.component'
 import { InteractWithContractsComponent } from './dashboard/contracts/interact-with-contracts/interact-with-contracts.component'
+import { FunctionCallExecEnvComponent } from './dashboard/function-call-exec-env/function-call-exec-env.component'
+import { WorkflowsComponent } from './dashboard/workflows/workflows.component'
 
 const appRoutes: Routes = [
   { path: 'callback', component: AuthMagicOauthComponent },
@@ -67,6 +69,7 @@ const appRoutes: Routes = [
   { path: 'transfer', component: TransferComponent },
   { path: 'swap', component: SwapComponent },
   { path: 'deploy-contract/:id', component: ContractDeployExecEnvComponent }, 
+  { path: 'request-function-call/:id/action', component: FunctionCallExecEnvComponent},
   { path: 'connect/:id', component: RequestWalletActionComponent },
   {
     path: '',
@@ -147,6 +150,7 @@ const appRoutes: Routes = [
         path: 'dashboard',
         component: DashboardHolderComponent,
         children: [
+          { path: 'workflows', component: WorkflowsComponent },
           { path: 'contracts', component: TokensHolderComponent },
           { path: 'tokens/create/erc20', component: CreateErc20Component },
           { path: 'contracts/create/from-manifest/:contractID', component: DeployFromManifestComponent },

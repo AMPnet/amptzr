@@ -23,25 +23,20 @@ export class NewAndManageHolderComponent implements OnInit {
   activeTab: Tab = Tab.Manage
   tabType = Tab
 
-  allContracts$ = this.projectService
-    .getProjectIdByChainAndAddress().pipe(
-      switchMap(project => this.contractService.getContractDeploymentRequests(project.id)),
-    )
+  allContracts$ = this.contractService.getContractDeploymentRequests(this.projectService.projectID)
 
   pendingContractDeploymentRequests$ = this.allContracts$
       .pipe(map(result => result.requests.filter(x => x.status === 'PENDING')))
 
-  deployedContracts$ = this.allContracts$
-        .pipe(map(result => result.requests.filter(x => x.status === 'SUCCESS')))
+  deployedContracts$ = 
+    this.contractService.getContractDeploymentRequests(this.projectService.projectID, true)
+      .pipe(map(result => result.requests))
 
   deployableContracts$ = this.manifestService.getAll()
       .pipe(
         map((result) => { 
           return result.deployable_contracts.map(contract => {
-            return {...contract, splitID: contract.id.split('.'), description:"abc" }
-          })
-        })
-  )
+            return {...contract, splitID: contract.id.split('.') }})}))
 
   constructor(private contractService: ContractDeploymentService,
     private manifestService: ContractManifestService,

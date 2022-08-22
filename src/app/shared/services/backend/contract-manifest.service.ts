@@ -13,8 +13,6 @@ import { ProjectService } from './project.service'
 export class ContractManifestService {
   path = `${environment.backendURL}/api/blockchain-api/v1/deployable-contracts`
 
-  cache: ContractManifestsData | null = null
-
   constructor(private http: BackendHttpClient,
     private projectService: ProjectService) {}
 
@@ -23,9 +21,7 @@ export class ContractManifestService {
   }
 
   getAll() {
-    if(this.cache !== null) { return of(this.cache) }
     return this.http.get<ContractManifestsData>(`${this.path}`, {}, true, false, true)
-                .pipe(tap(res => { this.cache = res }))
   }
   
   getInfoMDByID(id: string) {
@@ -44,6 +40,7 @@ export interface ContractManifestData {
   id: string,
   binary: string,
   tags: string[],
+  name: string,
   description: string,
   implements: string[],
   constructors: ConstructorManifest[],

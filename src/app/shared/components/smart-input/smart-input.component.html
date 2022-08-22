@@ -1,0 +1,62 @@
+<div *ngIf="selected$ | async as selected; else toggler" class="w-full">
+    <div (click)="toggleInput()" 
+    class="w-full border-gray-200 cursor-text rounded-lg text-sm flex flex-row justify-between text-gray-700" type="text">
+        <div>{{selected.alias}}</div>
+        <div class="px-4 border-l">{{selected.contract_address}}</div>
+    </div>
+</div>
+
+<ng-template #toggler>
+    <div class="w-full">
+        <input (click)="toggleInput()" class="w-full border-gray-200 rounded-lg text-sm text-gray-700" type="text">
+    </div>
+</ng-template>
+
+
+<div *ngIf="isDialogOpen$ | async as isDialogOpened">
+    <div [hidden]="!isDialogOpened" [class.blurry]="isDialogOpened" class="fixed z-[1000] left-0 top-0 
+        backdrop-blur-0
+        w-screen h-screen bg-black/[.4] 
+        transition-backdrop flex flex-row items-center justify-center">
+        <div class="bg-white rounded-lg shadow-xl flex flex-col w-1/2 p-8">
+            <div class="w-full flex flex-row justify-between mb-8">
+                <div></div>
+                <div class="font-semibold">Smart input selector</div>
+                <button class="hover:text-violet-800" (click)="toggleInput()">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                </button>
+            </div>
+            <ng-container *ngIf="inputType === 'CONTRACT'">
+                <app-contract-smart-input [selectedSub]="selectedSub"></app-contract-smart-input>
+            </ng-container>
+            <ng-container *ngIf="inputType === 'ADDRESS_BOOK'; then inputTypeAddressBook"></ng-container>
+        </div>
+    </div>
+</div>
+
+
+
+<!-- INPUT TYPE ADDRESS BOOK -->
+<ng-template #inputTypeAddressBook>
+    <div class="flex flex-col">
+        <input class="w-full border-gray-200 rounded-lg" placeholder="Search" type="text">
+        <div class="flex flex-col h-[300px] overflow-y-scroll">
+            <div class="flex flex-row text-violet-700 mt-4 mx-2 font-medium">
+                <div class="w-1/2">
+                    Alias
+                </div>
+                <div class="w-1/2">
+                    Address
+                </div>
+            </div>
+            <div *ngFor="let input of inputs" class="flex flex-row m-2 text-sm">
+                <div class="w-1/2">Josip Josipović</div>
+                <div class="w-1/2">0xasjdhaksjdasjdkas7d6sad76sda</div>
+            </div>
+        </div>
+    </div>
+</ng-template>

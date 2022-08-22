@@ -137,6 +137,14 @@ import { AuthorizationNewComponent } from './dashboard/authorizations/authorizat
 import { ContractDeployExecEnvComponent } from './execution-environments/contract-deploy-exec-env/contract-deploy-exec-env.component'
 import { DeployFromManifestComponent } from './dashboard/contracts/deploy-from-manifest/deploy-from-manifest.component'
 import { InteractWithContractsComponent } from './dashboard/contracts/interact-with-contracts/interact-with-contracts.component'
+import { SmartInputComponent } from './shared/components/smart-input/smart-input.component'
+import { ContractSmartInputComponent } from './shared/components/smart-input/contract-smart-input/contract-smart-input.component'
+import { AddressSmartInputComponent } from './shared/components/smart-input/address-smart-input/address-smart-input.component'
+import { DateTimeSmartInputComponent } from './shared/components/smart-input/date-time-smart-input/date-time-smart-input.component'
+import { DurationSmartInputComponent } from './shared/components/smart-input/duration-smart-input/duration-smart-input.component'
+import { ArraySmartInputComponent } from './shared/components/smart-input/array-smart-input/array-smart-input.component'
+import { FunctionCallExecEnvComponent } from './dashboard/function-call-exec-env/function-call-exec-env.component'
+import { WorkflowsComponent } from './dashboard/workflows/workflows.component'
 
 @NgModule({
   declarations: [
@@ -251,6 +259,14 @@ import { InteractWithContractsComponent } from './dashboard/contracts/interact-w
     ContractDeployExecEnvComponent,
     DeployFromManifestComponent,
     InteractWithContractsComponent,
+    SmartInputComponent,
+    ContractSmartInputComponent,
+    AddressSmartInputComponent,
+    DateTimeSmartInputComponent,
+    DurationSmartInputComponent,
+    ArraySmartInputComponent,
+    FunctionCallExecEnvComponent,
+    WorkflowsComponent,
   ],
   imports: [
     BrowserModule,

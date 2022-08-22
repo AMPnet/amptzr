@@ -3,7 +3,7 @@
     <div
     *ngIf="issuer$ | async as myIssuer"
     class="w-full h-full flex flex-row justify-center items-center px-2 pb-8">
-    <div *ngIf="this.projectInfoHolderState$ | async as projectInfoHolderState" class="w-full max-w-6xl flex-col">
+    <div *ngIf="this.projectInfoHolderState$ | async as projectInfoHolderState" class="w-full max-w-7xl flex-col">
       <div class="flex flex-row items-center text-sm mb-2">
         
         <div
@@ -114,9 +114,30 @@
         
       </div>
       <div class="w-full flex flex-row">
+
+        
         <div
-          class="sidebar-width sticky top-28 shadow-md h-full flex flex-col bg-dash-l my-2 rounded-lg dash-side-holder"
+          class="sidebar-width sticky top-28 h-full flex flex-col bg-dash-l my-2 rounded-lg dash-side-holder"
         >
+
+        <div
+            routerLinkActive="!bg-violet-300 !shadow-2xl !text-violet-900"
+            routerLink="workflows"
+            class="py-3 mt-2 my-1 border-violet-500 border rounded-lg
+            text-violet-700 text-xs text-center flex flex-row items-center pl-4"
+          >
+            <div class="flex justify-center mr-4">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4" />
+              </svg>
+            </div>
+            <div class="font-medium">Workflows</div>
+          </div>
+
+        <div class="text-xs uppercase tracking-wider text-gray-500 mt-4 font-semibold">Workflow items</div>
+        <div class="bg-violet-700 rounded-lg shadow-md mt-2">
+  
+
           <div
             routerLinkActive="active-dash-sidebar-item"
             routerLink="contracts"
@@ -128,59 +149,6 @@
               </svg>
             </div>
             <div class="font-medium">Contracts</div>
-          </div>
-  
-          <!-- <div
-            routerLinkActive="active-dash-sidebar-item"
-            routerLink="fundraising"
-            class="mx-2 my-1 text-white py-3 rounded-lg text-xs text-center flex flex-row items-center pl-4"
-          >
-            <div class="flex justify-center mr-4">
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M11 3.055A9.001 9.001 0 1020.945 13H11V3.055z" />
-                <path stroke-linecap="round" stroke-linejoin="round" d="M20.488 9H15V3.512A9.025 9.025 0 0120.488 9z" />
-              </svg>
-            </div>
-            <div class="font-medium">Fundraising</div>
-          </div> -->
-  
-          <!-- <div
-            routerLinkActive="active-dash-sidebar-item"
-            routerLink="contracts"
-            class="mx-2 my-1 py-3 text-white rounded-lg text-xs text-center flex flex-row items-center pl-4"
-          >
-            <div class="flex justify-center mr-4">
-              <svg
-                class="h-4 w-4"
-                viewBox="0 0 32 32"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  d="M11.9993 16H19.9993M11.9993 21.3333H19.9993M22.666 28H9.33268C8.62544 28 7.94716 27.719 7.44706 27.219C6.94697 26.7189 6.66602 26.0406 6.66602 25.3333V6.66667C6.66602 5.95942 6.94697 5.28115 7.44706 4.78105C7.94716 4.28095 8.62544 4 9.33268 4H16.7807C17.1343 4.00008 17.4734 4.1406 17.7233 4.39067L24.942 11.6093C25.1921 11.8593 25.3326 12.1984 25.3327 12.552V25.3333C25.3327 26.0406 25.0517 26.7189 24.5516 27.219C24.0515 27.719 23.3733 28 22.666 28Z"
-                  stroke="white"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                />
-              </svg>
-            </div>
-            <div class="font-medium">Utilities</div>
-          </div> -->
-  
-          <div style="height: 1px" class="mt-1 mb-1 mx-4 bg-violet-500"></div>
-
-          <div
-            routerLinkActive="active-dash-sidebar-item"
-            routerLink="flows"
-            class="py-3 mx-2 mt-2 my-1 text-white rounded-lg opacity-25 text-xs text-center flex flex-row items-center pl-4"
-          >
-            <div class="flex justify-center mr-4">
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4" />
-              </svg>
-            </div>
-            <div class="font-medium">Flows</div>
           </div>
   
           <div
@@ -371,7 +339,7 @@
             </div>
             <div class="font-medium">Settings</div>
           </div>
-  
+          </div>
         </div>
         <div *ngIf="(isBackendAuthorized$ | async); else notAuthorizedMsg" class="content-width">
           <div *ngIf="apiKey$ | async as apiKey; else createApiKeyMsg">

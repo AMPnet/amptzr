@@ -11,14 +11,20 @@ import { BackendHttpClient } from './backend-http-client.service'
 export class ProjectService {
   path = `${environment.backendURL}/api/blockchain-api/v1/projects`
 
-  projectCache: ProjectModel | null = null
-
   get apiKey() {
     return this.preferenceQuery.getValue().apiKey || ''
   }
 
   set apiKey(value: string) {
     this.preferenceStore.update({ apiKey: value })
+  }
+
+  get projectID() {
+    return this.preferenceQuery.getValue().projectID
+  }
+
+  set projectID(value: string) {
+    this.preferenceStore.update({ projectID: value })
   }
 
   constructor(
@@ -32,18 +38,19 @@ export class ProjectService {
       issuer_contract_address: issuerContractAddress,
       base_redirect_url: '',
       chain_id: this.preferenceQuery.network.chainID,
-    })
+    }).pipe(tap(res => { this.projectID = res.id }))
   }
 
   createApiKey(projectID: string): Observable<ApiKeyModel> {
-    return this.http.post<ApiKeyModel>(`${this.path}/${projectID}/api-key`, {})
+    return this.http.post<ApiKeyModel>(`${this.path}/${projectID}/api-key`, {}).pipe(
+      tap(result => this.saveApiKey(result.api_key))
+    )
   }
 
   getProjectIdByChainAndAddress(): Observable<ProjectModel> {
-    if(this.projectCache !== null) { return of(this.projectCache) }
     return this.http.get<ProjectModel>(
       `${this.path}/by-chain/${this.preferenceQuery.network.chainID}/by-issuer/${this.preferenceQuery.issuer.address}`
-    ).pipe(tap(res => { this.projectCache = res }))
+    ).pipe(tap(res => { this.projectID = res.id }))
   }
 
   fetchApiKey(): Observable<ApiKeyModel> {

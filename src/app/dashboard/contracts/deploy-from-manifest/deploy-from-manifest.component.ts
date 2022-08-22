@@ -1,18 +1,20 @@
 import { Location } from '@angular/common'
-import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core'
+import { Component, OnInit, ChangeDetectionStrategy, ViewEncapsulation } from '@angular/core'
 import { AbstractControl, FormControl, FormGroup, Validators } from '@angular/forms'
 import { ActivatedRoute, Router } from '@angular/router'
 import { RouterService } from 'src/app/shared/services/router.service'
-import { of, tap } from 'rxjs'
+import { BehaviorSubject, map, of, switchMap, tap } from 'rxjs'
 import { ContractManifestService } from 'src/app/shared/services/backend/contract-manifest.service'
 import { ConstructorParam, ContractDeploymentService } from 'src/app/shared/services/blockchain/contract-deployment.service'
 import { DialogService } from 'src/app/shared/services/dialog.service'
+import { marked } from 'marked'
 
 @Component({
   selector: 'app-deploy-from-manifest',
   templateUrl: './deploy-from-manifest.component.html',
   styleUrls: ['./deploy-from-manifest.component.css'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  encapsulation: ViewEncapsulation.None
 })
 export class DeployFromManifestComponent {
 
@@ -29,8 +31,10 @@ export class DeployFromManifestComponent {
             queryParams: { screenConfig: 'requests' }
           })
      }))
-
     onSecondaryAction$ = of(undefined).pipe(tap(() => { }))
+
+    tabSub = new BehaviorSubject<Tab>("DEPLOY")
+    tab$ = this.tabSub.asObservable()
 
     contract$ = this.manifestService.getByID(this.contractID).pipe(
         tap((contract) => {
@@ -42,7 +46,9 @@ export class DeployFromManifestComponent {
                 })
         })
     )
-    infoMD$ = this.manifestService.getInfoMDByID(this.contractID)
+    infoMD$ = this.manifestService.getInfoMDByID(this.contractID).pipe(
+        map(result => marked(result, { gfm: true }))
+    )
 
     constructor(private manifestService: ContractManifestService,
         private route: ActivatedRoute,
@@ -50,6 +56,10 @@ export class DeployFromManifestComponent {
         private location: Location,
         private dialogService: DialogService,
         private contractDeploymentService: ContractDeploymentService) {}
+
+    changeTab(tab: Tab) {
+        this.tabSub.next(tab)
+    }
 
     createDeploymentRequest() {
         const controls = this.deployContractForm.controls
@@ -85,4 +95,6 @@ export class DeployFromManifestComponent {
         this.location.back()
     }
 }
+
+type Tab = "DEPLOY" | "INFO"
 

@@ -1,0 +1,7 @@
+.transition-backdrop {
+    transition: backdrop-filter 2s;
+}
+
+.blurry {
+    backdrop-filter: blur(2px);
+}

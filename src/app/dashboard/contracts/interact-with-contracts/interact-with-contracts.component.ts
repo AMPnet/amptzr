@@ -1,3 +1,4 @@
+import { Location } from '@angular/common'
 import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core'
 import { FormArray, FormControl, FormGroup } from '@angular/forms'
 import { ActivatedRoute } from '@angular/router'
@@ -13,7 +14,7 @@ import { ContractDeploymentService } from 'src/app/shared/services/blockchain/co
   styleUrls: ['./interact-with-contracts.component.css'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class InteractWithContractsComponent implements OnInit {
+export class InteractWithContractsComponent {
 
   contractManifestID = this.route.snapshot.params.manifestID
   contractDeploymentID = this.route.snapshot.params.deployedID
@@ -33,15 +34,16 @@ export class InteractWithContractsComponent implements OnInit {
   resultsBufferSub: BehaviorSubject<Map<string, string[]>> = new BehaviorSubject(new Map<string, string[]>())
   resultsBuffer$ = this.resultsBufferSub.asObservable()
 
+  routeRoot = window.location.href.split("/")[0] 
+    + "//" + window.location.href.split("/")[2]
+
   constructor(private manifestService: ContractManifestService,
     private deploymentService: ContractDeploymentService,
     private sessionQuery: SessionQuery,
+    private location: Location,
     private preferenceQuery: PreferenceQuery,
     private route: ActivatedRoute
   ) { }
-
-  ngOnInit(): void {
-  }
 
   setSelectedIndex(i: number) {
     if(this.selectedIndexSub.value !== i) {
@@ -49,6 +51,10 @@ export class InteractWithContractsComponent implements OnInit {
     } else {
       this.selectedIndexSub.next(-1)
     }
+  }
+
+  goBack() {
+    this.location.back()
   }
 
   callContractFunction(func: FunctionManifest) {
