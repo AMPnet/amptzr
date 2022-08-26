@@ -3,6 +3,7 @@ import { ActivatedRoute } from '@angular/router'
 import { BehaviorSubject, delay, from, merge, of, switchMap, tap } from 'rxjs'
 import { PreferenceQuery } from 'src/app/preference/state/preference.query'
 import { SessionQuery } from 'src/app/session/state/session.query'
+import { ContractManifestService } from 'src/app/shared/services/backend/contract-manifest.service'
 import { ContractDeploymentRequests, ContractDeploymentRequestResponse, ContractDeploymentService } from 'src/app/shared/services/blockchain/contract-deployment.service'
 import { GasService } from 'src/app/shared/services/blockchain/gas.service'
 import { IssuerService } from 'src/app/shared/services/blockchain/issuer/issuer.service'
@@ -23,6 +24,10 @@ export class ContractDeployExecEnvComponent {
   contractDeploymentRequest$ = this.contractDeploymentService
     .getContractDeploymentRequest(this.route.snapshot.params.id)
 
+  manifest$ = this.contractDeploymentRequest$.pipe(
+    switchMap(result => this.manifestService.getByID(result.contract_id))
+  )
+
   address$ = this.preferenceQuery.address$
   isWaitingForTxSub = new BehaviorSubject<boolean>(false)
   isWaitingForTx$ = this.isWaitingForTxSub.asObservable()
@@ -31,6 +36,7 @@ export class ContractDeployExecEnvComponent {
   constructor(
     private preferenceQuery: PreferenceQuery,
     private issuerService: IssuerService,
+    private manifestService: ContractManifestService,
     private dialogService: DialogService,
     private sessionQuery: SessionQuery,
     private route: ActivatedRoute,

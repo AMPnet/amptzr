@@ -62,7 +62,7 @@ import { WorkflowsComponent } from './dashboard/workflows/workflows.component'
 const appRoutes: Routes = [
   { path: 'callback', component: AuthMagicOauthComponent },
 
-  { path: '', pathMatch: 'full', redirectTo: 'admin/dashboard/tokens' },
+  { path: '', pathMatch: 'full', redirectTo: 'admin/dashboard/contracts' },
   { path: 'offers', component: OffersComponent },
   { path: 'offers/:id', component: OfferComponent },
   { path: 'offers/:id/invest', component: InvestComponent },

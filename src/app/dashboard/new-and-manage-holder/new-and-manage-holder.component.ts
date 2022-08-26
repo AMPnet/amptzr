@@ -1,7 +1,7 @@
 import { Location } from '@angular/common'
 import { Component, ChangeDetectionStrategy, Input, OnInit } from '@angular/core'
 import { ActivatedRoute } from '@angular/router'
-import { filter, map, switchMap } from 'rxjs'
+import { BehaviorSubject, filter, forkJoin, map, mergeMap, switchMap, tap, toArray } from 'rxjs'
 import { PreferenceQuery } from 'src/app/preference/state/preference.query'
 import { ContractManifestService } from 'src/app/shared/services/backend/contract-manifest.service'
 import { ProjectService } from 'src/app/shared/services/backend/project.service'
@@ -24,9 +24,18 @@ export class NewAndManageHolderComponent implements OnInit {
   tabType = Tab
 
   allContracts$ = this.contractService.getContractDeploymentRequests(this.projectService.projectID)
+  
+  refreshRequests$ = new BehaviorSubject<boolean>(true)
+  pendingContractDeploymentRequests$ = this.refreshRequests$.pipe(
+    switchMap(_ => this.contractService.getContractDeploymentRequests(this.projectService.projectID).pipe(
+      map(contracts => contracts.requests.filter(contract => { return contract.status === 'PENDING' }))
+    )))
 
-  pendingContractDeploymentRequests$ = this.allContracts$
-      .pipe(map(result => result.requests.filter(x => x.status === 'PENDING')))
+  manifests$ = this.allContracts$.pipe(
+    map(contracts => contracts.requests.filter(contract => contract.status === 'PENDING')),
+    mergeMap(requests => {
+      const manifests$ = requests.map(request => { return this.manifestService.getByID(request.contract_id) })
+      return forkJoin(manifests$) }), tap(res => console.log("HERE")))
 
   deployedContracts$ = 
     this.contractService.getContractDeploymentRequests(this.projectService.projectID, true)
@@ -37,6 +46,7 @@ export class NewAndManageHolderComponent implements OnInit {
         map((result) => { 
           return result.deployable_contracts.map(contract => {
             return {...contract, splitID: contract.id.split('.') }})}))
+
 
   constructor(private contractService: ContractDeploymentService,
     private manifestService: ContractManifestService,
@@ -59,6 +69,10 @@ export class NewAndManageHolderComponent implements OnInit {
           this.changeTab(Tab.Pending)
         }
       })
+    }
+
+    refreshRequests() {
+      this.refreshRequests$.next(true)
     }
 }
 

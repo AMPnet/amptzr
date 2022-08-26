@@ -16,8 +16,6 @@ import { GasService } from "./gas.service"
 export class ContractDeploymentService {
 
     path = `${environment.backendURL}/api/blockchain-api/v1`
-
-    deploymentRequestCache: ContractDeploymentRequests | null = null
  
     constructor(private http: BackendHttpClient,
         private preferenceQuery: PreferenceQuery,
@@ -57,11 +55,10 @@ export class ContractDeploymentService {
     }
 
     getContractDeploymentRequests(projectID: string, deployedOnly: boolean = false): Observable<ContractDeploymentRequests> {
-        if(this.deploymentRequestCache !== null) { return of(this.deploymentRequestCache) }
         return this.http
             .get<ContractDeploymentRequests>(`${this.path}/deploy/by-project/${projectID}`, {
                 deployedOnly: deployedOnly 
-            }, true, true, true).pipe(tap(res => { this.deploymentRequestCache = res }))
+            }, true, true, true)
     }
 
     attachTxInfoToRequest(requestId: string, txHash: string, deployer: string) {

@@ -9,7 +9,26 @@
     </button>
 </div>
 
-<div *ngIf="tab$ | async as tab" class="bg-white rounded-lg text-gray-700 flex flex-row shadow-sm ml-4 mt-2 p-6">
+<div *ngIf="tab$ | async as tab" class="flex flex-row justify-center uppercase text-center font-semibold text-gray-700">
+
+  <div (click)="changeTab('DEPLOY')"
+    [class.border-violet-700]="tab === 'DEPLOY'"
+    [class.text-violet-700]="tab === 'DEPLOY'" 
+    class="pb-2 border-b-4 w-52 cursor-pointer">
+    Deploy
+  </div>
+
+  <div (click)="changeTab('INFO')"
+    [class.border-violet-700]="tab === 'INFO'"
+    [class.text-violet-700]="tab === 'INFO'" 
+    class="pb-2 border-b-4 w-52 cursor-pointer">
+    Contract info
+  </div>
+
+</div>
+
+
+<div *ngIf="tab$ | async as tab" class="bg-white rounded-lg text-gray-700 flex flex-row shadow-sm ml-4 p-6">
     <ng-component *ngIf="tab === 'DEPLOY'; then deployTab"></ng-component>
     <ng-component *ngIf="tab === 'INFO'; then infoTab"></ng-component>
 </div>
@@ -57,7 +76,7 @@
 </ng-template>
 
 <ng-template #infoTab>
-  <div class="w-6/12 pl-4">
+  <div class="p-8">
     <div class="markdown-body !text-gray-700" *ngIf="infoMD$ | async as infoMD">
       <span [outerHTML]="infoMD"></span>
     </div>

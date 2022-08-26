@@ -34,14 +34,10 @@
           </svg>
         </div>
 
+        <div class="ml-2 text-amber-700 px-8 border text-sm font-medium py-2 rounded-full bg-amber-50"
+        >This app is in beta and has not been audited for security vulnerabilites.</div>
+
       </div>
-  
-      <app-info-snippet *ngIf="projectInfoHolderState === 'open'"
-        type='WARNING'
-        [content]="{ title: 'This app is in beta!', sections: [
-          'The app has not been audited for security vulnerabilities'
-        ]}"
-      ></app-info-snippet>
 
       <div [class.!h-16]="projectInfoHolderState === 'open'"
        class=" bg-white w-full shadow-sm px-8 my-4 h-0 transition-all rounded-xl flex flex-col justify-start">
