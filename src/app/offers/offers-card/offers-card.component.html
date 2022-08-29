@@ -31,7 +31,10 @@
         </div>
 
         <div>
-          <app-funding-progress [campaign]="offer"></app-funding-progress>
+          <app-funding-progress
+            [campaign]="offer"
+            *ngIf="offer.asset.toLowerCase() !== '0xd60deba014459f07bbcc077a5b817f31dafd5229'"
+          ></app-funding-progress>
 
           <button class="w-full app-button mt-6 flex
                          items-center justify-center"
@@ -73,7 +76,10 @@
           {{ offer.infoData.about | truncate:400:true:false }}
         </p>
 
-        <app-funding-progress class="w-full" [campaign]="offer">
+        <app-funding-progress
+          class="w-full"
+          [campaign]="offer"
+          *ngIf="offer.asset.toLowerCase() !== '0xd60deba014459f07bbcc077a5b817f31dafd5229'">
         </app-funding-progress>
 
         <div class="mt-6">
