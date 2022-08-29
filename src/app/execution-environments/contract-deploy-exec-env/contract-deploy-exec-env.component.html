@@ -1,7 +1,8 @@
 <div *ngIf="contractDeploymentRequest$ | async as deploymentRequest; else loadingScreen"
     class="flex flex-row justify-center mt-16">
     <ng-container *ngIf="issuer$ | async as issuer">
-        <div class="max-w-md bg-white p-8 rounded-3xl shadow-sm flex flex-col">
+        <div [class.animate-pulse]="(isWaitingForTx$ | async)"
+        class="max-w-md w-full bg-white p-8 rounded-3xl shadow-sm flex flex-col">
             <img class="w-full h-16 object-contain" src="{{issuer.infoData.logo | toUrlIPFS}}" alt="">
             <div *ngIf="deploymentRequest.status === 'PENDING'" class="mt-6 text-gray-700 flex flex-row">
                 <div class="text-center mt-2 leading-loose text-sm">
@@ -18,50 +19,46 @@
             </div>
             <div *ngIf="deploymentRequest.status === 'SUCCESS'" class="mt-4 mb-2 w-full text-gray-700 flex flex-row">
                 <div class="text-center mt-2 leading-loose text-sm w-full">
-                    <div class="mb-4 py-1 px-2 bg-green-50 rounded-lg text-green-700 border
-                    border-green-100 uppercase font-semibold">
+                    <div class="mb-4 py-1 px-2 tracking-widest bg-green-50 rounded-lg text-green-700 border
+                    border-green-100 uppercase font-semibold flex flex-row items-center justify-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      </svg>
+                    <div class="ml-2">
                         Success
+                    </div>                      
+                        
                     </div>
                     Deployed a smart contract as requested by
-                    <span class="ml-[2px] px-2 py-1 text-xs font-semibold bg-indigo-100 border-indigo-200 border rounded-lg">
+                    <span class="ml-[2px] font-semibold text-violet-700">
                         {{issuer.infoData.name}}
                     </span>
                 </div>
             </div>
             <div class="rounded-lg mt-4  text-gray-700 font-medium">
-                <div class="border bg-violet-50 border-gray-100 px-6 py-2 rounded-lg flex flex-col">
-                    <div class="flex flex-row items-center py-1">
-                        <div class="w-3/12 uppercase border-white-200 py-2 font-semibold text-sm">
+                <div class="border bg-violet-50 border-gray-200 px-6 py-2 rounded-lg flex flex-col">
+                    <div class="flex flex-row items-center py-4 border-b">
+                        <div class="w-4/12 uppercase border-white-200 font-semibold text-sm">
                             Type
                         </div>
-                        <div *ngIf="manifest$ | async as manifest" class="w-9/12 py-2 text-sm">
+                        <div *ngIf="manifest$ | async as manifest" class="w-8/12 text-sm">
                             {{manifest.name}}
                         </div>
                     </div>
-                    <div class="flex flex-row items-center py-1 border-gray-100">
-                        <div class="w-3/12 uppercase border-gray-200 py-2 font-semibold text-sm">
+                    <div class="flex flex-row items-center py-4 border-b">
+                        <div class="w-4/12 uppercase font-semibold text-sm">
                             Alias
                         </div>
-                        <div class="w-9/12 py-2 text-sm">
+                        <div class="w-8/12 text-sm">
                             {{deploymentRequest.alias}}
                         </div>
                     </div>
-                    <div class="flex flex-row items-center py-1 border-gray-100">
-                        <div class="w-3/12 uppercase border-gray-200 py-2 font-semibold text-sm">
-                            Tags
-                        </div>
-                        <div class="w-9/12 py-2 text-sm">
-                            <span class="mr-2" *ngFor="let tag of deploymentRequest.contract_tags">
-                                #{{tag}}
-                            </span>
-                        </div>
-                    </div>
                     <div *ngIf="deploymentRequest.status === 'SUCCESS'" class="flex flex-row
-                     items-center py-1 border-gray-100">
-                        <div class="w-3/12 text-sm uppercase border-gray-200 font-semibold">
+                     items-center py-4">
+                        <div class="w-4/12 text-sm uppercase font-semibold">
                             Address
                         </div>
-                        <div class="w-9/12 text-sm">
+                        <div class="w-8/12 text-sm">
                             {{deploymentRequest.contract_address | addrShort}}
                             <app-explorer-link 
                                 type="token"

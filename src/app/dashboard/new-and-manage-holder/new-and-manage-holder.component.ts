@@ -67,6 +67,8 @@ export class NewAndManageHolderComponent implements OnInit {
       this.route.queryParams.subscribe(res => {
         if(res.screenConfig === 'requests') {
           this.changeTab(Tab.Pending)
+        } else if(res.screenConfig === 'deploy') {
+          this.changeTab(Tab.Add)
         }
       })
     }

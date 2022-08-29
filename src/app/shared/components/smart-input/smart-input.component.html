@@ -1,8 +1,7 @@
 <div *ngIf="selected$ | async as selected; else toggler" class="w-full">
     <div (click)="toggleInput()" 
     class="w-full border-gray-200 cursor-text rounded-lg text-sm flex flex-row justify-between text-gray-700" type="text">
-        <div>{{selected.alias}}</div>
-        <div class="px-4 border-l">{{selected.contract_address}}</div>
+        <div>{{selected}}</div>
     </div>
 </div>
 
@@ -33,7 +32,9 @@
             <ng-container *ngIf="inputType === 'CONTRACT'">
                 <app-contract-smart-input [selectedSub]="selectedSub"></app-contract-smart-input>
             </ng-container>
-            <ng-container *ngIf="inputType === 'ADDRESS_BOOK'; then inputTypeAddressBook"></ng-container>
+            <ng-container *ngIf="inputType === 'ADDRESS_BOOK'">
+                <app-address-smart-input [selectedSub]="selectedSub"></app-address-smart-input>
+            </ng-container>
         </div>
     </div>
 </div>
@@ -42,21 +43,5 @@
 
 <!-- INPUT TYPE ADDRESS BOOK -->
 <ng-template #inputTypeAddressBook>
-    <div class="flex flex-col">
-        <input class="w-full border-gray-200 rounded-lg" placeholder="Search" type="text">
-        <div class="flex flex-col h-[300px] overflow-y-scroll">
-            <div class="flex flex-row text-violet-700 mt-4 mx-2 font-medium">
-                <div class="w-1/2">
-                    Alias
-                </div>
-                <div class="w-1/2">
-                    Address
-                </div>
-            </div>
-            <div *ngFor="let input of inputs" class="flex flex-row m-2 text-sm">
-                <div class="w-1/2">Josip Josipović</div>
-                <div class="w-1/2">0xasjdhaksjdasjdkas7d6sad76sda</div>
-            </div>
-        </div>
-    </div>
+    <app-address-smart-input></app-address-smart-input>
 </ng-template>

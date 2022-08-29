@@ -28,7 +28,7 @@ export class SmartInputComponent {
 
   inputs = [1,2,3,4,5,6,7,8,9,10]
 
-  selectedSub = new BehaviorSubject<ContractDeploymentRequestResponse | null>(null)
+  selectedSub = new BehaviorSubject<string | null>(null)
   selected$ = this.selectedSub.asObservable().pipe(
     skip(1),
     tap(() => this.isDialogOpenSub.next(false)))
@@ -40,4 +40,3 @@ export class SmartInputComponent {
 }
 
 type InputType = "ADDRESS_BOOK" | "CONTRACT" | "DATE_TIME" | "DURATION" | "NUMBER"
-

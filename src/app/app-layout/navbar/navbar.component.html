@@ -4,7 +4,7 @@
 >
   <!-- Navbar -->
   <div
-    class="w-full h-16 px-4 flex justify-between sticky max-w-6xl lg:h-20"
+    class="w-full h-16 px-4 flex justify-between sticky max-w-7xl lg:h-20"
     [class]="(isDropdownOpen$ | async) ? 'fixed' : ''"
   >
     <ng-container *ngIf="(isIssuerAvailable$ | async) === true">
@@ -23,16 +23,18 @@
 
           <!-- Navbar items -->
           <div class="flex justify-end items-center lg:pr-4">
-            <ng-container *ngFor="let navbarItem of navbarScreenLinks">
+            <!-- <ng-container *ngFor="let navbarItem of navbarScreenLinks">
               <button
                 *ngIf="(navbarItem.showItem | async) === true"
-                class="mx-2 px-4 py-2 text-gray-700 text-sm uppercase border-b-4 font-semibold border-transparent tracking-wider whitespace-nowrap hidden lg:inline"
+                class="mx-2 px-4 py-2 text-gray-700 text-sm border rounded-full 
+                bg-violet-100 border-transparent tracking-wider hover:bg-violet-700
+                 hover:!text-white whitespace-nowrap hidden lg:inline font-semibold"
                 [routerLink]="navbarItem.routerLink | issuerPath"
-                routerLinkActive="!text-violet-600 !border-violet-600"
+                routerLinkActive="!text-white !bg-violet-700 !border-violet-600"
               >
                 {{ navbarItem.title }}
               </button>
-            </ng-container>
+            </ng-container> -->
 
             <app-wallet-button
               *ngIf="(isLoggedIn$ | async) === true"
@@ -142,7 +144,7 @@
       <button
         *ngIf="(navbarItem.showItem | async) === true"
         (click)="toggleDropdown()"
-        class="pt-2 pb-2 text-gray-700 text-lg whitespace-nowrap border-b-4 border-transparent font-bold"
+        class="pt-2 pb-2 text-gray-700 text-lg whitespace-nowrap !border-x !border-y border-transparent font-bold"
         [routerLink]="navbarItem.routerLink | issuerPath"
         routerLinkActive="!text-violet-600 !border-violet-600"
       >

@@ -1,1 +1,41 @@
-<p>address-smart-input works!</p>
+<div class="flex flex-col">
+
+    <div class="font-semibold mb-2 text-sm">Enter custom address</div>
+    <div class="flex flex-row items-center justify-start">
+        <div class="w-10/12 flex flex-row justify-between items-center border border-gray-200 rounded-lg">
+            <input #customAddressInput class="w-8/12 !ring-0 focus:border-transparent focus:outline-0 rounded-lg border-none rounded-l-lg" type="text">
+            <button (click)="myAddressClicked()" class="px-4 mr-3 py-1 text-xs text-violet-700 font-semibold cursor-pointer
+            hover:bg-violet-700 hover:text-white border-violet-700 border rounded-full">
+                My address
+            </button>
+        </div>
+        <div class="w-2/12 h-full text-sm flex flex-row justify-end mr-4 items-center">
+            <button class="w-full flex flex-row justify-center items-center bg-violet-700 text-sm text-white
+                font-medium ml-2 py-2 rounded-full">Confirm</button>
+        </div>
+    </div>
+
+    <div class="w-full mt-8 mb-6 flex flex-row justify-center items-center">
+        <hr class="w-4/12">
+        <div class="mx-4 font-semibold text-sm uppercase">Or</div>
+        <hr class="w-4/12">
+    </div>
+
+    <div class="mt-2 mb-2 text-sm font-semibold">Select from address book</div>
+
+    <input class="w-full border-gray-200 rounded-lg" placeholder="Search" type="text">
+    <div class="flex flex-col h-[300px] overflow-y-scroll">
+        <div class="flex flex-row text-violet-700 mt-4 mx-2 font-medium">
+            <div class="w-1/2">
+                Alias
+            </div>
+            <div class="w-1/2">
+                Address
+            </div>
+        </div>
+        <div *ngFor="let input of inputs" class="flex flex-row m-2 text-sm">
+            <div class="w-1/2">Josip Josipović</div>
+            <div class="w-1/2">0xasjdhaksjdasjdkas7d6sad76sda</div>
+        </div>
+    </div>
+</div>

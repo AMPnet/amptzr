@@ -27,7 +27,7 @@ export class DeployFromManifestComponent {
     typesHolder: string[] = []
 
     onConfirm$ = of(undefined).pipe(tap(() => { 
-        this.routerService.navigate(['/admin/dashboard/tokens'], {
+        this.routerService.navigate(['/admin/dashboard/contracts'], {
             queryParams: { screenConfig: 'requests' }
           })
      }))
@@ -83,16 +83,19 @@ export class DeployFromManifestComponent {
         this.contractDeploymentService.createDeploymentRequest(this.contractID, 
             controls['alias'].value, constructorParams, { after_action_message: "", before_action_message: ""})
             .subscribe(result => {
-                return this.dialogService.infoWithOnConfirmAndSecondary({
+                return this.dialogService.infoWithOnConfirm({
                     title: "Token deployment request created",
                     message: "You will not be able to interact with the token, until you deploy it on blockchain.",
                     cancelable: false,
-                  }, 'Deploy contract now', 'Deploy later', this.onConfirm$, this.onSecondaryAction$)
+                    onConfirm: this.onConfirm$
+                  })
             })
     }
 
     goBack() {
-        this.location.back()
+        this.routerService.navigate(['/admin/dashboard/contracts'], {
+            queryParams: { screenConfig: 'deploy' }
+        })
     }
 }
 

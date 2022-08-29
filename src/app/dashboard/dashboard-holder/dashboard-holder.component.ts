@@ -81,11 +81,7 @@ export class DashboardHolderComponent {
       switchMap((project) => this.projectService.createApiKey(project.id)),
       tap((api) => { this.apiKey$ = of(api)}),
       tap(() =>
-        this.dialogService.info({
-          title: 'Success',
-          message: `Your API Key wass successfully created.`,
-          cancelable: false,
-        })
+        location.reload()
       )
     )
   }

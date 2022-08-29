@@ -27,6 +27,7 @@ export class NavbarComponent {
   dropdownCloser$: Observable<unknown>
   isAdmin$ = this.userService.isAdmin$
   address$ = this.preferenceQuery.address$
+  balance$ = this.userService.nativeTokenBalance$
 
   navbarScreenLinks: NavbarItem[] = [
     { title: 'Offers', routerLink: '/offers', showItem: of(false) },

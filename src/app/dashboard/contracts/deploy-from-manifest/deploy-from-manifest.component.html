@@ -9,26 +9,33 @@
     </button>
 </div>
 
-<div *ngIf="tab$ | async as tab" class="flex flex-row justify-center uppercase text-center font-semibold text-gray-700">
+<div *ngIf="tab$ | async as tab" class="flex bg-gray-100 ml-4 mt-6 pt-4 text-sm rounded-t-lg 
+  border flex-row justify-start uppercase text-center font-semibold text-gray-500">
 
   <div (click)="changeTab('DEPLOY')"
     [class.border-violet-700]="tab === 'DEPLOY'"
     [class.text-violet-700]="tab === 'DEPLOY'" 
-    class="pb-2 border-b-4 w-52 cursor-pointer">
-    Deploy
+    class="pb-3 border-b-4 w-52 cursor-pointer flex flex-row items-center justify-center">
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+      <path stroke-linecap="round" stroke-linejoin="round" d="M6 12L3.269 3.126A59.768 59.768 0 0121.485 12 59.77 59.77 0 013.27 20.876L5.999 12zm0 0h7.5" />
+    </svg>
+    <div class="ml-2">
+      Deploy
+    </div>    
+    
   </div>
 
   <div (click)="changeTab('INFO')"
     [class.border-violet-700]="tab === 'INFO'"
     [class.text-violet-700]="tab === 'INFO'" 
-    class="pb-2 border-b-4 w-52 cursor-pointer">
+    class="pb-3 border-b-4 w-52 cursor-pointer">
     Contract info
   </div>
 
 </div>
 
 
-<div *ngIf="tab$ | async as tab" class="bg-white rounded-lg text-gray-700 flex flex-row shadow-sm ml-4 p-6">
+<div *ngIf="tab$ | async as tab" class="bg-white rounded-b-lg text-gray-700 flex flex-row shadow-sm ml-4 p-6">
     <ng-component *ngIf="tab === 'DEPLOY'; then deployTab"></ng-component>
     <ng-component *ngIf="tab === 'INFO'; then infoTab"></ng-component>
 </div>
@@ -62,12 +69,11 @@
         <div class="mb-6 flex flex-col" *ngFor="let input of contract.constructors[0].inputs">
             <div class="font-semibold">{{input.name}}</div>
             <small>{{input.description}}</small>
-            <small class="mt-1">{{input.recommended_types}}</small>
             <input formControlName="{{input.solidity_name}}" class="w-full mt-2 text-sm rounded-lg border-gray-200" type="text">
         </div>
-        <div class="mb-2">
+        <!-- <div class="mb-2">
           <app-smart-input></app-smart-input>
-        </div>
+        </div> -->
     </div>
     
     <button [disabled]="!deployContractForm.valid"

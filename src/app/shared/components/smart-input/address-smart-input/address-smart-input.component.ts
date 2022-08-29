@@ -1,4 +1,7 @@
-import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core'
+import { Component, OnInit, ChangeDetectionStrategy, Input, ViewChild, ElementRef } from '@angular/core'
+import { BehaviorSubject } from 'rxjs'
+import { PreferenceQuery } from 'src/app/preference/state/preference.query'
+import { UserService } from 'src/app/shared/services/user.service'
 
 @Component({
   selector: 'app-address-smart-input',
@@ -8,6 +11,16 @@ import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core'
 })
 export class AddressSmartInputComponent {
 
-  constructor() { }
+  inputs = [1,2,3,4,5,6,7]
+
+  // @ViewChild('customAddressInput') customAddressInput!: ElementRef<InputEleme>
+
+  @Input() selectedSub?: BehaviorSubject<string | null>
+
+  constructor(private preferenceQuery: PreferenceQuery) { }
+
+  myAddressClicked() {
+    // this.customAddressInput.nativeElement. this.preferenceQuery.getValue().address
+  }
 
 }

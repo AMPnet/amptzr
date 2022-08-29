@@ -36,9 +36,11 @@
           >
             <div
               class="flex flex-row w-full justify-start items-center bg-white shadow-sm border-b"
-              *ngFor="let issuer of myIssuers"
+              *ngFor="let issuer of myIssuers; let i = index"
+              [class.rounded-t-lg] = "i === 0"
+              [class.rounded-b-lg] = "i === (myIssuers.length - 1)"
             >
-              <div class="relative w-40 pr-4 border-r">
+              <div class="relative w-40 pl-4 border-r">
                 <img
                   *ngIf="issuer.issuer.infoData.logo; else noImage"
                   class="h-12 object-contain pl-8 py-2"
@@ -49,7 +51,7 @@
                   <div class="w-full h-32 bg-gray-200 rounded-t-4xl"></div>
                 </ng-template>
               </div>
-              <span class="mr-4 pl-4 w-64 text-gray-700">{{ issuer.issuer.infoData.name ?? "Unknown" }}</span>
+              <span class="mr-4 pl-4 w-64 text-gray-700 font-medium">{{ issuer.issuer.infoData.name ?? "Unknown" }}</span>
 
               <div
                 class="flex flex-col gap-8 w-full h-full rounded-b-4xl p-4 justify-between"

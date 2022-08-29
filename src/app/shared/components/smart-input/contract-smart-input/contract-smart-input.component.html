@@ -29,7 +29,7 @@
         </div>
         <div *ngIf="contracts.requests.length > 0; else emptyContracts">
             <div class="px-2 flex flex-row items-center text-gray-700 cursor-pointer hover:bg-gray-100"
-                *ngFor="let contract of contracts.requests" (click)="selectItem(contract)">
+                *ngFor="let contract of contracts.requests; let i = index" (click)="selectItem(contract)">
                 <div class="font-medium text-sm my-3 w-3/12">
                     {{contract.alias}}
                 </div>
@@ -38,7 +38,12 @@
                     <app-value-copy [value]="contract.contract_address"></app-value-copy>
                 </div>
                 <div class="font-medium text-xs text-gray-500 my-3 w-6/12">
-                    {{contract.contract_id}}
+                    <div *ngIf="manifests$ | async as manifests; else manifestLoading">
+                        {{manifests[i].name}}
+                    </div>
+                    <ng-template #manifestLoading>
+                        <app-spinner></app-spinner>
+                    </ng-template>
                 </div>
             </div>
         </div>
