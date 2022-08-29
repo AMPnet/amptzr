@@ -22,8 +22,9 @@
               </h1>
 
               <div class="mt-4">
-                <app-funding-progress [campaign]="campaignData.campaign"
-                                      *ngIf="(isMobileScreenSize$ | async) === true">
+                <app-funding-progress
+                  [campaign]="campaignData.campaign"
+                  *ngIf="((isMobileScreenSize$ | async) === true) && campaignData.campaign.asset.toLowerCase() !== '0xd60deba014459f07bbcc077a5b817f31dafd5229'">
                 </app-funding-progress>
               </div>
 
@@ -50,8 +51,9 @@
 
             <!-- RIGHT COLUMN -->
             <div class="w-full mt-8 lg:w-8/12 lg:pr-4">
-              <app-funding-progress [campaign]="campaignData.campaign"
-                                    *ngIf="(isMobileScreenSize$ | async) === false">
+              <app-funding-progress
+                [campaign]="campaignData.campaign"
+                *ngIf="((isMobileScreenSize$ | async) === false) && (campaignData.campaign.asset.toLowerCase() !== '0xd60deba014459f07bbcc077a5b817f31dafd5229')">
               </app-funding-progress>
 
               <!-- Floating Invest button -->
