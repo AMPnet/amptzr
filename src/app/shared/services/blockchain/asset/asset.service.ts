@@ -159,9 +159,9 @@ export class AssetService {
   }
 
   balance(assetAddress: string): Observable<BigNumber> {
-    return this.signerService.ensureAuth.pipe(
-      map(signer => this.assetBasicService.contract(assetAddress, signer)),
-      switchMap(contract => from(contract.signer.getAddress()).pipe(
+    return of(this.assetBasicService.contract(assetAddress, this.sessionQuery.provider)).pipe(
+      switchMap(contract => this.signerService.ensureAuth.pipe(
+        switchMap(signer => signer.getAddress()),
         switchMap(signerAddress => contract.balanceOf(signerAddress)),
       )),
     )
