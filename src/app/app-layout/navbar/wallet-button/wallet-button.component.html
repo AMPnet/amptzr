@@ -1,32 +1,48 @@
-<div class="flex flex-row">
+<div class="flex flex-row items-center">
 
-
-<span *ngIf="balance$ | async as balance" class="flex flex-col h-full justify-center mr-2">
-  <div class="flex flex-row px-4 py-2 bg-violet-100 text-violet-800 rounded-lg">
-    <div class="text-xs py-1 flex flex-row font-medium mr-2">
-      <span class="font-medium text-gray-700">Gas available:</span>
-      <span class="ml-1 font-bold">
-        {{
+  <span *ngIf="balance$ | async as balance" class="flex flex-col h-full justify-center mr-2">
+    <div class="flex flex-row px-4 py-2 bg-violet-100 text-violet-800 rounded-lg">
+      <div class="text-xs py-1 flex flex-row items-center font-medium mr-2">
+        <span class="font-medium text-gray-700">Gas available:</span>
+        <span *ngIf="nativeToken$ | async as nativeToken" class="ml-1 font-bold">
+          {{
           balance
-            | formatUnit: "token":18
-            | currencyDefault: "token":"real":"MATIC"
-        }}
-      </span>  
+          | formatUnit: "token":18
+          | currencyDefault: "token":"real":nativeToken.symbol
+          }}
+        </span>
+        <span [routerLink]="'/deposit' | issuerPath" class="ml-2 hover:text-white font-semibold uppercase text-xs rounded-sm px-2
+      cursor-pointer hover:bg-violet-900 transition-all underline">Top up</span>
+      </div>
     </div>
-  </div>
-</span>
+  </span>
 
-<span *ngIf="address$ | async as address" class="flex flex-col justify-center mr-2">
-  <div class="flex flex-row px-4 py-2 bg-violet-100 text-violet-800 rounded-lg">
-    <div class="text-xs flex font-sem flex-row items-center font-medium justify-center mr-2">
-      <span class="font-medium text-gray-700">My address:</span>
-      <span class="ml-1 flex flex-row items-center font-bold">
-        {{ address$ | async }}
-        <app-value-copy [value]="address"></app-value-copy>
+  <span *ngIf="address$ | async as address" class="flex flex-col justify-center mr-2">
+    <div class="flex flex-row px-4 py-2 bg-violet-100 text-violet-800 rounded-lg">
+      <div class="text-xs flex font-sem flex-row items-center font-medium justify-center mr-2">
+        <span class="font-medium text-gray-700">My address:</span>
+        <span class="ml-1 flex flex-row items-center font-bold">
+          {{ address$ | async | addrShort }}
+          <app-value-copy [value]="address"></app-value-copy>
 
-      </span>  
+        </span>
+      </div>
     </div>
-  </div>
-</span>
+  </span>
+
+  <span class="flex flex-col justify-center mr-2 h-full">
+    <div class="flex flex-row px-4 py-3 bg-violet-100 text-violet-800 rounded-lg">
+      <div class="text-xs flex font-sem flex-row items-center font-medium justify-center mr-2">
+        <span class="font-medium text-gray-700">Authorized with:</span>
+        <span class="ml-1 flex flex-row items-center font-bold">
+          {{ authProvider$ | async }}
+        </span>
+      </div>
+    </div>
+  </span>
+
+  <button (click)="logout()" class="h-full mx-6 text-xs uppercase font-semibold 
+  px-4 py-2 bg-gray-200 text-gray-700 rounded-full 
+  hover:bg-violet-700 hover:text-white transition-all">Log out</button>
+
 </div>
-

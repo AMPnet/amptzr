@@ -22,7 +22,7 @@ export class ContractDeployExecEnvComponent {
   issuer$ = this.issuerService.issuer$
 
   contractDeploymentRequest$ = this.contractDeploymentService
-    .getContractDeploymentRequest(this.route.snapshot.params.id)
+    .getContractDeploymentRequest(this.route.snapshot.params.id).pipe(tap(res => console.log(res)))
 
   manifest$ = this.contractDeploymentRequest$.pipe(
     switchMap(result => this.manifestService.getByID(result.contract_id))

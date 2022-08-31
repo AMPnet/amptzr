@@ -201,6 +201,7 @@ export interface ContractDeploymentRequestResponse {
         block_confirmations: string,
         timestamp: string
     }
+    constructor_params: ConstructorParam[]
 }
 
 export interface ContractDeploymentParams {

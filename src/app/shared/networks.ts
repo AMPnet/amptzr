@@ -89,7 +89,7 @@ export const MaticNetwork: Network = {
     defaultStableCoin: '0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174',
   },
   ramp: {
-    swapAsset: 'MATIC_USDC',
+    swapAsset: 'MATIC',
   },
 }
 
@@ -123,7 +123,7 @@ export const MumbaiNetwork: Network = {
     defaultStableCoin: '0x1eDaD4f5Dac6f2B97E7F6e5D3fF5f04D666685c3',
   },
   ramp: {
-    swapAsset: 'MATIC_USDC2',
+    swapAsset: 'MATIC',
     url: 'https://ri-widget-staging.firebaseapp.com/',
   },
 }

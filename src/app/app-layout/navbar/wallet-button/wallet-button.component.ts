@@ -4,6 +4,7 @@ import { PreferenceQuery } from '../../../preference/state/preference.query'
 import { WalletConnectSubsignerService } from '../../../shared/services/subsigners/walletconnect-subsigner.service'
 import { MaticNetwork, MumbaiNetwork } from '../../../shared/networks'
 import { UserService } from 'src/app/shared/services/user.service'
+import { map } from 'rxjs'
 
 @Component({
   selector: 'app-wallet-button',
@@ -15,6 +16,9 @@ export class WalletButtonComponent {
   network$ = this.preferenceQuery.network$
   address$ = this.preferenceQuery.address$
   authProvider$ = this.preferenceQuery.authProvider$
+  nativeToken$ = this.preferenceQuery.network$.pipe(
+    map(network => network.nativeCurrency)
+  )
   AuthProvider = AuthProvider
   balance$ = this.userService.nativeTokenBalance$
 
@@ -28,4 +32,8 @@ export class WalletButtonComponent {
     public walletConnectSubsignerService: WalletConnectSubsignerService,
     private userService: UserService
   ) {}
+
+  logout() {
+    this.userService.logout()
+  }
 }

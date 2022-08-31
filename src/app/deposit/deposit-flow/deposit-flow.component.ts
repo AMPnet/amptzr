@@ -8,7 +8,7 @@ import {
 import { last, of } from 'rxjs'
 import { RouterService } from '../../shared/services/router.service'
 import { DepositRampService } from '../deposit-ramp.service'
-import { switchMap, tap } from 'rxjs/operators'
+import { map, switchMap, tap } from 'rxjs/operators'
 import { ConversionService } from '../../shared/services/conversion.service'
 import { FaucetService } from '../../shared/services/backend/faucet.service'
 import { BackendHttpClient } from '../../shared/services/backend/backend-http-client.service'
@@ -25,6 +25,7 @@ import { RampInstantEventTypes } from '@ramp-network/ramp-instant-sdk'
 export class DepositFlowComponent {
   depositForm: FormGroup
   depositAvailable$ = this.depositRampService.isAvailable$
+  nativeTokenSymbol$ = this.preferenceQuery.network$.pipe(map(network => network.nativeCurrency.symbol))
 
   constructor(
     private fb: FormBuilder,

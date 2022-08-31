@@ -153,9 +153,9 @@
                                         </div>
                                     </div>
                                     <div *ngIf="!function.read_only" class="font-mono h-full flex flex-row justify-center">
-                                        <a class="bg-gray-200 text-gray-700 transition-all hover:bg-violet-700 hover:text-white font-normal text-xs rounded-lg font-sans px-8 py-2"
+                                        <a class="bg-gray-200 shadow-sm hover:shadow-lg text-gray-700 transition-all hover:bg-violet-700 hover:text-white font-normal text-xs rounded-lg font-sans px-8 py-2"
                                         href="{{routeRoot}}{{resultItem | issuerPath}}" target="_blank">Execute transaction now</a>
-                                        <a class="bg-gray-200 text-gray-700 transition-all hover:bg-violet-700 hover:text-white font-normal text-xs rounded-lg font-sans ml-2 px-8 py-2"
+                                        <a class="bg-gray-200 shadow-sm hover:shadow-lg text-gray-700 transition-all hover:bg-violet-700 hover:text-white font-normal text-xs rounded-lg font-sans ml-2 px-8 py-2"
                                         href="{{routeRoot}}{{resultItem | issuerPath}}">Copy transaction link to clipboard</a>
                                     </div>
                                     <div *ngIf="function.read_only" 

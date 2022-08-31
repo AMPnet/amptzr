@@ -150,8 +150,9 @@ text-gray-700 uppercase border-b-4 border-transparent cursor-pointer">
               {{request.created_at | date:'short'}}
             </div>
             <div [routerLink]="'/deploy-contract/' + request.id | issuerPath" class="w-3/12 px-2 cursor-pointer">
-              <div class="w-full py-2 bg-gray-200 rounded-lg text-center uppercase text-xs font-semibold">
-                Execute transaction
+              <div class="w-full py-2 bg-violet-700 text-white rounded-full
+               text-center uppercase text-xs font-semibold hover:bg-violet-900 transition-all">
+                Deploy now
               </div>
             </div>
           </div>

@@ -38,6 +38,7 @@ export class DeployFromManifestComponent {
 
     contract$ = this.manifestService.getByID(this.contractID).pipe(
         tap((contract) => {
+            console.log(contract)
             const inputs = contract.constructors.at(0)?.inputs ?? []
             inputs.forEach(input => { 
                     this.deployContractForm.addControl(input.solidity_name, 

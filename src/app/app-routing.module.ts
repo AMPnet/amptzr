@@ -80,41 +80,6 @@ const appRoutes: Routes = [
       { path: 'orders', component: OrdersComponent },
     ],
   },
-  {
-    path: 'request-send',
-    canActivate: [],
-    children: [
-      { path: 'new', component: RequestSendNewComponent },
-      { path: ':id', component: RequestSendShowComponent },
-      { path: ':id/action', component: RequestSendActionComponent },
-    ],
-  },
-  {
-    path: 'request-balance',
-    canActivate: [],
-    children: [
-      { path: ':id/action', component: RequestBalanceActionComponent },
-    ],
-  },
-  {
-    path: 'payouts',
-    canActivate: [],
-    children: [
-      { path: 'claims', component: ClaimsComponent },
-      {
-        path: 'snapshots',
-        canActivate: [],
-        children: [
-          { path: '', pathMatch: 'full', component: SnapshotsComponent },
-          { path: 'new', component: SnapshotNewComponent },
-          { path: ':id', component: SnapshotComponent },
-        ],
-      },
-      { path: '', pathMatch: 'full', component: PayoutsComponent },
-      { path: 'new/:snapshotID', component: PayoutNewComponent },
-      { path: ':id', component: PayoutComponent },
-    ],
-  },
   { path: 'faq', component: FaqComponent },
   {
     path: 'admin',

@@ -6,7 +6,7 @@ import {
   StablecoinConfig,
   StablecoinService,
 } from '../shared/services/blockchain/stablecoin.service'
-import { Network } from '../shared/networks'
+import { Network, Networks } from '../shared/networks'
 
 @Component({
   selector: 'app-deposit',
@@ -21,9 +21,11 @@ export class DepositComponent {
     this.preferenceQuery.issuer$,
   ]).pipe(map(([network, stablecoin]) => ({ network, stablecoin })))
 
+  nativeCurrency = Networks[this.preferenceQuery.getValue().chainID].nativeCurrency
+
   constructor(
     public preferenceQuery: PreferenceQuery,
-    public stablecoin: StablecoinService
+    public stablecoin: StablecoinService,
   ) {}
 }
 

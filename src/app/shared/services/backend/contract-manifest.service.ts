@@ -65,5 +65,6 @@ export interface ParamsManifest {
   description: string,
   solidity_name: string,
   solidity_type: string,
+  parameters?: ParamsManifest[]
   recommended_types: string[]
 }
