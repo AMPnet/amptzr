@@ -51,7 +51,7 @@ export class ContractDeploymentService {
 
     getContractDeploymentRequest(deploymentRequestID: string): Observable<ContractDeploymentRequestResponse> {
         return this.http
-            .get<ContractDeploymentRequestResponse>(`${this.path}/deploy/${deploymentRequestID}`, { }, true, true, true)
+            .get<ContractDeploymentRequestResponse>(`${this.path}/deploy/${deploymentRequestID}`, { }, true, false, true)
     }
 
     getContractDeploymentRequests(projectID: string, deployedOnly: boolean = false): Observable<ContractDeploymentRequests> {
@@ -107,7 +107,7 @@ export class ContractDeploymentService {
     }
 
     getFunctionCallRequest(id: string) {
-        return this.http.get<FunctionCallRequestResponse>(`${this.path}/function-call/${id}`, { }, false, false, true)
+        return this.http.get<FunctionCallRequestResponse>(`${this.path}/function-call/${id}`, { }, true, false, true)
     }
 }
 

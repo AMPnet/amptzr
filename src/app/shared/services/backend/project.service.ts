@@ -42,15 +42,15 @@ export class ProjectService {
   }
 
   createApiKey(projectID: string): Observable<ApiKeyModel> {
-    return this.http.post<ApiKeyModel>(`${this.path}/${projectID}/api-key`, {}).pipe(
+    return this.http.post<ApiKeyModel>(`${this.path}/${projectID}/api-key`, {}, false, true, false).pipe(
       tap(result => this.saveApiKey(result.api_key))
     )
   }
 
   getProjectIdByChainAndAddress(): Observable<ProjectModel> {
     return this.http.get<ProjectModel>(
-      `${this.path}/by-chain/${this.preferenceQuery.network.chainID}/by-issuer/${this.preferenceQuery.issuer.address}`
-    ).pipe(tap(res => { this.projectID = res.id }))
+      `${this.path}/by-chain/${this.preferenceQuery.network.chainID}/by-issuer/${this.preferenceQuery.issuer.address}`)
+      .pipe(tap(res => { this.projectID = res.id }))
   }
 
   fetchApiKey(): Observable<ApiKeyModel> {

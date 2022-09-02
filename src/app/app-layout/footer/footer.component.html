@@ -1,6 +1,9 @@
-<div class="px-4 bg-gray-50">
+<div class="px-4 bg-gray-50 flex flex-col py-4">
   <small>
     <span *ngIf="appVersion">{{ appVersion }}</span>
     <span *ngIf="commitHash">; {{ commitHash }}</span>
   </small>
+  <div class="w-full flex flex-row justify-center text-gray-500 text-xxs">
+    This platform is a part of Dev3, a product of AMPnet IO d.o.o.
+  </div>
 </div>

@@ -24,7 +24,7 @@
         <span class="ml-1 flex flex-row items-center font-bold">
           {{ address$ | async | addrShort }}
           <app-value-copy [value]="address"></app-value-copy>
-
+          <app-explorer-link type="address" [value]="address"></app-explorer-link>
         </span>
       </div>
     </div>

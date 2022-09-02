@@ -10,6 +10,7 @@ import { IssuerService } from 'src/app/shared/services/blockchain/issuer/issuer.
 import { DialogService } from 'src/app/shared/services/dialog.service'
 import { ErrorService } from 'src/app/shared/services/error.service'
 import { SignerService } from 'src/app/shared/services/signer.service'
+import { UserService } from 'src/app/shared/services/user.service'
 
 @Component({
   selector: 'app-contract-deploy-exec-env',
@@ -20,6 +21,8 @@ import { SignerService } from 'src/app/shared/services/signer.service'
 export class ContractDeployExecEnvComponent {
 
   issuer$ = this.issuerService.issuer$
+
+  isLoggedIn$ = this.sessionQuery.isLoggedIn$
 
   contractDeploymentRequest$ = this.contractDeploymentService
     .getContractDeploymentRequest(this.route.snapshot.params.id).pipe(tap(res => console.log(res)))
@@ -38,10 +41,15 @@ export class ContractDeployExecEnvComponent {
     private issuerService: IssuerService,
     private manifestService: ContractManifestService,
     private dialogService: DialogService,
+    private signerService: SignerService,
     private sessionQuery: SessionQuery,
     private route: ActivatedRoute,
     private contractDeploymentService: ContractDeploymentService
   ) { }
+
+  login() {
+      this.signerService.ensureAuth
+  }
 
   deployContract(contractDeploymentRequest: ContractDeploymentRequestResponse) {
     return () => {

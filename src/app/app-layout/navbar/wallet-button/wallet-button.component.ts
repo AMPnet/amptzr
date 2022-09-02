@@ -4,7 +4,8 @@ import { PreferenceQuery } from '../../../preference/state/preference.query'
 import { WalletConnectSubsignerService } from '../../../shared/services/subsigners/walletconnect-subsigner.service'
 import { MaticNetwork, MumbaiNetwork } from '../../../shared/networks'
 import { UserService } from 'src/app/shared/services/user.service'
-import { map } from 'rxjs'
+import { finalize, map } from 'rxjs'
+import { Router } from '@angular/router'
 
 @Component({
   selector: 'app-wallet-button',
@@ -30,10 +31,14 @@ export class WalletButtonComponent {
   constructor(
     private preferenceQuery: PreferenceQuery,
     public walletConnectSubsignerService: WalletConnectSubsignerService,
-    private userService: UserService
+    private userService: UserService,
+    private router: Router
   ) {}
 
   logout() {
-    this.userService.logout()
+    this.userService
+      .logout()
+      .pipe(finalize(() => {}))
+      .subscribe()
   }
 }

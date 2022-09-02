@@ -1,4 +1,5 @@
 import { Component, OnInit, ChangeDetectionStrategy, Input, ViewChild, ElementRef } from '@angular/core'
+import { FormControl } from '@angular/forms'
 import { BehaviorSubject } from 'rxjs'
 import { PreferenceQuery } from 'src/app/preference/state/preference.query'
 import { UserService } from 'src/app/shared/services/user.service'
@@ -13,6 +14,8 @@ export class AddressSmartInputComponent {
 
   inputs = [1,2,3,4,5,6,7]
 
+  customAddressInput = new FormControl()
+
   // @ViewChild('customAddressInput') customAddressInput!: ElementRef<InputEleme>
 
   @Input() selectedSub?: BehaviorSubject<string | null>
@@ -21,6 +24,11 @@ export class AddressSmartInputComponent {
 
   myAddressClicked() {
     // this.customAddressInput.nativeElement. this.preferenceQuery.getValue().address
+  }
+
+  confirmAddressClicked() {
+    alert(this.customAddressInput.value)
+    this.selectedSub?.next(this.customAddressInput.value)
   }
 
 }
