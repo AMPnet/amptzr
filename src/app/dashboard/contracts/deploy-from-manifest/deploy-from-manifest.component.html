@@ -50,11 +50,11 @@
     <div class="mb-1 text-xs font-medium uppercase text-gray-500">You are creating a deployment request for contract</div>
     <div class="mb-4 text-lg font-semibold">{{contract.name}} <span class="font-light text-gray-500">({{contract.id}})</span></div>
 
-    <div class="p-4 rounded-lg bg-gray-100 border border-gray-200 flex flex-col">
-        <label class="pb-1 font-semibold" for="token-name"
+    <div class="p-4 rounded-lg bg-violet-50 flex flex-col">
+        <label class="pb-1 font-semibold text-violet-700" for="token-name"
         >Contract alias</label
       >
-      <small class="pb-2"
+      <small class="pb-2 text-xs text-gray-500"
         >This is the alias you will use to access the contract through Dev3 SDK
         and API</small
       >
@@ -65,20 +65,19 @@
         formControlName="alias"
         autocomplete="off"
       />
-      <small class="mt-2 text-gray-400">The alias can contain only letters, numbers and dashes</small>
+      <small class="mt-2 text-gray-400 text-xs">The alias can contain only letters, numbers and dashes</small>
       </div>
 
-      <hr class="mb-6 mt-6">
-
-    <div *ngIf="contract.constructors.length > 0">
+    <div class="mt-4" *ngIf="contract.constructors.length > 0">
       <!-- Separate params -->
       <ng-container *ngIf="contract.constructors[0].inputs[0]">
         <div *ngIf="contract.constructors[0].inputs[0].solidity_type !== 'tuple'">
           <div class="mb-6 flex flex-col" *ngFor="let input of contract.constructors[0].inputs">
-            <div class="font-semibold">{{input.name}}</div>
-            <small>{{input.description}}</small>
-            <input type="text"
-              formControlName="{{input.solidity_name}}" class="mt-2"/>
+            <div class="font-semibold text-gray-700">{{input.name}}</div>
+            <small class="text-xs text-gray-500 w-1/2">{{input.description}}</small>
+            <app-smart-input inputType="TEXT" [rootForm]="deployContractForm"
+              [formFinishedLoadingSub]="finishedLoadingFormSub"
+              controlName="{{input.solidity_name}}" class="mt-2"></app-smart-input>
         </div>
         </div>
         
@@ -88,18 +87,16 @@
       <ng-container *ngIf="contract.constructors[0].inputs[0].solidity_type === 'tuple'">
         <div class="mb-6 flex flex-col" *ngFor="let input of contract.constructors[0].inputs[0].parameters">
           <div class="font-semibold">{{input.name}}</div>
-          <small>{{input.description}}</small>
-          <app-smart-input formControlName="{{input.solidity_name}}" class="w-full" type="text"></app-smart-input>
+          <small class="w-1/2">{{input.description}}</small>
+          <app-smart-input [rootForm]="deployContractForm"
+            [formFinishedLoadingSub]="finishedLoadingFormSub"
+            controlName="{{input.solidity_name}}" class="w-full"></app-smart-input>
       </div>
       </ng-container>
-        
-        <!-- <div class="mb-2">
-          <app-smart-input></app-smart-input>
-        </div> -->
     </div>
     
-    <button [disabled]="!deployContractForm.valid"
-     (click)="createDeploymentRequest()" type="submit" class="app-button w-full">Deploy</button>
+    <button app-action-button text="Deploy" [disabled]="!deployContractForm.valid"
+     [onClick]="createDeploymentRequest().bind(this)" type="submit" class="app-button w-full"></button>
 </form>
 </ng-template>
 

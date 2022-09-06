@@ -36,6 +36,10 @@ export class DeployFromManifestComponent {
     tabSub = new BehaviorSubject<Tab>("DEPLOY")
     tab$ = this.tabSub.asObservable()
 
+    // Notifies the smart input component when the form has finished loading. Smart input requires this only
+    // in cases where the form is dynamically loaded after class initialization
+    finishedLoadingFormSub = new BehaviorSubject(false)
+
     contract$ = this.manifestService.getByID(this.contractID).pipe(
         tap((contract) => {
             console.log(contract)
@@ -45,6 +49,7 @@ export class DeployFromManifestComponent {
                         new FormControl('', [Validators.required]))
                     this.typesHolder.push(input.solidity_type)
                 })
+            this.finishedLoadingFormSub.next(true)
         })
     )
     infoMD$ = this.manifestService.getInfoMDByID(this.contractID).pipe(
@@ -62,35 +67,41 @@ export class DeployFromManifestComponent {
         this.tabSub.next(tab)
     }
 
+
     createDeploymentRequest() {
-        const controls = this.deployContractForm.controls
-        const filteredControls = controls
-        
-        var controlsArray: AbstractControl[] = []
-        for(const field in filteredControls) {
-            if(field != 'alias') { 
-                const control = this.deployContractForm.get(field) 
-                if(control !== null) { controlsArray.push(control) }
+
+        return () => {
+            const controls = this.deployContractForm.controls
+            const filteredControls = controls
+            
+            var controlsArray: AbstractControl[] = []
+            for(const field in filteredControls) {
+                if(field != 'alias') { 
+                    const control = this.deployContractForm.get(field) 
+                    if(control !== null) { controlsArray.push(control) }
+                }
             }
-        }
-
-        const constructorParams: ConstructorParam[] = controlsArray.map((control, index) => {
-            return {
-                type: this.typesHolder[index],
-                value: control.value
-            } as ConstructorParam
-        })
-
-        this.contractDeploymentService.createDeploymentRequest(this.contractID, 
-            controls['alias'].value, constructorParams, { after_action_message: "", before_action_message: ""})
-            .subscribe(result => {
-                return this.dialogService.infoWithOnConfirm({
-                    title: "Token deployment request created",
-                    message: "You will not be able to interact with the token, until you deploy it on blockchain.",
-                    cancelable: false,
-                    onConfirm: this.onConfirm$
-                  })
+    
+            const constructorParams: ConstructorParam[] = controlsArray.map((control, index) => {
+                return {
+                    type: this.typesHolder[index],
+                    value: control.value
+                } as ConstructorParam
             })
+    
+            return this.contractDeploymentService.createDeploymentRequest(this.contractID, 
+                controls['alias'].value, constructorParams, { after_action_message: "", before_action_message: ""}).pipe(
+                    tap(_ => {
+                        return this.dialogService.infoWithOnConfirm({
+                            title: "Token deployment request created",
+                            message: "You will not be able to interact with the token, until you deploy it on blockchain.",
+                            cancelable: false,
+                            onConfirm: this.onConfirm$
+                            })
+                    })
+                )
+        }
+        
     }
 
     goBack() {

@@ -1,15 +1,10 @@
-<div *ngIf="selected$ | async as selected; else toggler" class="w-full">
-    <div (click)="toggleInput()" 
-    class="w-full border-gray-200 cursor-text rounded-lg text-sm flex flex-row justify-between text-gray-700" type="text">
-        <div>{{selected}}</div>
-    </div>
+<div class="w-full">
+    <input (click)="toggleInput()"
+    [formControl]="controlAsForm(controlName)"
+    class="w-full border-gray-200 cursor-text rounded-lg text-sm flex flex-row justify-between text-gray-700" 
+    type="text"
+    [value]="selected$ | async"/>
 </div>
-
-<ng-template #toggler>
-    <div class="w-full">
-        <input (click)="toggleInput()" class="w-full border-gray-200 rounded-lg text-sm text-gray-700" type="text">
-    </div>
-</ng-template>
 
 
 <div *ngIf="isDialogOpen$ | async as isDialogOpened">

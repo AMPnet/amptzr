@@ -52,7 +52,7 @@
             <div class="rounded-lg mt-4  text-gray-700 font-medium">
                 <div class="mb-4 text-xs font-semibold text-center uppercase tracking-wider"
                     *ngIf="deploymentRequest.status === 'SUCCESS'">
-                    Transaction details</div>
+                    Deployed contract</div>
                 <div *ngIf="manifest$ | async as manifest" class="rounded-lg flex flex-row mt-4 items-start text-gray-700">
                     <div class="flex flex-row items-start">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" 
@@ -70,10 +70,16 @@
                         </div>
 
                     </div>
-
                 </div>
+
+                <div class="w-full flex flex-row items-center justify-center mt-4">
+                    <hr class="w-1/3">
+                    <span class="mx-3 text-xs uppercase text-gray-500">with parameters</span>
+                    <hr class="w-1/3">
+                </div>
+
                 <div *ngIf="deploymentRequest.constructor_params.length > 0">
-                    <div class="mt-8 rounded-lg flex flex-row items-start" *ngIf="manifest$ | async as manifest">
+                    <div class="mt-4 rounded-lg flex flex-row items-start" *ngIf="manifest$ | async as manifest">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
                             stroke="currentColor" class="w-6 h-6 text-violet-700 font-bold">
                             <path stroke-linecap="round" stroke-linejoin="round"

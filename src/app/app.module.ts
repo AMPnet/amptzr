@@ -144,7 +144,8 @@ import { DateTimeSmartInputComponent } from './shared/components/smart-input/dat
 import { DurationSmartInputComponent } from './shared/components/smart-input/duration-smart-input/duration-smart-input.component'
 import { ArraySmartInputComponent } from './shared/components/smart-input/array-smart-input/array-smart-input.component'
 import { FunctionCallExecEnvComponent } from './dashboard/function-call-exec-env/function-call-exec-env.component'
-import { WorkflowsComponent } from './dashboard/workflows/workflows.component'
+import { WorkflowsComponent } from './dashboard/workflows/workflows.component';
+import { ContractFunctionInteractionItemComponent } from './dashboard/contracts/contract-function-interaction-item/contract-function-interaction-item.component'
 
 @NgModule({
   declarations: [
@@ -267,6 +268,7 @@ import { WorkflowsComponent } from './dashboard/workflows/workflows.component'
     ArraySmartInputComponent,
     FunctionCallExecEnvComponent,
     WorkflowsComponent,
+    ContractFunctionInteractionItemComponent,
   ],
   imports: [
     BrowserModule,

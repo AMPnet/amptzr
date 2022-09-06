@@ -1,6 +1,6 @@
 import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core'
 import { ActivatedRoute } from '@angular/router'
-import { combineLatest, map, of, switchMap, zip } from 'rxjs'
+import { combineLatest, map, of, switchMap, tap, zip } from 'rxjs'
 import { PreferenceQuery } from 'src/app/preference/state/preference.query'
 import { SessionQuery } from 'src/app/session/state/session.query'
 import { BackendHttpClient } from 'src/app/shared/services/backend/backend-http-client.service'
@@ -22,7 +22,7 @@ export class FunctionCallExecEnvComponent {
   issuer$ = this.issuerService.issuer$
 
   functionRequest$ = this.deploymentService
-    .getFunctionCallRequest(this.route.snapshot.params.id)
+    .getFunctionCallRequest(this.route.snapshot.params.id).pipe(tap(res => console.log(res)))
 
   contract$ = this.functionRequest$
     .pipe(switchMap(result => this.deploymentService.getContractDeploymentRequest(result.deployed_contract_id)))

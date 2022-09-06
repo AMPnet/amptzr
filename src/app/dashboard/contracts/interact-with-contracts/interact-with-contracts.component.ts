@@ -1,8 +1,8 @@
 import { Location } from '@angular/common'
 import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core'
-import { FormArray, FormControl, FormGroup } from '@angular/forms'
+import { FormArray, FormControl, FormGroup, Validators } from '@angular/forms'
 import { ActivatedRoute } from '@angular/router'
-import { BehaviorSubject, from, map, switchMap, tap } from 'rxjs'
+import { BehaviorSubject, from, map, Observable, switchMap, tap } from 'rxjs'
 import { PreferenceQuery } from 'src/app/preference/state/preference.query'
 import { SessionQuery } from 'src/app/session/state/session.query'
 import { ContractManifestService, FunctionManifest } from 'src/app/shared/services/backend/contract-manifest.service'
@@ -27,6 +27,25 @@ export class InteractWithContractsComponent {
       let sortedFunctions = result.functions.sort((a, b) => { return a.inputs.length - b.inputs.length })
       return { ...result, functions: sortedFunctions }
     })
+  )
+
+  formFinishedLoadingSub = new BehaviorSubject(false)
+
+  formGroups$: Observable<FormGroup[]> = this.contract$.pipe(
+    map(result => {
+      let groups: FormGroup[] = []
+
+      result.functions.forEach(func => {
+        let group = new FormGroup({})
+        func.inputs.forEach((input, index) => { 
+          group.addControl(index.toString(), new FormControl('')) 
+        })
+        groups.push(group)
+      })
+
+      return groups
+    }),
+    tap(_ => this.formFinishedLoadingSub.next(true))
   )
 
   deployedContract$ = this.deploymentService.getContractDeploymentRequest(this.contractDeploymentID)
@@ -57,12 +76,12 @@ export class InteractWithContractsComponent {
     this.location.back()
   }
 
-  callContractFunction(func: FunctionManifest) {
+  callContractFunction(func: FunctionManifest, group: FormGroup) {
     return () => {
       if(func.read_only) {
         return this.callReadOnlyFunction(func)
       } else  {
-        return this.createWriteFunctionCallRequest(func)
+        return this.createWriteFunctionCallRequest(func, group)
       }
     }
   }
@@ -85,8 +104,7 @@ export class InteractWithContractsComponent {
     )
   }
 
-  createWriteFunctionCallRequest(func: FunctionManifest) {
-    
+  createWriteFunctionCallRequest(func: FunctionManifest, group: FormGroup) {
       return this.deploymentService.createWriteFunctionCallRequest(this.contractDeploymentID, {
         eth_amount: 0,
         function_name: func.solidity_name,
@@ -96,7 +114,6 @@ export class InteractWithContractsComponent {
           this.resultsBufferSub.getValue().set(func.solidity_name, [res.redirect_url])
         )
       }))
-      
   }
 
 }
