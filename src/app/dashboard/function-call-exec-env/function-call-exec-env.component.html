@@ -9,7 +9,7 @@
                 <app-spinner></app-spinner>
             </ng-template>
         </div>
-        <div class="mt-4 flex flex-col">
+        <div *ngIf="request.status === 'PENDING'" class="mt-4 flex flex-col">
 
             <!-- DISPLAY INFO ITEMS -->
 
@@ -53,60 +53,55 @@
                 </div>
             </div>
 
-            <div class="w-full flex flex-row justify-center mt-4 items-center text-xs font-medium">
-                <hr class="w-3/12 border-gray-100">
-                <span class="mx-6 uppercase text-gray-500 font-medium">with parameters</span>
-                <hr class="w-3/12 border-gray-100">
-            </div>
-
-            <div *ngIf="functionManifest$ | async as manifest; else detailsLoading" class="w-full flex flex-row mt-4">
-                <div class="mr-4">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" 
-                    stroke-width="2" stroke="currentColor" class="w-6 h-6 text-violet-700">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6A2.25 2.25 0 016 3.75h2.25A2.25 2.25 0 0110.5 6v2.25a2.25 2.25 0 01-2.25 2.25H6a2.25 2.25 0 01-2.25-2.25V6zM3.75 15.75A2.25 2.25 0 016 13.5h2.25a2.25 2.25 0 012.25 2.25V18a2.25 2.25 0 01-2.25 2.25H6A2.25 2.25 0 013.75 18v-2.25zM13.5 6a2.25 2.25 0 012.25-2.25H18A2.25 2.25 0 0120.25 6v2.25A2.25 2.25 0 0118 10.5h-2.25a2.25 2.25 0 01-2.25-2.25V6zM13.5 15.75a2.25 2.25 0 012.25-2.25H18a2.25 2.25 0 012.25 2.25V18A2.25 2.25 0 0118 20.25h-2.25A2.25 2.25 0 0113.5 18v-2.25z" />
-                    </svg>  
+            <div *ngIf="request.function_params.length > 0">
+                <div class="w-full flex flex-row justify-center mt-4 items-center text-xs font-medium">
+                    <hr class="w-3/12 border-gray-100">
+                    <span class="mx-6 uppercase text-gray-500 font-semibold">with parameters</span>
+                    <hr class="w-3/12 border-gray-100">
                 </div>
-                <div class="flex flex-col">
-                    <div class="flex flex-col w-full text-sm mb-4"
-                    *ngFor="let param of request.function_params; let i = index">
-                        <div class="flex flex-row">
-                            <div class="flex-col">
-                                <div class="font-semibold mr-1">{{manifest[0].inputs[i].name}}:</div>
-                            </div>
-                            <div class="overflow-x-auto">
-                                <div *ngIf="param.type === 'address'; else regularParam">
-                                    {{param.value | addrShort}}
+    
+                <div *ngIf="functionManifest$ | async as manifest; else detailsLoading" class="w-full flex flex-row mt-4">
+                    <div class="mr-4">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" 
+                        stroke-width="2" stroke="currentColor" class="w-6 h-6 text-violet-700">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6A2.25 2.25 0 016 3.75h2.25A2.25 2.25 0 0110.5 6v2.25a2.25 2.25 0 01-2.25 2.25H6a2.25 2.25 0 01-2.25-2.25V6zM3.75 15.75A2.25 2.25 0 016 13.5h2.25a2.25 2.25 0 012.25 2.25V18a2.25 2.25 0 01-2.25 2.25H6A2.25 2.25 0 013.75 18v-2.25zM13.5 6a2.25 2.25 0 012.25-2.25H18A2.25 2.25 0 0120.25 6v2.25A2.25 2.25 0 0118 10.5h-2.25a2.25 2.25 0 01-2.25-2.25V6zM13.5 15.75a2.25 2.25 0 012.25-2.25H18a2.25 2.25 0 012.25 2.25V18A2.25 2.25 0 0118 20.25h-2.25A2.25 2.25 0 0113.5 18v-2.25z" />
+                        </svg>  
+                    </div>
+                    <div class="flex flex-col">
+                        <div class="flex flex-col w-full text-sm mb-4"
+                        *ngFor="let param of request.function_params; let i = index">
+                            <div class="flex flex-row">
+                                <div class="flex-col">
+                                    <div class="font-semibold mr-1">{{manifest[0].inputs[i].name}}:</div>
                                 </div>
-                                <ng-template #regularParam>
-                                    {{param.value}}
-                                </ng-template>
+                                <div class="overflow-x-auto">
+                                    <div *ngIf="param.type === 'address'; else regularParam">
+                                        {{param.value | addrShort}}
+                                    </div>
+                                    <ng-template #regularParam>
+                                        {{param.value}}
+                                    </ng-template>
+                                </div>
                             </div>
-                        </div>
-                        <div class="text-sm text-gray-500">
-                            {{manifest[0].inputs[i].description}}
-                        </div>
-                   </div>
+                            <div class="text-sm text-gray-500">
+                                {{manifest[0].inputs[i].description}}
+                            </div>
+                       </div>
+                    </div>
                 </div>
             </div>
+            
             
            
             <!-- END DISPLAY INFO ITEMS -->
 
             <div class="flex flex-col w-full mt-4">
-                <button *ngIf="isLoggedIn$ | async; else notLoggedIn"
-                    class="mt-4 py-2 w-full hover:bg-violet-900  shadow-md hover:shadow-xl transition-all tracking-wide
-                        bg-violet-700 text-white text-sm font-medium uppercase rounded-lg">
-                    <div class="flex flex-row items-center justify-center">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                        stroke="currentColor" class="w-4 h-4">
-                        <path stroke-linecap="round" stroke-linejoin="round"
-                            d="M6 12L3.269 3.126A59.768 59.768 0 0121.485 12 59.77 59.77 0 013.27 20.876L5.999 12zm0 0h7.5" />
-                    </svg>
-                    <div class="ml-2">Execute now</div>
-                    </div>
+                <button app-action-button text="Execute now" class="bg-violet-700 text-white font-semibold 
+                    py-2 w-full rounded-lg hover:bg-violet-800 shadow-md hover:shadow-xl"
+                [onClick]="executeFunction(request).bind(this)"
+                 *ngIf="isLoggedIn$ | async; else notLoggedIn"></button>
                     
-                </button>
-                <ng-template #notLoggedIn>
+                    <ng-template #notLoggedIn>
                     <button app-action-button class="mt-4 py-2 bg-violet-700 text-white rounded-lg hover:bg-violet-900"
                     text="Log In"
                     [onClick]="login.bind(this)"></button>
@@ -121,6 +116,15 @@
                     </svg>
                     <div class="ml-2">Simulate transaction</div>
                 </button>
+            </div>
+
+            <div *ngIf="isWaitingForTx$ | async">
+                <div class="w-full py-2 bg-violet-50 flex mt-2 flex-row items-center justify-center rounded-lg">
+                    <span class="font-semibold text-violet-700 text-sm  flex flex-row items-center justify-center">
+                        <app-spinner></app-spinner>
+                        <div class="ml-2">Processing</div>
+                    </span>
+                </div>
             </div>
 
         </div>

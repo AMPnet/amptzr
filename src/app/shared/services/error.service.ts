@@ -118,7 +118,7 @@ export class ErrorService {
   }
 
   private get outOfGasMessage() {
-    return 'Not enough gas to execute the transaction. Check out the FAQ page for more info.'
+    return `You don't have enough gas token to execute this transaction. Click the 'Top Up' button on the top to buy more gas!`
   }
 }
 

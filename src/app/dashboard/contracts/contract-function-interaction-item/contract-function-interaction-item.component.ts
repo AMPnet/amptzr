@@ -1,10 +1,10 @@
-import { Component, OnInit, ChangeDetectionStrategy, Input } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { BehaviorSubject, from, switchMap, tap } from 'rxjs';
-import { PreferenceQuery } from 'src/app/preference/state/preference.query';
-import { SessionQuery } from 'src/app/session/state/session.query';
-import { FunctionManifest } from 'src/app/shared/services/backend/contract-manifest.service';
-import { ContractDeploymentService, FunctionArgumentType } from 'src/app/shared/services/blockchain/contract-deployment.service';
+import { Component, OnInit, ChangeDetectionStrategy, Input } from '@angular/core'
+import { FormControl, FormGroup, Validators } from '@angular/forms'
+import { BehaviorSubject, from, switchMap, tap } from 'rxjs'
+import { PreferenceQuery } from 'src/app/preference/state/preference.query'
+import { SessionQuery } from 'src/app/session/state/session.query'
+import { FunctionManifest } from 'src/app/shared/services/backend/contract-manifest.service'
+import { ContractDeploymentService, FunctionArgumentType } from 'src/app/shared/services/blockchain/contract-deployment.service'
 
 @Component({
   selector: 'app-contract-function-interaction-item',

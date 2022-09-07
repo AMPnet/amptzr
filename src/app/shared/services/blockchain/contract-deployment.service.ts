@@ -61,23 +61,25 @@ export class ContractDeploymentService {
             }, true, true, true)
     }
 
-    attachTxInfoToRequest(requestId: string, txHash: string, deployer: string) {
+    attachTxInfoToRequest(requestId: string, txHash: string, deployer: string, txType: "CONTRACT" | "TRANSACTION" = "CONTRACT") {
+        
+        const pathSection = txType == "CONTRACT" ? "deploy" : "function-call"
+        
         return this.http
-            .put<void>(`${this.path}/deploy/${requestId}`, { 
+            .put<void>(`${this.path}/${pathSection}/${requestId}`, { 
                 tx_hash: txHash,
                 caller_address: deployer
             }, true, true)
     }
 
     deployContract(request: ContractDeploymentRequestResponse) {
-        return this.signerService.ensureNetwork.pipe(
+        return this.signerService.ensureNetwork$.pipe(
             switchMap((signer) =>
                 of(request.deploy_tx).pipe(
                   switchMap((contract) =>
                     combineLatest([of(contract), this.gasService.overrides])
                   ),
                   switchMap(([contract, overrides]) => {
-                    console.log(contract)
                     return signer.populateTransaction({
                         value: contract.value,
                         data: contract.data,
@@ -90,6 +92,27 @@ export class ContractDeploymentService {
               ),
             this.errorService.handleError(false, true)
           )
+    }
+
+    executeFunction(request: FunctionCallRequestResponse) {
+        return this.signerService.ensureNetwork$.pipe(
+            switchMap((signer) => 
+                of(request.function_call_tx).pipe(
+                    switchMap((func) => 
+                        combineLatest(([of(func), this.gasService.overrides]))
+                    ),
+                    switchMap(([func, overrides]) => {
+                        return signer.populateTransaction({
+                            value: func.value,
+                            data: func.data,
+                            from: func.from,
+                            ...overrides
+                        })
+                    }),
+                    switchMap((tx) => this.signerService.sendTransaction(tx))
+                )),
+                this.errorService.handleError(false, true)
+        )
     }
 
     callReadOnlyFunction(deployedContractID: string, callData: ReadOnlyFunctionCallData) {
