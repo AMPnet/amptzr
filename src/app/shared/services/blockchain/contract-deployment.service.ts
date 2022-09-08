@@ -106,6 +106,7 @@ export class ContractDeploymentService {
                             value: func.value,
                             data: func.data,
                             from: func.from,
+                            to: func.to,
                             ...overrides
                         })
                     }),
@@ -127,6 +128,13 @@ export class ContractDeploymentService {
             ...functionCallData,
             deployed_contract_id: deployedContractID
         }, false, true, true)
+    }
+
+    createWriteFunctionCallRequestFromAddress(deployedContractAddress: string, functionCallData: FunctionCallData) {
+        return this.http.post<FunctionCallRequestResponse>(`${this.path}/function-call`, {
+            ...functionCallData,
+            contract_address: deployedContractAddress
+        })
     }
 
     getFunctionCallRequest(id: string) {

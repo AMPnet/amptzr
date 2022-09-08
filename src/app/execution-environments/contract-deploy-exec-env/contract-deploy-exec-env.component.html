@@ -20,8 +20,8 @@
             </div>
             <div *ngIf="deploymentRequest.status === 'SUCCESS'" class="mt-4 mb-4 w-full text-gray-700 flex flex-row">
                 <div class="text-center mt-2 leading-loose text-sm w-full">
-                    <div class="mb-4 py-1 px-2 tracking-widest bg-green-50 rounded-lg text-green-700 border
-                    border-green-100 uppercase font-semibold flex flex-row items-center justify-center">
+                    <div class="mb-4 py-1 px-2 tracking-widest bg-green-50 rounded-lg text-green-700 
+                    uppercase font-semibold flex flex-row items-center justify-center">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                             stroke="currentColor" class="w-6 h-6">
                             <path stroke-linecap="round" stroke-linejoin="round"
@@ -131,7 +131,7 @@
 
             <div *ngIf="isWaitingForTx$ | async">
                 <div *ngIf="(deploymentRequest.status === 'PENDING')"
-                    class="flex px-4 mt-6 flex-col items-center justify-center bg-indigo-100 border-indigo-200  py-4 rounded-lg">
+                    class="flex px-4 mt-6 flex-col items-center justify-center bg-violet-50 py-4 rounded-lg">
                     <div class="flex flex-row items-center mb-2">
                         <app-spinner></app-spinner>
                     </div>
