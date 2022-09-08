@@ -1,6 +1,7 @@
 import { Component, OnInit, ChangeDetectionStrategy, Input } from '@angular/core'
 import { FormControl, FormGroup, Validators } from '@angular/forms'
-import { BehaviorSubject, from, switchMap, tap } from 'rxjs'
+import { boolean } from 'hardhat/internal/core/params/argumentTypes'
+import { BehaviorSubject, combineLatest, from, map, Observable, switchMap, tap } from 'rxjs'
 import { PreferenceQuery } from 'src/app/preference/state/preference.query'
 import { SessionQuery } from 'src/app/session/state/session.query'
 import { FunctionManifest } from 'src/app/shared/services/backend/contract-manifest.service'
@@ -24,8 +25,39 @@ export class ContractFunctionInteractionItemComponent implements OnInit {
 
   formFinishedSub = new BehaviorSubject(false)
 
-  resultSub = new BehaviorSubject<ResultType | undefined>(undefined)
+  resultSub = new BehaviorSubject<ResultType | null>(null)
   result$ = this.resultSub.asObservable()
+
+  structResult$ = this.result$.pipe(
+    map(res => {
+      switch (res?.kind) {
+        case "struct":
+          return res?.value
+        default:
+          return null
+      }
+    }), tap(res => console.log(res))
+  )
+
+  primitiveResult$ = this.result$.pipe(
+    map(res => {
+      switch(res?.kind) {
+        case "primitive":
+          return res?.value
+        default:
+          return null
+      }
+    })
+  )
+
+  writeResultSub = new BehaviorSubject<string | undefined>(undefined)
+  writeResult$ = this.writeResultSub.asObservable()
+
+  hasResult$ : Observable<boolean> = combineLatest([this.structResult$, this.primitiveResult$, this.writeResult$]).pipe(
+    map(([s,p,w]) => {
+      return Boolean(s) || Boolean(p) || Boolean(w)
+    })
+  )
 
   constructor(private deploymentService: ContractDeploymentService,
     private sessionQuery: SessionQuery,
@@ -45,6 +77,16 @@ export class ContractFunctionInteractionItemComponent implements OnInit {
 
   executeReadFunction() {
     return () => {
+      let outputParams: string[] | { type: string, elems: string[] }[] = []
+      if(this.functionManifest.outputs.at(0)?.solidity_type === 'tuple[]') {
+        outputParams = [{
+          type: 'struct[]',
+          elems: this.functionManifest.outputs[0].parameters!.map(param => param.solidity_type)
+        }]
+      } else {
+        outputParams = this.functionManifest.outputs.map(out => out.solidity_type)
+      }
+
       return from(this.sessionQuery.provider.getBlockNumber()).pipe(
         switchMap(blockNumber => {
           return this.deploymentService.callReadOnlyFunction(this.contractID, {
@@ -54,9 +96,16 @@ export class ContractFunctionInteractionItemComponent implements OnInit {
             function_params: this.functionManifest.inputs.map(input => {
               return { type: input.solidity_type as FunctionArgumentType, value: this.form.get(input.solidity_name)?.value }
             }),
-            output_params: this.functionManifest.outputs.map(output => output.solidity_type)
+            output_params: outputParams
           })
-        }), tap(result => { this.resultSub.next({ readOnly: true, result: result.return_values }) })
+        }), tap(result => {
+          const splitValues = result.return_values[0].split("],").map(x => x.replaceAll('[', '').replaceAll(']', '')).map(x => x.split(',')).map(arr => arr.map(x => x.replace(' ', ''))) 
+          if((splitValues !== undefined) && (splitValues.length > 1)) {
+            this.resultSub.next({ kind: "struct", value: splitValues } )
+          } else {
+            this.resultSub.next({ kind: "primitive", value: result.return_values as any })
+          }
+        })
       )
     }
   }
@@ -69,10 +118,14 @@ export class ContractFunctionInteractionItemComponent implements OnInit {
         function_params: this.functionManifest.inputs.map(input => { 
           return { type: input.solidity_type as FunctionArgumentType, value: this.form.get(input.solidity_name)?.value } 
         })
-      }).pipe(tap(result => { this.resultSub.next({ readOnly: false, result: [result.redirect_url] }) }))
+      }).pipe(tap(result => this.writeResultSub.next(result.redirect_url) ))
     }
   }
 
 }
 
-type ResultType = { readOnly: boolean, result: string[] }
+export type ResultType = PrimitiveResultContainer | StructResultContainer
+
+type PrimitiveResultContainer  = { kind: "primitive", value: string[] }
+type StructResultContainer = { kind: "struct", value: string[][] }
+

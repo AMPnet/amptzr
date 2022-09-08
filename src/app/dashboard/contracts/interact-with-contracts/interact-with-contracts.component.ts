@@ -76,44 +76,4 @@ export class InteractWithContractsComponent {
     this.location.back()
   }
 
-  callContractFunction(func: FunctionManifest, group: FormGroup) {
-    return () => {
-      if(func.read_only) {
-        return this.callReadOnlyFunction(func)
-      } else  {
-        return this.createWriteFunctionCallRequest(func, group)
-      }
-    }
-  }
-
-  callReadOnlyFunction(func: FunctionManifest) {
-    return from(this.sessionQuery.provider.getBlockNumber()).pipe(
-      switchMap(blockNumber => {
-        return this.deploymentService.callReadOnlyFunction(this.contractDeploymentID, {
-          block_number: blockNumber,
-          function_name: func.solidity_name,
-          function_params: [],
-          output_params: func.outputs.map(x => x.solidity_type),
-          caller_address: this.preferenceQuery.getValue().address
-        }).pipe(tap((res) => {
-          this.resultsBufferSub.next(
-            this.resultsBufferSub.getValue().set(func.solidity_name, res.return_values)
-          )
-        }))
-      })
-    )
-  }
-
-  createWriteFunctionCallRequest(func: FunctionManifest, group: FormGroup) {
-      return this.deploymentService.createWriteFunctionCallRequest(this.contractDeploymentID, {
-        eth_amount: 0,
-        function_name: func.solidity_name,
-        function_params: []
-      }).pipe(tap((res) => {
-        this.resultsBufferSub.next(
-          this.resultsBufferSub.getValue().set(func.solidity_name, [res.redirect_url])
-        )
-      }))
-  }
-
 }

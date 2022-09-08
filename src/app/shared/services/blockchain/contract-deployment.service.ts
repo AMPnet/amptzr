@@ -149,7 +149,7 @@ export interface ReadOnlyFunctionCallData {
         type: FunctionArgumentType,
         value: string
     }[],
-    output_params: string[],
+    output_params: string[] | { type: string, elems: string[] }[]
     caller_address: string
 }
 

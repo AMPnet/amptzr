@@ -182,7 +182,8 @@ text-gray-700 uppercase border-b-4 border-transparent cursor-pointer">
         </div>
         <div class="w-2/12 text-sm">
           {{ contract.contract_address | addrShort}}
-          <app-explorer-link [value]="contract.contract_address"></app-explorer-link>
+          <app-explorer-link class="ml-2" [value]="contract.contract_address"></app-explorer-link>
+          <app-value-copy class="ml-2" [value]="contract.contract_address"></app-value-copy>
         </div>
       </div>
       </ng-container>
