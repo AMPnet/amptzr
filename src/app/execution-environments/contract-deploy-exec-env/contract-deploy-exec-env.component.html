@@ -37,22 +37,26 @@
                         {{issuer.infoData.name}}
                     </span>
                     <div class="flex flex-row
-                     items-center justify-center mt-2">
+                     items-center justify-center mt-3">
                         <div class="text-sm mr-1">
-                            Contract address:
+                            Deployed contract address:
                         </div>
                         <div class="text-sm">
                             {{deploymentRequest.contract_address | addrShort}}
-                            <app-explorer-link type="token" [value]="deploymentRequest.contract_address">
+                            <app-explorer-link class="ml-2" type="token" [value]="deploymentRequest.contract_address">
                             </app-explorer-link>
                         </div>
                     </div>
                 </div>
             </div>
             <div class="rounded-lg mt-4  text-gray-700 font-medium">
-                <div class="mb-4 text-xs font-semibold text-center uppercase tracking-wider"
+                <div class="mb-4 text-xs font-medium text-center uppercase 
+                w-full flex flex-row items-center justify-center"
                     *ngIf="deploymentRequest.status === 'SUCCESS'">
-                    Deployed contract</div>
+                    <hr class="w-1/3">
+                    <div class="mx-3 w-1/3 text-gray-500">Deployed contract</div>
+                    <hr class="w-1/3">
+                </div>
                 <div *ngIf="manifest$ | async as manifest" class="rounded-lg flex flex-row mt-4 items-start text-gray-700">
                     <div class="flex flex-row items-start">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" 

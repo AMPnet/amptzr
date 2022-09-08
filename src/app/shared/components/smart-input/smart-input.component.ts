@@ -27,9 +27,9 @@ export class SmartInputComponent implements OnInit {
   onTouched: () => void = () => {}
 
   @Input() recommendedTypes: string[] = []
-  inputType: InputType = "CONTRACT"
   @Input() rootForm!: FormGroup
   @Input() controlName!: string
+  inputType: InputType = "CONTRACT"
 
   selectedSub = new BehaviorSubject<string | null>(null)
   selected$ = this.selectedSub.asObservable().pipe(

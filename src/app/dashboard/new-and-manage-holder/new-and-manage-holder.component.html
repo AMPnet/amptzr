@@ -135,7 +135,7 @@ text-gray-700 uppercase border-b-4 border-transparent cursor-pointer">
       <ng-container *ngIf="requests.length > 0; else emptyList">
         <div *ngFor="let request of requests; let i = index">
           <div class="py-2 pl-4 border-b font-medium flex flex-row items-center text-sm text-gray-700 border-x">
-            <div class="w-3/12 text-sm">
+            <div class="w-3/12 text-sm font-medium">
               {{request.alias}}
             </div>
             <div class="w-4/12">
@@ -176,7 +176,7 @@ text-gray-700 uppercase border-b-4 border-transparent cursor-pointer">
       <ng-container *ngIf="deployedContracts.length > 0; else emptyList">
         <div *ngFor="let contract of deployedContracts" routerLink="interact/{{contract.contract_id}}/{{contract.id}}"
         class="border-gray-100 hover:bg-violet-100 border-b border-x p-4 flex flex-row cursor-pointer">
-        <div class="w-3/12 text-sm">{{ contract.alias }}</div>
+        <div class="w-3/12 text-sm font-medium">{{ contract.alias }}</div>
         <div class="w-5/12 text-sm">
           {{ contract.contract_id }}
         </div>
