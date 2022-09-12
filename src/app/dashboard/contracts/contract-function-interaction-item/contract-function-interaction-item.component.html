@@ -149,7 +149,8 @@
                         </div>
                     </button>
     
-                    <button [routerLink]="result | issuerPath" class="text-cyan-600 border-cyan-600 hover:bg-cyan-600 ml-2
+                    <button (click)="copyToClipboard(result)"
+                    class="text-cyan-600 border-cyan-600 hover:bg-cyan-600 ml-2
                      hover:text-white transition-all px-4 py-2 rounded-full text-xs uppercase
                       border font-semibold flex flex-row items-center">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"

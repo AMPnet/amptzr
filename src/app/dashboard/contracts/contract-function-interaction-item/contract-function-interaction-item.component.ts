@@ -1,7 +1,7 @@
 import { Component, OnInit, ChangeDetectionStrategy, Input } from '@angular/core'
 import { FormControl, FormGroup, Validators } from '@angular/forms'
 import { boolean } from 'hardhat/internal/core/params/argumentTypes'
-import { BehaviorSubject, combineLatest, from, map, Observable, switchMap, tap } from 'rxjs'
+import { BehaviorSubject, combineLatest, delay, from, map, Observable, switchMap, tap } from 'rxjs'
 import { PreferenceQuery } from 'src/app/preference/state/preference.query'
 import { SessionQuery } from 'src/app/session/state/session.query'
 import { FunctionManifest } from 'src/app/shared/services/backend/contract-manifest.service'
@@ -20,6 +20,9 @@ export class ContractFunctionInteractionItemComponent implements OnInit {
   
   isSelectedSub = new BehaviorSubject(false)
   isSelected$ = this.isSelectedSub.asObservable()
+
+  txCopyLabelSub = new BehaviorSubject("Copy to clipboard")
+  txCopyLabel$ = this.txCopyLabelSub.asObservable()
 
   form = new FormGroup({})
 
@@ -72,6 +75,14 @@ export class ContractFunctionInteractionItemComponent implements OnInit {
   invalidateResult() {
     this.resultSub.next(null)
     this.writeResultSub.next(undefined)
+  }
+
+  copyToClipboard(result: string) {
+    from(navigator.clipboard.writeText(result)).pipe(
+      tap(() => { this.txCopyLabelSub.next("Copied") }),
+      delay(200),
+      tap(() => { this.txCopyLabelSub.next("Copy to clipboard") })
+    )
   }
 
   executeReadFunction() {
