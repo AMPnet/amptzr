@@ -68,6 +68,11 @@ export class ContractFunctionInteractionItemComponent implements OnInit {
   toggle() {
     this.isSelectedSub.next(!this.isSelectedSub.value)
   }
+  
+  invalidateResult() {
+    this.resultSub.next(null)
+    this.writeResultSub.next(undefined)
+  }
 
   executeReadFunction() {
     return () => {
