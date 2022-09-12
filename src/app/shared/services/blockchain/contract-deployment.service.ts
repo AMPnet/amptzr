@@ -157,6 +157,7 @@ export interface ReadOnlyFunctionResponse {
     deployed_contract_id: string,
     contract_address: string,
     block_number: number,
+    output_params: any,
     timestamp: string,
     return_values: any[]
 }

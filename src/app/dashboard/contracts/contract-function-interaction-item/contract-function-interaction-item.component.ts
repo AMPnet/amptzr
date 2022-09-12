@@ -5,7 +5,7 @@ import { BehaviorSubject, combineLatest, from, map, Observable, switchMap, tap }
 import { PreferenceQuery } from 'src/app/preference/state/preference.query'
 import { SessionQuery } from 'src/app/session/state/session.query'
 import { FunctionManifest } from 'src/app/shared/services/backend/contract-manifest.service'
-import { ContractDeploymentService, FunctionArgumentType } from 'src/app/shared/services/blockchain/contract-deployment.service'
+import { ContractDeploymentService, FunctionArgumentType, ReadOnlyFunctionResponse } from 'src/app/shared/services/blockchain/contract-deployment.service'
 
 @Component({
   selector: 'app-contract-function-interaction-item',
@@ -25,28 +25,22 @@ export class ContractFunctionInteractionItemComponent implements OnInit {
 
   formFinishedSub = new BehaviorSubject(false)
 
-  resultSub = new BehaviorSubject<ResultType | null>(null)
+  resultSub = new BehaviorSubject<ReadOnlyFunctionResponse | null>(null)
   result$ = this.resultSub.asObservable()
 
   structResult$ = this.result$.pipe(
     map(res => {
-      switch (res?.kind) {
-        case "struct":
-          return res?.value
-        default:
-          return null
-      }
-    }), tap(res => console.log(res))
+      if(res?.output_params?.at(0)?.type !== undefined) {
+        return res?.return_values.at(0)
+      } else { return null }
+    })
   )
 
   primitiveResult$ = this.result$.pipe(
     map(res => {
-      switch(res?.kind) {
-        case "primitive":
-          return res?.value
-        default:
-          return null
-      }
+      if(res?.output_params?.at(0)?.type === undefined) {
+        return res?.return_values
+      } else { return null }
     })
   )
 
@@ -99,11 +93,7 @@ export class ContractFunctionInteractionItemComponent implements OnInit {
             output_params: outputParams
           })
         }), tap(result => {
-          if(result.return_values.at(0).length > 0) {
-            this.resultSub.next({ kind: 'struct', value: result.return_values[0]})
-          } else {
-            this.resultSub.next({ kind: 'primitive', value: result.return_values})
-          }
+          this.resultSub.next(result)
         })
       )
     }

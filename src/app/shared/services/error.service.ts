@@ -98,7 +98,7 @@ export class ErrorService {
           action$ = this.displayMessage('Something went wrong.')
         }
       } else if (err?.message?.includes('cannot estimate gas')) {
-        action$ = this.displayMessage(this.outOfGasMessage)
+        action$ = this.displayInfoMessage(this.cannotEstimateGas(err))
       }
 
       if (completeAfterAction) {
@@ -113,12 +113,23 @@ export class ErrorService {
     }
   }
 
+  private displayInfoMessage(message: string) {
+    return this.dialogService.infoWithOnConfirm({
+      message: message.replace('execution reverted:', '').trim(),
+      cancelable: false
+    })
+  }
+
   private displayMessage(message: string) {
     return this.dialogService.error({ message })
   }
 
   private get outOfGasMessage() {
     return `You don't have enough gas token to execute this transaction. Click the 'Top Up' button on the top to buy more gas!`
+  }
+
+  private cannotEstimateGas(err: any) {
+    return `You are not able to execute this transaction. This is the error: \n ${err.error.error.message}`
   }
 }
 

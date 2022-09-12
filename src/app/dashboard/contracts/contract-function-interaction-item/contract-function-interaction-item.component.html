@@ -67,9 +67,9 @@
 
             <div *ngIf="structResult$ | async as result" class="flex px-2 flex-row w-full items-center">
                 <div class="flex flex-col justify-between py-2 mt-2 w-full">
-                    <div class="mb-[0.075rem] text-violet-900 text-sm font-semibold uppercase">{{functionManifest.outputs[0].name}}
+                    <div class="pb-[0.075rem] px-4 pt-4 rounded-t-lg bg-violet-100 text-violet-900 text-sm font-semibold uppercase">{{functionManifest.outputs[0].name}}
                     </div>
-                    <div class="mb-2 text-violet-900 text-xs">{{functionManifest.outputs[0].description}}</div>
+                    <div class="pb-2 px-4 border-b border-violet-200 bg-violet-100 text-violet-900 text-xs">{{functionManifest.outputs[0].description}}</div>
 
                     <div class=" overflow-x-scroll">
                         <table class="border rounded-lg w-full border-violet-100">
@@ -79,11 +79,20 @@
                                     {{param.name}}
                                 </td>
                             </tr>
-                            <tr *ngFor="let res of result" class="border-t  border-violet-100 py-1">
-                                <td class="py-2 px-4 text-violet-900" *ngFor="let resItem of res">
-                                    {{resItem | addrShort:10:10}}
-                                </td>
-                            </tr>
+                            <ng-container *ngIf="result.length > 0; else noItems">
+                                <tr *ngFor="let res of result" class="border-t  border-violet-100 py-1">
+                                    <td class="py-2 px-4 font-medium text-violet-900" *ngFor="let resItem of res">
+                                        {{resItem | addrShort:10:10}}
+                                    </td>
+                                </tr>
+                            </ng-container>
+                            <ng-template #noItems>
+                                <div class="py-2 w-full uppercase font-semibold
+                                text-center flex flex-row justify-center">
+                                    No items
+                                </div>
+                            </ng-template>
+                            
                         </table>
                     </div>
                     
