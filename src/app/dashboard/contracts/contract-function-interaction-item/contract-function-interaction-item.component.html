@@ -25,17 +25,17 @@
             </div>
         </div>
     </div>
-    <div class="flex flex-col px-2 mt-1" *ngIf="(isSelected$ | async)">
-        <ng-container>
-            <div class="flex flex-col mb-2" *ngFor="let input of functionManifest.inputs">
+    <div class="flex flex-col mt-1" *ngIf="(isSelected$ | async)">
+        <ng-container *ngIf="(hasResult$ | async) === false">
+            <div class="flex flex-col mb-2 px-2" *ngFor="let input of functionManifest.inputs">
                 <div class="font-semibold text-sm">{{input.name}}</div>
-                <div class="mt-[0.125rem] mb-1 text-xs text-gray-500">{{input.description}}</div>
+                <div class="mt-[0.075rem] mb-1 text-xs text-gray-500">{{input.description}}</div>
                 <app-smart-input [rootForm]="form" [controlName]="input.solidity_name"
                     [formFinishedLoadingSub]="formFinishedSub"></app-smart-input>
             </div>
         </ng-container>
 
-        <div *ngIf="(hasResult$ | async) === false" class="flex flex-row mt-2 w-1/2">
+        <div *ngIf="(hasResult$ | async) === false" class="flex flex-row mt-1 w-1/2 px-2">
             <button [disabled]="!form.valid" *ngIf="functionManifest.read_only" app-action-button text="Read value"
                 [onClick]="executeReadFunction().bind(this)"
                 class="w-1/2 mr-1 bg-violet-700 rounded-full py-2 text-white font-semibold"></button>
@@ -50,8 +50,8 @@
 
         <div class="rounded-lg flex w-full flex-row text-sm">
 
-            <div *ngIf="primitiveResult$ | async as result" class="flex flex-row w-full items-center text-cyan-600">
-                <div class="flex flex-col py-2 px-3 mt-2 w-full border border-cyan-600/[.2] rounded-lg">
+            <div *ngIf="primitiveResult$ | async as result" class="flex flex-row w-full items-center text-violet-900">
+                <div class="flex flex-col py-2 mt-2 w-full rounded-lg bg-violet-100 px-3">
                     <div *ngFor="let res of result; let i = index" class="font-semibold flex flex-row items-center">
                         <div>{{functionManifest.outputs[i].name}}:</div>
                         <div class="ml-1 font-normal flex flex-row items-center">
@@ -61,26 +61,26 @@
                             </div>
                         </div>
                     </div>
-                    <div class="mt-[0.125rem] text-xs tracking-wide">{{functionManifest.outputs[0].description}}</div>
+                    <div class="mt-[0.075rem] text-xs tracking-wide">{{functionManifest.outputs[0].description}}</div>
                 </div>
             </div>
 
-            <div *ngIf="structResult$ | async as result" class="flex flex-row w-full items-center text-cyan-600">
+            <div *ngIf="structResult$ | async as result" class="flex px-2 flex-row w-full items-center">
                 <div class="flex flex-col justify-between py-2 mt-2 w-full">
-                    <div class="mb-1 text-gray-700 text-sm font-semibold uppercase">{{functionManifest.outputs[0].name}}
+                    <div class="mb-[0.075rem] text-violet-900 text-sm font-semibold uppercase">{{functionManifest.outputs[0].name}}
                     </div>
-                    <div class="mb-2 text-gray-700 text-xs">{{functionManifest.outputs[0].description}}</div>
+                    <div class="mb-2 text-violet-900 text-xs">{{functionManifest.outputs[0].description}}</div>
 
                     <div class=" overflow-x-scroll">
-                        <table class="border rounded-lg w-full">
-                            <tr class="px-4 rounded-t-lg border-x border-t">
-                                <td class="py-2 px-4 font-semibold text-cyan-900"
+                        <table class="border rounded-lg w-full border-violet-100">
+                            <tr class="px-4 rounded-t-lg border-x border-t border-violet-100">
+                                <td class="py-2 px-4 font-semibold text-violet-900 bg-violet-100"
                                  *ngFor="let param of functionManifest.outputs[0].parameters">
                                     {{param.name}}
                                 </td>
                             </tr>
-                            <tr *ngFor="let res of result" class="border-t  py-1">
-                                <td class="py-2 px-4" *ngFor="let resItem of res">
+                            <tr *ngFor="let res of result" class="border-t  border-violet-100 py-1">
+                                <td class="py-2 px-4 text-violet-900" *ngFor="let resItem of res">
                                     {{resItem | addrShort:10:10}}
                                 </td>
                             </tr>

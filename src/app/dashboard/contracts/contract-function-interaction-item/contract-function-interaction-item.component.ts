@@ -80,7 +80,7 @@ export class ContractFunctionInteractionItemComponent implements OnInit {
       let outputParams: string[] | { type: string, elems: string[] }[] = []
       if(this.functionManifest.outputs.at(0)?.solidity_type === 'tuple[]') {
         outputParams = [{
-          type: 'struct[]',
+          type: 'tuple[]',
           elems: this.functionManifest.outputs[0].parameters!.map(param => param.solidity_type)
         }]
       } else {
@@ -99,11 +99,10 @@ export class ContractFunctionInteractionItemComponent implements OnInit {
             output_params: outputParams
           })
         }), tap(result => {
-          const splitValues = result.return_values[0].split("],").map(x => x.replaceAll('[', '').replaceAll(']', '')).map(x => x.split(',')).map(arr => arr.map(x => x.replace(' ', ''))) 
-          if((splitValues !== undefined) && (splitValues.length > 1)) {
-            this.resultSub.next({ kind: "struct", value: splitValues } )
+          if(result.return_values.at(0).length > 0) {
+            this.resultSub.next({ kind: 'struct', value: result.return_values[0]})
           } else {
-            this.resultSub.next({ kind: "primitive", value: result.return_values as any })
+            this.resultSub.next({ kind: 'primitive', value: result.return_values})
           }
         })
       )

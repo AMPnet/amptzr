@@ -158,7 +158,7 @@ export interface ReadOnlyFunctionResponse {
     contract_address: string,
     block_number: number,
     timestamp: string,
-    return_values: string[]
+    return_values: any[]
 }
 
 export interface FunctionCallData {
