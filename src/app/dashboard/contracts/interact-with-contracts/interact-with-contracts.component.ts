@@ -22,12 +22,7 @@ export class InteractWithContractsComponent {
   selectedIndexSub = new BehaviorSubject(-1)
   selectedIndex$ = this.selectedIndexSub.asObservable()
 
-  contract$ = this.manifestService.getByID(this.contractManifestID).pipe(
-    map((result) => {
-      let sortedFunctions = result.functions.sort((a, b) => { return a.inputs.length - b.inputs.length })
-      return { ...result, functions: sortedFunctions }
-    })
-  )
+  contract$ = this.manifestService.getByID(this.contractManifestID)
 
   formFinishedLoadingSub = new BehaviorSubject(false)
 

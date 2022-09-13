@@ -4,7 +4,7 @@
     mt-4 mr-1 rounded-lg cursor-pointer">
         <svg [class.!opacity-100]="(result$ | async) || (writeResult$ | async)"  
         xmlns="http://www.w3.org/2000/svg" fill="none" 
-        viewBox="0 0 24 24" stroke-width="1.5" 
+        viewBox="0 0 24 24" stroke-width="2" 
         stroke="currentColor" 
         class="w-4 h-4 opacity-0 transition-width">
             <path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99" />
@@ -43,7 +43,9 @@
                 <div class="flex flex-col mb-2 px-2" *ngFor="let input of functionManifest.inputs">
                     <div class="font-semibold text-sm">{{input.name}}</div>
                     <div class="mt-[0.075rem] mb-1 text-xs text-gray-500">{{input.description}}</div>
-                    <app-smart-input [rootForm]="form" [controlName]="input.solidity_name"
+                    <app-smart-input [rootForm]="form" [solidityType]="input.solidity_type"
+                    [recommendedTypes]="input.recommended_types"
+                    [controlName]="input.solidity_name"
                         [formFinishedLoadingSub]="formFinishedSub"></app-smart-input>
                 </div>
             </ng-container>
@@ -80,9 +82,29 @@
     
                 <div *ngIf="structResult$ | async as result" class="flex px-2 flex-row w-full items-center">
                     <div class="flex flex-col justify-between py-2 mt-2 w-full">
-                        <div class="pb-[0.075rem] px-4 pt-4 rounded-t-lg bg-violet-100 text-violet-900 text-sm font-semibold uppercase">{{functionManifest.outputs[0].name}}
+                        <div class="pb-2 px-4 pt-4 rounded-t-lg bg-violet-100 text-violet-900 flex 
+                        flex-row items-start border-b border-violet-200
+                        text-sm font-semibold ">
+                            <div class="mr-2">
+                                <svg xmlns="http://www.w3.org/2000/svg" 
+                                fill="none" 
+                                viewBox="0 0 24 24" 
+                                stroke-width="1.5" 
+                                stroke="currentColor" 
+                                class="w-6 h-6">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M14.25 9.75L16.5 12l-2.25 2.25m-4.5 0L7.5 12l2.25-2.25M6 20.25h12A2.25 2.25 0 0020.25 18V6A2.25 2.25 0 0018 3.75H6A2.25 2.25 0 003.75 6v12A2.25 2.25 0 006 20.25z" />
+                                </svg>
+                            </div>
+                            <div class="flex flex-col ">
+                                <div class="uppercase">
+                                    {{functionManifest.outputs[0].name}}
+                                </div>
+                                <div class="text-xs font-normal">
+                                    {{functionManifest.outputs[0].description}}
+                                </div>
+                            </div>
                         </div>
-                        <div class="pb-2 px-4 border-b border-violet-200 bg-violet-100 text-violet-900 text-xs">{{functionManifest.outputs[0].description}}</div>
+                        <!-- <div class="pb-2 px-4 border-b border-violet-200 bg-violet-100 text-violet-900 text-xs">{{functionManifest.outputs[0].description}}</div> -->
     
                         <div class=" overflow-x-scroll">
                             <table class="border rounded-lg w-full border-violet-100">

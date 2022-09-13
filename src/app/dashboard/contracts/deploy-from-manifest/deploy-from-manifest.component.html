@@ -77,6 +77,8 @@
             <small class="text-xs text-gray-500 w-1/2">{{input.description}}</small>
             <app-smart-input inputType="TEXT" [rootForm]="deployContractForm"
               [formFinishedLoadingSub]="finishedLoadingFormSub"
+              [solidityType]="input.solidity_type"
+              [recommendedTypes]="input.recommended_types"
               controlName="{{input.solidity_name}}" class="mt-2"></app-smart-input>
         </div>
         </div>
@@ -89,6 +91,8 @@
           <div class="font-semibold">{{input.name}}</div>
           <small class="w-1/2">{{input.description}}</small>
           <app-smart-input [rootForm]="deployContractForm"
+            [recommendedTypes]="input.recommended_types"
+            [solidityType]="input.solidity_type"
             [formFinishedLoadingSub]="finishedLoadingFormSub"
             controlName="{{input.solidity_name}}" class="w-full"></app-smart-input>
       </div>

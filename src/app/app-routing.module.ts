@@ -71,6 +71,7 @@ const appRoutes: Routes = [
   { path: 'deploy-contract/:id', component: ContractDeployExecEnvComponent }, 
   { path: 'request-function-call/:id/action', component: FunctionCallExecEnvComponent},
   { path: 'connect/:id', component: RequestWalletActionComponent },
+  { path: 'request-send/:id/action', component: RequestSendActionComponent },
   {
     path: '',
     canActivate: [AuthGuard],

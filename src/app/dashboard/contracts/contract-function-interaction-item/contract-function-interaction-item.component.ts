@@ -78,11 +78,9 @@ export class ContractFunctionInteractionItemComponent implements OnInit {
   }
 
   copyToClipboard(result: string) {
-    from(navigator.clipboard.writeText(result)).pipe(
-      tap(() => { this.txCopyLabelSub.next("Copied") }),
-      delay(200),
-      tap(() => { this.txCopyLabelSub.next("Copy to clipboard") })
-    )
+    navigator.clipboard.writeText(result)
+    this.txCopyLabelSub.next("Copied")
+    setTimeout(() => { this.txCopyLabelSub.next("Copy to clipboard")  }, 500)
   }
 
   executeReadFunction() {
