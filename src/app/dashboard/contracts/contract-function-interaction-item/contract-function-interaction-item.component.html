@@ -1,11 +1,17 @@
-<div class="flex flex-row items-start h-full">
-    <div *ngIf="(result$ | async) || (writeResult$ | async)" (click)="invalidateResult()"
-    class="text-violet-700 h-full hover:text-violet-900 px-2 mt-4 mr-1 rounded-lg cursor-pointer">
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
+<div class="flex flex-row items-start h-full transition-width">
+    <div [class.width-mod]="(result$ | async) || (writeResult$ | async)" (click)="invalidateResult()"
+    class="text-violet-700 h-full w-0 hover:text-violet-900 transition-width
+    mt-4 mr-1 rounded-lg cursor-pointer">
+        <svg [class.!opacity-100]="(result$ | async) || (writeResult$ | async)"  
+        xmlns="http://www.w3.org/2000/svg" fill="none" 
+        viewBox="0 0 24 24" stroke-width="1.5" 
+        stroke="currentColor" 
+        class="w-4 h-4 opacity-0 transition-width">
             <path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99" />
         </svg>          
     </div>
-    <div class="w-full bg-violet-50 rounded-lg px-2 py-2 flex flex-col text-gray-700">
+    <div [class.width-main]="(result$ | async) || (writeResult$ | async)"
+    class="w-full transition-width bg-violet-50 rounded-lg px-2 py-2 flex flex-col text-gray-700">
         <div (click)="toggle()"
             class="flex flex-row justify-between cursor-pointer hover:bg-violet-100 px-2 py-1 rounded-lg">
             <div class="flex flex-col w-10/12">
@@ -160,7 +166,7 @@
                         </svg>
     
                         <div class="ml-2">
-                            Copy transaction link
+                            {{txCopyLabel$ | async}}
                         </div>
                     </button>
     
