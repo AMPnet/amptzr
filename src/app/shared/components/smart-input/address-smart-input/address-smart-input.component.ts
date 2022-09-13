@@ -1,6 +1,7 @@
 import { Component, OnInit, ChangeDetectionStrategy, Input, ViewChild, ElementRef } from '@angular/core'
 import { FormControl, FormGroup, Validators } from '@angular/forms'
 import { BehaviorSubject } from 'rxjs'
+import { AddressBookService } from 'src/app/dashboard/address-book/address-book.service'
 import { PreferenceQuery } from 'src/app/preference/state/preference.query'
 import { UserService } from 'src/app/shared/services/user.service'
 
@@ -12,7 +13,9 @@ import { UserService } from 'src/app/shared/services/user.service'
 })
 export class AddressSmartInputComponent {
 
-  inputs = [1,2,3,4,5,6,7]
+  addresses$ = this.addressBookService.getAddressBookEntriesForAddress(
+    this.preferenceQuery.getValue().address
+  )
 
   custmInputForm = new FormGroup({
     customAddressInput: new FormControl('', [Validators.required])
@@ -22,11 +25,16 @@ export class AddressSmartInputComponent {
 
   @Input() selectedSub?: BehaviorSubject<string | null>
 
-  constructor(private preferenceQuery: PreferenceQuery) { }
+  constructor(private preferenceQuery: PreferenceQuery,
+    private addressBookService: AddressBookService) { }
 
   myAddressClicked() {
      this.custmInputForm.controls
         .customAddressInput.setValue(this.preferenceQuery.getValue().address)
+  }
+
+  addressBookEntryClicked(address: string) {
+    this.selectedSub?.next(address)
   }
 
   confirmAddressClicked() {

@@ -1,4 +1,8 @@
 import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core'
+import { FormControl, FormGroup, Validators } from '@angular/forms'
+import { map, Observable, tap } from 'rxjs'
+import { PreferenceQuery } from 'src/app/preference/state/preference.query'
+import { AddressBookResponseData, AddressBookResponseDataEntries, AddressBookService } from './address-book.service'
 
 @Component({
   selector: 'app-address-book',
@@ -7,35 +11,55 @@ import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core'
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AddressBookComponent {
-  addresses: AddressModel[] = [
-    {
-      address: '0x40dbE1593C62808BCf9C5FbaefA0AD5De827416f',
-      alias: 'Mislav Ledger',
-      phone: '+385 95 354 6106',
-      email: 'mislav@ampnet.io',
-    },
-    {
-      address: '0x40dbE1593C62808BCf9C5FbaefA0AD5De827416f',
-      alias: 'Filip MetaMask',
-      phone: '',
-      email: 'filip@ampnet.io',
-    },
-  ]
+  
+  addresses$ = this.fetchAddresses()
+
+  addressBookEntryForm = new FormGroup({
+    wallet: new FormControl('', [Validators.required]),
+    alias: new FormControl('', [Validators.required]),
+    phone: new FormControl('', []),
+    email: new FormControl('', [])
+  })
+
   activeTab = TabType.AddressBook
   Tab = TabType
 
-  constructor() {}
+  addEntryClicked() {
+    return () => {
+      const addressBookControls = this.addressBookEntryForm.controls
+      return this.addressBookService.addAddressBookEntry(
+        addressBookControls.alias.value,
+        addressBookControls.wallet.value,
+        addressBookControls.phone.value,
+        addressBookControls.email.value
+      ).pipe(tap(_ => { 
+        this.activeTab = TabType.AddressBook
+        this.addresses$ = this.fetchAddresses()
+      }))
+    }
+  }
+
+  fetchAddresses(): Observable<AddressBookResponseDataEntries> {
+    return this.addressBookService.getAddressBookEntriesForAddress(
+      this.preferenceQuery.getValue().address
+    )
+  }
+
+  deleteAddressBookEntry(id: string) {
+    return () => {
+      return this.addressBookService.deleteAddressBookEntryByID(id).pipe(tap(_=> {
+        this.activeTab = TabType.AddressBook
+        this.addresses$ = this.fetchAddresses()
+      }))
+    }
+  }
+
+  constructor(private addressBookService: AddressBookService,
+    private preferenceQuery: PreferenceQuery) {}
 
   tabClicked(tab: TabType) {
     this.activeTab = tab
   }
-}
-
-interface AddressModel {
-  address: string
-  alias: string
-  phone: string
-  email: string
 }
 
 enum TabType {
