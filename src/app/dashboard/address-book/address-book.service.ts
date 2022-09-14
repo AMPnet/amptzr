@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core"
-import { BackendHttpClient } from "src/app/shared/services/backend/backend-http-client.service";
-import { environment } from "src/environments/env.base";
+import { BackendHttpClient } from "src/app/shared/services/backend/backend-http-client.service"
+import { environment } from "src/environments/env.base"
 
 
 @Injectable({

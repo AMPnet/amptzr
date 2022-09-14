@@ -1,11 +1,11 @@
 <div class="flex flex-col scr-w">
 
-    <div class="font-medium mx-2 mb-2 text-sm flex flex-row justify-center text-gray-500">Enter custom address</div>
+    <div class="font-medium mx-2 mb-2 text-xs uppercase flex flex-row text-gray-500">Enter custom address</div>
     <div class="flex ml-2 flex-row items-center justify-start">
         <form [formGroup]="custmInputForm" class="w-9/12 flex flex-row justify-between items-center border border-gray-200 rounded-lg">
             <input formControlName="customAddressInput" class="w-9/12 text-xs !ring-0 focus:border-transparent focus:outline-0 rounded-lg border-none rounded-l-lg" type="text">
-            <button (click)="myAddressClicked()" class="px-4 font-medium mr-3 py-1 text-xs text-violet-700 font-semibold cursor-pointer
-            hover:bg-violet-700 hover:text-white border-violet-700 border rounded-full">
+            <button (click)="myAddressClicked()" class="font-medium mr-2 py-1 text-xs text-violet-700 cursor-pointer
+            hover:text-violet-900 rounded-full">
                 My address
             </button>
         </form>
@@ -15,21 +15,21 @@
         </div>
     </div>
 
-    <div class="m-2 text-sm font-medium flex flex-row justify-center mt-8 text-gray-500">Select from address book</div>
+    <div class="m-2 text-xs uppercase font-medium flex flex-row mt-8 text-gray-500">Select from address book</div>
 
     <div class="flex flex-col max-h-[300px] overflow-y-scroll">
-        <div class="flex flex-row justify-between text-violet-700 mt-2 mx-2 font-medium px-2">
-            <div>
+        <div class="flex flex-row justify-between text-violet-700 mt-2 mx-2 font-medium">
+            <div class="text-xs uppercase font-semibold">
                 Alias
             </div>
-            <div>
+            <div class="text-xs uppercase font-semibold">
                 Address
             </div>
         </div>
         <div *ngIf="addresses$ | async as addresses; else loading">
             <div *ngFor="let entry of addresses.entries" 
             (click)="addressBookEntryClicked(entry.address)" class="flex
-             hover:bg-gray-100 cursor-pointer rounded-lg flex-row m-2 py-2 px-2 text-sm">
+             hover:bg-gray-100 cursor-pointer rounded-lg flex-row my-2 py-2 px-2 text-sm">
                 <div class="w-1/2">{{entry.alias}}</div>
                 <div class="w-1/2 flex flex-row justify-end">{{entry.address | addrShort}}</div>
             </div>

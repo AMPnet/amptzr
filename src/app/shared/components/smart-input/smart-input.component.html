@@ -6,9 +6,17 @@
     [value]="selected$ | async"/>
 
 <div *ngIf="inputType === 'DATE_TIME'">
+    <input class="w-0 h-0 hidden rounded-lg border-gray-200"
+    [formControl]="controlAsForm(controlName)"
+    autocomplete="off"
+    type="number">
+</div>
+
+<div *ngIf="inputType === 'DATE_TIME'">
     <input class="w-full rounded-lg border-gray-200"
     autocomplete="off"
-     type="datetime-local">
+    (input)="newValue($event)"
+    type="datetime-local">
 </div>
 
 
@@ -18,8 +26,9 @@
         w-screen h-screen bg-black/[.4] 
         transition-backdrop flex flex-row items-center justify-center">
         <div class="bg-white rounded-lg shadow-xl flex flex-col max-w-5xl p-4">
-            <div class="w-full flex flex-row justify-between mb-2">
+            <div class="w-full flex flex-row justify-between items-center mb-4">
                 <div></div>
+                <div class="font-semibold text-gray-700 uppercase text-xs">Smart input</div>
                 <button class="hover:text-violet-800" (click)="toggleInput()">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
                         stroke="currentColor" stroke-width="2">

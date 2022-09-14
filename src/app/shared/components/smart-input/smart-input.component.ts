@@ -52,6 +52,19 @@ export class SmartInputComponent implements OnInit {
     this.formFinishedLoading$ = this.formFinishedLoadingSub.asObservable()
     this.formFinishedLoading$.pipe(tap(_ => console.log(this.rootForm)))
     this.inputType = this.generateInternalInputType(this.solidityType, this.recommendedTypes)
+
+    if(this.inputType === 'DATE_TIME') { this.handleDateTime() }
+  }
+
+  newValue(event: Event) {
+    const dateString: string = (event.target as any).value
+    let date = new Date(dateString)
+    const unixSeconds = Math.floor(date.valueOf() / 1000)
+    this.rootForm.controls[this.controlName].setValue(unixSeconds)
+  }
+
+  handleDateTime() {
+    
   }
 
   generateInternalInputType(solidityType: string, recommendedTypes: string[]): InputType {

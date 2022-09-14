@@ -1,3 +1,5 @@
 .scr-w {
-    width: 40vw;
+    max-width: 55vw;
+    width: 100%;
+    min-width: 500px;
 }

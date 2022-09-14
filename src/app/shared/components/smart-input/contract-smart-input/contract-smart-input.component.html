@@ -1,5 +1,5 @@
 <ng-container *ngIf="openTab$ | async as openTab">
-    <div *ngIf="contracts$ | async as contracts; else loading" class="flex flex-col">
+    <div *ngIf="contracts$ | async as contracts; else loading" class="flex flex-col min-w-cont">
         <div class="flex flex-row tracking-wide
          justify-center uppercase text-sm mt-4 font-medium text-gray-500">
             <div class="border-b-[3px]
@@ -22,22 +22,22 @@
         <input *ngIf="contracts.requests.length > 0;" class="w-full border-gray-200 rounded-lg mb-4"
             placeholder="Search" type="text">
 
-        <div *ngIf="contracts.requests.length > 0;" class="px-2 flex flex-row mb-2">
-            <div class="font-medium text-violet-700 w-3/12">Alias</div>
-            <div class="font-medium text-violet-700 w-3/12">Address</div>
-            <div class="font-medium text-violet-700 w-6/12">Type</div>
+        <div *ngIf="contracts.requests.length > 0;" class="px-2 flex flex-row mb-2 justify-between w-full">
+            <div class="font-semibold text-violet-700 text-xs uppercase w-5/12">Alias</div>
+            <div class="font-semibold text-violet-700 text-xs uppercase w-4/12">Address</div>
+            <div class="font-semibold text-violet-700 text-xs uppercase w-3/12 text-end">Type</div>
         </div>
-        <div *ngIf="contracts.requests.length > 0; else emptyContracts">
-            <div class="px-2 flex flex-row items-center text-gray-700 cursor-pointer hover:bg-gray-100"
+        <div class=" max-h-80 overflow-y-scroll w-full" *ngIf="contracts.requests.length > 0; else emptyContracts">
+            <div class="px-2 flex flex-row justify-between items-center text-gray-700 cursor-pointer hover:bg-gray-100 w-full"
                 *ngFor="let contract of contracts.requests; let i = index" (click)="selectItem(contract)">
-                <div class="font-medium text-sm my-3 w-3/12">
+                <div class="font-medium text-sm my-2 w-5/12">
                     {{contract.alias}}
                 </div>
-                <div class="font-medium flex items-center text-gray-500 flex-row justify-start text-xs my-3 w-3/12">
+                <div class="font-medium flex items-center text-gray-500 flex-row justify-start text-xs my-2 w-4/12">
                     <div class="mr-2">{{contract.contract_address | addrShort}}</div>
                     <app-value-copy [value]="contract.contract_address"></app-value-copy>
                 </div>
-                <div class="font-medium text-xs text-gray-500 my-3 w-6/12">
+                <div class="font-medium text-xs flex flex-row justify-end text-gray-500 my-2 w-3/12">
                     <div *ngIf="manifests$ | async as manifests; else manifestLoading">
                         {{manifests[i].name}}
                     </div>
