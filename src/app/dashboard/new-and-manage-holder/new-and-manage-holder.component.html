@@ -64,37 +64,22 @@ text-gray-700 uppercase border-b-4 border-transparent cursor-pointer">
   </div>
 
   <ng-container *ngIf="activeTab === tabType.Add">
-    <div class="border-gray-100 text-gray-700 border-2 p-4 flex flex-row items-center bg-gray-100 rounded-tr-lg">
-      <div class="w-3/12 text-sm uppercase font-semibold">Contract ID</div>
-      <div class="w-4/12 text-sm uppercase font-semibold">Details</div>
-      <!-- SEARCH -->
-      <div class="w-5/12 text-sm uppercase font-semibold">
-        <div class="border rounded-lg py-1 border-gray-300 px-4 bg-gray-200 flex flex-row items-center">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-          </svg>
-          <input placeholder="Search is not yet implemented" class="w-full border-none bg-transparent text-sm" type="text">
-        </div>
-      </div>
-    </div>
 
     <div *ngIf="deployableContracts$ | async as deployableContracts; else loading">
-      
+      <div class="p-4 border rounded-tr-lg bg-blue-50">
+        <app-info-snippet
+        type="INFO"
+        [hasBorderAndBackground]="false"
+        [content]="{ title: 'Writing your own smart contracts?', sections: [
+        'Dev3 allows you to import & use your own smart contracts.', 'This feature is under development and will be released soon!'] }"
+      ></app-info-snippet> 
+      </div>
+    
     <div *ngFor="let contract of deployableContracts" class="border-gray-100 border-x border-b p-4 flex flex-row">
       <div class="w-3/12 font-medium text-gray-700 text-sm flex flex-col justify-center">
-        <!-- <div class="font-semibold text-gray-500 text-xs">{{ contract.splitID[0] }}</div>
-        <div class="ml-3 font-medium text-gray-700 mt-1 flex flex-row items-center">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
-          </svg>
-          <div class="ml-1">
-            {{ contract.splitID[1] }}
-          </div>
-        </div> -->
         {{ contract.name }}
       </div>
       <div class="w-7/12 text-sm flex flex-col justify-start pr-4 text-gray-500">
-        <!-- <div class="mb-2">ERC20 fungible token with fixed supply and ability to burn the tokens</div> -->
         <div class="flex flex-col h-full text-sm flex-wrap justify-start">
           <div>
             {{contract.description}}
@@ -193,15 +178,22 @@ text-gray-700 uppercase border-b-4 border-transparent cursor-pointer">
   </ng-container>
 
   <ng-container *ngIf="activeTab === tabType.Import">
-    <div class="border-gray-100 border-2 p-4 flex flex-row bg-gray-100 rounded-tr-lg">
+    <!-- <div class="border-gray-100 border-2 p-4 flex flex-row bg-gray-100 rounded-tr-lg">
       
+    </div> -->
+    <div class="border rounded-tr-lg rounded-b-lg p-4 bg-blue-50">
+      <app-info-snippet
+      [hasBorderAndBackground]="false"
+      [content]="{ title: 'Coming Soon', sections: [ 
+        'Importing contracts from your favorite protocols is coming soon!', 
+        'Integrate your project and automations with the most used NFT & DeFi projects (AAVE, Uniswap, Maker, BAYC, ...)' ] }"
+    ></app-info-snippet>
     </div>
+    
 
     <div *ngFor="let item of manageItems"
       class="border-gray-100 hover:bg-violet-100 border-2 p-4 flex flex-row cursor-pointer">
-      <app-info-snippet
-        [content]="{ title: 'Coming Soon', sections: [ 'Importing contracts from your favorite protocols is coming soon!' ] }"
-      ></app-info-snippet>
+      
     </div>
   </ng-container>
 </div>

@@ -68,6 +68,7 @@ export class SmartInputComponent implements OnInit {
   }
 
   generateInternalInputType(solidityType: string, recommendedTypes: string[]): InputType {
+    console.log("---INPUT TYPE:", solidityType)
     if(solidityType === 'address') {
       return this.interpretAddressType(recommendedTypes)
     } else if(solidityType.startsWith('uint')) {

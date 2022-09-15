@@ -53,14 +53,14 @@
             <div *ngIf="(hasResult$ | async) === false" class="flex flex-row mt-1 w-1/2 px-2">
                 <button [disabled]="!form.valid" *ngIf="functionManifest.read_only" app-action-button text="Read value"
                     [onClick]="executeReadFunction().bind(this)"
-                    class="w-1/2 mr-1 bg-violet-700 rounded-full py-2 text-white font-semibold"></button>
+                    class="w-1/2 mr-1 bg-violet-700 rounded-full disabled:bg-gray-500  py-2 text-white font-semibold"></button>
     
                 <button [disabled]="!form.valid" *ngIf="!functionManifest.read_only" app-action-button
                     text="Create TX Request" [onClick]="executeWriteFunction().bind(this)"
-                    class="w-1/2 mr-1 bg-violet-700 rounded-full py-2 text-white font-semibold"></button>
+                    class="w-1/2 mr-1 bg-violet-700 rounded-full py-2 disabled:bg-gray-500  text-white font-semibold"></button>
     
                 <button [disabled]="!form.valid" app-action-button text="Add to workflow"
-                    class="w-1/2 ml-1 bg-violet-700 rounded-full py-2 text-white font-semibold"></button>
+                    class="w-1/2 ml-1 bg-violet-700 rounded-full py-2 disabled:bg-gray-500  text-white font-semibold"></button>
             </div>
     
             <div class="rounded-lg flex w-full flex-row text-sm">
@@ -130,21 +130,6 @@
                                 
                             </table>
                         </div>
-                        
-    
-    
-                        <!-- <div *ngFor="let res of result; let i = index" class="font-semibold py-2 px-4 mb-2
-                         flex flex-col border rounded-lg items-start">
-                            <div class="flex flex-row items-center justify-start" *ngFor="let param of res; let j = index">
-                                <div>{{functionManifest.outputs[0].parameters?.at(j)?.name}}:</div>
-                                <div class="ml-1 font-normal flex flex-row items-center">
-                                    <div>{{param}}</div>
-                                    <div class="ml-2">
-                                        <app-value-copy [value]="res.toString()"></app-value-copy>
-                                    </div>
-                                </div>
-                            </div>
-                        </div> -->
                     </div>
                 </div>
     

@@ -56,19 +56,11 @@
                         </div>
                     </div>
                     <div class="w-4/12 text-center mx-2">
-                        <div class="flex flex-row justify-center px-2 py-1 text-xs rounded-lg border">
-                            <div class="border-r pr-2 flex flex-row justify-start items-center">
+                        <div class="flex flex-row items-center justify-center px-2 py-1 text-xs rounded-lg">
                                 <div class="mr-1">
                                     {{authRequest.wallet_address | addrShort }}
                                 </div>
                                 <app-value-copy [value]="authRequest.wallet_address ?? ''"></app-value-copy>
-                            </div>
-                            <div class="pl-2 flex flex-row justify-end items-center">
-                                <div class="mr-1">
-                                    Mislav Ledger
-                                </div>
-                                <app-value-copy [value]="authRequest.wallet_address ?? ''"></app-value-copy>
-                            </div>
                         </div>
                     </div>
                     <div class="w-2/12 text-center">
