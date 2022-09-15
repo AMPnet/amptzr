@@ -92,10 +92,10 @@
       <div
         class="border-gray-100 border-2 p-4 flex flex-row bg-gray-100 rounded-tr-lg"
       >
-        <div class="w-3/12 text-sm uppercase font-semibold">Alias</div>
-        <div class="w-3/12 text-sm uppercase font-semibold">Address</div>
-        <div class="w-3/12 text-sm uppercase font-semibold">Phone</div>
-        <div class="w-3/12 text-sm uppercase font-semibold">Email</div>
+        <div class="w-3/12 text-sm text-center uppercase font-semibold">Alias</div>
+        <div class="w-2/12 text-sm text-center uppercase font-semibold">Address</div>
+        <div class="w-2/12 text-sm text-center uppercase font-semibold">Phone</div>
+        <div class="w-3/12 text-sm text-center uppercase font-semibold">Email</div>
       </div>
   
       <div *ngIf="addresses$ | async as addresses; else loading">
@@ -104,31 +104,27 @@
         *ngFor="let item of addresses.entries"
         class="border-gray-100 border-x border-b p-4 flex flex-row cursor-pointer"
       >
-        <div class="w-3/12 text-sm flex flex-row items-center">
+        <div class="w-3/12 text-sm flex flex-row justify-center items-center">
           <div class="mr-2">{{ item.alias }}</div>
           <app-value-copy [value]="item.alias"></app-value-copy>
         </div>
-        <div class="w-2/12 text-sm flex flex-row items-center">
-          <div class="mr-2">
+        <div class="w-2/12 text-sm flex flex-row justify-center items-center text-center">
+          <div class="mr-2 text-center">
             {{ item.address | addrShort }}
           </div>
           <app-value-copy [value]="item.address"></app-value-copy>
-          <app-explorer-link
-            class="ml-2"
-            [value]="item.address"
-          ></app-explorer-link>
         </div>
-        <div class="w-3/12 text-sm">
+        <div class="w-2/12 text-sm text-center flex flex-row justify-center">
           <div
             *ngIf="item.phone_number.length > 0; else noData"
-            class="flex flex-row items-center"
+            class="flex flex-row items-center justify-center"
           >
             <div class="mr-2">{{ item.phone_number }}</div>
             <app-value-copy [value]="item.phone_number"></app-value-copy>
           </div>
   
         </div>
-        <div class="w-2/12 text-sm">
+        <div class="w-3/12 text-sm text-center flex flex-row justify-center items-center">
           <div *ngIf="item.email.length > 0; else noData">
             {{ item.email }}
             <app-value-copy class="ml-2" [value]="item.email"></app-value-copy>
@@ -136,7 +132,8 @@
         </div>
         <button app-action-button [onClick]="deleteAddressBookEntry(item.id).bind(this)"
          text="Delete"
-         class="w-2/12 text-red-800 cursor-pointer text-xs font-semibold uppercase bg-red-100 rounded-full hover:bg-red-700 hover:text-white">
+         class="w-2/12 text-red-800 py-2 cursor-pointer shadow-sm hover:shadow-xl tracking-wider
+          text-xs font-semibold uppercase bg-red-100 rounded-full hover:bg-red-700 hover:text-white">
         </button>
       </div>
       </div>
@@ -161,7 +158,7 @@
 </ng-template>
 
 <ng-template #noEntries>
-  <div class="w-full border flex flex-row py-16 justify-center items-center">
+  <div class="w-full border flex flex-row text-sm py-16 justify-center items-center">
     No address book entries
   </div>
 </ng-template>

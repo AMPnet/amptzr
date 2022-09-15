@@ -61,6 +61,8 @@ export class PayoutNewComponent {
 
   newPayoutForm: FormGroup
 
+  alwaysTrueSub = new BehaviorSubject(true)
+
   payoutState$: Observable<PayoutState | undefined>
   shouldApprove$: Observable<boolean>
   shouldCreatePayout$: Observable<boolean>

@@ -7,7 +7,7 @@
 
 <div class="pl-4">
   <div class="bg-white shadow-sm my-4 p-6 rounded-lg w-full flex flex-row">
-    <div class="w-6/12 border-r pr-4">
+    <div class="w-full pr-4">
       <ng-container *ngIf="snapshot$ | async as snapshotRes">
         <ng-container *ngIf="snapshotRes.value as snapshot">
           <ng-container
@@ -130,14 +130,25 @@
                     >
                       Choose the token which you want to airdrop
                     </label>
-                    <input
+                    <!-- <input
                       class="border-gray-200 rounded-lg text-sm"
                       type="text"
                       formControlName="rewardAssetAddress"
                       placeholder="Token address"
                       id="payout-asset-address"
                       autocomplete="off"
-                    />
+                    /> -->
+                    <div class="w-full">
+                      <app-smart-input
+                        [rootForm]="newPayoutForm"
+                        controlName="rewardAssetAddress"
+                        [formFinishedLoadingSub]="alwaysTrueSub"
+                        solidityType="address"
+                        [recommendedTypes]="['traits.erc20']"
+                      ></app-smart-input>
+                    </div>
+
+                    
                   </div>
 
                   <ng-container *ngIf="payoutState$ | async as payoutState">
@@ -367,44 +378,6 @@
         </ng-container>
       </ng-container>
     </div>
-    <div *ngIf="snapshot$ | async as snapshot" class="w-6/12 pl-4">
-      <div class="font-semibold text-gray-700 mb-4">
-        Previous airdrops from this snapshot
-      </div>
-      <div
-        class="flex flex-row pt-2 pb-2 mt-2 text-sm font-semibold text-gray-700 bg-gray-100 rounded-t-lg items-center"
-      >
-        <div class="w-3/12 text-center">Token</div>
-        <div class="w-3/12 text-center">Amount</div>
-        <div class="w-3/12 text-center">Date</div>
-        <div class="w-3/12 text-center">Holders</div>
-      </div>
-      <div class="flex flex-col border-x border-b rounded-b-lg">
-        <div
-          class="flex flex-row w-full py-2 text-sm border-t font-medium text-gray-700"
-        >
-          <div class="text-center w-3/12">USDC</div>
-          <div class="text-center w-3/12">25 300</div>
-          <div class="text-center w-3/12">27.3.2022</div>
-          <div class="text-center w-3/12 underline cursor-pointer">Open</div>
-        </div>
-        <div
-          class="flex flex-row w-full py-2 text-sm border-t font-medium text-gray-700"
-        >
-          <div class="text-center w-3/12">CRV</div>
-          <div class="text-center w-3/12">1 237 222</div>
-          <div class="text-center w-3/12">1.5.2021</div>
-          <div class="text-center w-3/12 underline cursor-pointer">Open</div>
-        </div>
-        <div
-          class="flex flex-row w-full py-2 text-sm border-t font-medium text-gray-700"
-        >
-          <div class="text-center w-3/12">yvestETH</div>
-          <div class="text-center w-3/12">2.127</div>
-          <div class="text-center w-3/12">1.1.2021</div>
-          <div class="text-center w-3/12 underline cursor-pointer">Open</div>
-        </div>
-      </div>
-    </div>
+
   </div>
 </div>

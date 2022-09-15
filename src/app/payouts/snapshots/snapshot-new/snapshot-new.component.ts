@@ -11,6 +11,7 @@ import { RouterService } from '../../../shared/services/router.service'
 import { ActivatedRoute } from '@angular/router'
 import { DialogService } from '../../../shared/services/dialog.service'
 import {
+  BehaviorSubject,
   combineLatest,
   concatMap,
   from,
@@ -46,6 +47,8 @@ export class SnapshotNewComponent {
   newSnapshotForm: FormGroup
   ignoredAddressInputForm: FormGroup
   state$: Observable<NewSnapshotState>
+
+  formFinishedLoadingSub = new BehaviorSubject(true)
 
   constructor(
     private payoutService: PayoutService,

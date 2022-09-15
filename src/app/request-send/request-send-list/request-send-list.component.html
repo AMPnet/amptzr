@@ -29,9 +29,9 @@
                 <div class="w-1/5 flex flex-col justify-center text-center border-t">
                     <div [class.bg-amber-200] = "request.status === 'PENDING'"
                     [class.text-amber-700] = "request.status === 'PENDING'"
-                    [class.bg-green-200] = "request.status === 'FINALIZED'"
-                    [class.text-green-700] = "request.status === 'FINALIZED'"
-                    class="m-2 px-4 py-2 rounded-lg text-xs font-medium">
+                    [class.bg-green-200] = "request.status === 'SUCCESS'"
+                    [class.text-green-700] = "request.status === 'SUCCESS'"
+                    class="m-2 px-4 py-2 rounded-lg text-xs font-semibold tracking-wider">
                         {{request.status}}
                     </div>
                 </div>
