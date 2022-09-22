@@ -1,27 +1,7 @@
 <div class="h-full">
   <div class="bg-white shadow-sm h-full rounded-xl text-gray-700">
     <ng-container *ngIf="(snapshots$ | async) as snapshotsRes">
-      <!-- <div class="flex flex-col">
-        <div class="flex justify-between items-center mt-2">
-          <div class="text-lg font-semibold">
-            Manage existing token snapshots
-          </div>
-          <button class="h-auto bg-gray-100 rounded-full p-2"
-                  [disabled]="snapshotsRes.loading"
-                  (click)="snapshotsRes?.refresh()">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" viewBox="0 0 20 20" fill="currentColor">
-              <path fill-rule="evenodd"
-                    d="M4 2a1 1 0 011 1v2.101a7.002 7.002 0 0111.601 2.566 1 1 0 11-1.885.666A5.002 5.002 0 005.999 7H9a1 1 0 010 2H4a1 1 0 01-1-1V3a1 1 0 011-1zm.008 9.057a1 1 0 011.276.61A5.002 5.002 0 0014.001 13H11a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 11-2 0v-2.101a7.002 7.002 0 01-11.601-2.566 1 1 0 01.61-1.276z"
-                    clip-rule="evenodd"/>
-            </svg>
-          </button>
-        </div>
-        <small class="pt-4">
-          This is a list of all the token snapshots you have created. Open the snapshot to perform an airdrop.
-        </small>
-      </div> -->
-      
-
+    
       <ng-container *ngIf="snapshotsRes.value as snapshots">
         <div *ngIf="snapshots.length === 0" class="flex text-sm text-center flex-row w-full justify-center items-center py-16">
           You don't have any token snapshots! <br/> <br/> Create a new snapshot to get started with airdrops and dividend distributions.

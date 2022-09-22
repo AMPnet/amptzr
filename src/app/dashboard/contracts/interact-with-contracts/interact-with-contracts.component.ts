@@ -6,6 +6,7 @@ import { BehaviorSubject, from, map, Observable, switchMap, tap } from 'rxjs'
 import { PreferenceQuery } from 'src/app/preference/state/preference.query'
 import { SessionQuery } from 'src/app/session/state/session.query'
 import { ContractManifestService, FunctionManifest } from 'src/app/shared/services/backend/contract-manifest.service'
+import { ProjectService } from 'src/app/shared/services/backend/project.service'
 import { ContractDeploymentService } from 'src/app/shared/services/blockchain/contract-deployment.service'
 
 @Component({
@@ -22,9 +23,22 @@ export class InteractWithContractsComponent {
   selectedIndexSub = new BehaviorSubject(-1)
   selectedIndex$ = this.selectedIndexSub.asObservable()
 
-  contract$ = this.manifestService.getByID(this.contractManifestID)
 
   formFinishedLoadingSub = new BehaviorSubject(false)
+
+ 
+
+  deployedContract$ = this.deploymentService.getContractDeploymentRequest(this.contractDeploymentID)
+  
+  contract$ = this.deployedContract$.pipe(
+    switchMap(res => {
+      if(res.imported) {
+        return this.manifestService.getByID(this.contractManifestID, this.projectService.projectID)
+      } else {
+        return this.manifestService.getByID(this.contractManifestID)
+      }
+    })
+  )
 
   formGroups$: Observable<FormGroup[]> = this.contract$.pipe(
     map(result => {
@@ -43,8 +57,6 @@ export class InteractWithContractsComponent {
     tap(_ => this.formFinishedLoadingSub.next(true))
   )
 
-  deployedContract$ = this.deploymentService.getContractDeploymentRequest(this.contractDeploymentID)
-
   resultsBufferSub: BehaviorSubject<Map<string, string[]>> = new BehaviorSubject(new Map<string, string[]>())
   resultsBuffer$ = this.resultsBufferSub.asObservable()
 
@@ -55,6 +67,7 @@ export class InteractWithContractsComponent {
     private deploymentService: ContractDeploymentService,
     private sessionQuery: SessionQuery,
     private location: Location,
+    private projectService: ProjectService,
     private preferenceQuery: PreferenceQuery,
     private route: ActivatedRoute
   ) { }

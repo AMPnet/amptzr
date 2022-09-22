@@ -123,7 +123,8 @@ export class AdminIssuerNewComponent {
           )
         ),
         switchMap((issuerAddress) =>
-          this.projectService.createNewProject(issuerAddress ?? '')
+          this.projectService.createNewProject(issuerAddress ?? '', 
+            `${this.issuerUrlPrefix}${this.createForm.controls.slug.value}`)
         ),
         switchMap(() =>
           this.dialogService

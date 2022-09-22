@@ -72,7 +72,7 @@ export class ErrorService {
 
           case undefined:
           default:
-            action$ = this.displayMessage('Something went wrong.')
+            action$ = this.displayMessage(error.message)
         }
       } else if ((errorRes as any).code === -32603) {
         // Internal JSON-RPC error

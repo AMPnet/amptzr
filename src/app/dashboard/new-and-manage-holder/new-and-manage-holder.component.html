@@ -116,10 +116,20 @@ text-gray-700 uppercase border-b-4 border-transparent cursor-pointer">
       <div class="w-3/12 text-sm uppercase font-semibold flex flex-ro rounded-lg items-center justify-center">          
       </div>
     </div>
+    <div>
+      <app-info-snippet
+        [hasRoundedCorners]="false"
+        [content]="{
+          title: 'Did you know?',
+          sections: [ 'Deployment requests are shareable. Simply copy the transaction request link and send it to the person you want to execute the transaction.' ]
+        }"
+      ></app-info-snippet>
+    </div>
     <div *ngIf="pendingContractDeploymentRequests$ | async as requests; else loading">
       <ng-container *ngIf="requests.length > 0; else emptyList">
         <div *ngFor="let request of requests; let i = index">
-          <div class="py-2 pl-4 border-b font-medium flex flex-row items-center text-sm text-gray-700 border-x">
+          <div class="py-2 pl-4 border-b font-medium flex 
+          flex-row items-center text-sm text-gray-700 border-x">
             <div class="w-3/12 text-sm font-medium">
               {{request.alias}}
             </div>
@@ -162,7 +172,7 @@ text-gray-700 uppercase border-b-4 border-transparent cursor-pointer">
         <div *ngFor="let contract of deployedContracts" routerLink="interact/{{contract.contract_id}}/{{contract.id}}"
         class="border-gray-100 hover:bg-violet-100 border-b border-x p-4 flex flex-row cursor-pointer">
         <div class="w-3/12 text-sm font-medium">{{ contract.alias }}</div>
-        <div class="w-5/12 text-sm">
+        <div class="w-5/12 text-sm pr-4">
           {{ contract.contract_id }}
         </div>
         <div class="w-2/12 text-sm">
@@ -181,14 +191,35 @@ text-gray-700 uppercase border-b-4 border-transparent cursor-pointer">
     <!-- <div class="border-gray-100 border-2 p-4 flex flex-row bg-gray-100 rounded-tr-lg">
       
     </div> -->
-    <div class="border rounded-tr-lg rounded-b-lg p-4 bg-blue-50">
-      <app-info-snippet
-      [hasBorderAndBackground]="false"
-      [content]="{ title: 'Coming Soon', sections: [ 
-        'Importing contracts from your favorite protocols is coming soon!', 
-        'Integrate your project and automations with the most used NFT & DeFi projects (AAVE, Uniswap, Maker, BAYC, ...)' ] }"
-    ></app-info-snippet>
-    </div>
+    <form [formGroup]="importContractForm" class="border rounded-tr-lg flex flex-col rounded-b-lg p-8 text-gray-700">
+      <div class="uppercase font-semibold">Connect deployed contract</div>
+      <div class="text-xs text-gray-500 mt-1">
+        Dev3 enables you to interact with any smart contract deployed on this network by simply pasting the address of the deployed contract in the contract address field below.
+        If the contract type you have deployed is part of the Dev3 <a class=" text-violet-700 underline" href="https://github.com/0xdev3/dev3-contracts">contracts database</a> you can get a much better user
+        interface by pasting the <i>contract manifest ID</i>. </div>
+      <div class="bg-violet-50 p-4 rounded-lg mt-4">
+        <div class="text-violet-700 font-semibold">Contract alias</div>
+        <div class="text-xs mt-1 text-gray-500">This is the alias you will use to access the imported contract through the Dev3 API & SDK.</div>
+        <input formControlName="alias" class="w-full mt-2 border-gray-200 rounded-lg text-sm"
+        placeholder="my-contract-alias" type="text" name="" id="">
+      </div>
+      
+      <div class="uppercase font-semibold mt-4 text-sm">Contract address</div>
+      <div class="text-xs mt-1 text-gray-500">The address of the smart contract deployed on the blockchain. Make sure you have the correct address for the network you are currently using!</div>
+      <input formControlName="contractAddress" class="w-full mt-1 border-gray-200 rounded-lg text-sm"
+       placeholder="0xdEaDc0FFeBAbE00c0FFe1234000" type="text" name="" id="">
+
+       <div class="uppercase font-semibold mt-4 text-sm">Contract manifest (Optional)</div>
+      <div class="text-xs mt-1 text-gray-500">The manifest of the smart contract from the 
+        <a class="text-violet-700 underline" href="https://github.com/0xDev3/dev3-contracts">Dev3 database!</a></div>
+      <input formControlName="contractManifest" class="w-full mt-1 border-gray-200 rounded-lg text-sm"
+       placeholder="dev3.example-manifest" type="text" name="" id="">
+
+
+       <button [onClick]="importContractClicked()" [disabled]="!importContractForm.valid" app-action-button text="Import contract" 
+       class=" app-button mt-4"
+        ></button>
+    </form>
     
 
     <div *ngFor="let item of manageItems"
@@ -205,7 +236,7 @@ text-gray-700 uppercase border-b-4 border-transparent cursor-pointer">
 </ng-template>
 
 <ng-template #emptyList>
-  <div class="border border-gray-200 rounded-lg py-16 flex flex-row justify-center text-sm font-medium">
+  <div class="border border-gray-200 rounded-x-lg rounded-b-lg py-16 flex flex-row justify-center text-sm font-medium">
     No items available
   </div>
 </ng-template>

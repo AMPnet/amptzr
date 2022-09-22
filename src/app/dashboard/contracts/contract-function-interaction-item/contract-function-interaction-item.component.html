@@ -134,7 +134,7 @@
                 </div>
     
                 <div class="flex flex-row items-center my-2" *ngIf="writeResult$ | async as result">
-                    <button [routerLink]="result | issuerPath" class="text-cyan-600 border-cyan-600 hover:bg-cyan-600 hover:text-white 
+                    <a [href]="result" class="text-cyan-600 border-cyan-600 hover:bg-cyan-600 hover:text-white 
                      transition-all px-4 py-2 rounded-full border font-semibold text-xs uppercase
                       flex flex-row items-center">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
@@ -146,9 +146,9 @@
                         <div class="ml-2">
                             Open transaction link
                         </div>
-                    </button>
+                    </a>
     
-                    <button [routerLink]="result | issuerPath" class="text-cyan-600 border-cyan-600 hover:bg-cyan-600 ml-2 hover:text-white
+                    <a [href]="result" class="text-cyan-600 border-cyan-600 hover:bg-cyan-600 ml-2 hover:text-white
                      transition-all px-4 py-2 rounded-full border font-semibold text-xs uppercase
                       flex flex-row items-center">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
@@ -160,7 +160,7 @@
                         <div class="ml-2">
                             Execute transaction now
                         </div>
-                    </button>
+                    </a>
     
                     <button (click)="copyToClipboard(result)"
                     class="text-cyan-600 border-cyan-600 hover:bg-cyan-600 ml-2

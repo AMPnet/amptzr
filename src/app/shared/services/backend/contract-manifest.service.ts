@@ -16,8 +16,10 @@ export class ContractManifestService {
   constructor(private http: BackendHttpClient,
     private projectService: ProjectService) {}
 
-  getByID(id: string) {
-    return this.http.get<ContractManifestData>(`${this.path}/${id}`, { }, true, false, true)
+  getByID(id: string, projectID: string = "") {
+    return this.http.get<ContractManifestData>(`${this.path}/${id}`, { 
+      projectId: projectID
+    }, true, false, true)
   }
 
   getAll() {

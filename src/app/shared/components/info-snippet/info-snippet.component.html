@@ -1,4 +1,5 @@
-<div class="text-sm font-medium rounded-lg text-gray-700"
+<div class="text-sm font-medium  text-gray-700"
+    [class.rounded-lg]="hasRoundedCorners"
     [class.border] = "hasBorderAndBackground"
     [class.!bg-transparent] = "!hasBorderAndBackground"
     [class.p-4] = "hasBorderAndBackground"
@@ -51,5 +52,13 @@
         {{section}}
 
     </div>
+    
+    <div class="mt-3 flex flex-row w-full justify-start">
+        <a class="px-4 py-2 rounded-lg hover:bg-cyan-900 bg-cyan-700 text-xs uppercase font-semibold text-white" 
+        *ngIf="actionLinkButton" [href]="actionLinkButton.href">
+            {{actionLinkButton.title}}
+        </a>
+    </div>
+    
 
 </div>

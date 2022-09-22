@@ -1,11 +1,13 @@
 import { Location } from '@angular/common'
 import { Component, ChangeDetectionStrategy, Input, OnInit } from '@angular/core'
+import { FormControl, FormGroup, Validators } from '@angular/forms'
 import { ActivatedRoute } from '@angular/router'
 import { BehaviorSubject, filter, forkJoin, map, mergeMap, switchMap, tap, toArray } from 'rxjs'
 import { PreferenceQuery } from 'src/app/preference/state/preference.query'
 import { ContractManifestService } from 'src/app/shared/services/backend/contract-manifest.service'
 import { ProjectService } from 'src/app/shared/services/backend/project.service'
 import { ContractDeploymentService } from 'src/app/shared/services/blockchain/contract-deployment.service'
+import { DialogService } from 'src/app/shared/services/dialog.service'
 
 @Component({
   selector: 'app-new-and-manage-holder',
@@ -47,16 +49,37 @@ export class NewAndManageHolderComponent implements OnInit {
           return result.deployable_contracts.map(contract => {
             return {...contract, splitID: contract.id.split('.') }})}))
 
+  importContractForm = new FormGroup({
+    alias: new FormControl('', [Validators.required]),
+    contractAddress: new FormControl('', [Validators.required]),
+    contractManifest: new FormControl('', [])
+  })
+
 
   constructor(private contractService: ContractDeploymentService,
     private manifestService: ContractManifestService,
     private preferenceQuery: PreferenceQuery,
+    private dialogService: DialogService,
     private route: ActivatedRoute,
     private location: Location,
     private projectService: ProjectService) {}
 
   changeTab(tab: Tab) {
     this.activeTab = tab
+  }
+
+  importContractClicked() {
+    return () => {
+      const controls = this.importContractForm.controls
+      const manifest: string = controls.contractManifest.value
+      return this.contractService.importDeployedContract(controls.alias.value, 
+        controls.contractAddress.value, manifest.length > 0 ? manifest : undefined).pipe(tap(_ => {
+          this.dialogService.success({
+            message: "You have successfully imported a smart contract"
+          })
+          this.changeTab(Tab.Manage)
+        }))
+    }
   }
 
   goBack() {
@@ -69,7 +92,7 @@ export class NewAndManageHolderComponent implements OnInit {
           this.changeTab(Tab.Pending)
         } else if(res.screenConfig === 'deploy') {
           this.changeTab(Tab.Add)
-        }
+        } 
       })
     }
 

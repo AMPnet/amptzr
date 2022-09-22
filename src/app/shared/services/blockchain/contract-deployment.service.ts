@@ -54,11 +54,22 @@ export class ContractDeploymentService {
             .get<ContractDeploymentRequestResponse>(`${this.path}/deploy/${deploymentRequestID}`, { }, true, false, true)
     }
 
-    getContractDeploymentRequests(projectID: string, deployedOnly: boolean = false): Observable<ContractDeploymentRequests> {
+    getContractDeploymentRequests(projectID: string, deployedOnly: boolean = false,
+        contractImplements: string[] = []): Observable<ContractDeploymentRequests> {
+        
         return this.http
             .get<ContractDeploymentRequests>(`${this.path}/deploy/by-project/${projectID}`, {
-                deployedOnly: deployedOnly 
+                deployedOnly: deployedOnly,
+                contractImplements: contractImplements
             }, true, true, true)
+    }
+
+    importDeployedContract(alias: string, contractAddress: string, contractManifestID?: string) {
+        return this.http.post<ContractDeploymentRequestResponse>(`${this.path}/import-smart-contract`, {
+            alias: alias,
+            contract_id: contractManifestID,
+            contract_address: contractAddress
+        }, false, true, true)
     }
 
     attachTxInfoToRequest(requestId: string, txHash: string, deployer: string, txType: "CONTRACT" | "TRANSACTION" = "CONTRACT") {
@@ -233,7 +244,8 @@ export interface ContractDeploymentRequestResponse {
         block_confirmations: string,
         timestamp: string
     }
-    constructor_params: ConstructorParam[]
+    constructor_params: ConstructorParam[],
+    imported: boolean
 }
 
 export interface ContractDeploymentParams {

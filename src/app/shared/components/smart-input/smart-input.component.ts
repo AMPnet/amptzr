@@ -75,7 +75,7 @@ export class SmartInputComponent implements OnInit {
       return this.interpretNumberType(recommendedTypes)
     } else if(solidityType.startsWith('bool')) {
       return "BOOLEAN"
-    } else if(solidityType.startsWith('bytes')) {
+    } else if(solidityType.endsWith('[]')) {
       return "ARRAY"
     } else if(solidityType.startsWith('string')) {
       return "TEXT"
@@ -116,7 +116,6 @@ export class SmartInputComponent implements OnInit {
     if((this.inputType !== "TEXT")) {
       this.isDialogOpenSub.next(!this.isDialogOpenSub.getValue())
     }
-
   }
 
 }

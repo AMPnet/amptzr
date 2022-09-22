@@ -11,6 +11,8 @@ export class InfoSnippetComponent {
   @Input() type: InfoSnippetType = "INFO"
   @Input() hasBorderAndBackground = true
   @Input() content: Content = { title: "", sections: [] }
+  @Input() hasRoundedCorners = true
+  @Input() actionLinkButton: { title: string, href: string} | null = null
 
   constructor() { }
 

@@ -34,7 +34,10 @@
             </div>
             <div class="flex flex-row items-center w-full py-2">
                 <div class="w-1/12 uppercase text-xs font-semibold">Alias:</div>
-                <div class="w-9/12 pl-4">{{deployedContract.alias}}</div>
+                <div class="w-9/12 pl-4">
+                    {{deployedContract.alias}}
+                    <app-value-copy [value]="deployedContract.alias"></app-value-copy>
+                </div>
             </div>
             <div class="flex flex-row items-center w-full py-2">
                 <div class="w-1/12 uppercase text-xs font-semibold">Created at:</div>

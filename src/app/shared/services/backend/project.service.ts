@@ -33,10 +33,11 @@ export class ProjectService {
     private preferenceStore: PreferenceStore
   ) {}
 
-  createNewProject(issuerContractAddress: string): Observable<ProjectModel> {
+  createNewProject(issuerContractAddress: string, redirectLink: string): Observable<ProjectModel> {
+
     return this.http.post<ProjectModel>(this.path, {
       issuer_contract_address: issuerContractAddress,
-      base_redirect_url: '',
+      base_redirect_url: redirectLink,
       chain_id: this.preferenceQuery.network.chainID,
     }).pipe(tap(res => { this.projectID = res.id }))
   }

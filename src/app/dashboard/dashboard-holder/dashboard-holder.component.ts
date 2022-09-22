@@ -46,6 +46,7 @@ export class DashboardHolderComponent {
     switchMap(() => this.isBackendAuthorized$ ),
     switchMap(() => this.projectService.fetchApiKey()))
 
+  projectID = this.projectService.projectID
 
   constructor(
     private router: RouterService,

@@ -46,7 +46,7 @@
 </div>
 
 <ng-template #deployTab>
-  <form *ngIf="contract$ | async as contract" [formGroup]="deployContractForm" class="w-full">
+  <form *ngIf="contract$ | async as contract" [formGroup]="deployContractForm" class="w-8/12 pr-4">
     <div class="mb-1 text-xs font-medium uppercase text-gray-500">You are creating a deployment request for contract</div>
     <div class="mb-4 text-lg font-semibold">{{contract.name}} <span class="font-light text-gray-500">({{contract.id}})</span></div>
 
@@ -89,7 +89,7 @@
       <ng-container *ngIf="contract.constructors[0].inputs[0].solidity_type === 'tuple'">
         <div class="mb-6 flex flex-col" *ngFor="let input of contract.constructors[0].inputs[0].parameters">
           <div class="font-semibold">{{input.name}}</div>
-          <small class="w-1/2">{{input.description}}</small>
+          <small class="w-2/3 mb-1 text-gray-500 text-xs">{{input.description}}</small>
           <app-smart-input [rootForm]="deployContractForm"
             [recommendedTypes]="input.recommended_types"
             [solidityType]="input.solidity_type"
@@ -102,6 +102,19 @@
     <button app-action-button text="Create contract deployment request" [disabled]="!deployContractForm.valid"
      [onClick]="createDeploymentRequest().bind(this)" type="submit" class="app-button w-full"></button>
 </form>
+  <div class="w-4/12 pl-4 border-l">
+    <app-info-snippet
+      [content]="{ 
+        title: 'Deploying pre-built contracts',
+        sections: ['Use this screen to deploy pre-built smart contracts from the Dev3 database.',
+        'You can contribute to our database by adding your smart contracts to Dev3 contract database GitHub']
+      }"
+      [actionLinkButton]="{
+        title: 'Contribute now',
+        href: 'https://github.com/0xDev3/dev3-contracts'
+      }"
+    ></app-info-snippet>
+  </div>
 </ng-template>
 
 <ng-template #infoTab>
