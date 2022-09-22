@@ -16,15 +16,15 @@
         <div class="rounded-lg flex flex-col text-sm text-gray-700 bg-gray-50 border
         px-8 py-4 border-gray-100 mr-2">
             <div class="flex flex-row items-center w-full py-2">
-                <div class="w-1/12 uppercase text-xs font-semibold">Name:</div>
+                <div class="w-24 uppercase text-xs font-semibold">Name:</div>
                 <div class="w-9/12 pl-4">{{contract.name}}</div>
             </div>
             <div class="flex flex-row items-center w-full py-2">
-                <div class="w-1/12 uppercase text-xs font-semibold">Description:</div>
+                <div class="w-24 uppercase text-xs font-semibold">Description:</div>
                 <div class="w-9/12 pl-4">{{contract.description}}</div>
             </div>
             <div class="flex flex-row items-center w-full py-2">
-                <div class="w-1/12 uppercase text-xs font-semibold">Tags:</div>
+                <div class="w-24 uppercase text-xs font-semibold">Tags:</div>
                 <div class="w-9/12 pl-4 flex flex-row">
                     <div class="bg-violet-200 text-violet-700 
                     mr-2 px-2 py-1 text-xs font-medium rounded-lg" *ngFor="let tag of contract.tags">
@@ -33,18 +33,18 @@
                 </div>
             </div>
             <div class="flex flex-row items-center w-full py-2">
-                <div class="w-1/12 uppercase text-xs font-semibold">Alias:</div>
+                <div class="w-24 uppercase text-xs font-semibold">Alias:</div>
                 <div class="w-9/12 pl-4">
                     {{deployedContract.alias}}
                     <app-value-copy [value]="deployedContract.alias"></app-value-copy>
                 </div>
             </div>
             <div class="flex flex-row items-center w-full py-2">
-                <div class="w-1/12 uppercase text-xs font-semibold">Created at:</div>
+                <div class="w-24 uppercase text-xs font-semibold">Created at:</div>
                 <div class="w-9/12 pl-4">{{deployedContract.created_at}}</div>
             </div>
             <div class="flex flex-row items-center w-full py-2">
-                <div class="w-1/12 uppercase text-xs font-semibold">Address</div>
+                <div class="w-24 uppercase text-xs font-semibold">Address</div>
                 <div class="w-9/12 pl-4 flex flex-row items-center">
                     <span class="mr-1">{{deployedContract.contract_address}}</span>
                     <app-explorer-link [value]="deployedContract.contract_address"></app-explorer-link>

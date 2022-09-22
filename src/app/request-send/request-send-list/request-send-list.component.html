@@ -27,7 +27,7 @@
                     </ng-template>
                 </div>
                 <div class="w-1/5 flex flex-col justify-center text-center border-t">
-                    <div [class.bg-amber-200] = "request.status === 'PENDING'"
+                    <div [class.bg-amber-50] = "request.status === 'PENDING'"
                     [class.text-amber-700] = "request.status === 'PENDING'"
                     [class.bg-green-200] = "request.status === 'SUCCESS'"
                     [class.text-green-700] = "request.status === 'SUCCESS'"
@@ -36,14 +36,14 @@
                     </div>
                 </div>
                 <div class="w-1/5 flex flex-col justify-center text-center border-t">
-                    <div [routerLink]="request.redirect_url | issuerPath" 
-                        class="m-2 cursor-pointer px-4 py-2 bg-gray-200 
+                    <a [href]="request.redirect_url" 
+                        class="m-2 cursor-pointer px-4 py-2 bg-gray-200 hover:bg-gray-300 transition-all
                         rounded-full text-xs uppercase font-medium flex flex-row justify-center items-center">
                         <div class="mr-2 font-semibold flex flex-col justify-center">Open URL</div>
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
                           </svg>
-                    </div>
+                    </a>
                 </div>  
             </div>
         </div>

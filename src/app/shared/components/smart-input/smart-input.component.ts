@@ -1,13 +1,14 @@
 import { Component, OnInit, ChangeDetectionStrategy, Input, ViewChild, ElementRef } from '@angular/core'
 import { AbstractControl, ControlValueAccessor, FormControl, FormGroup } from '@angular/forms'
 import flatpickr from 'flatpickr'
-import { BehaviorSubject, delay, first, map, Observable, of, skip, switchMap, tap } from 'rxjs'
+import { BehaviorSubject, delay, first, from, map, Observable, of, skip, switchMap, tap } from 'rxjs'
 import { PreferenceQuery } from 'src/app/preference/state/preference.query'
 import { ContractManifestService, FunctionManifest, ParamsManifest } from '../../services/backend/contract-manifest.service'
 import { ProjectService } from '../../services/backend/project.service'
 import { ContractDeploymentRequestResponse, ContractDeploymentRequests, ContractDeploymentService } from '../../services/blockchain/contract-deployment.service'
 import { SmartInputDisplayService } from './smart-input-display.service'
 import 'tw-elements'
+import { Dev3SDK} from "dev3-sdk"
 
 @Component({
   selector: 'app-smart-input',
@@ -37,18 +38,50 @@ export class SmartInputComponent implements OnInit {
   @Input() controlName!: string
   inputType: InputType = "TEXT"
 
+  arraySubtype: InputType = "TEXT"
+  arrayBufferSub = new BehaviorSubject<string[]>([])
+  arrayBuffer$ = this.arrayBufferSub.asObservable()
+
   selectedSub = new BehaviorSubject<string | null>(null)
   selected$ = this.selectedSub.asObservable().pipe(
     tap(() => this.isDialogOpenSub.next(false)),
     tap((result) => { 
-      this.rootForm.get(this.controlName)?.setValue(result) 
+      if(this.inputType === 'ARRAY') {
+        this.arrayBufferForm.controls.arrayBufferInput.setValue(result)
+      } else {
+        this.rootForm.get(this.controlName)?.setValue(result) 
+      }
     }),
     tap(_ => this.onTouched()))
+
+  arrayBufferForm = new FormGroup({
+    arrayBufferInput: new FormControl('', [])
+  })
 
   constructor(private contractsService: ContractDeploymentService,
     private preferenceQuery: PreferenceQuery) { }
 
   ngOnInit(): void {
+
+    const dev3 = new Dev3SDK("api-key", "project-id")
+    const contr = from(dev3.getContractByAlias("my-contract"))
+    contr.pipe(
+      tap(res => {
+        res.execute('mint', [
+          'asd',
+          123,
+          225
+        ], {
+          onCreate: () => {
+
+          }, 
+          onExecute: () => {
+
+          }
+        })
+      })
+    )
+
     this.formFinishedLoading$ = this.formFinishedLoadingSub.asObservable()
     this.formFinishedLoading$.pipe(tap(_ => console.log(this.rootForm)))
     this.inputType = this.generateInternalInputType(this.solidityType, this.recommendedTypes)
@@ -67,16 +100,30 @@ export class SmartInputComponent implements OnInit {
     
   }
 
+  addToArrayBuffer() {
+    let bufferValue = this.arrayBufferSub.getValue()
+    bufferValue.unshift(this.arrayBufferForm.controls.arrayBufferInput.value)
+    this.arrayBufferSub.next(bufferValue)
+    this.arrayBufferForm.controls.arrayBufferInput.setValue('')
+    
+    this.rootForm.get(this.controlName)?.setValue(this.arrayBufferSub.getValue())
+  }
+
+  removeFromArrayBuffer(i: number) {
+    let bufferValue = this.arrayBufferSub.getValue().filter((_, index) => { return index !== i })
+    this.arrayBufferSub.next(bufferValue)
+  }
+
   generateInternalInputType(solidityType: string, recommendedTypes: string[]): InputType {
-    console.log("---INPUT TYPE:", solidityType)
-    if(solidityType === 'address') {
+    if(solidityType.endsWith('[]')) {
+      this.arraySubtype = this.generateInternalInputType(solidityType.replace('[]', ''), recommendedTypes)
+      return "ARRAY"
+    } else if(solidityType === 'address') {
       return this.interpretAddressType(recommendedTypes)
     } else if(solidityType.startsWith('uint')) {
       return this.interpretNumberType(recommendedTypes)
     } else if(solidityType.startsWith('bool')) {
       return "BOOLEAN"
-    } else if(solidityType.endsWith('[]')) {
-      return "ARRAY"
     } else if(solidityType.startsWith('string')) {
       return "TEXT"
     } else {
@@ -110,12 +157,26 @@ export class SmartInputComponent implements OnInit {
   }
 
   toggleInput() {
+    if(this.inputType === 'ARRAY') {
+      this.handleArrayToggle()
+      return
+    }
     if(this.inputType === 'DATE_TIME') { 
       return 
     }
     if((this.inputType !== "TEXT")) {
       this.isDialogOpenSub.next(!this.isDialogOpenSub.getValue())
     }
+  }
+
+  handleArrayToggle() {
+    if(this.arraySubtype !== 'TEXT') {
+      this.isDialogOpenSub.next(!this.isDialogOpenSub.getValue())
+    }
+  }
+
+  inputTypeOrArraySubtypeIs(type: InputType) {
+    return (this.inputType === type) || (this.arraySubtype === type)
   }
 
 }

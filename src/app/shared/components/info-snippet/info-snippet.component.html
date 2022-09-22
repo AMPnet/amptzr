@@ -1,64 +1,76 @@
-<div class="text-sm font-medium  text-gray-700"
-    [class.rounded-lg]="hasRoundedCorners"
-    [class.border] = "hasBorderAndBackground"
-    [class.!bg-transparent] = "!hasBorderAndBackground"
-    [class.p-4] = "hasBorderAndBackground"
-    [class.border-blue-100] = "type === 'INFO'"
-    [class.border-amber-100] = "type === 'WARNING'"
-    [class.border-red-100] = "type === 'DANGER'"
-    [class.bg-blue-50] = "type === 'INFO'"
-    [class.bg-orange-50] = "type === 'WARNING'"
-    [class.bg-red-50] = "type === 'DANGER'">
+<div class="text-sm font-medium  text-gray-700" [class.rounded-lg]="hasRoundedCorners"
+    [class.border]="hasBorderAndBackground" [class.!bg-transparent]="!hasBorderAndBackground"
+    [class.p-4]="hasBorderAndBackground"
+    [class.border-blue-100]="type === 'INFO'"
+    [class.border-amber-100]="type === 'WARNING'" [class.border-red-100]="type === 'DANGER'"
+    [class.bg-blue-50]="type === 'INFO'" [class.bg-orange-50]="type === 'WARNING'"
+    [class.bg-red-50]="type === 'DANGER'">
 
-    <div
-        [class.text-cyan-600] = "type === 'INFO'"
-        [class.text-amber-700] = "type === 'WARNING'"
-        [class.text-red-700] = "type === 'DANGER'"
-        class="mt-1 mb-1 font-semibold flex flex-row">
-        
-        <!-- INFO ICON -->
-        <div *ngIf="type === 'INFO'"
-        class="mr-2 flex flex-col justify-center">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-          </svg>
+    <div [class.text-cyan-600]="type === 'INFO'" [class.text-amber-700]="type === 'WARNING'"
+        [class.text-red-700]="type === 'DANGER'" class="font-semibold flex flex-row items-center justify-between">
+
+        <div class="flex flex-row items-center mt-2">
+            <!-- INFO ICON -->
+            <div *ngIf="type === 'INFO'" class="mr-2 flex flex-col justify-center">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
+                    stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round"
+                        d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+            </div>
+
+            <!-- WARNING ICON -->
+            <div *ngIf="type === 'WARNING'" class="mr-2 flex flex-col justify-center">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
+                    stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round"
+                        d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                </svg>
+            </div>
+
+            <!-- DANGER ICON -->
+            <div *ngIf="type === 'DANGER'" class="mr-2 flex flex-col justify-center">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
+                    stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round"
+                        d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636" />
+                </svg>
+            </div>
+
+            <div class="flex flex-col justify-center ">
+                {{content.title}}
+            </div>
+        </div>
+        <div *ngIf="hasInfoToggle">
+            <a class="bg-cyan-700 flex flex-row w-40 justify-center py-2 rounded-lg uppercase text-xs
+             hover:bg-cyan-900 tracking-wider text-white font-semibold cursor-pointer" (click)="toggleSections()">
+                <span *ngIf="sectionsOpened$ | async; else sectionClosedText">
+                    Hide
+                </span>
+                <ng-template #sectionClosedText>
+                    <span>Expand</span>
+                </ng-template>
+            </a>
         </div>
 
-         <!-- WARNING ICON -->
-         <div *ngIf="type === 'WARNING'"
-         class="mr-2 flex flex-col justify-center">
-         <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-          </svg>
-         </div>
-
-          <!-- DANGER ICON -->
-        <div *ngIf="type === 'DANGER'"
-        class="mr-2 flex flex-col justify-center">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636" />
-            </svg>
-        </div>
-
-        <div class="flex flex-col justify-center ">
-            {{content.title}}
-        </div>
     </div>
-    
-    <div *ngFor="let section of content.sections; let i = index"
-        [class.border-b] = "i < (content.sections.length - 1)"
-        class="py-2 border-opacity-25 font-normal">
+
+    <div class="mt-3" *ngIf="sectionsOpened$ | async">
+        <div *ngFor="let section of content.sections; let i = index" [class.border-b]="i < (content.sections.length - 1)"
+        class="pb-2 mt-2 border-opacity-10 font-normal">
 
         {{section}}
 
     </div>
+    </div>
     
-    <div class="mt-3 flex flex-row w-full justify-start">
-        <a class="px-4 py-2 rounded-lg hover:bg-cyan-900 bg-cyan-700 text-xs uppercase font-semibold text-white" 
-        *ngIf="actionLinkButton" [href]="actionLinkButton.href">
+
+    <div *ngIf="sectionsOpened$ | async" class="mt-3 flex flex-row w-full justify-start">
+        <a class="px-8 py-2 rounded-lg hover:bg-cyan-900 bg-cyan-700 text-xs uppercase font-semibold text-white"
+            *ngIf="actionLinkButton" [href]="actionLinkButton.href">
             {{actionLinkButton.title}}
         </a>
     </div>
-    
+
 
 </div>

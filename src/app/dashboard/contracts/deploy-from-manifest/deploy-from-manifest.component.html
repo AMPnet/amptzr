@@ -9,7 +9,7 @@
     </button>
 </div>
 
-<div *ngIf="tab$ | async as tab" class="flex bg-gray-100 ml-4 mt-6 pt-4 text-sm rounded-t-lg 
+<div *ngIf="tab$ | async as tab" class="flex bg-gray-100 ml-4 mt-2 pt-4 text-sm rounded-t-lg 
   border flex-row justify-start uppercase text-center font-semibold text-gray-500">
 
   <div (click)="changeTab('DEPLOY')"
@@ -51,7 +51,7 @@
     <div class="mb-4 text-lg font-semibold">{{contract.name}} <span class="font-light text-gray-500">({{contract.id}})</span></div>
 
     <div class="p-4 rounded-lg bg-violet-50 flex flex-col">
-        <label class="pb-1 font-semibold text-violet-700" for="token-name"
+        <label class="pb-1 font-semibold text-sm text-violet-700" for="token-name"
         >Contract alias</label
       >
       <small class="pb-2 text-xs text-gray-500"
@@ -59,7 +59,10 @@
         and API</small
       >
       <input
-        class="w-100 rounded-lg border-gray-200 shadow-sm transition-all lowercase border-x-8 text-sm px-4"
+        [class.!border-red-500]="!deployContractForm.controls.alias.valid"
+        [class.!border-green-500]="touchedAndValid(deployContractForm.controls.alias)"
+        class="w-100 rounded-lg !outline-0 border-gray-200 !ring-0
+        shadow-sm transition-all lowercase border-x-8 border-y-1 text-sm px-4"
         id="token-name"
         type="text"
         formControlName="alias"
@@ -74,7 +77,7 @@
         <div *ngIf="contract.constructors[0].inputs[0].solidity_type !== 'tuple'">
           <div class="mb-6 flex flex-col" *ngFor="let input of contract.constructors[0].inputs">
             <div class="font-semibold text-gray-700">{{input.name}}</div>
-            <small class="text-xs text-gray-500 w-1/2">{{input.description}}</small>
+            <small class="text-xs text-gray-500 w-2/3">{{input.description}}</small>
             <app-smart-input inputType="TEXT" [rootForm]="deployContractForm"
               [formFinishedLoadingSub]="finishedLoadingFormSub"
               [solidityType]="input.solidity_type"

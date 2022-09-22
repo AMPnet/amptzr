@@ -19,19 +19,9 @@
 </ng-template>
 
 <ng-template #overlay>
-  <div class="flex-col justify-center my-40">
-    <div class="flex justify-center">
-      <div class="sk-folding-cube">
-        <div class="sk-cube1 sk-cube"></div>
-        <div class="sk-cube2 sk-cube"></div>
-        <div class="sk-cube4 sk-cube"></div>
-        <div class="sk-cube3 sk-cube"></div>
-      </div>
+    <div class="flex flex-row items-center justify-center my-40">
+      <img class="inline-flex w-20 h-20" src="../../../../assets/dialog-icons/loader-infinity.svg" alt="">
     </div>
-    <div class="flex justify-center font-semibold text-cyan-700 mt-10">
-      <ng-content></ng-content>
-    </div>
-  </div>
 </ng-template>
 
 <ng-template #spinLoader>

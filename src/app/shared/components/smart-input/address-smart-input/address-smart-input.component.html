@@ -15,7 +15,10 @@
                 <div class="mr-2" *ngIf="confirmButtonLoading$ | async">
                     <app-spinner type="inline-xs"></app-spinner>
                 </div>
-                <div>Confirm</div>
+                <div *ngIf="confirmButtonLoading$ | async; else buttonLabel">Resolving</div>
+                <ng-template #buttonLabel>
+                    Confirm
+                </ng-template>
             </button>
         </div>
     </form>

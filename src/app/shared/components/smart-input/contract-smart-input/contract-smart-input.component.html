@@ -19,15 +19,17 @@
                 Custom
             </div>
         </div>
-        <input *ngIf="contracts.requests.length > 0;" class="w-full border-gray-200 rounded-lg mb-4"
-            placeholder="Search" type="text">
+        <!-- <input *ngIf="contracts.requests.length > 0;" class="w-full border-gray-200 rounded-lg mb-4"
+            placeholder="Search" type="text"> -->
 
-        <div *ngIf="contracts.requests.length > 0;" class="px-2 flex flex-row mb-2 justify-between w-full">
+        <div *ngIf="contracts.requests.length > 0;" class="px-4 py-3 border-x border-gray-100
+             border-t rounded-t-lg flex flex-row justify-between w-full">
             <div class="font-semibold text-violet-700 text-xs uppercase w-5/12">Alias</div>
             <div class="font-semibold text-violet-700 text-xs uppercase w-4/12">Address</div>
             <div class="font-semibold text-violet-700 text-xs uppercase w-3/12 text-end">Type</div>
         </div>
-        <div class=" max-h-80 overflow-y-scroll w-full" *ngIf="contracts.requests.length > 0; else emptyContracts">
+        <div class="border-x border-b rounded-b-lg px-2 border-gray-100
+         max-h-80 overflow-y-scroll w-full" *ngIf="contracts.requests.length > 0; else emptyContracts">
             <div class="px-2 flex flex-row justify-between items-center text-gray-700 cursor-pointer hover:bg-gray-100 w-full"
                 *ngFor="let contract of contracts.requests; let i = index" (click)="selectItem(contract)">
                 <div class="font-medium text-sm my-2 w-5/12">

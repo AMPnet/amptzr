@@ -55,6 +55,10 @@ export class DeployFromManifestComponent {
         map(result => marked(result, { gfm: true }))
     )
 
+    touchedAndValid(control: AbstractControl): boolean {
+        return control.valid && control.touched
+    }
+
     constructor(private manifestService: ContractManifestService,
         private route: ActivatedRoute,
         private routerService: RouterService,
