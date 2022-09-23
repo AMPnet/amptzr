@@ -26,6 +26,7 @@ export class SwapUniswapService {
     [ChainID.MATIC_MAINNET]: 'polygon',
     [ChainID.MUMBAI_TESTNET]: 'polygon_mumbai',
     [ChainID.GOERLI_TESTNET]: 'goerli',
+    [ChainID.AURORA_MAINNET]: 'aurora'
   }
 
   constructor(

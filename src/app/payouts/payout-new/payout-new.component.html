@@ -19,27 +19,29 @@
             "
           >
             <ng-container *ngIf="assetRes.value as asset">
-              <div class="text-base font-semibold text-gray-700">
-                Start new airdrop
+              <div class="text-base mb-4 font-semibold text-gray-700">
+                Airdropping tokens
               </div>
-              <hr class="mt-4 mb-4" />
               <div class="text-sm text-gray-700 font-medium">
-                Snapshot
+                Airdropping from snapshot
                 <span
-                  class="ml-2 text-sm font-semibold text-violet-700 py-1 rounded-xl border px-8 bg-violet-50"
+                  class="ml-2 text-sm font-semibold text-violet-700"
                   >{{ snapshot.id }}</span
                 >
               </div>
-              <hr class="mt-4 mb-4" />
               <div
                 class="mt-4 text-gray-700 flex flex-row items-center text-sm font-medium"
               >
-                Airdropping to holders of <br />
-                <div class="flex flex-row">
+                to wallets that were holding <br />
+                <div class="flex flex-row items-center">
                   <div
-                    class="py-1 px-8 font-semibold border bg-violet-100 text-violet-700 text-sm rounded-xl shadow-sm flex ml-2"
+                    class="font-semibold text-violet-700 flex ml-2"
                   >
                     {{ asset.tokenData.symbol }}
+                  </div>
+                  <div class="ml-1">
+                    <app-explorer-link 
+                    [value]="asset.tokenData.address" type="token"></app-explorer-link>
                   </div>
                 </div>
               </div>
@@ -59,7 +61,7 @@
                     "
                   >
                     <div
-                      class="px-8 py-1 bg-violet-100 text-sm rounded-xl shadow-sm border font-semibold text-violet-700"
+                      class="text-sm font-semibold text-violet-700"
                       *ngIf="blockTimeRes.value as blockTime"
                     >
                       <span>{{ blockTime | date: "medium" }}</span>
@@ -93,7 +95,7 @@
                     >
                       <div class="flex items-baseline gap-1.5 flex-wrap">
                         <span
-                          class="text-sm px-6 py-1 rounded-full font-medium bg-violet-50 border text-violet-700"
+                          class="font-medium text-sm text-violet-700"
                         >
                           {{ holderAddress }}
                         </span>
@@ -104,7 +106,6 @@
               </ng-container>
 
               <ng-container *ngIf="snapshot.status === snapshotStatus.Failed">
-                <hr class="mt-4 mb-4" />
                 <div
                   class="bg-red-100 text-red-600 py-2 px-4 rounded-lg text-sm font-medium"
                 >
@@ -120,7 +121,6 @@
               </ng-container>
 
               <ng-container *ngIf="snapshot.status === snapshotStatus.Success">
-                <hr class="mt-6 mb-6" />
 
                 <form [formGroup]="newPayoutForm">
                   <div class="flex flex-col gap-2 mt-4">
@@ -168,7 +168,7 @@
                     <div class="mt-4 mb-4 text-sm font-semibold text-gray-700">
                       Enter the amount of
                       <span
-                        class="py-1 px-4 bg-violet-100 text-violet-700 border rounded-xl mx-1"
+                        class=" text-violet-700 mx-1"
                         >{{ payoutState.tokenData.symbol }}</span
                       >
                       you want to airdrop

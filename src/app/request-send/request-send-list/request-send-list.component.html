@@ -29,7 +29,7 @@
                 <div class="w-1/5 flex flex-col justify-center text-center border-t">
                     <div [class.bg-amber-50] = "request.status === 'PENDING'"
                     [class.text-amber-700] = "request.status === 'PENDING'"
-                    [class.bg-green-200] = "request.status === 'SUCCESS'"
+                    [class.bg-green-50] = "request.status === 'SUCCESS'"
                     [class.text-green-700] = "request.status === 'SUCCESS'"
                     class="m-2 px-4 py-2 rounded-lg text-xs font-semibold tracking-wider">
                         {{request.status}}

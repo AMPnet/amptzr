@@ -8,7 +8,7 @@ import ReconnectingWebSocket from 'reconnecting-websocket'
 export enum ChainID {
   MATIC_MAINNET = 137, // Polygon
   MUMBAI_TESTNET = 80001, // Polygon
-  // ETHEREUM_MAINNET = 1,
+  AURORA_MAINNET = 1313161554,
   GOERLI_TESTNET = 5,
 }
 
@@ -163,11 +163,48 @@ export const GoerliNetwork: Network = {
   },
 }
 
+export const AuroraNetwork: Network = {
+  chainID: ChainID.AURORA_MAINNET,
+  name: 'Aurora (on NEAR)',
+  shortName: 'aurora',
+  nativeCurrency: {
+    name: 'ETH',
+    symbol: 'ETH',
+  },
+  maxGasPrice: 20,
+  rpcURLs: ['https://mainnet.aurora.dev/5NBTmA3BVFBACip9iWNVzP1qSUkZ6EjTNGfBx8KjFLR/'],
+  wssRpcURLs: ['wss://mainnet.aurora.dev/'],
+  explorerURLs: ['https://aurorascan.dev/'],
+  tokenizerConfig: {
+    apxRegistry: '',
+    issuerFactory: {
+      basic: '0x6d84F9a154C9934cc40a1fAD42eCa26744b64AE4',
+    },
+    assetFactory: {
+      basic: '',
+      transferable: '',
+      simple: '',
+    },
+    cfManagerFactory: {
+      basic: '',
+      vesting: '',
+    },
+    queryService: '',
+    payoutService: '',
+    payoutManager: '',
+    nameRegistry: '0x0Cd3B5ab0EB73344e8D0Aa85b710b2FB2b5864D5',
+    campaignFeeManager: '',
+    defaultWalletApprover: '',
+    defaultStableCoin: '', // custom stablecoin issued by filip
+  },
+}
+
 
 export const Networks: { [key in ChainID]: Network } = {
   [ChainID.MATIC_MAINNET]: MaticNetwork,
   [ChainID.MUMBAI_TESTNET]: MumbaiNetwork,
-  [ChainID.GOERLI_TESTNET]: GoerliNetwork
+  [ChainID.GOERLI_TESTNET]: GoerliNetwork,
+  [ChainID.AURORA_MAINNET]: AuroraNetwork
 }
 
 const getEthersNetwork = (network: Network): providers.Network => ({

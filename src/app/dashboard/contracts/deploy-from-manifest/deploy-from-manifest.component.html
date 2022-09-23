@@ -40,7 +40,7 @@
 </div>
 
 
-<div *ngIf="tab$ | async as tab" class="bg-white rounded-b-lg text-gray-700 flex flex-row shadow-sm ml-4 p-6">
+<div *ngIf="tab$ | async as tab" class="bg-white w-full rounded-b-lg text-gray-700 flex flex-row shadow-sm ml-4 p-6">
     <ng-component *ngIf="tab === 'DEPLOY'; then deployTab"></ng-component>
     <ng-component *ngIf="tab === 'INFO'; then infoTab"></ng-component>
 </div>
@@ -105,7 +105,7 @@
     <button app-action-button text="Create contract deployment request" [disabled]="!deployContractForm.valid"
      [onClick]="createDeploymentRequest().bind(this)" type="submit" class="app-button w-full"></button>
 </form>
-  <div class="w-4/12 pl-4 border-l">
+  <div class="w-4/12 pl-4 border-l border-gray-100">
     <app-info-snippet
       [content]="{ 
         title: 'Deploying pre-built contracts',
