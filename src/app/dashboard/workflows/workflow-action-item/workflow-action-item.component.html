@@ -1,0 +1,81 @@
+<div *ngIf="!isEmpty; else emptyActionItem" class="w-full mr-1">
+    <div class="flex flex-col h-full border rounded-lg w-full">
+        <div class="flex rounded-t-lg flex-row justify-center py-2 font-semibold text-xs uppercase
+        bg-violet-50 text-violet-700">
+           Deploy contract
+       </div>
+       <div (click)="toggleDetails()" [class.rounded-b-lg]="(showDetails$ | async) === false"
+        class="bg-violet-50 p-2 transition-all
+        hover:bg-violet-100 cursor-pointer text-gray-700">
+        <div class="flex flex-row justify-center uppercase text-xs font-semibold">
+            Vesting Wallet
+        </div>
+        <div class="mt-1 flex flex-row justify-center text-xs">
+             vestingWallet
+         </div>
+       </div>
+
+       <div #detailsHolder *ngIf="showDetails$ | async" class="mb-4">
+        <div #paramsHolder class="px-4 flex flex-col">
+            <div class="mt-3 flex flex-row uppercase text-violet-700 text-xs font-semibold">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" 
+                class="w-4 h-4">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M14.25 9.75L16.5 12l-2.25 2.25m-4.5 0L7.5 12l2.25-2.25M6 20.25h12A2.25 2.25 0 0020.25 18V6A2.25 2.25 0 0018 3.75H6A2.25 2.25 0 003.75 6v12A2.25 2.25 0 006 20.25z" />
+                  </svg>
+                <div class="ml-2 ">Params</div>                                  
+            </div>
+            <div class="ml-6 mt-2 flex flex-col">
+                <div class="flex flex-row font-semibold text-xs">Account: <span class="font-normal ml-1">mislav.eth</span> </div>
+                <div class="text-xs text-gray-500">Account to which the tokens will vest</div>
+            </div>
+            <div class="ml-6 flex mt-2 flex-col">
+                <div class="flex flex-row font-semibold text-xs">Start: <span class="font-normal ml-1">2775354263</span> </div>
+                <div class="text-xs text-gray-500">Start of the vesting cycle, also known as 'cliff'</div>
+            </div>
+            <div class="ml-6 flex mt-2 flex-col">
+                <div class="flex flex-row font-semibold text-xs">Duration: <span class="font-normal ml-1">233576432</span> </div>
+                <div class="text-xs text-gray-500">Duration of vesting in seconds</div>
+            </div>
+        </div>
+        <div #paramsHolder class="px-4 flex flex-col">
+            <div class="mt-3 flex flex-row uppercase text-violet-700 text-xs font-semibold">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12a7.5 7.5 0 0015 0m-15 0a7.5 7.5 0 1115 0m-15 0H3m16.5 0H21m-1.5 0H12m-8.457 3.077l1.41-.513m14.095-5.13l1.41-.513M5.106 17.785l1.15-.964m11.49-9.642l1.149-.964M7.501 19.795l.75-1.3m7.5-12.99l.75-1.3m-6.063 16.658l.26-1.477m2.605-14.772l.26-1.477m0 17.726l-.26-1.477M10.698 4.614l-.26-1.477M16.5 19.794l-.75-1.299M7.5 4.205L12 12m6.894 5.785l-1.149-.964M6.256 7.178l-1.15-.964m15.352 8.864l-1.41-.513M4.954 9.435l-1.41-.514M12.002 12l-3.75 6.495" />
+                  </svg>
+                  
+                <div class="ml-2 ">Events</div>                                  
+            </div>
+            <div class="ml-6 mt-2 flex flex-col">
+                <div class="flex flex-row font-semibold text-xs">Started Vesting</div>
+                <div class="text-xs text-gray-500">Emitted when vesting has been started for the contract</div>
+            </div>
+            <div class="ml-8 pl-2 border-l flex mt-2 flex-col">
+                <div class="flex flex-row font-semibold text-xs">Account <span class="font-normal ml-1">(address)</span> </div>
+                <div class="text-xs text-gray-500">Account to which the vesting is done</div>
+            </div>
+            <div class="ml-8 pl-2 border-l flex mt-2 flex-col">
+                <div class="flex flex-row font-semibold text-xs">Start <span class="font-normal ml-1">(uint256)</span> </div>
+                <div class="text-xs text-gray-500">Time of start for the vesting schedule</div>
+            </div>
+            <div class="ml-8 pl-2 border-l flex mt-2 flex-col">
+                <div class="flex flex-row font-semibold text-xs">Duration <span class="font-normal ml-1">(uint256)</span> </div>
+                <div class="text-xs text-gray-500">Duration of vesting in seconds</div>
+            </div>
+
+        </div>
+       </div>
+       
+        
+
+        
+        
+    </div>
+</div>
+
+<ng-template #emptyActionItem>
+    <div (click)="fillActionItem()" class="w-full cursor-pointer hover:bg-violet-50 border rounded-lg flex h-full flex-row justify-center items-center">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v6m3-3H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+    </div>
+</ng-template>

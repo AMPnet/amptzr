@@ -1,0 +1,5 @@
+.active-content-item {
+  color: #6d28d9;
+  border-bottom: 4px solid #6d28d9;
+  transition: all 0.3s;
+}

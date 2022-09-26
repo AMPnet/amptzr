@@ -1,5 +1,10 @@
-<ng-container *ngIf="handleCallback1$ | async"></ng-container>
-
-<ng-container *ngIf="handleCallback2$ | async as callbackRes">
-  <app-spinner type="overlay"> Authentication in progress... </app-spinner>
-</ng-container>
+<div class="bg-blue-50 flex flex-row h-screen w-screen items-center justify-center">
+  <div class="max-w-md flex flex-col items-center rounded-lg shadow-sm p-10 bg-white w-full">
+    <img class="mt-8 object-contain h-8" src="../../../assets/dev3-logo.png" alt="" srcset="">
+    <div class="mt-8 text-gray-700 font-medium text-sm">
+      Logging you in
+    </div>
+    <hr class="mt-4 mb-4 text-gray-800">
+    <div class="text-gray-500 text-sm">Don't close this tab</div>
+  </div>
+</div>

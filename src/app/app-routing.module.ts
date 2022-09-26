@@ -42,25 +42,33 @@ import { RequestSendActionComponent } from './request-send/request-send-action/r
 import { RequestBalanceActionComponent } from './request-balance/request-balance-action/request-balance-action.component'
 import { RequestWalletActionComponent } from './request-wallet/request-wallet-action/request-wallet-action.component'
 import { DashboardHolderComponent } from './dashboard/dashboard-holder/dashboard-holder.component'
-import { CreateErc20Component } from './dashboard/token/erc20/create-erc20.component'
 import { ThirdPartyIntegrationsOverviewComponent } from './dashboard/utils/third-party-integrations-overview/third-party-integrations-overview.component'
-import { TokensHolderComponent } from './dashboard/token/tokens-holder/tokens-holder.component'
 import { ContractsComponent } from './dashboard/contracts/contracts.component'
-import { FundraisingComponent } from './dashboard/fundraising/fundraising.component'
 import { AddressBookComponent } from './dashboard/address-book/address-book.component'
 import { AirdropComponent } from './dashboard/airdrop/airdrop.component'
 import { PaymentsComponent } from './payments/payments.component'
+import { AuthorizationsComponent } from './dashboard/authorizations/authorizations.component'
+import { AuthorizationNewComponent } from './dashboard/authorizations/authorization-new/authorization-new.component'
+import { VeriffComponent } from './identity/veriff/veriff.component'
+import { ContractDeployExecEnvComponent } from './execution-environments/contract-deploy-exec-env/contract-deploy-exec-env.component'
+import { DeployFromManifestComponent } from './dashboard/contracts/deploy-from-manifest/deploy-from-manifest.component'
+import { InteractWithContractsComponent } from './dashboard/contracts/interact-with-contracts/interact-with-contracts.component'
+import { FunctionCallExecEnvComponent } from './dashboard/function-call-exec-env/function-call-exec-env.component'
+import { WorkflowsComponent } from './dashboard/workflows/workflows.component'
 
 const appRoutes: Routes = [
   { path: 'callback', component: AuthMagicOauthComponent },
 
-  { path: '', pathMatch: 'full', redirectTo: 'admin/dashboard/tokens' },
+  { path: '', pathMatch: 'full', redirectTo: 'admin/dashboard/contracts' },
   { path: 'offers', component: OffersComponent },
   { path: 'offers/:id', component: OfferComponent },
   { path: 'offers/:id/invest', component: InvestComponent },
   { path: 'transfer', component: TransferComponent },
   { path: 'swap', component: SwapComponent },
+  { path: 'deploy-contract/:id', component: ContractDeployExecEnvComponent }, 
+  { path: 'request-function-call/:id/action', component: FunctionCallExecEnvComponent},
   { path: 'connect/:id', component: RequestWalletActionComponent },
+  { path: 'request-send/:id/action', component: RequestSendActionComponent },
   {
     path: '',
     canActivate: [AuthGuard],
@@ -68,41 +76,6 @@ const appRoutes: Routes = [
       { path: 'wallet', component: WalletComponent },
       { path: 'deposit', component: DepositComponent },
       { path: 'orders', component: OrdersComponent },
-    ],
-  },
-  {
-    path: 'request-send',
-    canActivate: [],
-    children: [
-      { path: 'new', component: RequestSendNewComponent },
-      { path: ':id', component: RequestSendShowComponent },
-      { path: ':id/action', component: RequestSendActionComponent },
-    ],
-  },
-  {
-    path: 'request-balance',
-    canActivate: [],
-    children: [
-      { path: ':id/action', component: RequestBalanceActionComponent },
-    ],
-  },
-  {
-    path: 'payouts',
-    canActivate: [],
-    children: [
-      { path: 'claims', component: ClaimsComponent },
-      {
-        path: 'snapshots',
-        canActivate: [],
-        children: [
-          { path: '', pathMatch: 'full', component: SnapshotsComponent },
-          { path: 'new', component: SnapshotNewComponent },
-          { path: ':id', component: SnapshotComponent },
-        ],
-      },
-      { path: '', pathMatch: 'full', component: PayoutsComponent },
-      { path: 'new/:snapshotID', component: PayoutNewComponent },
-      { path: ':id', component: PayoutComponent },
     ],
   },
   { path: 'faq', component: FaqComponent },
@@ -140,13 +113,9 @@ const appRoutes: Routes = [
         path: 'dashboard',
         component: DashboardHolderComponent,
         children: [
-          { path: 'tokens', component: TokensHolderComponent },
-          { path: 'tokens/create/erc20', component: CreateErc20Component },
-          { path: 'fundraising', component: FundraisingComponent },
-          {
-            path: 'fundraising/:id/campaigns/new',
-            component: AdminAssetCampaignNewComponent,
-          },
+          { path: 'workflows', component: WorkflowsComponent },
+          { path: 'contracts/create/from-manifest/:contractID', component: DeployFromManifestComponent },
+          { path: 'contracts/interact/:manifestID/:deployedID', component: InteractWithContractsComponent },
           {
             path: 'third-party-integrations',
             component: ThirdPartyIntegrationsOverviewComponent,
@@ -156,6 +125,11 @@ const appRoutes: Routes = [
           { path: 'airdrops/:snapshotID', component: PayoutNewComponent },
           { path: 'payments', component: PaymentsComponent },
           { path: 'address-book', component: AddressBookComponent },
+          { path: 'authorizations', component: AuthorizationsComponent },
+          { path: 'authorizations/:id', component: AuthorizationNewComponent },
+          { path: 'authorizations/connect/:id', component: RequestWalletActionComponent },
+          { path: 'kycaml', component: VeriffComponent },
+          { path: 'settings', component: AdminIssuerEditComponent }
         ],
       },
     ],

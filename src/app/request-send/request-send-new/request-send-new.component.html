@@ -6,9 +6,18 @@
           Token
         </label>
         <small class="my-1 text-gray-700">Choose the token which you are requesting the payments in</small>
-        <input class="border-gray-200 text-sm rounded-lg" type="text"
+        <!-- <input class="border-gray-200 text-sm rounded-lg" type="text"
                formControlName="assetAddress" id="asset-address"
-               autocomplete="off">
+               autocomplete="off"> -->
+        <div>
+          <app-smart-input [formFinishedLoadingSub]="alwaysTrueSub"
+            solidityType="address"
+            [recommendedTypes]="['traits.erc20']"
+            [rootForm]="newRequestSendForm"
+            [formFinishedLoadingSub]="alwaysTrueSub"
+            controlName="assetAddress"></app-smart-input>
+        </div>
+        
       </div>
 
       <ng-container *ngIf="(asset$ | async) as asset">
@@ -61,9 +70,11 @@
             Receiver address
           </label>
           <small class="text-gray-700">The address to which the funds will be received</small>
-          <input class="border-gray-200 text-sm rounded-lg" type="text"
+          <!-- <input class="border-gray-200 text-sm rounded-lg" type="text"
                  formControlName="recipientAddress" id="recipient-address"
-                 autocomplete="off">
+                 autocomplete="off"> -->
+          <app-smart-input solidityType="address" [rootForm]="newRequestSendForm"
+            [recommendedTypes]="[]" [formFinishedLoadingSub]="alwaysTrueSub" controlName="recipientAddress"></app-smart-input>
         </div>
 
         <div class="flex flex-col gap-2 mt-4">
@@ -81,8 +92,8 @@
                   class="bg-violet-700 font-semibold px-12 py-2 text-sm uppercase text-white rounded-full"
                   [class.!bg-gray-700]="newRequestSendForm.invalid"
                   [disabled]="newRequestSendForm.invalid"
-                  [onClick]="createRequest(asset, address).bind(this)"
-                  text="Create Payment Request">
+                  [onClick]="createRequest(asset, newRequestSendForm.controls.recipientAddress.value).bind(this)"
+                  text="+ Create Payment Request">
           </button>
         </div>
       </ng-container>

@@ -1,0 +1,62 @@
+<div class="flex flex-col scr-w">
+
+    <div class="font-medium mx-2 mb-2 text-xs uppercase flex flex-row text-gray-500">Enter custom address or ENS name</div>
+    <form [formGroup]="custmInputForm" class="flex ml-2 flex-row items-center justify-start">
+        <div  class="w-9/12 flex flex-row justify-between items-center border border-gray-200 rounded-lg">
+            <input formControlName="customAddressInput" class="w-9/12 text-xs !ring-0 focus:border-transparent focus:outline-0 rounded-lg border-none rounded-l-lg" type="text">
+            <a (click)="myAddressClicked()" class="font-medium mr-2 py-1 text-xs text-violet-700 cursor-pointer
+            hover:text-violet-900 rounded-full">
+                My address
+            </a>
+        </div>
+        <div class="w-3/12 h-full text-sm flex flex-row justify-end mr-4 items-center">
+            <button (click)="confirmAddressClicked()" 
+            type="button"
+            class="w-full flex flex-row justify-center 
+            items-center bg-violet-700 text-xs uppercase text-white
+            font-medium ml-2 py-2 rounded-full">
+                <div class="mr-2" *ngIf="confirmButtonLoading$ | async">
+                    <app-spinner type="inline-xs"></app-spinner>
+                </div>
+                <div *ngIf="confirmButtonLoading$ | async; else buttonLabel">Resolving</div>
+                <ng-template #buttonLabel>
+                    Confirm
+                </ng-template>
+            </button>
+        </div>
+    </form>
+
+    <div class="m-2 text-xs uppercase font-medium flex flex-row mt-8 text-gray-500">Select from address book</div>
+
+    <div *ngIf="addresses$ | async as addresses; else loading" class="flex flex-col max-h-[300px] overflow-y-scroll">
+        <div *ngIf="addresses.entries.length > 0; else addressBookEmpty" class="flex flex-row justify-between text-violet-700 mt-2 mx-2 font-medium">
+            <div class="text-xs uppercase font-semibold">
+                Alias
+            </div>
+            <div class="text-xs uppercase font-semibold">
+                Address
+            </div>
+        </div>
+        <div >
+            <div *ngFor="let entry of addresses.entries" 
+            (click)="addressBookEntryClicked(entry.address)" class="flex
+             hover:bg-gray-100 cursor-pointer rounded-lg flex-row my-2 py-2 px-2 text-sm">
+                <div class="w-1/2">{{entry.alias}}</div>
+                <div class="w-1/2 flex flex-row justify-end">{{entry.address | addrShort}}</div>
+            </div>
+        </div>
+        
+    </div>
+</div>
+
+<ng-template #loading>
+    <div class="w-full py-16 flex flex-row justify-center items-center">
+        <app-spinner></app-spinner>
+    </div>
+</ng-template>
+
+<ng-template #addressBookEmpty>
+    <div class="w-full py-8 flex flex-row text-center justify-center items-center text-sm border rounded-lg px-8">
+        You don't have any items in your address book.
+    </div>
+</ng-template>

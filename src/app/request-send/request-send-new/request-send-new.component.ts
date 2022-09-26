@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core'
-import { Observable, of, switchMap } from 'rxjs'
+import { BehaviorSubject, Observable, of, switchMap } from 'rxjs'
 import { FormBuilder, FormGroup, Validators } from '@angular/forms'
 import {
   Erc20Service,
@@ -26,6 +26,7 @@ export class RequestSendNewComponent {
   newRequestSendForm: FormGroup
   asset$: Observable<ERC20TokenData | undefined>
   address$: Observable<string> = this.preferenceQuery.address$
+  alwaysTrueSub = new BehaviorSubject(true)
 
   constructor(
     private requestSendService: RequestSendService,

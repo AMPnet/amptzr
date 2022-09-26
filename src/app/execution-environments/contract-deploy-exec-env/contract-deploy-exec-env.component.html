@@ -1,0 +1,191 @@
+<div *ngIf="contractDeploymentRequest$ | async as deploymentRequest; else loadingScreen"
+    class="flex flex-col items-center mt-16">
+    <ng-container *ngIf="issuer$ | async as issuer">
+        <!-- TX Display -->
+        <div [hidden]="(isWaitingForTx$ | async) && (deploymentRequest.status !== 'PENDING')"
+            class="w-full max-w-lg bg-white p-8 rounded-3xl shadow-sm flex flex-col">
+            <img class="w-full h-16 object-contain" src="{{issuer.infoData.logo | toUrlIPFS}}" alt="">
+            <div *ngIf="deploymentRequest.status === 'PENDING'" class="mt-6 text-gray-700 flex flex-row">
+                <div class="text-center mt-2 leading-loose text-sm w-full">
+                    <div>
+                        <span>
+                            The application
+                        </span>
+                        <span class="text-indigo-800 font-semibold">
+                            {{issuer.infoData.name}}
+                        </span>
+                    </div>
+                    is requesting you to deploy the following smart contract
+                </div>
+            </div>
+            <div *ngIf="deploymentRequest.status === 'SUCCESS'" class="mt-4 mb-4 w-full text-gray-700 flex flex-row">
+                <div class="text-center mt-2 leading-loose text-sm w-full">
+                    <div class="mb-4 py-1 px-2 tracking-widest bg-green-50 rounded-lg text-green-700 
+                    uppercase font-semibold flex flex-row items-center justify-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                            stroke="currentColor" class="w-6 h-6">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        <div class="ml-2">
+                            Success
+                        </div>
+
+                    </div>
+                    Deployed a smart contract as requested by
+                    <span class="ml-[2px] font-semibold text-violet-700">
+                        {{issuer.infoData.name}}
+                    </span>
+                    <div class="flex flex-row
+                     items-center justify-center mt-3">
+                        <div class="text-sm mr-1">
+                            Deployed contract address:
+                        </div>
+                        <div class="text-sm">
+                            {{deploymentRequest.contract_address | addrShort}}
+                            <app-explorer-link class="ml-2" type="token" [value]="deploymentRequest.contract_address">
+                            </app-explorer-link>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="rounded-lg mt-4  text-gray-700 font-medium">
+                <div class="mb-4 text-xs font-medium text-center uppercase 
+                w-full flex flex-row items-center justify-center" *ngIf="deploymentRequest.status === 'SUCCESS'">
+                    <hr class="w-1/3">
+                    <div class="mx-3 w-1/3 text-gray-500">Deployed contract</div>
+                    <hr class="w-1/3">
+                </div>
+                <div *ngIf="manifest$ | async as manifest"
+                    class="rounded-lg flex flex-row mt-4 items-start text-gray-700">
+                    <div class="flex flex-row items-start">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
+                            stroke="currentColor" class="w-6 h-6 text-violet-700">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m2.25 0H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" />
+                        </svg>
+
+                        <div class="flex flex-col ml-4">
+                            <div class="w-full font-semibold text-sm">
+                                {{manifest.name}}
+                            </div>
+                            <div class="w-full font-light text-sm">
+                                {{manifest.description}}
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <div class="w-full flex flex-row items-center justify-center mt-4">
+                    <hr class="w-1/3">
+                    <span class="mx-3 text-xs uppercase text-gray-500">with parameters</span>
+                    <hr class="w-1/3">
+                </div>
+
+                <div *ngIf="deploymentRequest.constructor_params.length > 0">
+                    <div class="mt-4 rounded-lg flex flex-row items-start" *ngIf="manifest$ | async as manifest">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
+                            stroke="currentColor" class="w-6 h-6 text-violet-700 font-bold">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M3.75 6A2.25 2.25 0 016 3.75h2.25A2.25 2.25 0 0110.5 6v2.25a2.25 2.25 0 01-2.25 2.25H6a2.25 2.25 0 01-2.25-2.25V6zM3.75 15.75A2.25 2.25 0 016 13.5h2.25a2.25 2.25 0 012.25 2.25V18a2.25 2.25 0 01-2.25 2.25H6A2.25 2.25 0 013.75 18v-2.25zM13.5 6a2.25 2.25 0 012.25-2.25H18A2.25 2.25 0 0120.25 6v2.25A2.25 2.25 0 0118 10.5h-2.25a2.25 2.25 0 01-2.25-2.25V6zM13.5 15.75a2.25 2.25 0 012.25-2.25H18a2.25 2.25 0 012.25 2.25V18A2.25 2.25 0 0118 20.25h-2.25A2.25 2.25 0 0113.5 18v-2.25z" />
+                        </svg>
+                        <div class="flex flex-col w-full ml-2">
+                            <div class="flex flex-col w-full rounded-lg">
+                                <div *ngFor="let param of deploymentRequest.constructor_params; let i = index;"
+                                    class="mr-1 mb-2 w-full text-sm flex flex-col">
+                                    <div class="font-semibold flex flex-row justify-between items-start w-full">
+                                        <div>
+                                            {{manifest.constructors[0].inputs[i].name}}:
+                                        </div>
+                                        <div class="font-light ml-2" *ngIf="param.type.endsWith('[]'); else notArray">
+                                            <div *ngFor="let item of param.value">
+                                                <div *ngIf="param.type.startsWith('address'); else nonAddressType">
+                                                    {{item | addrShort}}
+                                                </div>
+                                                <ng-template #nonAddressType>
+                                                    {{item}}
+                                                </ng-template>
+                                            </div>
+                                        </div>
+
+                                        <ng-template #notArray>
+                                            <div *ngIf="param.type !== 'address'" class="ml-1 font-light overflow-x-scroll flex flex-row">
+                                                {{param.value}}
+                                            </div>
+                                            <div *ngIf="param.type === 'address'" class="ml-1 font-light overflow-x-scroll">
+                                                {{param.value | addrShort}}
+                                                <app-explorer-link [value]="param.value"></app-explorer-link>
+                                            </div>
+                                        </ng-template>
+                                        
+                                    </div>
+                                    <div class="font-light overflow-x-scroll w-full flex flex-row
+                                     text-gray-500 text-xs">{{manifest.constructors[0].inputs[i].description}}</div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <div *ngIf="address$ | async as address">
+                <div class="mt-2 mb-2"
+                    *ngIf="deploymentRequest.deployer_address.toLowerCase() !== address.toLowerCase()">
+                    <app-info-snippet type="DANGER" [content]="{ title: 'You cannot deploy this contract', sections: [
+                        'This contract must be deployed by the owner of the wallet ' + deploymentRequest.deployer_address,
+                        'If you are the owner of this wallet, please connect it now.'
+                    ]}"></app-info-snippet>
+                </div>
+            </div>
+
+
+            <div *ngIf="isLoggedIn$ | async; else loginButton" class="w-full mt-8"
+                [hidden]="(isWaitingForTx$ | async) === true">
+                <button app-action-button *ngIf="(deploymentRequest.status === 'PENDING')"
+                    class="app-button uppercase w-full" [onClick]="deployContract(deploymentRequest).bind(this)"
+                    text="Deploy"></button>
+            </div>
+
+            <ng-template #loginButton>
+                <button app-action-button *ngIf="(deploymentRequest.status === 'PENDING')"
+                    class="app-button uppercase w-full mt-8" (click)="login()" text="Login"></button>
+            </ng-template>
+
+            <div *ngIf="isWaitingForTx$ | async">
+                <div *ngIf="(deploymentRequest.status === 'PENDING')"
+                    class="flex px-4 mt-6 flex-col items-center justify-center bg-violet-50 py-4 rounded-lg">
+                    <div class="flex flex-row items-center mb-2">
+                        <app-spinner></app-spinner>
+                    </div>
+                    <div class="ml-4 flex flex-col text-center justify-center font-semibold text-xs text-indigo-800">
+                        Your transaction is being executed. This may take a while. Don't close this tab until it's
+                        finished.
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Waiting for TX -->
+        <div *ngIf="(isWaitingForTx$ | async) && (deploymentRequest.status !== 'PENDING')"
+            class="w-full max-w-md bg-white shadow-sm text-sm text-gray-700 rounded-lg flex flex-col items-center justify-center p-8 h-48">
+            <div>Your transaction has been deployed to blockchain and is being processed. This can sometimes take a very
+                long time to complete.</div>
+            <app-spinner></app-spinner>
+        </div>
+        <div *ngIf="issuer$ | async as issuer" class="text-xs text-gray-500 text-center mt-2">This is a state changing
+            operation, make sure you trust {{issuer.infoData.name}}
+            before proceeding</div>
+    </ng-container>
+</div>
+
+<ng-template #loadingScreen>
+    <div class="h-full w-full flex flex-row justify-center items-center">
+        <div class="py-16 borde max-w-md w-full border border-gray-200 rounded-lg flex flex-row justify-center">
+            <app-spinner></app-spinner>
+        </div>
+    </div>
+
+</ng-template>

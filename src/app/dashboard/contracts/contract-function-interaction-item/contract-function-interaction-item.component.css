@@ -1,0 +1,13 @@
+.width-mod {
+    width: 3%!important;
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+}
+
+.width-main {
+    width: 97%!important;
+}
+
+.transition-width {
+    transition: all 0.2s ease-in-out;
+}

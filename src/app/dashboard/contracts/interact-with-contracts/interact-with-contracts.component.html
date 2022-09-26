@@ -1,0 +1,93 @@
+<button (click)="goBack()" class="mt-2 ml-4 rounded-full bg-gray-700 text-xs 
+    flex flex-row items-center justify-center uppercase font-semibold text-white py-3 px-10">
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
+        class="w-4 h-4">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" />
+    </svg>
+
+
+    <div class="ml-2">Back</div>
+</button>
+
+<div [@inOutAnimation] *ngIf="deployedContract$ | async as deployedContract; else loading"
+    class="p-8 bg-white shadow-sm rounded-lg ml-4 mt-2">
+    <div *ngIf="contract$ | async as contract">
+
+        <div class="rounded-lg flex flex-col text-sm text-gray-700 bg-gray-50 border
+        px-8 py-4 border-gray-100 mr-2">
+            <div class="flex flex-row items-center w-full py-2">
+                <div class="w-24 uppercase text-xs font-semibold">Name:</div>
+                <div class="w-9/12 pl-4">{{contract.name}}</div>
+            </div>
+            <div class="flex flex-row items-center w-full py-2">
+                <div class="w-24 uppercase text-xs font-semibold">Description:</div>
+                <div class="w-9/12 pl-4">{{contract.description}}</div>
+            </div>
+            <div class="flex flex-row items-center w-full py-2">
+                <div class="w-24 uppercase text-xs font-semibold">Tags:</div>
+                <div class="w-9/12 pl-4 flex flex-row">
+                    <div class="bg-violet-200 text-violet-700 
+                    mr-2 px-2 py-1 text-xs font-medium rounded-lg" *ngFor="let tag of contract.tags">
+                        #{{tag}}
+                    </div>
+                </div>
+            </div>
+            <div class="flex flex-row items-center w-full py-2">
+                <div class="w-24 uppercase text-xs font-semibold">Alias:</div>
+                <div class="w-9/12 pl-4">
+                    {{deployedContract.alias}}
+                    <app-value-copy [value]="deployedContract.alias"></app-value-copy>
+                </div>
+            </div>
+            <div class="flex flex-row items-center w-full py-2">
+                <div class="w-24 uppercase text-xs font-semibold">Created at:</div>
+                <div class="w-9/12 pl-4">{{deployedContract.created_at}}</div>
+            </div>
+            <div class="flex flex-row items-center w-full py-2">
+                <div class="w-24 uppercase text-xs font-semibold">Address</div>
+                <div class="w-9/12 pl-4 flex flex-row items-center">
+                    <span class="mr-1">{{deployedContract.contract_address}}</span>
+                    <app-explorer-link [value]="deployedContract.contract_address"></app-explorer-link>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="w-full flex flex-col justify-end pr-2 mt-4 mb-2 bg-gray-50 rounded-lg p-4">
+            <div class="text-sm mb-3 font-medium uppercase text-gray-700 tracking-wider">Symbols</div>
+            <div class="flex flex-row items-center text-violet-700">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                    stroke="currentColor" class="w-4 h-4">
+                    <path stroke-linecap="round" stroke-linejoin="round"
+                        d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" />
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                </svg>
+                <div class="ml-2 text-xs  font-medium">Read actions will fetch data from blockchain. They cost no gas
+                    and return values quickly. They are generally harmless and cannot cause loss of funds.</div>
+            </div>
+            <div class="flex mt-3 flex-row items-center text-orange-600">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                    stroke="currentColor" class="w-4 h-4">
+                    <path stroke-linecap="round" stroke-linejoin="round"
+                        d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" />
+                </svg>
+                <div class="ml-2 text-xs  font-medium">Write actions will 'write' to the blockchain. They cost gas to
+                    execute and might take a long time to finish. If used inaproprietly, they can cause a loss of funds.
+                </div>
+            </div>
+        </div>
+
+        <div *ngFor="let function of contract.functions" class="mb-1">
+            <app-contract-function-interaction-item 
+                [functionManifest]="function"
+                [contractID]="deployedContract.id"></app-contract-function-interaction-item>
+        </div>
+    </div>
+</div>
+
+<ng-template #loading>
+    <div [@inOutAnimation] class="w-full h-full flex flex-row py-24 border rounded-lg mt-4 ml-4 animate-pulse
+    bg-gray-100 items-center justify-center">
+        <app-spinner></app-spinner>
+    </div>
+</ng-template>

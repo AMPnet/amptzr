@@ -120,18 +120,30 @@ import { RequestSendShowComponent } from './request-send/request-send-show/reque
 import { RequestBalanceActionComponent } from './request-balance/request-balance-action/request-balance-action.component'
 import { RequestWalletActionComponent } from './request-wallet/request-wallet-action/request-wallet-action.component'
 import { DashboardHolderComponent } from './dashboard/dashboard-holder/dashboard-holder.component'
-import { NewAndManageHolderComponent } from './dashboard/new-and-manage-holder/new-and-manage-holder.component'
-import { CreateErc20Component } from './dashboard/token/erc20/create-erc20.component'
+import { ContractsTableHolderComponent } from './dashboard/contracts-table-holder/contracts-table-holder.component'
 import { ThirdPartyIntegrationsOverviewComponent } from './dashboard/utils/third-party-integrations-overview/third-party-integrations-overview.component'
-import { FundraisingComponent } from './dashboard/fundraising/fundraising.component'
 import { ContractsComponent } from './dashboard/contracts/contracts.component'
-import { TokensHolderComponent } from './dashboard/token/tokens-holder/tokens-holder.component'
 import { AddressBookComponent } from './dashboard/address-book/address-book.component'
 import { ApiKeyShortPipe } from './shared/pipes/api-key-short.pipe'
 import { AirdropComponent } from './dashboard/airdrop/airdrop.component'
 import { PaymentsComponent } from './payments/payments.component'
 import { RequestSendListComponent } from './request-send/request-send-list/request-send-list.component'
 import { InfoSnippetComponent } from './shared/components/info-snippet/info-snippet.component'
+import { AuthorizationsComponent } from './dashboard/authorizations/authorizations.component'
+import { AuthorizationNewComponent } from './dashboard/authorizations/authorization-new/authorization-new.component'
+import { ContractDeployExecEnvComponent } from './execution-environments/contract-deploy-exec-env/contract-deploy-exec-env.component'
+import { DeployFromManifestComponent } from './dashboard/contracts/deploy-from-manifest/deploy-from-manifest.component'
+import { InteractWithContractsComponent } from './dashboard/contracts/interact-with-contracts/interact-with-contracts.component'
+import { SmartInputComponent } from './shared/components/smart-input/smart-input.component'
+import { ContractSmartInputComponent } from './shared/components/smart-input/contract-smart-input/contract-smart-input.component'
+import { AddressSmartInputComponent } from './shared/components/smart-input/address-smart-input/address-smart-input.component'
+import { DateTimeSmartInputComponent } from './shared/components/smart-input/date-time-smart-input/date-time-smart-input.component'
+import { DurationSmartInputComponent } from './shared/components/smart-input/duration-smart-input/duration-smart-input.component'
+import { ArraySmartInputComponent } from './shared/components/smart-input/array-smart-input/array-smart-input.component'
+import { FunctionCallExecEnvComponent } from './dashboard/function-call-exec-env/function-call-exec-env.component'
+import { WorkflowsComponent } from './dashboard/workflows/workflows.component'
+import { ContractFunctionInteractionItemComponent } from './dashboard/contracts/contract-function-interaction-item/contract-function-interaction-item.component'
+import { WorkflowActionItemComponent } from './dashboard/workflows/workflow-action-item/workflow-action-item.component'
 
 @NgModule({
   declarations: [
@@ -230,17 +242,29 @@ import { InfoSnippetComponent } from './shared/components/info-snippet/info-snip
     RequestBalanceActionComponent,
     RequestWalletActionComponent,
     DashboardHolderComponent,
-    NewAndManageHolderComponent,
-    CreateErc20Component,
+    ContractsTableHolderComponent,
     ThirdPartyIntegrationsOverviewComponent,
-    FundraisingComponent,
     ContractsComponent,
-    TokensHolderComponent,
     AddressBookComponent,
     AirdropComponent,
     PaymentsComponent,
     RequestSendListComponent,
     InfoSnippetComponent,
+    AuthorizationsComponent,
+    AuthorizationNewComponent,
+    ContractDeployExecEnvComponent,
+    DeployFromManifestComponent,
+    InteractWithContractsComponent,
+    SmartInputComponent,
+    ContractSmartInputComponent,
+    AddressSmartInputComponent,
+    DateTimeSmartInputComponent,
+    DurationSmartInputComponent,
+    ArraySmartInputComponent,
+    FunctionCallExecEnvComponent,
+    WorkflowsComponent,
+    ContractFunctionInteractionItemComponent,
+    WorkflowActionItemComponent,
   ],
   imports: [
     BrowserModule,

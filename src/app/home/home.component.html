@@ -1,35 +1,49 @@
 <div class="min-h-full w-full">
   <div class="px-4 py-2 max-w-screen-lg mx-auto">
     <div class="flex flex-col items-center gap-2 mt-4">
-      <app-select-network class="mt-4"></app-select-network>
     </div>
 
-    <ng-container *ngIf="(isLoggedIn$ | async) === true">
-      <div class="my-8 flex justify-center">
-        <app-add-button
+    <ng-container *ngIf="(isLoggedIn$ | async) === true; else notLoggedIn">
+      
+      <div class="flex flex-row justify-between items-center w-full">
+        <h2 class="text-sm uppercase flex mb-2 flex-row items-center text-gray-700 font-semibold">
+          <div class="flex flex-row items-center mt-5">My projects on </div>
+          <div class="w-80 ml-4">
+            <app-select-network class="ml-2"></app-select-network>
+          </div>
+  
+        </h2>
+        <button
+          class="app-button flex flex-row items-center !px-8 !font-medium"
           (click)="openCreateNewIssuer()"
-          text="Create new project"
-        ></app-add-button>
+        >
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
+        </svg>
+        <div class="ml-2 text-xs uppercase">
+          Create a new project
+
+        </div>
+      </button>
       </div>
+      
 
-      <h2 class="text-sm uppercase text-gray-700 font-semibold mt-4">
-        My projects
-      </h2>
-
-      <div *ngIf="myIssuers$ | async as myIssuersRes">
+      <div *ngIf="myIssuers$ | async as myIssuersRes" class="mt-4 border border-gray-200 rounded-lg">
         <ng-container *ngIf="myIssuersRes.value as myIssuers">
           <div
-            class="flex flex-col lg:flex-row lg:flex-wrap gap-4 mt-4"
+            class="flex flex-col"
             *ngIf="myIssuers.length > 0"
           >
             <div
-              class="flex flex-col w-full lg:w-56 lg:min-h-64 justify-start bg-white shadow-sm rounded-4xl"
-              *ngFor="let issuer of myIssuers"
+              class="flex flex-row w-full justify-start items-center bg-white shadow-sm border-b"
+              *ngFor="let issuer of myIssuers; let i = index"
+              [class.rounded-t-lg] = "i === 0"
+              [class.rounded-b-lg] = "i === (myIssuers.length - 1)"
             >
-              <div class="relative w-full">
+              <div class="relative w-40 pl-4 border-r">
                 <img
                   *ngIf="issuer.issuer.infoData.logo; else noImage"
-                  class="w-full h-32 object-contain p-8 rounded-t-4xl"
+                  class="h-12 object-contain pl-8 py-2"
                   src="{{ issuer.issuer.infoData.logo | toUrlIPFS }}"
                   alt="Issuer logo"
                 />
@@ -37,19 +51,18 @@
                   <div class="w-full h-32 bg-gray-200 rounded-t-4xl"></div>
                 </ng-template>
               </div>
+              <span class="mr-4 pl-4 w-64 text-gray-700 font-medium">{{ issuer.issuer.infoData.name ?? "Unknown" }}</span>
+
               <div
                 class="flex flex-col gap-8 w-full h-full rounded-b-4xl p-4 justify-between"
               >
-                <div class="flex flex-wrap text-2xl">
-                  <span>{{ issuer.issuer.infoData.name ?? "Unknown" }}</span>
-                </div>
-                <div class="flex">
+                <div class="flex flex-row items-center justify-end text-lg">
                   <button
-                    class="app-button flex gap-2 justify-center items-center w-full"
+                    class="app-button transition-all !px-12 flex gap-2 justify-center items-center"
                     routerLink="."
                     (click)="openIssuer(issuer)"
                   >
-                    <span class="font-normal">Dashboard</span>
+                    <span class="font-semibold uppercase text-xs">Dashboard</span>
                     <svg
                       width="8"
                       height="14"
@@ -67,14 +80,15 @@
                     </svg>
                   </button>
                 </div>
+
               </div>
             </div>
           </div>
           <div
             *ngIf="myIssuers.length === 0"
-            class="flex justify-center mt-4 text-lg"
+            class="mt-4 text-sm py-16 flex flex-row font-medium text-center text-gray-700 justify-center leading-loose"
           >
-            No my issuers
+            You haven't created any projects on this network. <br> Try changing the network (top left corner) or create a new project!
           </div>
         </ng-container>
 
@@ -87,10 +101,21 @@
 
         <ng-container *ngIf="myIssuersRes.loading">
           <div
-            class="w-full h-64 bg-gray-300 animate-pulse rounded-4xl mt-4"
-          ></div>
+            class="w-full h-64 flex flex-row justify-center items-center rounded-4xl mt-4"
+          >
+        <app-spinner></app-spinner>
+        </div>
         </ng-container>
       </div>
     </ng-container>
   </div>
 </div>
+
+<ng-template #notLoggedIn>
+  <div class="w-full h-full py-16">
+    <app-info-snippet
+      [content]="{ title: 'You are not logged in', sections: [
+        'Please log in to use Dev3'
+      ] }"></app-info-snippet>
+  </div>
+</ng-template>

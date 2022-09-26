@@ -4,7 +4,7 @@
       <ng-container *ngIf="stateWithStatus$ | async as stateRes">
         <ng-container *ngIf="stateRes.value as state">
           <form [formGroup]="transferForm">
-            <div class="max-w-md mx-auto bg-white rounded-4xl p-6">
+            <div class="max-w-md mx-auto bg-white shadow-sm rounded-2xl p-8">
               <div class="flex justify-center">
                 <img
                   class="h-16"
@@ -13,11 +13,15 @@
                 />
               </div>
               <div class="mt-3">
-                <span class="font-bold">{{ myIssuer.infoData.name }}</span> is
-                requesting the following transaction
+                <div class="font-semibold text-sm text-violet-700">{{ myIssuer.infoData.name }}</div> 
+                <div class="mt-1 text-sm text-gray-700">
+                  is requesting the following transaction
+                </div>
               </div>
 
-              <div class="mt-5 bg-indigo-100 rounded-lg px-2 py-3 text-3xl">
+
+              <div class="mt-5 shadow-sm bg-indigo-50 rounded-lg px-2 py-3 text-3xl">
+                <div class=" text-sm uppercase text-gray-500 font-semibold" >Send</div>
                 <div class="flex flex-wrap items-center justify-center">
                   <img
                     class="w-6 h-6 object-cover"
@@ -28,7 +32,8 @@
                     alt="{{ state.tokenData.symbol }} logo"
                   />
                   <input
-                    class="px-0 -mx-2 text-center text-3xl bg-transparent border-none focus:ring-0"
+                    class="px-0 ml-1 text-center text-gray-700 
+                    text-3xl bg-transparent border-none font-mono focus:ring-0"
                     formControlName="tokenAmount"
                     [attr.disabled]="true"
                     appBigNumberInput
@@ -37,19 +42,13 @@
                     [size]="state.parsedAmount.length"
                   />
 
-                  <span>{{ state.tokenData.symbol }}</span>
+                  <span class="text-gray-700 text-3xl font-mono">{{ state.tokenData.symbol }}</span>
                   <div class="ml-2 gap-x-1 flex items-center">
-                    <app-explorer-link
-                      class=""
-                      [value]="state.tokenData.address"
-                      type="token"
-                    >
-                    </app-explorer-link>
                     <app-add-to-metamask [value]="state.tokenData.address">
                     </app-add-to-metamask>
                   </div>
                 </div>
-                <span class="text-sm font-bold"
+                <span class="text-sm font-light text-gray-500"
                   >on {{ state.network.name }}</span
                 >
               </div>
@@ -89,11 +88,16 @@
                   "
                 >
                   <span class="text-sm">
-                    Recipient: {{ recipientAddress | addrShort }}
+                    <div class="flex flex-col">
+                      <div class="mb-2 uppercase font-medium text-gray-500">Recipient</div>
+                      <div class="flex flex-row items-center">
+                        <div class="mr-2 text-sm font-medium text-violet-700">{{ state.requestSend.recipient_address }}</div>
+                      </div>
+                      
+                    </div>
+                    
                   </span>
-                  <app-value-copy [value]="recipientAddress"></app-value-copy>
-                  <app-explorer-link [value]="recipientAddress">
-                  </app-explorer-link>
+                  
                 </div>
               </div>
 
@@ -133,6 +137,7 @@
                     <ng-container
                       *ngIf="transferForm.get('tokenAmount')?.errors as errs"
                     >
+
                       <ng-container *ngIf="errs.tokenAmountAboveBalance">
                         <div class="text-orange-600 text-xs">
                           <div class="flex items-center justify-center">
@@ -185,7 +190,7 @@
                 </ng-container>
                 <ng-template #noAfterActionMessage>
                   <div
-                    class="flex items-center justify-center text-green-600 text-lg"
+                    class="flex items-center justify-center text-green-600 bg-green-50 rounded-lg py-2 text-lg"
                   >
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -193,7 +198,7 @@
                       fill="none"
                       viewBox="0 0 24 24"
                       stroke="currentColor"
-                      stroke-width="2"
+                      stroke-width="1.5"
                     >
                       <path
                         stroke-linecap="round"
@@ -201,7 +206,7 @@
                         d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
                       />
                     </svg>
-                    <span>Transaction completed</span>
+                    <span class="text-xs uppercase font-medium">Transaction completed</span>
                   </div>
 
                   <div class="flex items-center mt-2 justify-center text-xs">

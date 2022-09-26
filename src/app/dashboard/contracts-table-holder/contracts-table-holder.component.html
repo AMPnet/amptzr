@@ -1,0 +1,277 @@
+<div class="w-full bg-white shadow-sm p-8 mx-4 my-2 rounded-lg flex flex-col">
+  <div class="flex flex-row justify-between">
+
+    <div class="flex flex-row justify-start items-end">
+      <!-- TOKENS -->
+      <div (click)="changeTab(tabType.Manage)" [class.active-content-item]="activeTab === tabType.Manage"
+        class="w-52 text-center border-gray-200 flex flex-row items-center justify-center text-sm uppercase 
+        pb-4 border-b-4 font-semibold text-gray-500 cursor-pointer transition-all">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"
+          stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round"
+            d="M14 10l-2 1m0 0l-2-1m2 1v2.5M20 7l-2 1m2-1l-2-1m2 1v2.5M14 4l-2-1-2 1M4 7l2-1M4 7l2 1M4 7v2.5M12 21l-2-1m2 1l2-1m-2 1v-2.5M6 18l-2-1v-2.5M18 18l2-1v-2.5" />
+        </svg>
+        <div class="ml-2">
+          Contracts
+        </div>
+      </div>
+
+      <!-- PENDING -->
+      <div (click)="changeTab(tabType.Pending)" [class.active-content-item]="activeTab === tabType.Pending"
+        class="w-52 text-center border-gray-200 flex flex-row items-center justify-center text-sm uppercase pb-4 
+        border-b-4 font-semibold text-gray-500 cursor-pointer transition-all">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"
+          stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+        <div class="ml-2">Requests</div>
+      </div>
+    </div>
+
+
+    <div class="flex flex-row justify-end items-end">
+      <!-- NEW -->
+      <div (click)="changeTab(tabType.Add)" class=" flex flex-row justify-center 
+items-center pb-2 text-center text-sm font-semibold transition-all
+border-b-4 border-transparent text-gray-700 uppercase cursor-pointer">
+
+        <div [class.text-white]="activeTab === tabType.Add" [class.!bg-violet-700]="activeTab === tabType.Add"
+          class="w-40 py-2 mx-1 bg-gray-50 border hover:bg-gray-200 border-gray-200 rounded-full 
+          flex flex-row items-center justify-center">
+
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"
+            stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round"
+              d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+          <div class="ml-2">Deploy</div>
+        </div>
+      </div>
+
+      <!-- IMPORT -->
+      <div (click)="changeTab(tabType.Import)" class=" flex flex-row justify-center 
+items-center pb-2 text-center text-sm font-semibold 
+text-gray-700 uppercase border-b-4 border-transparent cursor-pointer">
+
+        <div [class.text-white]="activeTab === tabType.Import" [class.!bg-violet-700]="activeTab === tabType.Import"
+          class="w-40 py-2 mx-1 bg-gray-50 hover:bg-gray-200 border border-gray-200 rounded-full flex flex-row items-center justify-center">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"
+            stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round"
+              d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
+          </svg>
+          <div class="ml-2">Connect</div>
+        </div>
+      </div>
+
+
+      <div (click)="changeTab(tabType.Import)" class=" flex flex-row justify-center 
+items-center pb-2 text-center text-sm font-semibold 
+text-gray-700 uppercase border-b-4 border-transparent cursor-pointer">
+
+        <div [class.text-white]="false" [class.!bg-violet-700]="false"
+          class="w-40 py-2 mx-1 bg-gray-50 hover:bg-gray-200 border border-gray-200 rounded-full flex flex-row items-center justify-center">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
+          </svg>
+                  
+          <div class="ml-2">Browse</div>
+        </div>
+      </div>
+    </div>
+
+
+  </div>
+
+  <ng-container *ngIf="activeTab === tabType.Add">
+
+    <div [@inOutAnimation] *ngIf="deployableContracts$ | async as deployableContracts; else loading">
+      <div class="p-4 border rounded-tr-lg bg-blue-50">
+        <app-info-snippet [hasInfoToggle]="true" type="INFO" [hasBorderAndBackground]="false"
+          [content]="{ title: 'Writing your own smart contracts?', sections: [
+        'Dev3 allows you to import & use your own smart contracts.', 'This feature is under development and will be released soon!'] }"></app-info-snippet>
+      </div>
+
+      <div *ngFor="let contract of deployableContracts" class="border-gray-100 border-x border-b p-4 flex flex-row">
+        <div class="w-3/12 font-medium text-gray-700 text-sm flex flex-col justify-center">
+          {{ contract.name }}
+        </div>
+        <div class="w-7/12 text-sm flex flex-col justify-start pr-4 text-gray-500">
+          <div class="flex flex-col h-full text-sm flex-wrap justify-start">
+            <div>
+              {{contract.description}}
+            </div>
+            <div class="flex flex-row">
+              <div class="pr-1 text-xs mt-1" *ngFor="let tag of contract.tags">
+                #{{tag}}
+              </div>
+            </div>
+
+          </div>
+        </div>
+        <div class="w-2/12 flex flex-col justify-center">
+          <button class="bg-gray-200 rounded-full flex flex-row items-center justify-center 
+            px-8 py-3 font-semibold uppercase hover:bg-gray-300 transition-all
+           text-gray-700 text-xs" [routerLink]="'create/from-manifest/' + contract.id">
+           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 16.875h3.375m0 0h3.375m-3.375 0V13.5m0 3.375v3.375M6 10.5h2.25a2.25 2.25 0 002.25-2.25V6a2.25 2.25 0 00-2.25-2.25H6A2.25 2.25 0 003.75 6v2.25A2.25 2.25 0 006 10.5zm0 9.75h2.25A2.25 2.25 0 0010.5 18v-2.25a2.25 2.25 0 00-2.25-2.25H6a2.25 2.25 0 00-2.25 2.25V18A2.25 2.25 0 006 20.25zm9.75-9.75H18a2.25 2.25 0 002.25-2.25V6A2.25 2.25 0 0018 3.75h-2.25A2.25 2.25 0 0013.5 6v2.25a2.25 2.25 0 002.25 2.25z" />
+          </svg>
+          
+            <div class="ml-2">Create</div>
+          </button>
+        </div>
+      </div>
+    </div>
+
+  </ng-container>
+
+  <ng-container *ngIf="activeTab === tabType.Pending">
+    <div [@inOutAnimation] *ngIf="pendingContractDeploymentRequests$ | async as requests; else loading" >
+      <app-info-snippet [hasInfoToggle]="true" [hasRoundedCorners]="false" [content]="{
+        title: 'Pending contract deployment requests',
+        sections: [ 'This tab contains pending contract deployment transactions.',
+        'You can execute these transactions yourself or share them with other people!' ]
+      }" [actionLinkButton]="{
+          title: 'Read the docs',
+          href: 'https://google.com'
+      }"></app-info-snippet>
+  <div class="border-gray-100 text-gray-700 border-2 p-4 flex flex-row bg-gray-100 rounded-tr-lg">
+    <div class="w-3/12 text-sm uppercase font-semibold">Alias</div>
+    <div class="w-4/12 text-sm uppercase font-semibold">Contract Type</div>
+    <div class="w-2/12 text-sm uppercase font-semibold">Created at</div>
+    <div class="w-3/12 text-sm uppercase font-semibold flex flex-ro rounded-lg items-center justify-center">
+    </div>
+  </div>
+
+  <div>
+    <ng-container *ngIf="requests.length > 0; else emptyList">
+      <div *ngFor="let request of requests; let i = index">
+        <div class="py-2 pl-4 border-b font-medium flex 
+        flex-row items-center text-sm text-gray-700 border-x">
+          <div class="w-3/12 text-sm font-medium">
+            {{request.alias}}
+          </div>
+          <div class="w-4/12">
+            <div *ngIf="manifests$ | async as manifests; else manifestLoading">
+              {{manifests[i].name}}
+            </div>
+            <ng-template #manifestLoading>
+              <app-spinner></app-spinner>
+            </ng-template>
+          </div>
+          <div class="w-2/12">
+            {{request.created_at | date:'short'}}
+          </div>
+          <a target="_blank" [routerLink]="'/deploy-contract/' + request.id | issuerPath"
+            class="w-3/12 px-2 cursor-pointer">
+            <div class="w-full py-2 bg-violet-700 text-white rounded-full
+             text-center uppercase text-xs font-semibold hover:bg-violet-900 transition-all">
+              Deploy now
+            </div>
+          </a>
+        </div>
+
+      </div>
+    </ng-container>
+
+
+  </div>
+    </div>
+ 
+
+  </ng-container>
+
+  <ng-container *ngIf="activeTab === tabType.Manage">
+    <div [@inOutAnimation]  *ngIf="deployedContracts$ | async as deployedContracts; else loading">
+      <app-info-snippet [hasInfoToggle]="true" [hasRoundedCorners]="false" [content]="{
+        title: 'Deploy, connect or browse',
+        sections: ['This tab contains all the smart contracts you can interact with in this project!',
+        'There are three ways to interact with a contract - deploy a contract from our pre-built library, import a contract you already deployed or browse and select deployed contracts from popular protocols and apps!']
+      }"></app-info-snippet>
+      <ng-container>
+        <div class="border-gray-100 border-2 p-4 text-gray-700
+         flex flex-row bg-gray-100 rounded-tr-lg">
+          <div class="w-3/12 text-sm uppercase font-semibold">Alias</div>
+          <div class="w-5/12 text-sm uppercase font-semibold">Contract Type ID</div>
+          <div class="w-2/12 text-sm uppercase font-semibold">Address</div>
+        </div>
+  
+        <ng-container *ngIf="deployedContracts.length > 0; else emptyList">
+          <div *ngFor="let contract of deployedContracts" routerLink="interact/{{contract.contract_id}}/{{contract.id}}"
+            class="border-gray-100 hover:bg-violet-100 border-b border-x p-4 flex flex-row cursor-pointer">
+            <div class="w-3/12 text-sm font-medium">{{ contract.alias }}</div>
+            <div class="w-5/12 text-sm pr-4">
+              {{ contract.contract_id }}
+            </div>
+            <div class="w-2/12 text-sm">
+              {{ contract.contract_address | addrShort}}
+              <app-explorer-link class="ml-2" [value]="contract.contract_address"></app-explorer-link>
+              <app-value-copy class="ml-2" [value]="contract.contract_address"></app-value-copy>
+            </div>
+          </div>
+        </ng-container>
+  
+      </ng-container>
+    </div>
+
+
+
+  </ng-container>
+
+  <ng-container *ngIf="activeTab === tabType.Import">
+    <!-- <div class="border-gray-100 border-2 p-4 flex flex-row bg-gray-100 rounded-tr-lg">
+      
+    </div> -->
+    <form [@inOutAnimation] [formGroup]="importContractForm" class="border rounded-tr-lg flex flex-col rounded-b-lg p-8 text-gray-700">
+      <div class="uppercase font-semibold">Connect deployed contract</div>
+      <div class="text-xs text-gray-500 mt-1">
+        Dev3 enables you to interact with any smart contract deployed on this network by simply pasting the address of
+        the deployed contract in the contract address field below.
+        If the contract type you have deployed is part of the Dev3 <a class=" text-violet-700 underline"
+          href="https://github.com/0xdev3/dev3-contracts">contracts database</a> you can get a much better user
+        interface by pasting the <i>contract manifest ID</i>. </div>
+      <div class="bg-violet-50 p-4 rounded-lg mt-4">
+        <div class="text-violet-700 font-semibold">Contract alias</div>
+        <div class="text-xs mt-1 text-gray-500">This is the alias you will use to access the imported contract through
+          the Dev3 API & SDK.</div>
+        <input formControlName="alias" class="w-full mt-2 border-gray-200 rounded-lg text-sm"
+          placeholder="my-contract-alias" type="text" name="" id="">
+      </div>
+
+      <div class="uppercase font-semibold mt-4 text-sm">Contract address</div>
+      <div class="text-xs mt-1 text-gray-500">The address of the smart contract deployed on the blockchain. Make sure
+        you have the correct address for the network you are currently using!</div>
+      <input formControlName="contractAddress" class="w-full mt-1 border-gray-200 rounded-lg text-sm"
+        placeholder="0xdEaDc0FFeBAbE00c0FFe1234000" type="text" name="" id="">
+
+      <div class="uppercase font-semibold mt-4 text-sm">Contract manifest (Optional)</div>
+      <div class="text-xs mt-1 text-gray-500">The manifest of the smart contract from the
+        <a class="text-violet-700 underline" href="https://github.com/0xDev3/dev3-contracts">Dev3 database!</a>
+      </div>
+      <input formControlName="contractManifest" class="w-full mt-1 border-gray-200 rounded-lg text-sm"
+        placeholder="dev3.example-manifest" type="text" name="" id="">
+
+
+      <button [onClick]="importContractClicked()" [disabled]="!importContractForm.valid" app-action-button
+        text="Import contract" class=" app-button mt-4"></button>
+    </form>
+
+
+    <div *ngFor="let item of manageItems"
+      class="border-gray-100 hover:bg-violet-100 border-2 p-4 flex flex-row cursor-pointer">
+
+    </div>
+  </ng-container>
+</div>
+
+<ng-template #loading>
+  <div [@inOutAnimation] class="border border-gray-200 rounded-lg py-16 flex flex-row justify-center">
+    <app-spinner></app-spinner>
+  </div>
+</ng-template>
+
+<ng-template #emptyList>
+  <div [@inOutAnimation] class="border border-gray-200 rounded-x-lg rounded-b-lg py-16 flex flex-row justify-center text-sm font-medium">
+    No items available
+  </div>
+</ng-template>

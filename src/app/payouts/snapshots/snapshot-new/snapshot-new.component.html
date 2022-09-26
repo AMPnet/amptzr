@@ -19,9 +19,16 @@
               Paste the address of an ERC-20 compliant token, for which you plan on distributing airdrops or dividends.
             </small>
             <div class="w-full flex flex-row border border-gray-200 rounded-lg">
-              <input class="border-0 text-sm rounded-lg w-8/12" type="text"
+              <!-- <input class="border-0 text-sm rounded-lg w-8/12" type="text"
               formControlName="assetAddress" id="asset-address"
-              autocomplete="off">
+              autocomplete="off"> -->
+
+              <div class="w-2/3">
+                <app-smart-input [rootForm]="newSnapshotForm" [formFinishedLoadingSub]="formFinishedLoadingSub"
+                solidityType="address" [recommendedTypes]="['traits.erc20']"
+                controlName="assetAddress"></app-smart-input>
+              </div>
+              
   
               <div class="flex" *ngIf="!state.tokenData">
                 <div class="flex items-center mt-2 flex-1">
@@ -105,12 +112,17 @@
                 Add wallet addresses which should <i>not</i> receive airdrop rewards or dividends.
               </small>
               <div class="flex gap-2 w-full border-gray-200 border rounded-lg">
-                <input class="border-0 text-sm rounded-lg flex-1" type="text"
+                <!-- <input class="border-0 text-sm rounded-lg flex-1" type="text"
                        formControlName="holderAddress" id="ignored-holder-address"
-                       autocomplete="off">
+                       autocomplete="off"> -->
+                <div class="w-9/12">
+                  <app-smart-input [rootForm]="ignoredAddressInputForm" [formFinishedLoadingSub]="formFinishedLoadingSub"
+                  solidityType="address" [recommendedTypes]="[]"
+                  controlName="holderAddress"></app-smart-input>
+                </div>
                 <button (click)="addIgnoredHolderFromInput()"
                         [disabled]="!ignoredAddressInputForm.valid"
-                        class="text-xs flex flex-row justify-center items-center font-semibold uppercase text-white rounded-r-lg px-4 bg-violet-600">
+                        class="text-xs w-3/12 flex flex-row cursor-pointer justify-center items-center font-semibold uppercase text-white rounded-r-lg px-4 bg-violet-600">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                           <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
                         </svg>

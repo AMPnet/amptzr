@@ -8,12 +8,12 @@
       <div class="flex justify-start items-center">
         <img
           *ngIf="iconPath"
-          class="h-8"
+          class="h-6"
           src="{{ iconPath }}"
           alt=""
           srcset=""
         />
-        <span class="text-sm">{{ text }}</span>
+        <span class="text-xs">{{ text }}</span>
       </div>
     </div>
   </ng-template>
@@ -25,9 +25,11 @@
   </ng-container>
   <ng-template #noLoadingContent>
     <div class="flex justify-around">
-      <div class="flex justify-start items-center">
-        <app-spinner class="inline-flex items-center"> </app-spinner>
-        <span *ngIf="loadingText" class="ml-2">
+      <div class="flex flex-row justify-center items-center">
+        <div class="h-4 flex flex-row items-center">
+          <app-spinner type="inline-xs"> </app-spinner>
+        </div>
+        <span *ngIf="loadingText" class="ml-2 text-xs">
           {{ loadingText }}
         </span>
       </div>

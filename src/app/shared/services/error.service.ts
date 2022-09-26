@@ -72,7 +72,7 @@ export class ErrorService {
 
           case undefined:
           default:
-            action$ = this.displayMessage('Something went wrong.')
+            action$ = this.displayMessage(error.message)
         }
       } else if ((errorRes as any).code === -32603) {
         // Internal JSON-RPC error
@@ -90,7 +90,9 @@ export class ErrorService {
           message?.includes('insufficient funds')
         ) {
           action$ = this.displayMessage(this.outOfGasMessage)
-        } else if (message?.startsWith('execution reverted:')) {
+        } else if(message.startsWith('Internal JSON-RPC error.')) {
+          action$ = this.displayMessage(error.data?.message ?? "Unknown error")
+        }  else if (message?.startsWith('execution reverted:')) {
           action$ = this.displayMessage(
             message!.replace('execution reverted:', '').trim()
           )
@@ -98,7 +100,12 @@ export class ErrorService {
           action$ = this.displayMessage('Something went wrong.')
         }
       } else if (err?.message?.includes('cannot estimate gas')) {
-        action$ = this.displayMessage(this.outOfGasMessage)
+        action$ = this.displayInfoMessage(this.cannotEstimateGas(err))
+      } else if((errorRes as any).code === 'UNPREDICTABLE_GAS_LIMIT') {
+        const error = errorRes as unknown as EthereumRpcError<
+          EthereumRpcError<string>
+        >
+        action$ = this.displayMessage(error.data?.message ?? "Unknown error")
       }
 
       if (completeAfterAction) {
@@ -113,12 +120,23 @@ export class ErrorService {
     }
   }
 
+  private displayInfoMessage(message: string) {
+    return this.dialogService.infoWithOnConfirm({
+      message: message.replace('execution reverted:', '').trim(),
+      cancelable: false
+    })
+  }
+
   private displayMessage(message: string) {
     return this.dialogService.error({ message })
   }
 
   private get outOfGasMessage() {
-    return 'Not enough gas to execute the transaction. Check out the FAQ page for more info.'
+    return `You don't have enough gas token to execute this transaction. Click the 'Top Up' button on the top to buy more gas!`
+  }
+
+  private cannotEstimateGas(err: any) {
+    return `You are not able to execute this transaction. This is the error: \n ${err.error.error.message}`
   }
 }
 

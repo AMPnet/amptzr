@@ -1,0 +1,80 @@
+<ng-container *ngIf="openTab$ | async as openTab">
+    <div [@inOutAnimation] *ngIf="contracts$ | async as contracts; else loading" 
+    class="flex flex-col w-full">
+        <div class="flex flex-row tracking-wide
+         justify-start uppercase text-sm mt-4 font-medium text-gray-500">
+            <div class="border-b-[3px]
+            cursor-pointer border-transparent text-center pb-2 px-4"
+            [class.text-violet-700]="isOpenTab('MY_CONTRACTS')"
+            [class.!border-violet-700]="isOpenTab('MY_CONTRACTS')">
+                Contracts
+            </div>
+            <div [class.text-violet-700]="isOpenTab('EXTERNAL')"
+            [class.border-violet-700]="isOpenTab('EXTERNAL')"
+            class="px-4 w-44 text-center border-transparent cursor-pointer border-b-[3px]">
+                Browse
+            </div>
+        </div>
+        <!-- <input *ngIf="contracts.requests.length > 0;" class="w-full border-gray-200 rounded-lg mb-4"
+            placeholder="Search" type="text"> -->
+        
+        <form [formGroup]="customInputForm"  class="w-full flex flex-row">
+            <input formControlName="customAddressInput"
+             class="w-3/4 border-gray-200 rounded-tr-lg rounded-b-lg mb-4 text-sm"
+            placeholder="Custom address or ENS name" type="text">
+            <div class="w-1/4 flex flex-row">
+                <button type="button"
+                (click)="confirmAddressClicked()" class="w-full ml-2 bg-violet-700 
+                text-xs uppercase font-semibold disabled:bg-gray-500
+                 mb-4 flex flex-row justify-center items-center
+                text-white rounded-lg">
+                    <div *ngIf="confirmButtonLoading$ | async" class="mr-2">
+                        <app-spinner type="inline-xs"></app-spinner>
+                    </div>
+                    <div>Confirm</div>
+                </button>
+            </div>
+            
+        </form>
+
+        <div *ngIf="contracts.requests.length > 0;" class="px-4 py-3 border-x border-gray-100
+             border-t rounded-t-lg flex flex-row justify-between w-full">
+            <div class="font-semibold text-violet-700 text-xs uppercase w-5/12">Alias</div>
+            <div class="font-semibold text-violet-700 text-xs uppercase w-4/12">Address</div>
+            <div class="font-semibold text-violet-700 text-xs uppercase w-3/12 text-end">Type</div>
+        </div>
+        <div class="border-x border-b rounded-b-lg px-2 border-gray-100
+         max-h-80 overflow-y-scroll w-full" *ngIf="contracts.requests.length > 0; else emptyContracts">
+            <div class="px-2 flex flex-row justify-between items-center text-gray-700 cursor-pointer hover:bg-gray-100 w-full"
+                *ngFor="let contract of contracts.requests; let i = index" (click)="selectItem(contract)">
+                <div class="font-medium text-sm my-2 w-5/12">
+                    {{contract.alias}}
+                </div>
+                <div class="font-medium flex items-center text-gray-500 flex-row justify-start text-xs my-2 w-4/12">
+                    <div class="mr-2">{{contract.contract_address | addrShort}}</div>
+                    <app-value-copy [value]="contract.contract_address"></app-value-copy>
+                </div>
+                <div class="font-medium text-xs flex flex-row justify-end text-gray-500 my-2 w-3/12">
+                    <div *ngIf="manifests$ | async as manifests; else manifestLoading">
+                        {{manifests[i].name}}
+                    </div>
+                    <ng-template #manifestLoading>
+                        <app-spinner></app-spinner>
+                    </ng-template>
+                </div>
+            </div>
+        </div>
+        <ng-template #emptyContracts>
+            <div class="w-full border rounded-lg h-24 flex flex-row justify-center items-center">
+                No contracts to recommend
+            </div>
+        </ng-template>
+
+    </div>
+
+    <ng-template #loading>
+        <div class="w-full h-48 border rounded-lg flex flex-row items-center justify-center">
+            <app-spinner></app-spinner>
+        </div>
+    </ng-template>
+</ng-container>

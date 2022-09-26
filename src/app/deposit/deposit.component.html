@@ -1,22 +1,12 @@
-<div class="max-w-6xl mx-auto px-2 lg:px-4" *ngIf="state$ | async as state">
-  <div class="my-8">
+<div class="max-w-6xl mx-auto px-2 lg:px-4 flex flex-col items-center" *ngIf="state$ | async as state">
+  <div class="my-8 w-full">
     <app-deposit-flow></app-deposit-flow>
   </div>
-  <p class="text-center text-sm">
-    <span class="font-semibold"> Note: </span>
+  <p class="text-center text-xs max-w-md text-gray-500">
+    <span class="font-semibold "> Note: </span>
     You can always find alternative ways to fund the connected wallet with
     <span>
-      {{ state.stablecoin.symbol }}
-    </span>
-
-    <span class="inline-flex items-baseline">
-      <app-explorer-link [value]="state.stablecoin.address" type="token">
-      </app-explorer-link>
-    </span>
-
-    <span class="inline-flex items-baseline">
-      <app-add-to-metamask [value]="state.stablecoin.address">
-      </app-add-to-metamask>
+      {{ nativeCurrency.name }}
     </span>
 
     <span> on {{ state.network.name }} </span>

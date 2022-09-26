@@ -1,0 +1,133 @@
+<div class="mt-2 ml-4">
+    <button (click)="goBack()" 
+    class="bg-gray-700 text-white rounded-full flex flex-row items-center justify-center px-10 py-2 text-sm hover:bg-gray-900 font-medium">
+    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+      </svg>
+      <span class="ml-2">Back</span>
+
+    </button>
+</div>
+
+<div *ngIf="tab$ | async as tab" class="flex bg-gray-100 ml-4 mt-2 pt-4 text-sm rounded-t-lg 
+  border flex-row justify-start uppercase text-center font-semibold text-gray-500">
+
+  <div (click)="changeTab('DEPLOY')"
+    [class.border-violet-700]="tab === 'DEPLOY'"
+    [class.text-violet-700]="tab === 'DEPLOY'" 
+    class="pb-3 border-b-4 w-52 cursor-pointer flex flex-row items-center justify-center">
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+      <path stroke-linecap="round" stroke-linejoin="round" d="M6 12L3.269 3.126A59.768 59.768 0 0121.485 12 59.77 59.77 0 013.27 20.876L5.999 12zm0 0h7.5" />
+    </svg>
+    <div class="ml-2">
+      Deploy
+    </div>    
+    
+  </div>
+
+  <div (click)="changeTab('INFO')"
+    [class.border-violet-700]="tab === 'INFO'"
+    [class.text-violet-700]="tab === 'INFO'" 
+    class="pb-3 border-b-4 w-52 cursor-pointer flex flex-row items-center justify-center">
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+      <path stroke-linecap="round" stroke-linejoin="round" d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z" />
+    </svg>
+    <div class="ml-2">
+      Contract info
+    </div>    
+  </div>
+
+</div>
+
+
+<div [@inOutAnimation] *ngIf="tab$ | async as tab" class="bg-white w-full rounded-b-lg text-gray-700 flex flex-row shadow-sm ml-4 p-6">
+    <ng-component *ngIf="tab === 'DEPLOY'; then deployTab"></ng-component>
+    <ng-component *ngIf="tab === 'INFO'; then infoTab"></ng-component>
+</div>
+
+<ng-template #deployTab>
+  <div class="flex flex-row w-full" [@inOutAnimation]>
+    <form [@inOutAnimation] *ngIf="contract$ | async as contract" [formGroup]="deployContractForm" class="w-8/12 pr-4">
+      <div class="mb-1 text-xs font-medium uppercase text-gray-500">You are creating a deployment request for contract</div>
+      <div class="mb-4 text-lg font-semibold">{{contract.name}} <span class="font-light text-gray-500">({{contract.id}})</span></div>
+  
+      <div class="p-4 rounded-lg bg-violet-50 flex flex-col">
+          <label class="pb-1 font-semibold text-sm text-violet-700" for="token-name"
+          >Contract alias</label
+        >
+        <small class="pb-2 text-xs text-gray-500"
+          >This is the alias you will use to access the contract through Dev3 SDK
+          and API</small
+        >
+        <input
+          [class.!border-red-500]="!deployContractForm.controls.alias.valid"
+          [class.!border-green-500]="touchedAndValid(deployContractForm.controls.alias)"
+          class="w-100 rounded-lg !outline-0 border-gray-200 !ring-0
+          shadow-sm transition-all lowercase border-x-8 border-y-1 text-sm px-4"
+          id="token-name"
+          type="text"
+          formControlName="alias"
+          autocomplete="off"
+        />
+        <small class="mt-2 text-gray-400 text-xs">The alias can contain only letters, numbers and dashes</small>
+        </div>
+  
+      <div class="mt-4" *ngIf="contract.constructors.length > 0">
+        <!-- Separate params -->
+        <ng-container *ngIf="contract.constructors[0].inputs[0]">
+          <div *ngIf="contract.constructors[0].inputs[0].solidity_type !== 'tuple'">
+            <div class="mb-6 flex flex-col" *ngFor="let input of contract.constructors[0].inputs">
+              <div class="font-semibold text-gray-700">{{input.name}}</div>
+              <small class="text-xs text-gray-500 w-2/3">{{input.description}}</small>
+              <app-smart-input inputType="TEXT" [rootForm]="deployContractForm"
+                [formFinishedLoadingSub]="finishedLoadingFormSub"
+                [solidityType]="input.solidity_type"
+                [recommendedTypes]="input.recommended_types"
+                controlName="{{input.solidity_name}}" class="mt-2"></app-smart-input>
+          </div>
+          </div>
+          
+        </ng-container>
+  
+        <!-- Struct params -->
+        <ng-container *ngIf="contract.constructors.at(0)?.inputs?.at(0)?.solidity_type === 'tuple'">
+          <div class="mb-6 flex flex-col" *ngFor="let input of contract.constructors[0].inputs[0].parameters">
+            <div class="font-semibold">{{input.name}}</div>
+            <small class="w-2/3 mb-1 text-gray-500 text-xs">{{input.description}}</small>
+            <app-smart-input [rootForm]="deployContractForm"
+              [recommendedTypes]="input.recommended_types"
+              [solidityType]="input.solidity_type"
+              [formFinishedLoadingSub]="finishedLoadingFormSub"
+              controlName="{{input.solidity_name}}" class="w-full"></app-smart-input>
+        </div>
+        </ng-container>
+      </div>
+      
+      <button app-action-button text="Create contract deployment request" 
+      [disabled]="!deployContractForm.valid"
+      [onClick]="createDeploymentRequest().bind(this)" type="submit" class="app-button w-full"></button>
+  </form>
+    <div *ngIf="contract$ | async as contract" class="w-4/12 pl-4 border-l border-gray-100">
+      <app-info-snippet
+        [content]="{ 
+          title: 'Deploying pre-built contracts',
+          sections: ['Use this screen to deploy pre-built smart contracts from the Dev3 database.',
+          'You can contribute to our database by adding your smart contracts to Dev3 contract database GitHub']
+        }"
+        [actionLinkButton]="{
+          title: 'Contribute now',
+          href: 'https://github.com/0xDev3/dev3-contracts'
+        }"
+      ></app-info-snippet>
+    </div>
+  </div>
+
+</ng-template>
+
+<ng-template #infoTab>
+  <div class="p-8">
+    <div class="markdown-body !text-gray-700" *ngIf="infoMD$ | async as infoMD">
+      <span [outerHTML]="infoMD"></span>
+    </div>
+</div>
+</ng-template>

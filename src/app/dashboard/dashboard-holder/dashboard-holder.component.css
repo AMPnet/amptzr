@@ -1,9 +1,7 @@
-.bg-dash-l {
-  background: #6d28d9;
-}
-
 .active-dash-sidebar-item {
-  background-color: #8b5cf6;
+  background-color: #4d2a9e;
+
+
 }
 
 .dash-side-holder div {
@@ -12,9 +10,9 @@
 }
 
 .sidebar-width {
-  width: 10%;
+  width: 15%;
 }
 
 .content-width {
-  width: 90%;
+  width: 85%;
 }

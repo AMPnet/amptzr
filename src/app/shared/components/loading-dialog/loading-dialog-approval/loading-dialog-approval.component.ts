@@ -17,8 +17,8 @@ import { LoadingDialogData } from '../loading-dialog.component'
 })
 export class LoadingDialogApprovalComponent implements OnInit {
   private dataSub = new BehaviorSubject<LoadingDialogData>({
-    title: 'Waiting for approval...',
-    message: '',
+    title: 'Signing the transaction.',
+    message: 'If you\'re logged in with email, wait for a while. Otherwise, check your wallet and click confirm.',
   })
   data$ = this.dataSub.asObservable()
 

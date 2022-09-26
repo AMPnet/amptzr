@@ -1,0 +1,38 @@
+<form [formGroup]="durationInputForm" class="flex flex-col w-full">
+    <div class="flex flex-row justify-center mb-4 uppercase w-full font-semibold text-sm">Enter duration</div>
+    <div class="w-full flex flex-row flex-wrap justify-start text-gray-700 items-center pb-4">
+        <div class="flex flex-col mr-2">
+            <div class="text-xs uppercase font-semibold mb-1 mt-3">Years</div>
+            <input min="0" formControlName="years" placeholder="0" class="rounded-lg border-gray-200 w-16 text-sm" type="number">
+        </div>
+        <div class="flex flex-col mr-2">
+            <div class="text-xs uppercase font-semibold mb-1 mt-3">Months</div>
+            <input min="0"  formControlName="months" placeholder="0" class="rounded-lg border-gray-200 w-16 text-sm" type="number">
+        </div>
+        <div class="flex flex-col mr-2">
+            <div class="text-xs uppercase font-semibold mb-1 mt-3">Days</div>
+            <input min="0"  formControlName="days" placeholder="0" class="rounded-lg border-gray-200 w-16 text-sm" type="number">
+        </div>
+        <div class="flex flex-col mr-2">
+            <div class="text-xs uppercase font-semibold mb-1 mt-3">Hours</div>
+            <input min="0"  formControlName="hours" placeholder="0" class="rounded-lg border-gray-200 w-16 text-sm" type="number">
+        </div>
+        <div class="flex flex-col mr-2">
+            <div class="text-xs uppercase font-semibold mb-1 mt-3">Minutes</div>
+            <input min="0"  formControlName="minutes" placeholder="0" class="rounded-lg border-gray-200 w-16 text-sm" type="number">
+        </div>
+        <div class="flex flex-col mr-2">
+            <div class="text-xs uppercase font-semibold mb-1 mt-3">Seconds</div>
+            <input min="0"  formControlName="seconds" placeholder="0" class="rounded-lg border-gray-200 w-28 text-sm" type="number">
+        </div>
+    </div>
+    <div class="flex flex-row justify-end text-xs text-gray-500">
+        Calculated duration in seconds: {{calculatedTimeInSeconds$ | async}}
+    </div>
+    <button type="button" *ngIf="calculatedTimeInSeconds$ | async as durationSeconds"
+    (click)="onConfirmClicked(durationSeconds)" class="w-full bg-violet-700 py-2 mt-2 rounded-lg hover:bg-violet-900 transition-all
+    text-white font-semibold flex flex-row justify-center text-xs uppercase">
+        Confirm
+    </button>
+    
+</form>

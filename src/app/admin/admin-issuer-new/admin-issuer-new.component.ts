@@ -39,6 +39,10 @@ export class AdminIssuerNewComponent {
   altKeyActive$ = this.physicalInputService.altKeyActive$
   updateSlugFromName$: Observable<unknown>
 
+  balance$ = this.userService.nativeTokenBalance$
+  address$ = this.preferenceQuery.address$
+  network$ = this.preferenceQuery.network$
+
   constructor(
     private issuerService: IssuerService,
     private signerService: SignerService,
@@ -119,13 +123,14 @@ export class AdminIssuerNewComponent {
           )
         ),
         switchMap((issuerAddress) =>
-          this.projectService.createNewProject(issuerAddress ?? '')
+          this.projectService.createNewProject(issuerAddress ?? '', 
+            `${this.issuerUrlPrefix}${this.createForm.controls.slug.value}`)
         ),
         switchMap(() =>
           this.dialogService
             .info({
               title: 'Success',
-              message: `Issuer has been created.`,
+              message: `Your Dev3 project has been created! Enter the project dashboard to start using the application.`,
               cancelable: false,
             })
             .pipe(switchMap(() => this.router.router.navigate(['/'])))

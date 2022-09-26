@@ -1,0 +1,104 @@
+<div class="ml-4 my-2 bg-white rounded-lg shadow-sm p-8">
+    <app-info-snippet
+        [hasBorderAndBackground]="false"
+        [content]="{ title: 'Authorization requests', sections: [
+            'Create a new authorization request to request a proof that somebody owns a certain ETH address',
+            'This is commonly used to log-in people with their crypto wallets'
+        ]}"></app-info-snippet>
+</div>
+
+<div class="ml-4 mt-2 bg-white rounded-lg shadow-sm p-8">
+    <div class="flex flex-row justify-between font-semibold text-gray-700">
+        <div 
+        [class.border-violet-700]="activeTab === tabType.Manage"
+        [class.text-violet-700]="activeTab === tabType.Manage"
+        (click)="changeTab(tabType.Manage)"
+        class="w-52 text-center border-b-4  flex flex-col justify-center text-sm uppercase cursor-pointer">Authorizations</div>
+        <div 
+        [class.bg-violet-700]="activeTab === tabType.New"
+        [class.text-white]="activeTab === tabType.New"
+        (click)="changeTab(tabType.New)"
+        class="w-52 text-center m-2 py-2 text-sm border-gray-300 bg-gray-100 rounded-lg border 
+        uppercase cursor-pointer flex flex-row items-center justify-center">
+            
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              <div class="ml-2">
+                Create New
+            </div>
+        </div>
+    </div>
+    <div class="border border-gray-200 rounded-lg">
+
+        <div *ngIf="activeTab === tabType.Manage">
+            <div class="bg-gray-100 rounded-t-lg flex flex-row py-3 text-gray-700 uppercase text-sm font-semibold">
+                <div class="w-3/12 text-center">
+                    ID
+                </div>
+                <div class="w-4/12 text-center">
+                    Address
+                </div>
+                <div class="w-2/12 text-center">
+                    Status
+                </div>
+                <div class="w-3/12 text-center">
+                    Actions
+                </div>
+            </div>
+            <ng-container *ngIf="authRequests$ | async as authRequests; else noRequests">
+                <div *ngFor="let authRequest of authRequests.requests" 
+                class="flex flex-row items-center py-3 text-gray-700 text-sm font-medium border-b">
+                    <div class="w-3/12 text-center text-xs font-semibold flex flex-row justify-center items-center">
+                        <div>{{authRequest.id | addrShort}}</div>
+                        <div class="ml-2">
+                            <app-value-copy [value]="authRequest.id"></app-value-copy>
+                        </div>
+                    </div>
+                    <div class="w-4/12 text-center mx-2">
+                        <div class="flex flex-row items-center justify-center px-2 py-1 text-xs rounded-lg">
+                                <div class="mr-1">
+                                    {{authRequest.wallet_address | addrShort }}
+                                </div>
+                                <app-value-copy [value]="authRequest.wallet_address ?? ''"></app-value-copy>
+                        </div>
+                    </div>
+                    <div class="w-2/12 text-center">
+                        <div 
+                        *ngIf="authRequest.status === authRequestStatusType.Pending" 
+                        class="rounded-lg bg-amber-100 text-amber-700 
+                        border-amber-200 px-4 py-2 text-xs uppercase font-semibold">
+                            Pending 
+                        </div>
+                        <div 
+                        *ngIf="authRequest.status === authRequestStatusType.Success" 
+                        class="rounded-lg bg-green-100 text-green-700 
+                        border-green-200 px-4 py-2 text-xs uppercase font-semibold">
+                            Finalized 
+                        </div>
+                    </div>
+                    <div class="w-3/12 text-center px-2">
+                        <div [routerLink]="('/connect/' + authRequest.id) | issuerPath" 
+                        class="rounded-lg cursor-pointer bg-gray-200 uppercase py-2 text-xs flex flex-row justify-center items-center">
+                            <div class="mr-2 font-semibold flex flex-col justify-center">Open public URL</div>
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                              </svg>
+                            </div>
+                    </div>
+                </div>
+            </ng-container>
+            
+        </div>
+        <div *ngIf="activeTab === tabType.New">
+            <app-authorization-new></app-authorization-new>
+        </div>
+
+    </div>
+</div>
+
+<ng-template #noRequests>
+    <div class="py-16 flex flex-row justify-center">
+        <app-spinner></app-spinner>
+    </div> 
+</ng-template>

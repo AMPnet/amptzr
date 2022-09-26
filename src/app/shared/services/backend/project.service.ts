@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core'
-import { Observable, switchMap, tap } from 'rxjs'
+import { Observable, of, switchMap, tap } from 'rxjs'
 import { PreferenceQuery } from 'src/app/preference/state/preference.query'
 import { PreferenceStore } from 'src/app/preference/state/preference.store'
 import { environment } from '../../../../environments/environment'
@@ -19,28 +19,39 @@ export class ProjectService {
     this.preferenceStore.update({ apiKey: value })
   }
 
+  get projectID() {
+    return this.preferenceQuery.getValue().projectID
+  }
+
+  set projectID(value: string) {
+    this.preferenceStore.update({ projectID: value })
+  }
+
   constructor(
     private http: BackendHttpClient,
     private preferenceQuery: PreferenceQuery,
     private preferenceStore: PreferenceStore
   ) {}
 
-  createNewProject(issuerContractAddress: string): Observable<ProjectModel> {
+  createNewProject(issuerContractAddress: string, redirectLink: string): Observable<ProjectModel> {
+
     return this.http.post<ProjectModel>(this.path, {
       issuer_contract_address: issuerContractAddress,
-      base_redirect_url: '',
+      base_redirect_url: redirectLink,
       chain_id: this.preferenceQuery.network.chainID,
-    })
+    }).pipe(tap(res => { this.projectID = res.id }))
   }
 
   createApiKey(projectID: string): Observable<ApiKeyModel> {
-    return this.http.post<ApiKeyModel>(`${this.path}/${projectID}/api-key`, {})
+    return this.http.post<ApiKeyModel>(`${this.path}/${projectID}/api-key`, {}, false, true, false).pipe(
+      tap(result => this.saveApiKey(result.api_key))
+    )
   }
 
   getProjectIdByChainAndAddress(): Observable<ProjectModel> {
     return this.http.get<ProjectModel>(
-      `${this.path}/by-chain/${this.preferenceQuery.network.chainID}/by-issuer/${this.preferenceQuery.issuer.address}`
-    )
+      `${this.path}/by-chain/${this.preferenceQuery.network.chainID}/by-issuer/${this.preferenceQuery.issuer.address}`)
+      .pipe(tap(res => { this.projectID = res.id }))
   }
 
   fetchApiKey(): Observable<ApiKeyModel> {
@@ -67,7 +78,7 @@ interface ProjectModel {
   created_at: string
 }
 
-interface ApiKeyModel {
+export interface ApiKeyModel {
   id: string
   project_id: string
   api_key: string

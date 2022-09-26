@@ -1,16 +1,15 @@
 <div class="flex flex-row flex-wrap">
-  <div class="w-full m-2">
+  <div class="w-full mt-2">
     <div
       class="w-full bg-white shadow-sm rounded-xl p-8 mx-4 my-2 text-gray-700"
     >
-      <div class="text-xl font-semibold">Third party integrations</div>
-      <div class="mt-2 text-sm">
-        Dev3 comes built-in with many third party services, which make building,
-        deploying and maintaining Web3 apps easier. To get started, simply
-        enable the services and visit their website to get the required
-        information (e.g. API Key, Account ID, etc...)
-      </div>
+      <app-info-snippet
+        [hasBorderAndBackground]="false"
+        [content]="{ title: 'Third party integrations', sections: [
+          'Dev3 comes built-in with many third party plugins, enabling you to easily handle common actions'
+        ]}"></app-info-snippet>
     </div>
+    
   </div>
 
   <!-- RAMP NETWORK -->

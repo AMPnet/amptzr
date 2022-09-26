@@ -8,8 +8,11 @@ import ReconnectingWebSocket from 'reconnecting-websocket'
 export enum ChainID {
   MATIC_MAINNET = 137, // Polygon
   MUMBAI_TESTNET = 80001, // Polygon
-  // ETHEREUM_MAINNET = 1,
+  AURORA_MAINNET = 1313161554,
   GOERLI_TESTNET = 5,
+  OPTIMISM = 10,
+  ARBITRUM = 42161,
+  AVALANCHE = 43114
 }
 
 export interface Network {
@@ -89,7 +92,7 @@ export const MaticNetwork: Network = {
     defaultStableCoin: '0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174',
   },
   ramp: {
-    swapAsset: 'MATIC_USDC',
+    swapAsset: 'MATIC',
   },
 }
 
@@ -123,7 +126,7 @@ export const MumbaiNetwork: Network = {
     defaultStableCoin: '0x1eDaD4f5Dac6f2B97E7F6e5D3fF5f04D666685c3',
   },
   ramp: {
-    swapAsset: 'MATIC_USDC2',
+    swapAsset: 'MATIC',
     url: 'https://ri-widget-staging.firebaseapp.com/',
   },
 }
@@ -163,10 +166,162 @@ export const GoerliNetwork: Network = {
   },
 }
 
+export const AuroraNetwork: Network = {
+  chainID: ChainID.AURORA_MAINNET,
+  name: 'Aurora (on NEAR)',
+  shortName: 'aurora',
+  nativeCurrency: {
+    name: 'ETH',
+    symbol: 'ETH',
+  },
+  maxGasPrice: 20,
+  rpcURLs: ['https://mainnet.aurora.dev'],
+  wssRpcURLs: ['wss://mainnet.aurora.dev'],
+  explorerURLs: ['https://aurorascan.dev/'],
+  tokenizerConfig: {
+    apxRegistry: '',
+    issuerFactory: {
+      basic: '0x6da35932606866801762cBEC8698BD684d9D1699',
+    },
+    assetFactory: {
+      basic: '',
+      transferable: '',
+      simple: '',
+    },
+    cfManagerFactory: {
+      basic: '',
+      vesting: '',
+    },
+    queryService: '0x7a21F1618bb0F5EaD292292d441e646E0DB9bf3e',
+    payoutService: '0x6556Bf8Ed99161eD58753994006E7Ef9CE188ac5',
+    payoutManager: '0x041e15aF5ecBc0C93F106B2F6a7F5fFa847eF9e4',
+    nameRegistry: '0x1f57044153fb762dbc35168CE5e29d32E958BD52',
+    campaignFeeManager: '',
+    defaultWalletApprover: '0xa61AD00d16d2f40b7C3CC5339B8cBB8fD23972F5',
+    defaultStableCoin: '0xb12bfca5a55806aaf64e99521918a4bf0fc40802', // custom stablecoin issued by filip
+  },
+}
+
+export const AvalancheNetwork: Network = {
+  chainID: ChainID.AVALANCHE,
+  name: 'Avalanche Network',
+  shortName: 'avalanche',
+  nativeCurrency: {
+    name: 'ETH',
+    symbol: 'ETH',
+  },
+  maxGasPrice: 20,
+  rpcURLs: ['https://api.avax.network/ext/bc/C/rpc'],
+  wssRpcURLs: [''],
+  explorerURLs: ['https://snowtrace.io/'],
+  tokenizerConfig: {
+    apxRegistry: '',
+    issuerFactory: {
+      basic: '0x459464B13A89F65E01291944f72E6842ad0Cbe34',
+    },
+    assetFactory: {
+      basic: '',
+      transferable: '',
+      simple: '',
+    },
+    cfManagerFactory: {
+      basic: '',
+      vesting: '',
+    },
+    queryService: '0x0B3038562aCb5715254734E77C5Cb4064070Ab1f',
+    payoutService: '0x713D963569DC7157DE0C1D1815679c4f3A30e078',
+    payoutManager: '0x71Af6221c6AdE382a872B7A7B1B8068688E16ae5',
+    nameRegistry: '0xaCeC98CD043f3b84F3272Bbc55A4d7A0dC8A0175',
+    campaignFeeManager: '',
+    defaultWalletApprover: '0x5C5c3a6DD68953B6d77413B88329174Ce03a75Bc',
+    defaultStableCoin: '0xB97EF9Ef8734C71904D8002F8b6Bc66Dd9c48a6E', // custom stablecoin issued by filip
+  },
+}
+
+export const OptimismNetwork: Network = {
+  chainID: ChainID.OPTIMISM,
+  name: 'Optimistic Ethereum',
+  shortName: 'optimism',
+  nativeCurrency: {
+    name: 'ETH',
+    symbol: 'ETH',
+  },
+  maxGasPrice: 20,
+  rpcURLs: ['https://weathered-white-lambo.optimism.quiknode.pro/651498cb8884a1093894a149d1d44004a45fb5a6/'],
+  wssRpcURLs: ['wss://weathered-white-lambo.optimism.quiknode.pro/651498cb8884a1093894a149d1d44004a45fb5a6/'],
+  explorerURLs: ['https://optimistic.etherscan.io/'],
+  tokenizerConfig: {
+    apxRegistry: '',
+    issuerFactory: {
+      basic: '0x6da35932606866801762cBEC8698BD684d9D1699',
+    },
+    assetFactory: {
+      basic: '',
+      transferable: '',
+      simple: '',
+    },
+    cfManagerFactory: {
+      basic: '',
+      vesting: '',
+    },
+    queryService: '0xCaf30A0B45B8E9A5f7310274f0FAec83cF307936',
+    payoutService: '0xa61AD00d16d2f40b7C3CC5339B8cBB8fD23972F5',
+    payoutManager: '0x7a21F1618bb0F5EaD292292d441e646E0DB9bf3e',
+    nameRegistry: '0x1f57044153fb762dbc35168CE5e29d32E958BD52',
+    campaignFeeManager: '',
+    defaultWalletApprover: '0x6556Bf8Ed99161eD58753994006E7Ef9CE188ac5',
+    defaultStableCoin: '0x7f5c764cbc14f9669b88837ca1490cca17c31607', // custom stablecoin issued by filip
+  },
+}
+
+export const ArbitrumNetwork: Network = {
+  chainID: ChainID.ARBITRUM,
+  name: 'Arbitrum One',
+  shortName: 'arbitrum',
+  nativeCurrency: {
+    name: 'ETH',
+    symbol: 'ETH',
+  },
+  maxGasPrice: 20,
+  rpcURLs: [
+    'https://weathered-bitter-panorama.arbitrum-mainnet.quiknode.pro/6263c3e3ab2a9c81efd17e687344d9d5d049de68'
+  ],
+  wssRpcURLs: [
+    'wss://weathered-bitter-panorama.arbitrum-mainnet.quiknode.pro/6263c3e3ab2a9c81efd17e687344d9d5d049de68'
+  ],
+  explorerURLs: ['https://optimistic.etherscan.io/'],
+  tokenizerConfig: {
+    apxRegistry: '',
+    issuerFactory: {
+      basic: '0x6da35932606866801762cBEC8698BD684d9D1699',
+    },
+    assetFactory: {
+      basic: '',
+      transferable: '',
+      simple: '',
+    },
+    cfManagerFactory: {
+      basic: '',
+      vesting: '',
+    },
+    queryService: '0xCaf30A0B45B8E9A5f7310274f0FAec83cF307936',
+    payoutService: '0xa61AD00d16d2f40b7C3CC5339B8cBB8fD23972F5',
+    payoutManager: '0x7a21F1618bb0F5EaD292292d441e646E0DB9bf3e',
+    nameRegistry: '0x1f57044153fb762dbc35168CE5e29d32E958BD52',
+    campaignFeeManager: '',
+    defaultWalletApprover: '0x6556Bf8Ed99161eD58753994006E7Ef9CE188ac5',
+    defaultStableCoin: '0x7f5c764cbc14f9669b88837ca1490cca17c31607', // custom stablecoin issued by filip
+  },
+}
+
 export const Networks: { [key in ChainID]: Network } = {
   [ChainID.MATIC_MAINNET]: MaticNetwork,
   [ChainID.MUMBAI_TESTNET]: MumbaiNetwork,
   [ChainID.GOERLI_TESTNET]: GoerliNetwork,
+  [ChainID.AURORA_MAINNET]: AuroraNetwork,
+  [ChainID.OPTIMISM]: OptimismNetwork,
+  [ChainID.ARBITRUM]: ArbitrumNetwork,
+  [ChainID.AVALANCHE]: AvalancheNetwork
 }
 
 const getEthersNetwork = (network: Network): providers.Network => ({
