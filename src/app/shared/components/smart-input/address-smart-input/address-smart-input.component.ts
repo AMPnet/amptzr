@@ -51,7 +51,8 @@ export class AddressSmartInputComponent {
         this.selectedSub?.next(res)
       })
     } else {
-      this.selectedSub?.next(value)
+        this.confirmButtonLoadingSub.next(false)
+        this.selectedSub?.next(value)
     }
   }
 

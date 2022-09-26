@@ -9,7 +9,7 @@
     <div class="ml-2">Back</div>
 </button>
 
-<div *ngIf="deployedContract$ | async as deployedContract; else loading"
+<div [@inOutAnimation] *ngIf="deployedContract$ | async as deployedContract; else loading"
     class="p-8 bg-white shadow-sm rounded-lg ml-4 mt-2">
     <div *ngIf="contract$ | async as contract">
 
@@ -86,7 +86,7 @@
 </div>
 
 <ng-template #loading>
-    <div class="w-full h-full flex flex-row py-24 border rounded-lg mt-4 ml-4 animate-pulse
+    <div [@inOutAnimation] class="w-full h-full flex flex-row py-24 border rounded-lg mt-4 ml-4 animate-pulse
     bg-gray-100 items-center justify-center">
         <app-spinner></app-spinner>
     </div>

@@ -40,84 +40,88 @@
 </div>
 
 
-<div *ngIf="tab$ | async as tab" class="bg-white w-full rounded-b-lg text-gray-700 flex flex-row shadow-sm ml-4 p-6">
+<div [@inOutAnimation] *ngIf="tab$ | async as tab" class="bg-white w-full rounded-b-lg text-gray-700 flex flex-row shadow-sm ml-4 p-6">
     <ng-component *ngIf="tab === 'DEPLOY'; then deployTab"></ng-component>
     <ng-component *ngIf="tab === 'INFO'; then infoTab"></ng-component>
 </div>
 
 <ng-template #deployTab>
-  <form *ngIf="contract$ | async as contract" [formGroup]="deployContractForm" class="w-8/12 pr-4">
-    <div class="mb-1 text-xs font-medium uppercase text-gray-500">You are creating a deployment request for contract</div>
-    <div class="mb-4 text-lg font-semibold">{{contract.name}} <span class="font-light text-gray-500">({{contract.id}})</span></div>
-
-    <div class="p-4 rounded-lg bg-violet-50 flex flex-col">
-        <label class="pb-1 font-semibold text-sm text-violet-700" for="token-name"
-        >Contract alias</label
-      >
-      <small class="pb-2 text-xs text-gray-500"
-        >This is the alias you will use to access the contract through Dev3 SDK
-        and API</small
-      >
-      <input
-        [class.!border-red-500]="!deployContractForm.controls.alias.valid"
-        [class.!border-green-500]="touchedAndValid(deployContractForm.controls.alias)"
-        class="w-100 rounded-lg !outline-0 border-gray-200 !ring-0
-        shadow-sm transition-all lowercase border-x-8 border-y-1 text-sm px-4"
-        id="token-name"
-        type="text"
-        formControlName="alias"
-        autocomplete="off"
-      />
-      <small class="mt-2 text-gray-400 text-xs">The alias can contain only letters, numbers and dashes</small>
-      </div>
-
-    <div class="mt-4" *ngIf="contract.constructors.length > 0">
-      <!-- Separate params -->
-      <ng-container *ngIf="contract.constructors[0].inputs[0]">
-        <div *ngIf="contract.constructors[0].inputs[0].solidity_type !== 'tuple'">
-          <div class="mb-6 flex flex-col" *ngFor="let input of contract.constructors[0].inputs">
-            <div class="font-semibold text-gray-700">{{input.name}}</div>
-            <small class="text-xs text-gray-500 w-2/3">{{input.description}}</small>
-            <app-smart-input inputType="TEXT" [rootForm]="deployContractForm"
-              [formFinishedLoadingSub]="finishedLoadingFormSub"
-              [solidityType]="input.solidity_type"
+  <div class="flex flex-row w-full" [@inOutAnimation]>
+    <form [@inOutAnimation] *ngIf="contract$ | async as contract" [formGroup]="deployContractForm" class="w-8/12 pr-4">
+      <div class="mb-1 text-xs font-medium uppercase text-gray-500">You are creating a deployment request for contract</div>
+      <div class="mb-4 text-lg font-semibold">{{contract.name}} <span class="font-light text-gray-500">({{contract.id}})</span></div>
+  
+      <div class="p-4 rounded-lg bg-violet-50 flex flex-col">
+          <label class="pb-1 font-semibold text-sm text-violet-700" for="token-name"
+          >Contract alias</label
+        >
+        <small class="pb-2 text-xs text-gray-500"
+          >This is the alias you will use to access the contract through Dev3 SDK
+          and API</small
+        >
+        <input
+          [class.!border-red-500]="!deployContractForm.controls.alias.valid"
+          [class.!border-green-500]="touchedAndValid(deployContractForm.controls.alias)"
+          class="w-100 rounded-lg !outline-0 border-gray-200 !ring-0
+          shadow-sm transition-all lowercase border-x-8 border-y-1 text-sm px-4"
+          id="token-name"
+          type="text"
+          formControlName="alias"
+          autocomplete="off"
+        />
+        <small class="mt-2 text-gray-400 text-xs">The alias can contain only letters, numbers and dashes</small>
+        </div>
+  
+      <div class="mt-4" *ngIf="contract.constructors.length > 0">
+        <!-- Separate params -->
+        <ng-container *ngIf="contract.constructors[0].inputs[0]">
+          <div *ngIf="contract.constructors[0].inputs[0].solidity_type !== 'tuple'">
+            <div class="mb-6 flex flex-col" *ngFor="let input of contract.constructors[0].inputs">
+              <div class="font-semibold text-gray-700">{{input.name}}</div>
+              <small class="text-xs text-gray-500 w-2/3">{{input.description}}</small>
+              <app-smart-input inputType="TEXT" [rootForm]="deployContractForm"
+                [formFinishedLoadingSub]="finishedLoadingFormSub"
+                [solidityType]="input.solidity_type"
+                [recommendedTypes]="input.recommended_types"
+                controlName="{{input.solidity_name}}" class="mt-2"></app-smart-input>
+          </div>
+          </div>
+          
+        </ng-container>
+  
+        <!-- Struct params -->
+        <ng-container *ngIf="contract.constructors.at(0)?.inputs?.at(0)?.solidity_type === 'tuple'">
+          <div class="mb-6 flex flex-col" *ngFor="let input of contract.constructors[0].inputs[0].parameters">
+            <div class="font-semibold">{{input.name}}</div>
+            <small class="w-2/3 mb-1 text-gray-500 text-xs">{{input.description}}</small>
+            <app-smart-input [rootForm]="deployContractForm"
               [recommendedTypes]="input.recommended_types"
-              controlName="{{input.solidity_name}}" class="mt-2"></app-smart-input>
+              [solidityType]="input.solidity_type"
+              [formFinishedLoadingSub]="finishedLoadingFormSub"
+              controlName="{{input.solidity_name}}" class="w-full"></app-smart-input>
         </div>
-        </div>
-        
-      </ng-container>
-
-      <!-- Struct params -->
-      <ng-container *ngIf="contract.constructors[0].inputs[0].solidity_type === 'tuple'">
-        <div class="mb-6 flex flex-col" *ngFor="let input of contract.constructors[0].inputs[0].parameters">
-          <div class="font-semibold">{{input.name}}</div>
-          <small class="w-2/3 mb-1 text-gray-500 text-xs">{{input.description}}</small>
-          <app-smart-input [rootForm]="deployContractForm"
-            [recommendedTypes]="input.recommended_types"
-            [solidityType]="input.solidity_type"
-            [formFinishedLoadingSub]="finishedLoadingFormSub"
-            controlName="{{input.solidity_name}}" class="w-full"></app-smart-input>
+        </ng-container>
       </div>
-      </ng-container>
+      
+      <button app-action-button text="Create contract deployment request" 
+      [disabled]="!deployContractForm.valid"
+      [onClick]="createDeploymentRequest().bind(this)" type="submit" class="app-button w-full"></button>
+  </form>
+    <div *ngIf="contract$ | async as contract" class="w-4/12 pl-4 border-l border-gray-100">
+      <app-info-snippet
+        [content]="{ 
+          title: 'Deploying pre-built contracts',
+          sections: ['Use this screen to deploy pre-built smart contracts from the Dev3 database.',
+          'You can contribute to our database by adding your smart contracts to Dev3 contract database GitHub']
+        }"
+        [actionLinkButton]="{
+          title: 'Contribute now',
+          href: 'https://github.com/0xDev3/dev3-contracts'
+        }"
+      ></app-info-snippet>
     </div>
-    
-    <button app-action-button text="Create contract deployment request" [disabled]="!deployContractForm.valid"
-     [onClick]="createDeploymentRequest().bind(this)" type="submit" class="app-button w-full"></button>
-</form>
-  <div class="w-4/12 pl-4 border-l border-gray-100">
-    <app-info-snippet
-      [content]="{ 
-        title: 'Deploying pre-built contracts',
-        sections: ['Use this screen to deploy pre-built smart contracts from the Dev3 database.',
-        'You can contribute to our database by adding your smart contracts to Dev3 contract database GitHub']
-      }"
-      [actionLinkButton]="{
-        title: 'Contribute now',
-        href: 'https://github.com/0xDev3/dev3-contracts'
-      }"
-    ></app-info-snippet>
   </div>
+
 </ng-template>
 
 <ng-template #infoTab>

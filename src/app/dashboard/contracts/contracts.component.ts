@@ -2,7 +2,7 @@ import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core'
 import {
   ManageItemsModel,
   TemplateItemsModel,
-} from '../new-and-manage-holder/new-and-manage-holder.component'
+} from '../contracts-table-holder/contracts-table-holder.component'
 
 @Component({
   selector: 'app-contracts',

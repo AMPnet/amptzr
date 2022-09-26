@@ -29,7 +29,7 @@
     <div class="flex flex-row justify-end text-xs text-gray-500">
         Calculated duration in seconds: {{calculatedTimeInSeconds$ | async}}
     </div>
-    <button *ngIf="calculatedTimeInSeconds$ | async as durationSeconds"
+    <button type="button" *ngIf="calculatedTimeInSeconds$ | async as durationSeconds"
     (click)="onConfirmClicked(durationSeconds)" class="w-full bg-violet-700 py-2 mt-2 rounded-lg hover:bg-violet-900 transition-all
     text-white font-semibold flex flex-row justify-center text-xs uppercase">
         Confirm

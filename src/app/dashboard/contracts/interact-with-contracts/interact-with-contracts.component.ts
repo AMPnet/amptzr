@@ -8,12 +8,14 @@ import { SessionQuery } from 'src/app/session/state/session.query'
 import { ContractManifestService, FunctionManifest } from 'src/app/shared/services/backend/contract-manifest.service'
 import { ProjectService } from 'src/app/shared/services/backend/project.service'
 import { ContractDeploymentService } from 'src/app/shared/services/blockchain/contract-deployment.service'
+import { easeInOutAnimation } from 'src/app/shared/utils/animations'
 
 @Component({
   selector: 'app-interact-with-contracts',
   templateUrl: './interact-with-contracts.component.html',
   styleUrls: ['./interact-with-contracts.component.css'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  animations: easeInOutAnimation
 })
 export class InteractWithContractsComponent {
 

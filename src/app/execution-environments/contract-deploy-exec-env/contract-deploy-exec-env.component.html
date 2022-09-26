@@ -90,22 +90,38 @@
                             <path stroke-linecap="round" stroke-linejoin="round"
                                 d="M3.75 6A2.25 2.25 0 016 3.75h2.25A2.25 2.25 0 0110.5 6v2.25a2.25 2.25 0 01-2.25 2.25H6a2.25 2.25 0 01-2.25-2.25V6zM3.75 15.75A2.25 2.25 0 016 13.5h2.25a2.25 2.25 0 012.25 2.25V18a2.25 2.25 0 01-2.25 2.25H6A2.25 2.25 0 013.75 18v-2.25zM13.5 6a2.25 2.25 0 012.25-2.25H18A2.25 2.25 0 0120.25 6v2.25A2.25 2.25 0 0118 10.5h-2.25a2.25 2.25 0 01-2.25-2.25V6zM13.5 15.75a2.25 2.25 0 012.25-2.25H18a2.25 2.25 0 012.25 2.25V18A2.25 2.25 0 0118 20.25h-2.25A2.25 2.25 0 0113.5 18v-2.25z" />
                         </svg>
-                        <div class="flex flex-col ml-2">
-                            <div class="flex flex-col rounded-lg">
+                        <div class="flex flex-col w-full ml-2">
+                            <div class="flex flex-col w-full rounded-lg">
                                 <div *ngFor="let param of deploymentRequest.constructor_params; let i = index;"
                                     class="mr-1 mb-2 w-full text-sm flex flex-col">
-                                    <div class="font-semibold flex flex-row items-center">
+                                    <div class="font-semibold flex flex-row justify-between items-start w-full">
                                         <div>
                                             {{manifest.constructors[0].inputs[i].name}}:
                                         </div>
-                                        <div *ngIf="param.type !== 'address'" class="ml-1 font-light">{{param.value}}
+                                        <div class="font-light ml-2" *ngIf="param.type.endsWith('[]'); else notArray">
+                                            <div *ngFor="let item of param.value">
+                                                <div *ngIf="param.type.startsWith('address'); else nonAddressType">
+                                                    {{item | addrShort}}
+                                                </div>
+                                                <ng-template #nonAddressType>
+                                                    {{item}}
+                                                </ng-template>
+                                            </div>
                                         </div>
-                                        <div *ngIf="param.type === 'address'" class="ml-1 font-light">
-                                            {{param.value | addrShort}}
-                                            <app-explorer-link [value]="param.value"></app-explorer-link>
-                                        </div>
+
+                                        <ng-template #notArray>
+                                            <div *ngIf="param.type !== 'address'" class="ml-1 font-light overflow-x-scroll flex flex-row">
+                                                {{param.value}}
+                                            </div>
+                                            <div *ngIf="param.type === 'address'" class="ml-1 font-light overflow-x-scroll">
+                                                {{param.value | addrShort}}
+                                                <app-explorer-link [value]="param.value"></app-explorer-link>
+                                            </div>
+                                        </ng-template>
+                                        
                                     </div>
-                                    <div class="font-light text-gray-500 text-xs">{{manifest.constructors[0].inputs[i].description}}</div>
+                                    <div class="font-light overflow-x-scroll w-full flex flex-row
+                                     text-gray-500 text-xs">{{manifest.constructors[0].inputs[i].description}}</div>
 
                                 </div>
                             </div>

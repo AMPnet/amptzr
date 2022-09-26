@@ -90,7 +90,9 @@ export class ErrorService {
           message?.includes('insufficient funds')
         ) {
           action$ = this.displayMessage(this.outOfGasMessage)
-        } else if (message?.startsWith('execution reverted:')) {
+        } else if(message.startsWith('Internal JSON-RPC error.')) {
+          action$ = this.displayMessage(error.data?.message ?? "Unknown error")
+        }  else if (message?.startsWith('execution reverted:')) {
           action$ = this.displayMessage(
             message!.replace('execution reverted:', '').trim()
           )
@@ -99,6 +101,11 @@ export class ErrorService {
         }
       } else if (err?.message?.includes('cannot estimate gas')) {
         action$ = this.displayInfoMessage(this.cannotEstimateGas(err))
+      } else if((errorRes as any).code === 'UNPREDICTABLE_GAS_LIMIT') {
+        const error = errorRes as unknown as EthereumRpcError<
+          EthereumRpcError<string>
+        >
+        action$ = this.displayMessage(error.data?.message ?? "Unknown error")
       }
 
       if (completeAfterAction) {

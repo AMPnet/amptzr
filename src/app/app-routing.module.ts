@@ -42,11 +42,8 @@ import { RequestSendActionComponent } from './request-send/request-send-action/r
 import { RequestBalanceActionComponent } from './request-balance/request-balance-action/request-balance-action.component'
 import { RequestWalletActionComponent } from './request-wallet/request-wallet-action/request-wallet-action.component'
 import { DashboardHolderComponent } from './dashboard/dashboard-holder/dashboard-holder.component'
-import { CreateErc20Component } from './dashboard/token/erc20/create-erc20.component'
 import { ThirdPartyIntegrationsOverviewComponent } from './dashboard/utils/third-party-integrations-overview/third-party-integrations-overview.component'
-import { TokensHolderComponent } from './dashboard/token/tokens-holder/tokens-holder.component'
 import { ContractsComponent } from './dashboard/contracts/contracts.component'
-import { FundraisingComponent } from './dashboard/fundraising/fundraising.component'
 import { AddressBookComponent } from './dashboard/address-book/address-book.component'
 import { AirdropComponent } from './dashboard/airdrop/airdrop.component'
 import { PaymentsComponent } from './payments/payments.component'
@@ -117,15 +114,8 @@ const appRoutes: Routes = [
         component: DashboardHolderComponent,
         children: [
           { path: 'workflows', component: WorkflowsComponent },
-          { path: 'contracts', component: TokensHolderComponent },
-          { path: 'tokens/create/erc20', component: CreateErc20Component },
           { path: 'contracts/create/from-manifest/:contractID', component: DeployFromManifestComponent },
           { path: 'contracts/interact/:manifestID/:deployedID', component: InteractWithContractsComponent },
-          { path: 'fundraising', component: FundraisingComponent },
-          {
-            path: 'fundraising/:id/campaigns/new',
-            component: AdminAssetCampaignNewComponent,
-          },
           {
             path: 'third-party-integrations',
             component: ThirdPartyIntegrationsOverviewComponent,

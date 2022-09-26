@@ -1,3 +1,4 @@
+import { animate, style, transition, trigger } from '@angular/animations'
 import { Location } from '@angular/common'
 import { Component, ChangeDetectionStrategy, Input, OnInit } from '@angular/core'
 import { FormControl, FormGroup, Validators } from '@angular/forms'
@@ -8,14 +9,16 @@ import { ContractManifestService } from 'src/app/shared/services/backend/contrac
 import { ProjectService } from 'src/app/shared/services/backend/project.service'
 import { ContractDeploymentService } from 'src/app/shared/services/blockchain/contract-deployment.service'
 import { DialogService } from 'src/app/shared/services/dialog.service'
+import { easeInOutAnimation } from 'src/app/shared/utils/animations'
 
 @Component({
-  selector: 'app-new-and-manage-holder',
-  templateUrl: './new-and-manage-holder.component.html',
-  styleUrls: ['./new-and-manage-holder.component.css'],
+  selector: 'app-contracts-table-holder',
+  templateUrl: './contracts-table-holder.component.html',
+  styleUrls: ['./contracts-table-holder.component.css'],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  animations: easeInOutAnimation
 })
-export class NewAndManageHolderComponent implements OnInit {
+export class ContractsTableHolderComponent implements OnInit {
 
   @Input() templateItems: TemplateItemsModel[] = []
   @Input() manageItems: ManageItemsModel[] = []

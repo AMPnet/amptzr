@@ -1,26 +1,41 @@
 <ng-container *ngIf="openTab$ | async as openTab">
-    <div *ngIf="contracts$ | async as contracts; else loading" class="flex flex-col min-w-cont">
+    <div [@inOutAnimation] *ngIf="contracts$ | async as contracts; else loading" 
+    class="flex flex-col w-full">
         <div class="flex flex-row tracking-wide
-         justify-center uppercase text-sm mt-4 font-medium text-gray-500">
+         justify-start uppercase text-sm mt-4 font-medium text-gray-500">
             <div class="border-b-[3px]
             cursor-pointer border-transparent text-center pb-2 px-4"
             [class.text-violet-700]="isOpenTab('MY_CONTRACTS')"
             [class.!border-violet-700]="isOpenTab('MY_CONTRACTS')">
-                My Contracts
+                Contracts
             </div>
             <div [class.text-violet-700]="isOpenTab('EXTERNAL')"
             [class.border-violet-700]="isOpenTab('EXTERNAL')"
             class="px-4 w-44 text-center border-transparent cursor-pointer border-b-[3px]">
-                External
-            </div>
-            <div [class.text-violet-700]="isOpenTab('CUSTOM')"
-            [class.border-violet-700]="isOpenTab('CUSTOM')"
-             class="px-4 w-44 text-center border-transparent cursor-pointer border-b-[3px]">
-                Custom
+                Browse
             </div>
         </div>
         <!-- <input *ngIf="contracts.requests.length > 0;" class="w-full border-gray-200 rounded-lg mb-4"
             placeholder="Search" type="text"> -->
+        
+        <form [formGroup]="customInputForm"  class="w-full flex flex-row">
+            <input formControlName="customAddressInput"
+             class="w-3/4 border-gray-200 rounded-tr-lg rounded-b-lg mb-4 text-sm"
+            placeholder="Custom address or ENS name" type="text">
+            <div class="w-1/4 flex flex-row">
+                <button type="button"
+                (click)="confirmAddressClicked()" class="w-full ml-2 bg-violet-700 
+                text-xs uppercase font-semibold disabled:bg-gray-500
+                 mb-4 flex flex-row justify-center items-center
+                text-white rounded-lg">
+                    <div *ngIf="confirmButtonLoading$ | async" class="mr-2">
+                        <app-spinner type="inline-xs"></app-spinner>
+                    </div>
+                    <div>Confirm</div>
+                </button>
+            </div>
+            
+        </form>
 
         <div *ngIf="contracts.requests.length > 0;" class="px-4 py-3 border-x border-gray-100
              border-t rounded-t-lg flex flex-row justify-between w-full">

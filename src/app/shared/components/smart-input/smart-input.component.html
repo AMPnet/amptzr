@@ -47,12 +47,12 @@
 </div>
 
 
-<div *ngIf="isDialogOpen$ | async as isDialogOpened">
+<div [@inOutAnimation] *ngIf="isDialogOpen$ | async as isDialogOpened">
     <div [hidden]="!isDialogOpened" [class.blurry]="isDialogOpened" class="fixed z-[1000] left-0 top-0 
         backdrop-blur-0
         w-screen h-screen bg-black/[.4] 
         transition-backdrop flex flex-row items-center justify-center">
-        <div class="bg-white rounded-lg shadow-xl flex flex-col max-w-5xl p-4">
+        <div class="bg-white rounded-lg w-1/2 shadow-xl flex flex-col max-w-5xl p-4">
             <div class="w-full flex flex-row justify-between items-center mb-4">
                 <div></div>
                 <div class="font-semibold text-gray-700 uppercase text-xs">Smart input</div>

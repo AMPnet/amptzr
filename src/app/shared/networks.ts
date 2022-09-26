@@ -10,6 +10,9 @@ export enum ChainID {
   MUMBAI_TESTNET = 80001, // Polygon
   AURORA_MAINNET = 1313161554,
   GOERLI_TESTNET = 5,
+  OPTIMISM = 10,
+  ARBITRUM = 42161,
+  AVALANCHE = 43114
 }
 
 export interface Network {
@@ -172,13 +175,13 @@ export const AuroraNetwork: Network = {
     symbol: 'ETH',
   },
   maxGasPrice: 20,
-  rpcURLs: ['https://mainnet.aurora.dev/5NBTmA3BVFBACip9iWNVzP1qSUkZ6EjTNGfBx8KjFLR/'],
-  wssRpcURLs: ['wss://mainnet.aurora.dev/'],
+  rpcURLs: ['https://mainnet.aurora.dev'],
+  wssRpcURLs: ['wss://mainnet.aurora.dev'],
   explorerURLs: ['https://aurorascan.dev/'],
   tokenizerConfig: {
     apxRegistry: '',
     issuerFactory: {
-      basic: '0x6d84F9a154C9934cc40a1fAD42eCa26744b64AE4',
+      basic: '0x6da35932606866801762cBEC8698BD684d9D1699',
     },
     assetFactory: {
       basic: '',
@@ -189,22 +192,136 @@ export const AuroraNetwork: Network = {
       basic: '',
       vesting: '',
     },
-    queryService: '',
-    payoutService: '',
-    payoutManager: '',
-    nameRegistry: '0x0Cd3B5ab0EB73344e8D0Aa85b710b2FB2b5864D5',
+    queryService: '0x7a21F1618bb0F5EaD292292d441e646E0DB9bf3e',
+    payoutService: '0x6556Bf8Ed99161eD58753994006E7Ef9CE188ac5',
+    payoutManager: '0x041e15aF5ecBc0C93F106B2F6a7F5fFa847eF9e4',
+    nameRegistry: '0x1f57044153fb762dbc35168CE5e29d32E958BD52',
     campaignFeeManager: '',
-    defaultWalletApprover: '',
-    defaultStableCoin: '', // custom stablecoin issued by filip
+    defaultWalletApprover: '0xa61AD00d16d2f40b7C3CC5339B8cBB8fD23972F5',
+    defaultStableCoin: '0xb12bfca5a55806aaf64e99521918a4bf0fc40802', // custom stablecoin issued by filip
   },
 }
 
+export const AvalancheNetwork: Network = {
+  chainID: ChainID.AVALANCHE,
+  name: 'Avalanche Network',
+  shortName: 'avalanche',
+  nativeCurrency: {
+    name: 'ETH',
+    symbol: 'ETH',
+  },
+  maxGasPrice: 20,
+  rpcURLs: ['https://api.avax.network/ext/bc/C/rpc'],
+  wssRpcURLs: [''],
+  explorerURLs: ['https://snowtrace.io/'],
+  tokenizerConfig: {
+    apxRegistry: '',
+    issuerFactory: {
+      basic: '0x459464B13A89F65E01291944f72E6842ad0Cbe34',
+    },
+    assetFactory: {
+      basic: '',
+      transferable: '',
+      simple: '',
+    },
+    cfManagerFactory: {
+      basic: '',
+      vesting: '',
+    },
+    queryService: '0x0B3038562aCb5715254734E77C5Cb4064070Ab1f',
+    payoutService: '0x713D963569DC7157DE0C1D1815679c4f3A30e078',
+    payoutManager: '0x71Af6221c6AdE382a872B7A7B1B8068688E16ae5',
+    nameRegistry: '0xaCeC98CD043f3b84F3272Bbc55A4d7A0dC8A0175',
+    campaignFeeManager: '',
+    defaultWalletApprover: '0x5C5c3a6DD68953B6d77413B88329174Ce03a75Bc',
+    defaultStableCoin: '0xB97EF9Ef8734C71904D8002F8b6Bc66Dd9c48a6E', // custom stablecoin issued by filip
+  },
+}
+
+export const OptimismNetwork: Network = {
+  chainID: ChainID.OPTIMISM,
+  name: 'Optimistic Ethereum',
+  shortName: 'optimism',
+  nativeCurrency: {
+    name: 'ETH',
+    symbol: 'ETH',
+  },
+  maxGasPrice: 20,
+  rpcURLs: ['https://weathered-white-lambo.optimism.quiknode.pro/651498cb8884a1093894a149d1d44004a45fb5a6/'],
+  wssRpcURLs: ['wss://weathered-white-lambo.optimism.quiknode.pro/651498cb8884a1093894a149d1d44004a45fb5a6/'],
+  explorerURLs: ['https://optimistic.etherscan.io/'],
+  tokenizerConfig: {
+    apxRegistry: '',
+    issuerFactory: {
+      basic: '0x6da35932606866801762cBEC8698BD684d9D1699',
+    },
+    assetFactory: {
+      basic: '',
+      transferable: '',
+      simple: '',
+    },
+    cfManagerFactory: {
+      basic: '',
+      vesting: '',
+    },
+    queryService: '0xCaf30A0B45B8E9A5f7310274f0FAec83cF307936',
+    payoutService: '0xa61AD00d16d2f40b7C3CC5339B8cBB8fD23972F5',
+    payoutManager: '0x7a21F1618bb0F5EaD292292d441e646E0DB9bf3e',
+    nameRegistry: '0x1f57044153fb762dbc35168CE5e29d32E958BD52',
+    campaignFeeManager: '',
+    defaultWalletApprover: '0x6556Bf8Ed99161eD58753994006E7Ef9CE188ac5',
+    defaultStableCoin: '0x7f5c764cbc14f9669b88837ca1490cca17c31607', // custom stablecoin issued by filip
+  },
+}
+
+export const ArbitrumNetwork: Network = {
+  chainID: ChainID.ARBITRUM,
+  name: 'Arbitrum One',
+  shortName: 'arbitrum',
+  nativeCurrency: {
+    name: 'ETH',
+    symbol: 'ETH',
+  },
+  maxGasPrice: 20,
+  rpcURLs: [
+    'https://weathered-bitter-panorama.arbitrum-mainnet.quiknode.pro/6263c3e3ab2a9c81efd17e687344d9d5d049de68'
+  ],
+  wssRpcURLs: [
+    'wss://weathered-bitter-panorama.arbitrum-mainnet.quiknode.pro/6263c3e3ab2a9c81efd17e687344d9d5d049de68'
+  ],
+  explorerURLs: ['https://optimistic.etherscan.io/'],
+  tokenizerConfig: {
+    apxRegistry: '',
+    issuerFactory: {
+      basic: '0x6da35932606866801762cBEC8698BD684d9D1699',
+    },
+    assetFactory: {
+      basic: '',
+      transferable: '',
+      simple: '',
+    },
+    cfManagerFactory: {
+      basic: '',
+      vesting: '',
+    },
+    queryService: '0xCaf30A0B45B8E9A5f7310274f0FAec83cF307936',
+    payoutService: '0xa61AD00d16d2f40b7C3CC5339B8cBB8fD23972F5',
+    payoutManager: '0x7a21F1618bb0F5EaD292292d441e646E0DB9bf3e',
+    nameRegistry: '0x1f57044153fb762dbc35168CE5e29d32E958BD52',
+    campaignFeeManager: '',
+    defaultWalletApprover: '0x6556Bf8Ed99161eD58753994006E7Ef9CE188ac5',
+    defaultStableCoin: '0x7f5c764cbc14f9669b88837ca1490cca17c31607', // custom stablecoin issued by filip
+  },
+}
 
 export const Networks: { [key in ChainID]: Network } = {
   [ChainID.MATIC_MAINNET]: MaticNetwork,
   [ChainID.MUMBAI_TESTNET]: MumbaiNetwork,
   [ChainID.GOERLI_TESTNET]: GoerliNetwork,
-  [ChainID.AURORA_MAINNET]: AuroraNetwork
+  [ChainID.AURORA_MAINNET]: AuroraNetwork,
+  [ChainID.OPTIMISM]: OptimismNetwork,
+  [ChainID.ARBITRUM]: ArbitrumNetwork,
+  [ChainID.AVALANCHE]: AvalancheNetwork
 }
 
 const getEthersNetwork = (network: Network): providers.Network => ({

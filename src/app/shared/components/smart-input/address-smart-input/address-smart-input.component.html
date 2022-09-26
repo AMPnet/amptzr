@@ -10,8 +10,11 @@
             </a>
         </div>
         <div class="w-3/12 h-full text-sm flex flex-row justify-end mr-4 items-center">
-            <button (click)="confirmAddressClicked()" class="w-full flex flex-row justify-center items-center bg-violet-700 text-xs uppercase text-white
-                font-medium ml-2 py-2 rounded-full">
+            <button (click)="confirmAddressClicked()" 
+            type="button"
+            class="w-full flex flex-row justify-center 
+            items-center bg-violet-700 text-xs uppercase text-white
+            font-medium ml-2 py-2 rounded-full">
                 <div class="mr-2" *ngIf="confirmButtonLoading$ | async">
                     <app-spinner type="inline-xs"></app-spinner>
                 </div>

@@ -8,13 +8,15 @@ import { ContractManifestService } from 'src/app/shared/services/backend/contrac
 import { ConstructorParam, ContractDeploymentService } from 'src/app/shared/services/blockchain/contract-deployment.service'
 import { DialogService } from 'src/app/shared/services/dialog.service'
 import { marked } from 'marked'
+import { easeInOutAnimation } from 'src/app/shared/utils/animations'
 
 @Component({
   selector: 'app-deploy-from-manifest',
   templateUrl: './deploy-from-manifest.component.html',
   styleUrls: ['./deploy-from-manifest.component.css'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  encapsulation: ViewEncapsulation.None
+  encapsulation: ViewEncapsulation.None,
+  animations: easeInOutAnimation
 })
 export class DeployFromManifestComponent {
 

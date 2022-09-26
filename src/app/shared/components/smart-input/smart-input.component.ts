@@ -9,12 +9,14 @@ import { ContractDeploymentRequestResponse, ContractDeploymentRequests, Contract
 import { SmartInputDisplayService } from './smart-input-display.service'
 import 'tw-elements'
 import { Dev3SDK} from "dev3-sdk"
+import { easeInOutAnimation } from '../../utils/animations'
 
 @Component({
   selector: 'app-smart-input',
   templateUrl: './smart-input.component.html',
   styleUrls: ['./smart-input.component.css'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  animations: easeInOutAnimation
 })
 export class SmartInputComponent implements OnInit {
 
@@ -63,25 +65,6 @@ export class SmartInputComponent implements OnInit {
 
   ngOnInit(): void {
 
-    const dev3 = new Dev3SDK("api-key", "project-id")
-    const contr = from(dev3.getContractByAlias("my-contract"))
-    contr.pipe(
-      tap(res => {
-        res.execute('mint', [
-          'asd',
-          123,
-          225
-        ], {
-          onCreate: () => {
-
-          }, 
-          onExecute: () => {
-
-          }
-        })
-      })
-    )
-
     this.formFinishedLoading$ = this.formFinishedLoadingSub.asObservable()
     this.formFinishedLoading$.pipe(tap(_ => console.log(this.rootForm)))
     this.inputType = this.generateInternalInputType(this.solidityType, this.recommendedTypes)
@@ -105,7 +88,7 @@ export class SmartInputComponent implements OnInit {
     bufferValue.unshift(this.arrayBufferForm.controls.arrayBufferInput.value)
     this.arrayBufferSub.next(bufferValue)
     this.arrayBufferForm.controls.arrayBufferInput.setValue('')
-    
+
     this.rootForm.get(this.controlName)?.setValue(this.arrayBufferSub.getValue())
   }
 

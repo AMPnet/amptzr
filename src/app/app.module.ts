@@ -120,12 +120,9 @@ import { RequestSendShowComponent } from './request-send/request-send-show/reque
 import { RequestBalanceActionComponent } from './request-balance/request-balance-action/request-balance-action.component'
 import { RequestWalletActionComponent } from './request-wallet/request-wallet-action/request-wallet-action.component'
 import { DashboardHolderComponent } from './dashboard/dashboard-holder/dashboard-holder.component'
-import { NewAndManageHolderComponent } from './dashboard/new-and-manage-holder/new-and-manage-holder.component'
-import { CreateErc20Component } from './dashboard/token/erc20/create-erc20.component'
+import { ContractsTableHolderComponent } from './dashboard/contracts-table-holder/contracts-table-holder.component'
 import { ThirdPartyIntegrationsOverviewComponent } from './dashboard/utils/third-party-integrations-overview/third-party-integrations-overview.component'
-import { FundraisingComponent } from './dashboard/fundraising/fundraising.component'
 import { ContractsComponent } from './dashboard/contracts/contracts.component'
-import { TokensHolderComponent } from './dashboard/token/tokens-holder/tokens-holder.component'
 import { AddressBookComponent } from './dashboard/address-book/address-book.component'
 import { ApiKeyShortPipe } from './shared/pipes/api-key-short.pipe'
 import { AirdropComponent } from './dashboard/airdrop/airdrop.component'
@@ -245,12 +242,9 @@ import { WorkflowActionItemComponent } from './dashboard/workflows/workflow-acti
     RequestBalanceActionComponent,
     RequestWalletActionComponent,
     DashboardHolderComponent,
-    NewAndManageHolderComponent,
-    CreateErc20Component,
+    ContractsTableHolderComponent,
     ThirdPartyIntegrationsOverviewComponent,
-    FundraisingComponent,
     ContractsComponent,
-    TokensHolderComponent,
     AddressBookComponent,
     AirdropComponent,
     PaymentsComponent,
