@@ -63,10 +63,10 @@ export const MaticNetwork: Network = {
   },
   maxGasPrice: 1500,
   rpcURLs: [
-    'https://polygon-rpc.com',
+    'https://polygon-mainnet.infura.io/v3/d3d83a90e40744b0abe32a12730a3035',
   ],
   wssRpcURLs: [
-    'wss://polygon-bor.publicnode.com',
+    'wss://mainnet.infura.io/ws/v3/d3d83a90e40744b0abe32a12730a3035',
   ],
   explorerURLs: ['https://polygonscan.com/'],
   tokenizerConfig: {
@@ -96,9 +96,9 @@ export const MumbaiNetwork: Network = {
     symbol: 'MATIC',
   },
   maxGasPrice: 20,
-  rpcURLs: ['https://polygon-mumbai-bor.publicnode.com'],
+  rpcURLs: ['https://polygon-mumbai.infura.io/v3/d3d83a90e40744b0abe32a12730a3035'],
   wssRpcURLs: [
-    'wss://polygon-mumbai-bor.publicnode.com',
+    'wss://polygon-mumbai.infura.io/ws/v3/d3d83a90e40744b0abe32a12730a3035',
   ],
   explorerURLs: ['https://mumbai.polygonscan.com/'],
   tokenizerConfig: {
