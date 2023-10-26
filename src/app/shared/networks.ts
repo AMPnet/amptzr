@@ -63,12 +63,10 @@ export const MaticNetwork: Network = {
   },
   maxGasPrice: 1500,
   rpcURLs: [
-    'https://polygon-rpc.com',
+    'https://polygon-mainnet.infura.io/v3/d3d83a90e40744b0abe32a12730a3035',
   ],
   wssRpcURLs: [
-    'wss://ws-nd-159-625-174.p2pify.com/db285116493a92ba6e91417f43a942bd',
-    'wss://polygon-mainnet.g.alchemy.com/v2/A8PZz3PJWwX_yQAW5q0JjqaNPPshI9Qg',
-    'wss://ws-matic-mainnet.chainstacklabs.com',
+    'wss://mainnet.infura.io/ws/v3/d3d83a90e40744b0abe32a12730a3035',
   ],
   explorerURLs: ['https://polygonscan.com/'],
   tokenizerConfig: {
@@ -98,11 +96,9 @@ export const MumbaiNetwork: Network = {
     symbol: 'MATIC',
   },
   maxGasPrice: 20,
-  rpcURLs: ['https://matic-mumbai.chainstacklabs.com'],
+  rpcURLs: ['https://polygon-mumbai.infura.io/v3/d3d83a90e40744b0abe32a12730a3035'],
   wssRpcURLs: [
-    'wss://ws-nd-673-584-255.p2pify.com/6eba79da2c02fb3ca5985cc6e95ebd53',
-    'wss://polygon-mumbai.g.alchemy.com/v2/w8tKRA88CQYBQEwGO2HlKKHtSD_qHOoU',
-    'wss://ws-matic-mumbai.chainstacklabs.com',
+    'wss://polygon-mumbai.infura.io/ws/v3/d3d83a90e40744b0abe32a12730a3035',
   ],
   explorerURLs: ['https://mumbai.polygonscan.com/'],
   tokenizerConfig: {
@@ -133,7 +129,10 @@ export const GoerliNetwork: Network = {
     symbol: 'ETH',
   },
   maxGasPrice: 20,
-  rpcURLs: ['https://goerli.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161'],
+  rpcURLs: ['https://ethereum-goerli.publicnode.com'],
+  wssRpcURLs: [
+    'wss://ethereum-goerli.publicnode.com',
+  ],
   explorerURLs: ['https://goerli.etherscan.io/'],
   tokenizerConfig: {
     apxRegistry: '0x95e1F87B3E5EC566CC0676DED8Ce992cE0E51Ed7',
